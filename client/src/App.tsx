@@ -29,6 +29,7 @@ import { ModalContext, useModal, OpenModalProps } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
 import { AppointmentFormData, InventoryItemFormData, LayoutProps, PatientFormData, RouteType } from './types'
 import { addAppointment } from './pages/services/appoinmentService'
+import { addInventoryItem } from './pages/services/inventoryItemService'
 
 //define modal types to match what ModalComponent is expecting
 type ModalType = 'appointment' | 'patient' | 'item';
@@ -116,7 +117,10 @@ function App() {
         console.log('New patient created');
         break;
       case 'item':
-        console.log('New inventory item created');
+          await addInventoryItem(formData as InventoryItemFormData);
+          
+          toast.success('Inventory item added successfully');
+          window.dispatchEvent(new CustomEvent('inventory-refresh'));
         break;
       default:
         break;

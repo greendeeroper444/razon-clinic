@@ -14,12 +14,12 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
   return (
     <>
       <div className={styles.formGroup}>
-        <label htmlFor="medicine">Medicine Name</label>
+        <label htmlFor="itemName">Item Name</label>
         <input
           type="text"
-          id="medicine"
-          name="medicine"
-          value={formData.medicine || ''}
+          id="itemName"
+          name="itemName"
+          value={formData.itemName || ''}
           onChange={onChange}
           className={styles.formControl}
           required
@@ -37,21 +37,18 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
           required
         >
           <option value="">Select Category</option>
-          <option value="antibiotics">Antibiotics</option>
-          <option value="painkillers">Painkillers</option>
-          <option value="antihistamines">Antihistamines</option>
-          <option value="vitamins">Vitamins</option>
-          <option value="supplies">Medical Supplies</option>
+          <option value="Vaccine">Vaccine</option>
+          <option value="Medical Supply">Medical Supply</option>
         </select>
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="minLevel">Minimum Stock Level</label>
+        <label htmlFor="quantityInStock">Quantity in Stock</label>
         <input
           type="number"
-          id="minLevel"
-          name="minLevel"
-          value={formData.minLevel || ''}
+          id="quantityInStock"
+          name="quantityInStock"
+          value={formData.quantityInStock || ''}
           onChange={onChange}
           className={styles.formControl}
           min="0"
@@ -60,25 +57,25 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="expirationDate">Expiration Date</label>
+        <label htmlFor="quantityUsed">Quantity Used</label>
         <input
-          type="date"
-          id="expirationDate"
-          name="expirationDate"
-          value={formData.expirationDate || ''}
+          type="number"
+          id="quantityUsed"
+          name="quantityUsed"
+          value={formData.quantityUsed || 0}
           onChange={onChange}
           className={styles.formControl}
-          required
+          min="0"
         />
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="location">Storage Location</label>
+        <label htmlFor="expiryDate">Expiry Date</label>
         <input
-          type="text"
-          id="location"
-          name="location"
-          value={formData.location || ''}
+          type="date"
+          id="expiryDate"
+          name="expiryDate"
+          value={formData.expiryDate || ''}
           onChange={onChange}
           className={styles.formControl}
           required

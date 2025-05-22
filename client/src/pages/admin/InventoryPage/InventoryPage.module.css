@@ -187,6 +187,7 @@
     padding: 15px;
     border-bottom: 1px solid var(--gray-light);
     vertical-align: middle;
+    text-align: center;
 }
   
 .inventoryTable tr:last-child td {
@@ -265,18 +266,39 @@
     font-weight: 500;
     cursor: pointer;
     transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 5px;
 }
   
-.primary {
+.actionBtn.view,
+.actionBtn.primary {
     background-color: var(--primary-light);
     color: var(--primary);
 }
-  
-.primary:hover {
+.actionBtn.view:hover,
+.actionBtn.primary:hover {
     background-color: #bfdbfe;
+}
+  
+.actionBtn.update {
+    background-color: #fef7e2;
+    color: var(--warning);
+}
+.actionBtn.update:hover{
+    background-color: #fee6ca;
+}
+.actionBtn.delete {
+    background-color: #fee2e2;
+    color: var(--danger);
+}
+.actionBtn.delete:hover {
+    background-color: #fecaca;
+}
+  
+.actionBtn.success {
+    background-color: #d1fae5;
+    color: var(--success);
+}
+.actionBtn.success:hover {
+    background-color: #a7f3d0;
 }
 
 
