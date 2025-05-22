@@ -1,0 +1,218 @@
+
+.servicesContent {
+    color: var(--dark);
+    background-color: var(--light);
+    min-height: 100vh;
+}
+
+
+
+.heroSection {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--medical) 100%);
+    padding: 100px 20px;
+    text-align: center;
+    color: white;
+    margin-bottom: 50px;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.heroContent {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.heroContent h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.heroContent p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+
+.servicesContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 50px;
+}
+
+.servicesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.serviceCard {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.serviceCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.iconContainer {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.serviceIcon {
+    font-size: 1.8rem;
+    color: white;
+}
+
+.serviceCard h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--dark);
+}
+
+.serviceCard p {
+    color: var(--dark-light);
+    margin-bottom: 20px;
+    flex-grow: 1;
+    line-height: 1.6;
+}
+
+.learnMore {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    display: inline-block;
+    transition: var(--transition);
+}
+
+.learnMore:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--primary);
+    transition: var(--transition);
+}
+
+.learnMore:hover:after {
+    width: 100%;
+}
+
+
+
+.appointmentSection {
+    background-color: var(--primary-light);
+    padding: 60px 20px;
+    text-align: center;
+    margin: 50px 0;
+}
+
+.appointmentContent {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.appointmentContent h2 {
+    font-size: 2.2rem;
+    color: var(--dark);
+    margin-bottom: 15px;
+}
+
+.appointmentContent p {
+    color: var(--dark-light);
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.appointmentButtons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.primaryButton {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+}
+
+.primaryButton:hover {
+    background-color: var(--secondary);
+    transform: translateY(-2px);
+}
+
+.phoneButton {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 25px;
+    border-radius: 30px;
+    background-color: white;
+    color: var(--dark);
+    font-weight: 500;
+    box-shadow: var(--card-shadow);
+}
+
+.buttonIcon {
+    font-size: 1.1rem;
+}
+
+
+
+
+@media (max-width: 768px) {
+    .heroContent h1 {
+        font-size: 2.5rem;
+    }
+    
+    .servicesGrid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    
+    .appointmentButtons {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .heroContent h1 {
+        font-size: 2rem;
+    }
+    
+    .heroContent p {
+        font-size: 1rem;
+    }
+    
+    .appointmentContent h2 {
+        font-size: 1.8rem;
+    }
+}

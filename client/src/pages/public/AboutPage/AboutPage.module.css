@@ -1,0 +1,328 @@
+.aboutPageContainer {
+    line-height: 1.6;
+    color: var(--dark);
+}
+
+.aboutContent {
+    min-height: calc(100vh - var(--navbar-height));
+}
+
+
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+.sectionHeading {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.sectionHeading h2 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.underline {
+    height: 4px;
+    width: 70px;
+    background-color: var(--primary);
+    margin: 0 auto;
+    border-radius: 2px;
+}
+
+
+
+
+.heroSection {
+    position: relative;
+    height: 500px;
+    background-image: url('/api/placeholder/1200/500');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.heroOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(30, 41, 59, 0.6);
+}
+
+.heroContent {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 0 5%;
+}
+
+.heroContent h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.heroContent p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+
+
+.missionSection {
+    padding: 5rem 0;
+    background-color: white;
+}
+
+.missionSection p {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    color: var(--dark-light);
+}
+
+
+
+.valuesSection {
+    padding: 5rem 0;
+    background-color: var(--primary-light);
+}
+
+.valuesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.valueCard {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+}
+
+.valueCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.valueIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    background-color: var(--primary-light);
+    color: var(--primary);
+    font-size: 1.8rem;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+}
+
+.valueCard h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.valueCard p {
+    color: var(--dark-light);
+}
+
+
+
+
+.teamSection {
+    padding: 5rem 0;
+    background-color: white;
+}
+
+.teamGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.teamMember {
+    text-align: center;
+}
+
+.memberImage {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    border: 5px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.memberImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.teamMember h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.memberTitle {
+    color: var(--primary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.teamMember p:not(.memberTitle) {
+    color: var(--dark-light);
+}
+
+
+
+.testimonialSection {
+    padding: 5rem 0;
+    background-color: var(--light);
+}
+
+.testimonialCard {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 3rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    position: relative;
+}
+
+.quoteIcon {
+    font-size: 2rem;
+    color: var(--primary-light);
+    margin-bottom: 1.5rem;
+}
+
+.testimonialText {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+}
+
+.testimonialAuthor {
+    font-weight: 600;
+    color: var(--dark-light);
+}
+
+
+
+
+.ctaSection {
+    padding: 5rem 0;
+    background-color: var(--primary);
+    color: white;
+    text-align: center;
+}
+
+.ctaContent {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.ctaContent h2 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.ctaContent p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.ctaButton {
+    display: inline-block;
+    background-color: white;
+    color: var(--primary);
+    font-weight: 600;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.ctaButton:hover {
+    background-color: var(--dark);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+    .heroContent h1 {
+        font-size: 2.5rem;
+    }
+    
+    .sectionHeading h2 {
+        font-size: 2rem;
+    }
+    
+    .teamGrid, .valuesGrid {
+        gap: 1.5rem;
+    }
+    
+    .testimonialCard {
+        padding: 2rem;
+    }
+    
+}
+
+@media (max-width: 576px) {
+    .heroContent h1 {
+        font-size: 2rem;
+    }
+    
+    .heroSection {
+        height: 400px;
+    }
+    
+    .valueCard, .teamMember {
+        padding: 1.5rem;
+    }
+    
+    .memberImage {
+        width: 150px;
+        height: 150px;
+    }
+}

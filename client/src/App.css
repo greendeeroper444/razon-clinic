@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary: #3b82f6;
+  --primary-light: #dbeafe;
+  --secondary: #2563eb;
+  --dark: #1e293b;
+  --dark-light: #334155;
+  --light: #f8fafc;
+  --gray: #94a3b8;
+  --gray-light: #e2e8f0;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --medical: #6366f1;
+  --appointment: #8b5cf6;
+  --archive: #64748b;
+  --archive-light: #f1f5f9;
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 70px;
+  --navbar-height: 70px;
+  --border-radius: 12px;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --transition: all 0.3s ease;
+}
+
+* {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f9fafb;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+.main-content-public {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-content-admin {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-left: var(--sidebar-width);
+  transition: var(--transition);
+  width: calc(100% - var(--sidebar-width));
+}
+
+.sidebar-collapsed .main-content-admin {
+  margin-left: var(--sidebar-collapsed-width);
+  width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+.navbar {
+  height: var(--navbar-height);
+  padding: 0 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e5eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.content-area {
+  flex: 1;
+  /* padding: 20px; */
+  overflow-y: auto;
+  background-color: #f9fafb;
+}
+
+
+
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content-admin {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .sidebar-collapsed .main-content-admin {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .content-area {
+    padding: 0;
+  }
+}
+
+/*utility classes */
+.d-flex {
+  display: flex;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.h-100 {
+  height: 100%;
+}

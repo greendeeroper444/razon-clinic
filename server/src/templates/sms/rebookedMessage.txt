@@ -1,0 +1,12 @@
+Hello {{patientName}},
+
+Your appointment #{{appointmentNumber}} has been REBOOKED.
+
+Previous Details:
+- Date: {{preferredDate}}
+- Time: {{preferredTime}}
+- Reason: {{reasonForVisit}}
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!

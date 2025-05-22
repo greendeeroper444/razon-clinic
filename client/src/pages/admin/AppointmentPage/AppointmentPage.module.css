@@ -1,0 +1,333 @@
+.content {
+  padding: 20px;
+}
+
+.contentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.contentTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.contentActions {
+  display: flex;
+  gap: 10px;
+}
+
+.btnPrimary {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btnPrimary:hover {
+  background-color: var(--primary-dark, #4338ca);
+}
+
+.btnOutline {
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btnOutline:hover {
+  background-color: rgba(79, 70, 229, 0.1);
+}
+
+.sectionTitle {
+  margin: 25px 0 15px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #374151;
+}
+  
+
+.appointmentsSection {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-bottom: 30px;
+}
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.sectionActions a {
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.appointmentsTable,
+.inventoryTable,
+.patientTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+.appointmentsTable th,
+.inventoryTable th,
+.patientTable th {
+    text-align: center;
+    padding: 12px 15px;
+    font-size: 0.8rem;
+    color: var(--gray);
+    font-weight: 500;
+    border-bottom: 1px solid var(--gray-light);
+}
+.appointmentsTable td,
+.inventoryTable td,
+.patientTable td {
+    padding: 15px;
+    border-bottom: 1px solid var(--gray-light);
+    vertical-align: middle;
+}
+.appointmentsTable tr:last-child td,
+.inventoryTable tr:last-child td,
+.patientTable tr:last-child td {
+  border-bottom: none;
+}
+.noData {
+  text-align: center;
+}
+.patientInfo,
+.medicineInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.patientAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.patientName {
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.patientId {
+  font-size: 0.75rem;
+  color: var(--gray);
+}
+.medicineIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: var(--medical);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+.medicineName {
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.medicineCategory {
+  font-size: 0.75rem;
+  color: var(--gray);
+}
+.appointmentTime {
+  font-weight: 500;
+}
+.appointmentDate {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+.appointmentType {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+.appointmentType.checkup {
+  background-color: #ecfdf5;
+  color: var(--success);
+}
+.appointmentType.emergency {
+  background-color: #fef2f2;
+  color: var(--danger);
+}
+
+
+.actionBtn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+  
+.actionBtn.view,
+.actionBtn.primary {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+.actionBtn.view:hover,
+.actionBtn.primary:hover {
+    background-color: #bfdbfe;
+}
+  
+.actionBtn.update {
+    background-color: #fef7e2;
+    color: var(--warning);
+}
+.actionBtn.update:hover{
+    background-color: #fee6ca;
+}
+.actionBtn.delete {
+    background-color: #fee2e2;
+    color: var(--danger);
+}
+.actionBtn.delete:hover {
+    background-color: #fecaca;
+}
+  
+.actionBtn.success {
+    background-color: #d1fae5;
+    color: var(--success);
+}
+.actionBtn.success:hover {
+    background-color: #a7f3d0;
+}
+
+
+.statusBadge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+.statusBadge.statusPending {
+    background-color: #d6d6f5;
+    color: var(--medical);
+}
+
+.statusBadge.statusScheduled{
+    background-color: #d6e4f5;
+    color: var(--primary);
+}
+
+.statusBadge.statusCompleted {
+    background-color: #ecfdf5;
+    color: var(--success);
+}
+
+.statusBadge.statusCancelled {
+    background-color: #fef2f2;
+    color: var(--danger);
+}
+.statusBadge.statusRebooked {
+    background-color: #fef2f2;
+    color: var(--warning);
+}
+
+.tableResponsive {
+   overflow-x: auto;
+}
+
+
+td {
+  text-align: right;
+  white-space: nowrap;
+  padding: 8px 12px;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  margin-right: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.actionBtn:last-child {
+  margin-right: 0;
+}
+
+
+@media (max-width: 768px) {
+  .content {
+      padding: 10px;
+  }
+  .contentHeader {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+
+  .actionBtn {
+      padding: 4px 8px;
+      font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  td {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .actionBtn {
+    margin-right: 0;
+    margin-bottom: 4px;
+    width: 100%;
+  }
+  
+  .actionBtn:last-child {
+    margin-bottom: 0;
+  }
+}

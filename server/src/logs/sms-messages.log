@@ -1,0 +1,111 @@
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-05-22T09:44:19.837Z
+To: +639501049657
+Status: SKIPPED_DEVELOPMENT
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been marked as COMPLETED.
+
+Date: May 23, 2025
+Time: 15:29
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-05-22T09:45:44.708Z
+To: +639501049657
+Status: SKIPPED_DEVELOPMENT
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been REBOOKED.
+
+Previous Details:
+- Date: May 23, 2025
+- Time: 15:29
+- Reason: Thank you
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-05-22T09:46:56.933Z
+To: +639974559639
+Status: SKIPPED_DEVELOPMENT
+Message:
+Hello Greendee Roper Panogalon,
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0001
+- Date: May 23, 2025
+- Time: 15:29
+- Reason: Thank you
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-05-22T09:47:26.440Z
+To: +639501049657
+Status: SKIPPED_DEVELOPMENT
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been marked as COMPLETED.
+
+Date: May 23, 2025
+Time: 15:29
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-05-22T09:49:17.838Z
+To: +639501049657
+Status: SKIPPED_DEVELOPMENT
+Message:
+Hello Greendee Roper Panogalon,
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0001
+- Date: May 23, 2025
+- Time: 15:29
+- Reason: Thank you
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-05-22T17:27:05.862Z
+To: +639501049657
+Status: SKIPPED_DEVELOPMENT
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been marked as COMPLETED.
+
+Date: May 23, 2025
+Time: 15:29
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---

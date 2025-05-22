@@ -1,0 +1,694 @@
+.content {
+    padding: 20px;
+}
+  
+.contentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+  
+.contentTitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+  
+.contentActions {
+    display: flex;
+    gap: 10px;
+}
+  
+.btnPrimary {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+  
+.btnPrimary:hover {
+    background-color: var(--primary-dark, #4338ca);
+}
+  
+.btnOutline {
+    background-color: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+  
+.btnOutline:hover {
+    background-color: rgba(79, 70, 229, 0.1);
+}
+  
+.sectionTitle {
+    margin: 25px 0 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+
+.patientCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+  
+.card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: var(--transition);
+}
+  
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+  
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+  
+.cardTitle {
+    font-size: 0.9rem;
+    color: var(--gray);
+    font-weight: 500;
+}
+  
+.cardIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+  
+.cardIcon.blue {
+    background-color: var(--primary);
+}
+.cardIcon.purple {
+    background-color: var(--appointment);
+}
+.medical {
+    background-color: var(--medical);
+}
+.green {
+    background-color: var(--success);
+}
+.orange {
+    background-color: var(--warning);
+}
+.red {
+    background-color: var(--danger);
+}
+  
+.cardValue {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+  
+.cardFooter {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+  
+.cardFooter i {
+    margin-right: 5px;
+}
+  
+.positive {
+    color: var(--success);
+}
+.negative {
+    color: var(--danger);
+}
+  
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+  
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+  
+.sectionActions a {
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+  
+.patientTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+  
+.patientTable th {
+    text-align: center;
+    padding: 12px 15px;
+    font-size: 0.8rem;
+    color: var(--gray);
+    font-weight: 500;
+    border-bottom: 1px solid var(--gray-light);
+}
+  
+.patientTable td {
+    padding: 15px;
+    border-bottom: 1px solid var(--gray-light);
+    vertical-align: middle;
+}
+  
+.patientTable tr:last-child td {
+    border-bottom: none;
+}
+  
+.patientInfo,
+.medicineInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+  
+.patientAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-weight: 600;
+    flex-shrink: 0;
+}
+  
+.patientName {
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+  
+.patientId {
+    font-size: 0.75rem;
+    color: var(--gray);
+}
+  
+.medicineIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: var(--medical);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+  
+.medicineName {
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+  
+.medicineCategory {
+    font-size: 0.75rem;
+    color: var(--gray);
+}
+  
+.appointmentTime {
+    font-weight: 500;
+}
+  
+.appointmentDate {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+  
+.appointmentType {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+  
+.checkup {
+    background-color: #ecfdf5;
+    color: var(--success);
+}
+  
+.emergency {
+    background-color: #fef2f2;
+    color: var(--danger);
+}
+  
+.stockLevel {
+    font-weight: 500;
+}
+  
+.low {
+    color: var(--danger);
+}
+.medium {
+    color: var(--warning);
+}
+.high {
+    color: var(--success);
+}
+  
+.patientGender {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+  
+.male {
+    background-color: #dbeafe;
+    color: var(--primary);
+}
+.female {
+    background-color: #fce7f3;
+    color: #db2777;
+}
+.other {
+    background-color: #e5e7eb;
+    color: var(--dark);
+}
+  
+.patientStatus {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+  
+.active {
+    /* background-color: #dcfce7; */
+    color: var(--success);
+}
+.inactive {
+    background-color: #fee2e2;
+    color: var(--danger);
+}
+  
+.expiryStatus {
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+  
+.safe {
+    background-color: #ecfdf5;
+    color: var(--success);
+}
+.warning {
+    background-color: #fef3c7;
+    color: var(--warning);
+}
+.danger {
+    background-color: #fee2e2;
+    color: var(--danger);
+}
+  
+.actionBtn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+  
+.view,
+.primary {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+.view:hover,
+.primary:hover {
+    background-color: #bfdbfe;
+}
+  
+.cancel {
+    background-color: #fee2e2;
+    color: var(--danger);
+    margin-left: 8px;
+}
+.cancel:hover {
+    background-color: #fecaca;
+}
+  
+.success {
+    background-color: #d1fae5;
+    color: var(--success);
+}
+.success:hover {
+    background-color: #a7f3d0;
+}
+  
+
+
+.inventoryTableContainer,
+.patientTableContainer {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+  
+.inventoryTableHeader,
+.patientTableHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--gray-light);
+}
+  
+.inventoryTableTitle,
+.patientTableTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+  
+.inventoryTableActions,
+.patientTableActions {
+    display: flex;
+    gap: 10px;
+}
+  
+.tableResponsive {
+    overflow-x: auto;
+}
+  
+ 
+
+.lowStockAlert {
+    background-color: #fef2f2;
+    border-left: 4px solid var(--danger);
+    padding: 15px;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+  
+.lowStockAlertIcon {
+    color: var(--danger);
+    font-size: 1.2rem;
+}
+  
+.lowStockAlertContent {
+    flex: 1;
+}
+  
+.lowStockAlertTitle {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+  
+.lowStockAlertText {
+    font-size: 0.9rem;
+    color: var(--dark-light);
+}
+  
+
+
+.patientDetailContainer {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.patientHeader {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--gray-light);
+  flex-wrap: wrap;
+}
+
+.patientAvatarLg {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.patientAvatarLg:hover {
+  transform: scale(1.05);
+}
+
+.patientHeaderInfo {
+  flex: 1;
+  min-width: 200px;
+}
+
+.patientNameLg {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--dark);
+}
+
+.patientMeta {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.patientMetaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--dark-light);
+  margin-bottom: 5px;
+}
+
+.patientMetaItem svg {
+  color: var(--primary);
+}
+
+
+.patientTabs {
+  display: flex;
+  border-bottom: 1px solid var(--gray-light);
+  margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.patientTabs::-webkit-scrollbar {
+  height: 4px;
+}
+
+.patientTabs::-webkit-scrollbar-thumb {
+  background-color: var(--gray-light);
+  border-radius: 4px;
+}
+
+.patientTab {
+  padding: 10px 20px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.patientTab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.patientTab:not(.active):hover {
+  color: var(--primary);
+  border-bottom-color: var(--primary-light);
+}
+
+.patientTabContent {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.patientTabContent.active {
+  display: block;
+}
+  
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+  
+.infoCard {
+    background: #f8fafc;
+    border-radius: var(--border-radius);
+    padding: 15px;
+}
+  
+.infoCardTitle {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+  
+.infoCardValue {
+    font-weight: 600;
+}
+  
+
+
+@media (max-width: 992px) {
+    .infoGrid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+        .content {
+            padding: 10px;
+        }
+        .contentHeader {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    .patientDetailContainer {
+        padding: 16px;
+    }
+    
+    .patientHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .patientHeaderInfo {
+        width: 100%;
+    }
+    
+    .patientActions {
+        margin-left: 0;
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .btnOutline, .btnPrimary {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .patientMeta {
+        gap: 12px;
+    }
+    
+    .infoGrid {
+        grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .patientDetailContainer {
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .patientAvatarLg {
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
+    }
+    
+    .patientNameLg {
+        font-size: 1.3rem;
+    }
+    
+    .patientTab {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .patientActions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .btnOutline, .btnPrimary {
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .patientMetaItem {
+        font-size: 0.85rem;
+    }
+    
+    .infoCard {
+        padding: 12px;
+    }
+    
+    .sectionTitle {
+        font-size: 1.1rem;
+        margin: 20px 0 12px;
+    }
+}

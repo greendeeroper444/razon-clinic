@@ -1,0 +1,959 @@
+2025-05-17 13:21:56 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:21:56 [ERROR]: Error: Resource not found: /favicon.ico ApiError: Resource not found: /favicon.ico
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at logger (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\morgan\index.js:144:5)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+2025-05-17 13:23:10 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:23:11 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:27:38 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:28:47 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:32:18 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:33:18 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\authRoutes.js:9:5
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+2025-05-17 13:35:11 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:36:02 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:36:14 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:36:32 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:37:09 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:40:42 [ERROR]: Error: secretOrPrivateKey must have a value Error: secretOrPrivateKey must have a value
+    at module.exports [as sign] (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\jsonwebtoken\sign.js:111:20)
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:32:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-17 13:40:48 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:41:49 [ERROR]: Error: User with this emailOrContactNumber already exists ApiError: User with this emailOrContactNumber already exists
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:14:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-17 13:44:13 [ERROR]: Error: secretOrPrivateKey must have a value Error: secretOrPrivateKey must have a value
+    at module.exports [as sign] (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\jsonwebtoken\sign.js:111:20)
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:32:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-17 13:45:58 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:46:34 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:46:45 [ERROR]: Error: secretOrPrivateKey must have a value Error: secretOrPrivateKey must have a value
+    at module.exports [as sign] (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\jsonwebtoken\sign.js:111:20)
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:32:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-17 13:47:28 [ERROR]: Error: secretOrPrivateKey must have a value Error: secretOrPrivateKey must have a value
+    at module.exports [as sign] (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\jsonwebtoken\sign.js:111:20)
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:32:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-17 13:47:59 [ERROR]: Error: secretOrPrivateKey must have a value Error: secretOrPrivateKey must have a value
+    at module.exports [as sign] (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\jsonwebtoken\sign.js:111:20)
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:32:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-17 13:48:07 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:48:09 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 13:50:33 [ERROR]: Error: secretOrPrivateKey must have a value Error: secretOrPrivateKey must have a value
+    at module.exports [as sign] (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\jsonwebtoken\sign.js:111:20)
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:32:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-17 19:03:23 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:03:57 [ERROR]: Error: name is required ApiError: name is required
+    at validateRegistration (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\authValidator.js:35:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-17 19:05:37 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:10:26 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:11:52 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:14:35 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:14:36 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:37:11 [ERROR]: Error: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null } MongoServerError: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null }
+    at InsertOneOperation.execute (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\collection.js:157:16)
+2025-05-17 19:38:27 [ERROR]: Error: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null } MongoServerError: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null }
+    at InsertOneOperation.execute (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\collection.js:157:16)
+2025-05-17 19:41:23 [ERROR]: Error: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null } MongoServerError: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null }
+    at InsertOneOperation.execute (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\collection.js:157:16)
+2025-05-17 19:42:06 [ERROR]: Error: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null } MongoServerError: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null }
+    at InsertOneOperation.execute (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\collection.js:157:16)
+2025-05-17 19:45:35 [ERROR]: Error: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null } MongoServerError: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null }
+    at InsertOneOperation.execute (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\collection.js:157:16)
+2025-05-17 19:46:19 [ERROR]: Error: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null } MongoServerError: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null }
+    at InsertOneOperation.execute (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\collection.js:157:16)
+2025-05-17 19:46:31 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:46:33 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:46:33 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:46:34 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:46:34 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 19:46:37 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 20:22:34 [ERROR]: Error: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null } MongoServerError: E11000 duplicate key error collection: razon_db.users index: email_1 dup key: { email: null }
+    at InsertOneOperation.execute (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\collection.js:157:16)
+2025-05-17 20:39:38 [ERROR]: Error: E11000 duplicate key error collection: razon_db.users index: patientID_1 dup key: { patientID: null } MongoServerError: E11000 duplicate key error collection: razon_db.users index: patientID_1 dup key: { patientID: null }
+    at InsertOneOperation.execute (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\collection.js:157:16)
+2025-05-17 20:39:49 [ERROR]: Error: E11000 duplicate key error collection: razon_db.users index: patientID_1 dup key: { patientID: null } MongoServerError: E11000 duplicate key error collection: razon_db.users index: patientID_1 dup key: { patientID: null }
+    at InsertOneOperation.execute (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongodb\lib\collection.js:157:16)
+2025-05-17 20:39:52 [ERROR]: Error: Resource not found: /api/auth/register ApiError: Resource not found: /api/auth/register
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-17 20:47:54 [ERROR]: Error: Name is required ApiError: Name is required
+    at validateRegistration (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\authValidator.js:45:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-17 23:33:41 [ERROR]: Error: Illegal arguments: string, undefined Error: Illegal arguments: string, undefined
+    at _async (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:305:15)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:335:11
+    at new Promise (<anonymous>)
+    at Object.compare (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:334:16)
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:121:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-17 23:33:55 [ERROR]: Error: Illegal arguments: string, undefined Error: Illegal arguments: string, undefined
+    at _async (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:305:15)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:335:11
+    at new Promise (<anonymous>)
+    at Object.compare (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:334:16)
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:121:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-18 00:09:39 [ERROR]: Error: Illegal arguments: string, undefined Error: Illegal arguments: string, undefined
+    at _async (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:305:15)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:335:11
+    at new Promise (<anonymous>)
+    at Object.compare (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:334:16)
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:121:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-18 00:09:43 [ERROR]: Error: Illegal arguments: string, undefined Error: Illegal arguments: string, undefined
+    at _async (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:305:15)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:335:11
+    at new Promise (<anonymous>)
+    at Object.compare (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:334:16)
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:121:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-18 00:09:47 [ERROR]: Error: Illegal arguments: string, undefined Error: Illegal arguments: string, undefined
+    at _async (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:305:15)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:335:11
+    at new Promise (<anonymous>)
+    at Object.compare (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:334:16)
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:121:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-18 00:11:50 [ERROR]: Unhandled Promise Rejection Illegal arguments: string, undefined Error: Illegal arguments: string, undefined
+    at _async (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:305:15)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:335:11
+    at new Promise (<anonymous>)
+    at Object.compare (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:334:16)
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:121:40)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-18 00:50:33 [ERROR]: Unhandled Promise Rejection Illegal arguments: string, undefined Error: Illegal arguments: string, undefined
+    at _async (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:305:15)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:335:11
+    at new Promise (<anonymous>)
+    at Object.compare (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:334:16)
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:121:40)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-18 01:02:16 [ERROR]: Error: Resource not found: /api/auth/logout ApiError: Resource not found: /api/auth/logout
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-18 01:03:07 [ERROR]: Error: Resource not found: /api/auth/logout ApiError: Resource not found: /api/auth/logout
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:11:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+2025-05-18 01:04:35 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\authMiddleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-18 01:18:12 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:118:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-18 01:18:43 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:118:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-18 01:41:16 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\authController.js:118:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 00:45:06 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 00:46:03 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 00:46:16 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 00:46:39 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 01:03:46 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 01:06:25 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 01:07:10 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 01:07:38 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 14:26:06 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-20 14:26:07 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-20 14:58:50 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 14:59:26 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 15:06:04 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 15:07:19 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 15:08:47 [ERROR]: Error: Reason must be between 5 and 200 characters ApiError: Reason must be between 5 and 200 characters
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:41:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 19:48:33 [ERROR]: Error: Reason for visit must be between 5 and 200 characters for field: undefined ApiError: Reason for visit must be between 5 and 200 characters for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 20:20:30 [ERROR]: Error: Appointment validation failed: appointmentNumber: Path `appointmentNumber` is required. ValidationError: Appointment validation failed: appointmentNumber: Path `appointmentNumber` is required.
+    at Document.invalidate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\document.js:3343:32)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\document.js:3104:17
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-05-20 22:06:54 [ERROR]: Error: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema) MissingSchemaError: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema)
+    at NativeConnection.model (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\connection.js:1491:13)
+    at _getModelFromConn (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:579:15)
+    at addModelNamesToMap (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:507:17)
+    at getModelsMapForPopulate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:208:7)
+    at _populatePath (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4439:21)
+    at Function.populate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4406:21)
+    at model.Query._find (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2433:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:63)
+    at async getMyAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:148:34)
+2025-05-20 22:06:54 [ERROR]: Error: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema) MissingSchemaError: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema)
+    at NativeConnection.model (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\connection.js:1491:13)
+    at _getModelFromConn (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:579:15)
+    at addModelNamesToMap (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:507:17)
+    at getModelsMapForPopulate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:208:7)
+    at _populatePath (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4439:21)
+    at Function.populate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4406:21)
+    at model.Query._find (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2433:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:63)
+    at async getMyAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:148:34)
+2025-05-20 22:08:26 [ERROR]: Error: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema) MissingSchemaError: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema)
+    at NativeConnection.model (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\connection.js:1491:13)
+    at _getModelFromConn (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:579:15)
+    at addModelNamesToMap (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:507:17)
+    at getModelsMapForPopulate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:208:7)
+    at _populatePath (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4439:21)
+    at Function.populate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4406:21)
+    at model.Query._find (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2433:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:63)
+    at async getAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:92:34)
+2025-05-20 22:08:26 [ERROR]: Error: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema) MissingSchemaError: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema)
+    at NativeConnection.model (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\connection.js:1491:13)
+    at _getModelFromConn (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:579:15)
+    at addModelNamesToMap (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:507:17)
+    at getModelsMapForPopulate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:208:7)
+    at _populatePath (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4439:21)
+    at Function.populate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4406:21)
+    at model.Query._find (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2433:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:63)
+    at async getAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:92:34)
+2025-05-20 22:08:28 [ERROR]: Error: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema) MissingSchemaError: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema)
+    at NativeConnection.model (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\connection.js:1491:13)
+    at _getModelFromConn (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:579:15)
+    at addModelNamesToMap (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:507:17)
+    at getModelsMapForPopulate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:208:7)
+    at _populatePath (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4439:21)
+    at Function.populate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4406:21)
+    at model.Query._find (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2433:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:63)
+    at async getAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:92:34)
+2025-05-20 22:08:28 [ERROR]: Error: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema) MissingSchemaError: Schema hasn't been registered for model "User".
+Use mongoose.model(name, schema)
+    at NativeConnection.model (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\connection.js:1491:13)
+    at _getModelFromConn (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:579:15)
+    at addModelNamesToMap (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:507:17)
+    at getModelsMapForPopulate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:208:7)
+    at _populatePath (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4439:21)
+    at Function.populate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4406:21)
+    at model.Query._find (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2433:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:63)
+    at async getAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:92:34)
+2025-05-20 22:22:58 [ERROR]: Error: Resource not found: /api/users/getPatients ApiError: Resource not found: /api/users/getPatients
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:13:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at logger (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\morgan\index.js:144:5)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+2025-05-20 22:24:34 [ERROR]: Error: Authentication required ApiError: Authentication required
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:11:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-20 22:24:34 [ERROR]: Error: Resource not found: /favicon.ico ApiError: Resource not found: /favicon.ico
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:13:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at logger (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\morgan\index.js:144:5)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+2025-05-20 22:26:37 [ERROR]: Error: Resource not found: /api/onlinePatients/getPatients ApiError: Resource not found: /api/onlinePatients/getPatients
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\routes\index.js:13:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at logger (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\morgan\index.js:144:5)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+2025-05-20 22:35:15 [ERROR]: Error: Reason for visit must be between 5 and 200 characters for field: undefined ApiError: Reason for visit must be between 5 and 200 characters for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 22:38:05 [ERROR]: Error: User ID is required for field: undefined ApiError: User ID is required for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 22:40:33 [ERROR]: Error: Reason for visit must be between 5 and 200 characters for field: undefined ApiError: Reason for visit must be between 5 and 200 characters for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 22:41:04 [ERROR]: Error: Reason for visit must be between 5 and 200 characters for field: undefined ApiError: Reason for visit must be between 5 and 200 characters for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 22:41:41 [ERROR]: Error: Reason for visit must be between 5 and 200 characters for field: undefined ApiError: Reason for visit must be between 5 and 200 characters for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 22:44:14 [ERROR]: Error: Reason for visit must be between 5 and 200 characters for field: undefined ApiError: Reason for visit must be between 5 and 200 characters for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 22:52:26 [ERROR]: Error: Reason for visit must be between 5 and 200 characters for field: undefined ApiError: Reason for visit must be between 5 and 200 characters for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-20 22:53:06 [ERROR]: Error: Reason for visit must be between 5 and 200 characters for field: undefined ApiError: Reason for visit must be between 5 and 200 characters for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 00:10:39 [ERROR]: Unhandled Promise Rejection Illegal arguments: string, undefined Error: Illegal arguments: string, undefined
+    at _async (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:305:15)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:335:11
+    at new Promise (<anonymous>)
+    at Object.compare (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\bcryptjs\umd\index.js:334:16)
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:134:40)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 00:12:04 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 00:12:09 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 00:12:19 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 00:12:25 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 00:12:30 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 00:12:41 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 01:17:12 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 01:17:16 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 01:21:52 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 01:21:59 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 01:22:05 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:129:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-21 01:22:17 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:137:23)
+2025-05-21 01:22:29 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:137:23)
+2025-05-21 20:53:40 [ERROR]: Error: Class constructor ObjectId cannot be invoked without 'new' TypeError: Class constructor ObjectId cannot be invoked without 'new'
+    at getNotifications (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\notification.controller.js:15:66)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:26:9)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+2025-05-21 20:54:00 [ERROR]: Error: Class constructor ObjectId cannot be invoked without 'new' TypeError: Class constructor ObjectId cannot be invoked without 'new'
+    at getNotifications (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\notification.controller.js:15:66)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:26:9)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+2025-05-21 20:56:29 [ERROR]: Error: Class constructor ObjectId cannot be invoked without 'new' TypeError: Class constructor ObjectId cannot be invoked without 'new'
+    at getNotifications (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\notification.controller.js:15:66)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:26:9)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+2025-05-21 22:20:47 [ERROR]: Error: Schema hasn't been registered for model "Doctor".
+Use mongoose.model(name, schema) MissingSchemaError: Schema hasn't been registered for model "Doctor".
+Use mongoose.model(name, schema)
+    at NativeConnection.model (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\connection.js:1491:13)
+    at _getModelFromConn (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:579:15)
+    at addModelNamesToMap (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:507:17)
+    at getModelsMapForPopulate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\helpers\populate\getModelsMapForPopulate.js:208:7)
+    at _populatePath (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4439:21)
+    at Function.populate (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\model.js:4406:21)
+    at model.Query._find (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2433:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:63)
+    at async getNotifications (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\notification.controller.js:20:35)
+2025-05-22 01:30:41 [ERROR]: Error: Appointment date cannot be in the past for field: undefined ApiError: Appointment date cannot be in the past for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-22 01:31:04 [ERROR]: Error: Appointment date cannot be in the past for field: undefined ApiError: Appointment date cannot be in the past for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:46:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-22 08:36:22 [ERROR]: Error: Appointment not found ApiError: Appointment not found
+    at deleteAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:278:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-22 08:36:46 [ERROR]: Error: Appointment not found ApiError: Appointment not found
+    at deleteAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:278:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-22 08:37:43 [ERROR]: Error: Appointment not found ApiError: Appointment not found
+    at deleteAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:278:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-22 08:38:00 [ERROR]: Error: Appointment not found ApiError: Appointment not found
+    at deleteAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:278:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-22 08:38:46 [ERROR]: Error: Invalid appointment ID format ApiError: Invalid appointment ID format
+    at validateAppointmentId (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:87:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-22 14:40:25 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:342:13)
+2025-05-22 23:25:58 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-22 23:26:00 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)

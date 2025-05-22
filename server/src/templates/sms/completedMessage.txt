@@ -1,0 +1,10 @@
+Hello {{patientName}},
+
+Your appointment #{{appointmentNumber}} has been marked as COMPLETED.
+
+Date: {{preferredDate}}
+Time: {{preferredTime}}
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!

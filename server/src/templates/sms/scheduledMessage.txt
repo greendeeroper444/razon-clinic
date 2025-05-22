@@ -1,0 +1,13 @@
+Hello {{patientName}},
+
+Your appointment has been SCHEDULED!
+
+Appointment Details:
+- Appointment #: {{appointmentNumber}}
+- Date: {{preferredDate}}
+- Time: {{preferredTime}}
+- Reason: {{reasonForVisit}}
+
+Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!

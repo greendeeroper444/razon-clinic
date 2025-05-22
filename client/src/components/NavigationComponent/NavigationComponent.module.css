@@ -1,0 +1,256 @@
+.nav {
+    width: 100%;
+    /* background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    padding: 0 10px;
+}
+
+.logoArea {
+    flex-shrink: 0;
+}
+
+.logoArea img {
+    width: 70px;
+    width: 70px;
+    object-fit: cover;
+    margin-top: 7px;
+}
+
+.desktopMenu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    gap: 50px;
+    margin-left: 50px;
+}
+
+.navLinks {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+  
+.navLink {
+    color: var(--dark, #1e293b);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 8px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+  
+.navLink:hover {
+    color: var(--primary, #3b82f6);
+}
+  
+.navLink:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--primary, #3b82f6);
+    transition: width 0.3s ease;
+}
+  
+.navLink:hover:after {
+    width: 100%;
+}
+
+.navLink.active {
+    color: var(--primary, #3b82f6);
+    font-weight: 600;
+}
+
+.navLink.active:after {
+    width: 100%;
+    height: 3px;
+}
+  
+.authLinks {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+  
+.authIcon {
+    margin-right: 5px;
+    font-size: 14px;
+}
+  
+.loginLink {
+    display: flex;
+    align-items: center;
+    color: var(--dark, #1e293b);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+  
+.loginLink:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--primary, #3b82f6);
+}
+
+.loginLink.active {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: var(--primary, #3b82f6);
+    font-weight: 600;
+}
+  
+.signupLink {
+    background-color: var(--primary, #3b82f6);
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+  
+.signupLink:hover {
+    background-color: var(--secondary, #2563eb);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.signupLink.active {
+    background-color: var(--secondary, #2563eb);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+}
+  
+.menuToggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--dark, #1e293b);
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+
+
+.mobileMenu {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background-color: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    padding: 80px 20px 30px;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.mobileMenu.active {
+    right: 0;
+}
+
+.mobileNavLinks {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+
+.mobileAuthLinks {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+.logoutButton {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.logoutButton:hover {
+    color: var(--secondary-color);
+}
+
+.logoutButton .authIcon {
+    margin-right: 0.5rem;
+}
+
+
+.mobileAuthLinks .logoutButton {
+    width: 100%;
+    display: block;
+    padding: 1rem;
+    text-align: center;
+    background-color: transparent;
+    color: var(--primary-color);
+    font-weight: 600;
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.mobileAuthLinks .logoutButton:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+}
+
+@media (max-width: 768px) {
+    /* .navContainer {
+        justify-content: space-around;
+        gap: 100px;
+    } */
+
+    .desktopMenu {
+        display: none;
+    }
+    
+    .menuToggle {
+        display: block;
+    }
+    
+    .mobileMenu {
+        display: block;
+    }
+    
+    .mobileMenu .navLink {
+        font-size: 18px;
+        padding: 10px 0;
+    }
+    
+    .mobileAuthLinks .loginLink,
+    .mobileAuthLinks .signupLink {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 16px;
+        margin: 5px 0;
+    }
+}

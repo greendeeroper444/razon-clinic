@@ -1,0 +1,11 @@
+Hello {{patientName}},
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: {{appointmentNumber}}
+- Date: {{preferredDate}}
+- Time: {{preferredTime}}
+- Reason: {{reasonForVisit}}
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
