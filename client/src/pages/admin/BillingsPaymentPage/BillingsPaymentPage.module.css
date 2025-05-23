@@ -41,7 +41,7 @@
   min-height: 100vh;
 }
 
-/* Header Styles */
+
 .contentHeader {
   display: flex;
   justify-content: space-between;
@@ -66,7 +66,8 @@
   gap: 12px;
 }
 
-/* Button Styles */
+
+
 .btnPrimary {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
@@ -134,7 +135,9 @@
   box-shadow: var(--shadow);
 }
 
-/* Summary Cards */
+
+
+
 .summaryCards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -205,7 +208,9 @@
   color: var(--danger);
 }
 
-/* Filters Section */
+
+
+
 .filtersSection {
   display: flex;
   gap: 16px;
@@ -270,7 +275,8 @@
   box-shadow: 0 0 0 3px var(--primary-light);
 }
 
-/* Table Styles */
+
+
 .tableContainer {
   background: white;
   border-radius: 12px;
@@ -425,7 +431,8 @@
 }
 
 
-/* Status Badges */
+
+
 .statusBadge {
   display: inline-flex;
   align-items: center;
@@ -456,7 +463,8 @@
   border: 1px solid var(--danger);
 }
 
-/* Action Buttons */
+
+
 .actionButtons {
   display: flex;
   gap: 8px;
@@ -493,7 +501,8 @@
   color: white;
 }
 
-/* Empty State */
+
+
 .emptyState {
   text-align: center;
   padding: 60px 20px;
@@ -522,7 +531,8 @@
   font-size: 14px;
 }
 
-/* Modal Styles */
+
+
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -674,7 +684,8 @@
   background-color: var(--gray-lighter);
 }
 
-/* Responsive Design */
+
+
 @media (max-width: 768px) {
   .content {
     padding: 16px;
@@ -765,7 +776,8 @@
   }
 }
 
-/* Section Title */
+
+
 .sectionTitle {
   margin: 32px 0 16px;
   font-size: 18px;
@@ -784,7 +796,8 @@
   border-radius: 2px;
 }
 
-/* Enhanced hover effects */
+
+
 .summaryCard,
 .tableRow,
 .btnPrimary,
@@ -812,7 +825,8 @@
   left: 100%;
 }
 
-/* Smooth scrollbar for modal */
+
+
 .modalBody::-webkit-scrollbar {
   width: 6px;
 }

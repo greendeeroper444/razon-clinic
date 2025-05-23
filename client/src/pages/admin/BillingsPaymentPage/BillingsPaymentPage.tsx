@@ -26,7 +26,6 @@ const BillingsPaymentPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedBill, setSelectedBill] = useState(null);
 
-  // Sample billing data
   const billingData = [
     {
       id: 1,
@@ -190,7 +189,7 @@ const BillingsPaymentPage = () => {
         </div>
       </div>
 
-      {/* Summary Cards */}
+      {/* summary cards */}
       <div className={styles.summaryCards}>
         <div className={styles.summaryCard}>
           <div className={styles.cardIcon}>
@@ -221,7 +220,7 @@ const BillingsPaymentPage = () => {
         </div>
       </div>
 
-      {/* Filters and Search */}
+      {/* searcha nd filter section */}
       <div className={styles.filtersSection}>
         <div className={styles.searchBox}>
           <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
@@ -247,7 +246,7 @@ const BillingsPaymentPage = () => {
         </div>
       </div>
 
-      {/* Billing Table */}
+      {/* billoing tablee */}
       <div className={styles.tableContainer}>
         <table className={styles.billingTable}>
           <thead>
@@ -322,7 +321,7 @@ const BillingsPaymentPage = () => {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Mmodal */}
       {showModal && selectedBill && (
         <div className={styles.modalOverlay} onClick={closeModal}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>

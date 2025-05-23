@@ -18,12 +18,40 @@ import {
 import { toast } from 'sonner';
 import { logoutUser } from '../../pages/services/authService';
 import { SidebarProps } from '../../types/components';
+import { User } from '../../types/auth';
 
 
 const SidebarComponent: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+
+    useEffect(() => {
+        //check if user is authenticated
+        const token = localStorage.getItem('token');
+        const userDataString = localStorage.getItem('userData');
+        
+        if (token && userDataString) {
+            try {
+                const userData = JSON.parse(userDataString) as User;
+                setIsAuthenticated(true);
+                setCurrentUser(userData);
+            } catch (error) {
+                //handle invalid JSON
+                console.error("Error parsing user data:", error);
+                //clear invalid data
+                localStorage.removeItem('userData');
+                setIsAuthenticated(false);
+                setCurrentUser(null);
+            }
+        } else {
+            setIsAuthenticated(false);
+            setCurrentUser(null);
+        }
+    }, [location.pathname]);
     
     //check if screen size is mobile
     useEffect(() => {
@@ -88,7 +116,14 @@ const SidebarComponent: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSideb
             <div className={styles.sidebarHeader}>
                 <h2>
                     <FontAwesomeIcon icon={faClinicMedical} color='#4169ff' size='1x' />
-                    <span className={styles.logoText}>Dr. Nice</span>
+                    {
+                        currentUser && (currentUser.role === 'Doctor') ? (
+                            <span className={styles.logoText}>Doctor Panel</span>
+                        ) : (
+                            <span className={styles.logoText}>Staff Panel</span>
+                        )
+                    }
+                    
                 </h2>
                 
                 {/* toggle button */}
@@ -132,22 +167,29 @@ const SidebarComponent: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSideb
                     <span className={styles.menuText}>Patients</span>
                 </Link>
 
-                <Link
-                    to='/admin/inventory'
-                    className={`${styles.menuItem} ${isActive('/admin/inventory') ? styles.active : ''}`}
-                    title='Inventory'
-                >
-                    <FontAwesomeIcon icon={faPills} color='#94a3b8' />
-                    <span className={styles.menuText}>Inventory</span>
-                </Link>
-                <Link
-                    to='/admin/medical-records'
-                    className={`${styles.menuItem} ${isActive('/admin/medical-records') ? styles.active : ''}`}
-                    title='Medical Records'
-                >
-                    <FontAwesomeIcon icon={faFileMedical} color='#94a3b8' />
-                    <span className={styles.menuText}>Medical Records</span>
-                </Link>
+                {
+                    currentUser && (currentUser.role === 'Doctor') ? (
+                        <Link
+                            to='/admin/medical-records'
+                            className={`${styles.menuItem} ${isActive('/admin/medical-records') ? styles.active : ''}`}
+                            title='Medical Records'
+                        >
+                            <FontAwesomeIcon icon={faFileMedical} color='#94a3b8' />
+                            <span className={styles.menuText}>Medical Records</span>
+                        </Link>
+                    ) : (
+                        <Link
+                            to='/admin/inventory'
+                            className={`${styles.menuItem} ${isActive('/admin/inventory') ? styles.active : ''}`}
+                            title='Inventory'
+                        >
+                            <FontAwesomeIcon icon={faPills} color='#94a3b8' />
+                            <span className={styles.menuText}>Inventory</span>
+                        </Link>
+                    )
+                }
+                
+                
                 <Link
                     to='/admin/billings-payment'
                     className={`${styles.menuItem} ${isActive('/admin/billings-payment') ? styles.active : ''}`}

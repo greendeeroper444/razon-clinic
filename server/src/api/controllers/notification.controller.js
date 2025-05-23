@@ -18,7 +18,7 @@ class NotificationController {
             
             //find notifications based on user role
             //admins see all notifications, others see only their own
-            if (req.user.role !== 'Admin' && req.user.role !== 'Doctor' && req.user.role !== 'Secretary') {
+            if (req.user.role !== 'Admin' && req.user.role !== 'Staff' && req.user.role !== 'Doctor' && req.user.role !== 'Secretary') {
                 filter.sourceId = userId;
             }
             

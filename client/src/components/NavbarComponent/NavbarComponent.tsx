@@ -160,20 +160,36 @@ const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar
                     <FontAwesomeIcon icon={faSearch} />
                 </div>
             </div>
-            <div className={styles.notificationIcon} onClick={toggleNotifications}>
-                <FontAwesomeIcon icon={faBell} />
-                {
-                    unreadCount > 0 && (
+            {
+                currentUser && (currentUser.role === 'Doctor') ? (
+                    <div className={styles.notificationIcon} onClick={toggleNotifications}>
+                        <FontAwesomeIcon icon={faBell} />
+                        
+                        {
+                            unreadCount > 0 && (
+                                <span className={styles.notificationBadge}>
+                                    {unreadCount > 99 ? '99+' : unreadCount}
+                                </span>
+                            )
+                        }
+                        <NotificationComponent 
+                            isVisible={showNotifications} 
+                            onUnreadCountChange={handleUnreadCountChange}
+                        />
+                    </div>
+                ) : (
+                    <div className={styles.notificationIcon} onClick={toggleNotifications}>
+                        <FontAwesomeIcon icon={faBell} />
                         <span className={styles.notificationBadge}>
-                            {unreadCount > 99 ? '99+' : unreadCount}
+                            2
                         </span>
-                    )
-                }
-                <NotificationComponent 
-                    isVisible={showNotifications} 
-                    onUnreadCountChange={handleUnreadCountChange}
-                />
-            </div>
+                        <NotificationComponent 
+                            isVisible={showNotifications} 
+                            onUnreadCountChange={handleUnreadCountChange}
+                        />
+                    </div>
+                )
+            }
             <div className={styles.userProfile}>
                 <div className={styles.userAvatar}>{getFirstLetterOfFirstAndLastName(currentUser?.fullName)}</div>
                 <div className={styles.userName}>{getFirstAndLastName(currentUser?.fullName)}</div>

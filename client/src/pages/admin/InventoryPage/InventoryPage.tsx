@@ -26,6 +26,7 @@ import {
     getExpiringItems
 } from '../../services/inventoryItemService';
 import { InventoryItemFormData } from '../../../types';
+import { toast } from 'sonner';
 
 interface InventoryItem {
     id: string;
@@ -53,13 +54,13 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         recentlyAdded: 0
     });
 
-    // Fetch inventory items on component mount
+    // fetch inventory items on component mount
     useEffect(() => {
         fetchInventoryItems();
         fetchSummaryStats();
     }, []);
 
-    // Listen for modal close event to refresh data
+    // listen for modal close event to refresh data
     useEffect(() => {
         const handleModalClosed = () => {
             fetchInventoryItems();
@@ -74,8 +75,6 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         try {
             setIsLoading(true);
             const response = await getInventoryItems();
-            console.log('API Response:', response); // Debug log
-            console.log('Inventory items:', response.data.inventoryItems); // Debug log
             setInventoryItems(response.data.inventoryItems || []);
         } catch (error) {
             console.error('Error fetching inventory items:', error);
@@ -91,7 +90,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                 getExpiringItems(30)
             ]);
 
-            // Calculate recently added (items added in the last 30 days)
+            //calculate recently added (items added in the last 30 days)
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
             
@@ -127,7 +126,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             category: item.category,
             quantityInStock: item.quantityInStock,
             quantityUsed: item.quantityUsed,
-            expiryDate: item.expiryDate.split('T')[0], // Format date for input
+            expiryDate: item.expiryDate.split('T')[0],
             _id: itemId
         };
         setEditData(formData);
@@ -136,9 +135,6 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 
     const handleDeleteItem = (item: InventoryItem) => {
         const itemId = item._id || item.id;
-        console.log('Full item object:', item); // Debug log
-        console.log('Extracted item ID:', itemId); // Debug log
-        console.log('Item ID type:', typeof itemId); // Debug log
         
         if (!itemId) {
             console.error('Item ID is missing:', item);
@@ -171,10 +167,10 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         try {
             setIsProcessing(true);
             if (editData && editData._id) {
-                // Update existing item
+                //update existing item
                 await updateInventoryItem(editData._id, data);
             } else {
-                // Add new item
+                //add new item
                 await addInventoryItem(data);
             }
             fetchInventoryItems();
@@ -187,11 +183,8 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
     };
 
     const handleConfirmDelete = async (itemId: string | any) => {
-        // Handle both direct ID and object with ID
+        //handle both direct ID and object with ID
         const actualId = typeof itemId === 'string' ? itemId : itemId?.id || itemId;
-        
-        console.log('Deleting item with ID:', actualId); // Debug log
-        console.log('Original parameter:', itemId); // Debug log
         
         if (!actualId || actualId === 'undefined' || actualId === undefined) {
             console.error('Invalid item ID for deletion:', actualId);
@@ -205,6 +198,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             fetchSummaryStats();
             setIsDeleteModalOpen(false);
             setDeleteInventoryItemData(null);
+            toast.success('Inventory deleted successfully!')
         } catch (error) {
             console.error('Error deleting inventory item:', error);
         } finally {
@@ -297,20 +291,22 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 
             {/* inventory cards */}
             <div className={styles.inventoryCards}>
-                {summaryCards.map((card, index) => (
-                    <div className={styles.card} key={index}>
-                        <div className={styles.cardHeader}>
-                            <div className={styles.cardTitle}>{card.title}</div>
-                            <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
-                                <FontAwesomeIcon icon={card.icon} />
+                {
+                    summaryCards.map((card, index) => (
+                        <div className={styles.card} key={index}>
+                            <div className={styles.cardHeader}>
+                                <div className={styles.cardTitle}>{card.title}</div>
+                                <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
+                                    <FontAwesomeIcon icon={card.icon} />
+                                </div>
+                            </div>
+                            <div className={styles.cardValue}>{card.value}</div>
+                            <div className={styles.cardFooter}>
+                                <span>{card.footer}</span>
                             </div>
                         </div>
-                        <div className={styles.cardValue}>{card.value}</div>
-                        <div className={styles.cardFooter}>
-                            <span>{card.footer}</span>
-                        </div>
-                    </div>
-                ))}
+                    ))
+                }
             </div>
 
             {/* inventory table */}
@@ -320,99 +316,107 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                 </div>
 
                 <div className={styles.tableResponsive}>
-                    {isLoading ? (
-                        <div className={styles.loadingState}>Loading inventory items...</div>
-                    ) : (
-                        <table className={styles.inventoryTable}>
-                            <thead>
-                                <tr>
-                                    <th>Medicine</th>
-                                    <th>Category</th>
-                                    <th>Stock</th>
-                                    <th>Used</th>
-                                    <th>Expiry Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {inventoryItems.length === 0 ? (
+                    {
+                        isLoading ? (
+                            <div className={styles.loadingState}>Loading inventory items...</div>
+                        ) : (
+                            <table className={styles.inventoryTable}>
+                                <thead>
                                     <tr>
-                                        <td colSpan={6} className={styles.emptyState}>
-                                            No inventory items found. Click "Add Item" to get started.
-                                        </td>
+                                        <th>Medicine</th>
+                                        <th>Category</th>
+                                        <th>Stock</th>
+                                        <th>Used</th>
+                                        <th>Expiry Date</th>
+                                        <th>Actions</th>
                                     </tr>
-                                ) : (
-                                    inventoryItems.map((item) => (
-                                        <tr key={item.id}>
-                                            <td>
-                                                <div className={styles.medicineInfo}>
-                                                    <div className={styles.medicineIcon}>
-                                                        <FontAwesomeIcon icon={getItemIcon(item.category)} />
-                                                    </div>
-                                                    <div>
-                                                        <div className={styles.medicineName}>{item.itemName}</div>
-                                                        <div className={styles.medicineCategory}>{item.category}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>{item.category}</td>
-                                            <td className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
-                                                {item.quantityInStock}
-                                            </td>
-                                            <td>{item.quantityUsed || 0}</td>
-                                            <td>
-                                                <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
-                                                    {formatDate(item.expiryDate)}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <button 
-                                                    className={`${styles.actionBtn} ${styles.primary}`}
-                                                    onClick={() => handleEditItem(item)}
-                                                    disabled={isProcessing}
-                                                >
-                                                    <FontAwesomeIcon icon={faEdit} /> Edit
-                                                </button>
-                                                <button 
-                                                    className={`${styles.actionBtn} ${styles.cancel}`}
-                                                    onClick={() => handleDeleteItem(item)}
-                                                    disabled={isProcessing}
-                                                >
-                                                    <FontAwesomeIcon icon={faTrash} /> Delete
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    )}
+                                </thead>
+                                <tbody>
+                                    {
+                                        inventoryItems.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={6} className={styles.emptyState}>
+                                                    No inventory items found. Click "Add Item" to get started.
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            inventoryItems.map((item) => (
+                                                <tr key={item.id}>
+                                                    <td>
+                                                        <div className={styles.medicineInfo}>
+                                                            <div className={styles.medicineIcon}>
+                                                                <FontAwesomeIcon icon={getItemIcon(item.category)} />
+                                                            </div>
+                                                            <div>
+                                                                <div className={styles.medicineName}>{item.itemName}</div>
+                                                                <div className={styles.medicineCategory}>{item.category}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>{item.category}</td>
+                                                    <td className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
+                                                        {item.quantityInStock}
+                                                    </td>
+                                                    <td>{item.quantityUsed || 0}</td>
+                                                    <td>
+                                                        <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
+                                                            {formatDate(item.expiryDate)}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button 
+                                                            className={`${styles.actionBtn} ${styles.primary}`}
+                                                            onClick={() => handleEditItem(item)}
+                                                            disabled={isProcessing}
+                                                        >
+                                                            <FontAwesomeIcon icon={faEdit} /> Edit
+                                                        </button>
+                                                        <button 
+                                                            className={`${styles.actionBtn} ${styles.cancel}`}
+                                                            onClick={() => handleDeleteItem(item)}
+                                                            disabled={isProcessing}
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrash} /> Delete
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                        )
+                    }
                 </div>
             </div>
 
             {/* update inventory item modal */}
-            {isModalOpen && (
-                <ModalComponent
-                    isOpen={isModalOpen}
-                    onClose={handleModalClose}
-                    modalType="item"
-                    onSubmit={handleSubmitUpdate}
-                    editData={editData}
-                    isProcessing={isProcessing}
-                />
-            )}
+            {
+                isModalOpen && (
+                    <ModalComponent
+                        isOpen={isModalOpen}
+                        onClose={handleModalClose}
+                        modalType="item"
+                        onSubmit={handleSubmitUpdate}
+                        editData={editData}
+                        isProcessing={isProcessing}
+                    />
+                )
+            }
 
             {/* delete inventory item modal */}
-            {isDeleteModalOpen && deleteInventoryItemData && (
-                <ModalComponent
-                    isOpen={isDeleteModalOpen}
-                    onClose={handleDeleteModalClose}
-                    modalType="delete"
-                    onSubmit={handleConfirmDelete}
-                    deleteData={deleteInventoryItemData}
-                    isProcessing={isProcessing}
-                />
-            )}
+            {
+                isDeleteModalOpen && deleteInventoryItemData && (
+                    <ModalComponent
+                        isOpen={isDeleteModalOpen}
+                        onClose={handleDeleteModalClose}
+                        modalType="delete"
+                        onSubmit={handleConfirmDelete}
+                        deleteData={deleteInventoryItemData}
+                        isProcessing={isProcessing}
+                    />
+                )
+            }
         </div>
     )
 }

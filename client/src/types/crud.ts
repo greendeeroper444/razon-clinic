@@ -1,8 +1,9 @@
 import { AppointmentFormData } from "./appointment";
 import { InventoryItemFormData } from "./invetory";
-import { PatientFormData } from "./patient";
+import { PersonalPatientFormData } from "./personalPatient";
+// import { PatientFormData } from "./patient";
 
-export type FormDataType = AppointmentFormData | PatientFormData | InventoryItemFormData;
+export type FormDataType = AppointmentFormData | PersonalPatientFormData | InventoryItemFormData;
 
 export interface DeleteData {
     id: string;

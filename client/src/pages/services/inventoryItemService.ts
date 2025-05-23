@@ -2,12 +2,13 @@ import axios from 'axios';
 import API_BASE_URL from '../../ApiBaseUrl';
 
 
-// Get authentication token (assuming you have this function elsewhere)
+
 const getAuthToken = () => {
     return localStorage.getItem('token') || sessionStorage.getItem('token');
 };
 
-// Create axios instance with auth header
+
+
 const createAuthHeaders = () => ({
     headers: {
         'Authorization': `Bearer ${getAuthToken()}`,
@@ -15,7 +16,9 @@ const createAuthHeaders = () => ({
     }
 });
 
-// Add new inventory item
+
+
+
 export const addInventoryItem = async (inventoryData) => {
     try {
         const response = await axios.post(
@@ -30,7 +33,9 @@ export const addInventoryItem = async (inventoryData) => {
     }
 };
 
-// Get all inventory items with optional filters
+
+
+
 export const getInventoryItems = async (params = {}) => {
     try {
         const response = await axios.get(
@@ -47,7 +52,9 @@ export const getInventoryItems = async (params = {}) => {
     }
 };
 
-// Get specific inventory item by ID
+
+
+
 export const getInventoryItemById = async (inventoryItemId) => {
     try {
         const response = await axios.get(
@@ -61,7 +68,9 @@ export const getInventoryItemById = async (inventoryItemId) => {
     }
 };
 
-// Update inventory item
+
+
+
 export const updateInventoryItem = async (inventoryItemId, updateData) => {
     try {
         const response = await axios.put(
@@ -76,7 +85,9 @@ export const updateInventoryItem = async (inventoryItemId, updateData) => {
     }
 };
 
-// Delete inventory item
+
+
+
 export const deleteInventoryItem = async (inventoryItemId: string) => {
     return await axios.delete<{success: boolean, message: string}>(
         `${API_BASE_URL}/api/inventoryItems/deleteInventoryItem/${inventoryItemId}`,
@@ -88,7 +99,9 @@ export const deleteInventoryItem = async (inventoryItemId: string) => {
     );
 };
 
-// Get low stock items
+
+
+
 export const getLowStockItems = async (threshold = 10) => {
     try {
         const response = await axios.get(
@@ -105,7 +118,8 @@ export const getLowStockItems = async (threshold = 10) => {
     }
 };
 
-// Get expired items
+
+
 export const getExpiredItems = async () => {
     try {
         const response = await axios.get(
@@ -119,7 +133,8 @@ export const getExpiredItems = async () => {
     }
 };
 
-// Get items expiring soon
+
+
 export const getExpiringItems = async (days = 30) => {
     try {
         const response = await axios.get(
@@ -136,7 +151,8 @@ export const getExpiringItems = async (days = 30) => {
     }
 };
 
-// Update stock (use or restock)
+
+
 export const updateStock = async (inventoryItemId, stockData) => {
     try {
         const response = await axios.patch(

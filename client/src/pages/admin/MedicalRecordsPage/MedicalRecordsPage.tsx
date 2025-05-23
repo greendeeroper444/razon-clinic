@@ -278,7 +278,7 @@ const MedicalRecordsPage = () => {
         </div>
       </div>
 
-      {/* Search and Filter Section */}
+      {/* search and filter section */}
       <div className={styles.searchFilterSection}>
         <div className={styles.searchBox}>
           <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
@@ -305,7 +305,7 @@ const MedicalRecordsPage = () => {
         </div>
       </div>
 
-      {/* Medical Records Table */}
+      {/* medical record table */}
       <div className={styles.tableContainer}>
         <table className={styles.recordsTable}>
           <thead>
@@ -357,7 +357,7 @@ const MedicalRecordsPage = () => {
         </table>
       </div>
 
-      {/* Record Details Modal */}
+      {/* record detail modal */}
       {showDetails && selectedRecord && (
         <div className={styles.modalOverlay}>
           <div className={styles.detailsContainer}>
@@ -373,7 +373,7 @@ const MedicalRecordsPage = () => {
 
             <div className={styles.detailsContent}>
               <div className={styles.detailsGrid}>
-                {/* Personal Details */}
+                {/* personal details */}
                 <div className={styles.detailSection}>
                   <h3 className={styles.detailSectionTitle}>
                     <FontAwesomeIcon icon={faUser} /> Personal Details
@@ -406,7 +406,7 @@ const MedicalRecordsPage = () => {
                   </div>
                 </div>
 
-                {/* Medical History */}
+                {/* medical history */}
                 <div className={styles.detailSection}>
                   <h3 className={styles.detailSectionTitle}>
                     <FontAwesomeIcon icon={faHistory} /> Medical History
@@ -427,7 +427,7 @@ const MedicalRecordsPage = () => {
                   </div>
                 </div>
 
-                {/* Growth Milestones */}
+                {/* growth milestones */}
                 <div className={styles.detailSection}>
                   <h3 className={styles.detailSectionTitle}>
                     <FontAwesomeIcon icon={faRuler} /> Growth Milestones
@@ -448,7 +448,7 @@ const MedicalRecordsPage = () => {
                   </div>
                 </div>
 
-                {/* Current Symptoms */}
+                {/* current symptoms */}
                 <div className={styles.detailSection}>
                   <h3 className={styles.detailSectionTitle}>
                     <FontAwesomeIcon icon={faStethoscope} /> Current Symptoms
@@ -469,7 +469,7 @@ const MedicalRecordsPage = () => {
                   </div>
                 </div>
 
-                {/* Diagnosis */}
+                {/* diagnosis */}
                 <div className={styles.detailSection}>
                   <h3 className={styles.detailSectionTitle}>
                     <FontAwesomeIcon icon={faDiagnoses} /> Diagnosis
@@ -490,7 +490,7 @@ const MedicalRecordsPage = () => {
                   </div>
                 </div>
 
-                {/* Treatment Plan */}
+                {/* treatment plan */}
                 <div className={styles.detailSection}>
                   <h3 className={styles.detailSectionTitle}>
                     <FontAwesomeIcon icon={faNotesMedical} /> Treatment Plan
@@ -508,7 +508,7 @@ const MedicalRecordsPage = () => {
                   </div>
                 </div>
 
-                {/* Medications */}
+                {/* medications */}
                 <div className={styles.detailSection}>
                   <h3 className={styles.detailSectionTitle}>
                     <FontAwesomeIcon icon={faPrescriptionBottle} /> Medications
@@ -529,7 +529,7 @@ const MedicalRecordsPage = () => {
                   </div>
                 </div>
 
-                {/* Consultation Notes */}
+                {/* consultation notes */}
                 <div className={styles.detailSection}>
                   <h3 className={styles.detailSectionTitle}>
                     <FontAwesomeIcon icon={faNotesMedical} /> Consultation Notes
@@ -550,7 +550,7 @@ const MedicalRecordsPage = () => {
                   </div>
                 </div>
 
-                {/* Follow-up */}
+                {/* follow-up */}
                 <div className={styles.detailSection}>
                   <h3 className={styles.detailSectionTitle}>
                     <FontAwesomeIcon icon={faCalendarAlt} /> Follow-up Appointment
@@ -573,7 +573,7 @@ const MedicalRecordsPage = () => {
         </div>
       )}
 
-      {/* Add New Record Form Modal */}
+     
       {showForm && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContainer}>

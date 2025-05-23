@@ -103,7 +103,8 @@
   transform: translateY(-1px);
 }
 
-/* Search and Filter Section */
+
+
 .searchFilterSection {
   display: flex;
   gap: 16px;
@@ -178,7 +179,9 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Table Styles */
+
+
+
 .tableContainer {
   background: white;
   border-radius: 12px;
@@ -249,7 +252,8 @@
   line-height: 1.4;
 }
 
-/* Status Styles */
+
+
 .status {
     display: inline-block;
     padding: 5px 10px;
@@ -275,7 +279,8 @@
     color: var(--medical);
 }
 
-/* Action Buttons */
+
+
 .actions {
   display: flex;
   gap: 6px;
@@ -327,7 +332,10 @@
     background-color: #a7f3d0;
 }
 
-/* Modal Styles */
+
+
+
+
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -415,7 +423,9 @@
   color: white;
 }
 
-/* Form Styles */
+
+
+
 .medicalForm {
   display: flex;
   flex-direction: column;
@@ -520,7 +530,10 @@
   background: var(--light);
 }
 
-/* Details Modal Styles */
+
+
+
+
 .detailsContent {
   overflow-y: auto;
   max-height: calc(90vh - 80px);
@@ -578,7 +591,9 @@
   margin-right: 8px;
 }
 
-/* Responsive Design */
+
+
+
 @media (max-width: 768px) {
   .content {
     padding: 12px;

@@ -7,7 +7,7 @@ const OnlinePatientSchema = new mongoose.Schema(
             required: true,
             trim: true,
             minlength: 3,
-            maxlength: 30
+            maxlength: 50
         },
         //separate email and contactNumber fields for better validation
         email: {

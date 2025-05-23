@@ -44,29 +44,29 @@ class InventoryItemController {
                 sortOrder = 'desc' 
             } = req.query;
 
-            // Build filter object
+            //build filter object
             const filter = {};
             if (category) {
                 filter.category = category;
             }
             if (itemName) {
-                filter.itemName = { $regex: itemName, $options: 'i' }; // Case-insensitive search
+                filter.itemName = { $regex: itemName, $options: 'i' };
             }
 
-            // Calculate pagination
+            //calculate pagination
             const skip = (parseInt(page) - 1) * parseInt(limit);
 
-            // Build sort object
+            //build sort object
             const sort = {};
             sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
-            // Execute query with pagination and sorting
+            //execute query with pagination and sorting
             const inventoryItems = await InventoryItem.find(filter)
                 .sort(sort)
                 .skip(skip)
                 .limit(parseInt(limit));
 
-            // Get total count for pagination
+            //get total count for pagination
             const totalItems = await InventoryItem.countDocuments(filter);
             const totalPages = Math.ceil(totalItems / parseInt(limit));
 
@@ -118,7 +118,6 @@ class InventoryItemController {
             const { inventoryItemId } = req.params;
             const updateData = req.body;
 
-            // Remove fields that shouldn't be updated directly
             delete updateData._id;
             delete updateData.__v;
             delete updateData.createdAt;
@@ -150,45 +149,44 @@ class InventoryItemController {
         }
     }
 
-   async deleteInventoryItem(req, res, next) {
-    try {
-        const { inventoryItemId } = req.params;
+    async deleteInventoryItem(req, res, next) {
+        try {
+            const { inventoryItemId } = req.params;
         
-        // Add validation
-        if (!inventoryItemId || inventoryItemId === 'undefined') {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid inventory item ID'
-            });
-        }
-        
-        // Check if it's a valid MongoDB ObjectId
-        if (!mongoose.Types.ObjectId.isValid(inventoryItemId)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid inventory item ID format'
-            });
-        }
-        
-        const inventoryItem = await InventoryItem.findByIdAndDelete(inventoryItemId);
-        
-        if (!inventoryItem) {
-            return res.status(404).json({
-                success: false,
-                message: 'Inventory item not found'
-            });
-        }
+            if (!inventoryItemId || inventoryItemId === 'undefined') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid inventory item ID'
+                });
+            }
+            
 
-        return res.status(200).json({
-            success: true,
-            message: 'Inventory item deleted successfully',
-            data: inventoryItem
-        });
-    } catch (error) {
-        next(error);
+            if (!mongoose.Types.ObjectId.isValid(inventoryItemId)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid inventory item ID format'
+                });
+            }
+            
+            const inventoryItem = await InventoryItem.findByIdAndDelete(inventoryItemId);
+            
+            if (!inventoryItem) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Inventory item not found'
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Inventory item deleted successfully',
+                data: inventoryItem
+            });
+        } catch (error) {
+            next(error);
+        }
     }
-}
-    // Additional utility methods
+
 
     async getLowStockItems(req, res, next) {
         try {
@@ -253,7 +251,7 @@ class InventoryItemController {
     async updateStock(req, res, next) {
         try {
             const { inventoryItemId } = req.params;
-            const { quantityUsed, operation = 'use' } = req.body; // operation can be 'use' or 'restock'
+            const { quantityUsed, operation = 'use' } = req.body;
 
             const inventoryItem = await InventoryItem.findById(inventoryItemId);
 
@@ -265,7 +263,7 @@ class InventoryItemController {
             }
 
             if (operation === 'use') {
-                // Check if there's enough stock
+                //check if there's enough stock
                 if (inventoryItem.quantityInStock < quantityUsed) {
                     return res.status(400).json({
                         success: false,

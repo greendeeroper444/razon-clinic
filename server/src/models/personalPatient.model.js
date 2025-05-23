@@ -5,39 +5,15 @@ const PersonalPatientSchema = new mongoose.Schema(
         fullName: {
             type: String,
             required: true,
-            trim: true,
             minlength: 3,
-            maxlength: 30
+            maxlength: 50
         },
-        //separate email and contactNumber fields for better validation
         email: {
             type: String,
-            trim: true,
-            lowercase: true,
-            //allow email to be optional but enforce uniqueness when present
-            sparse: true,
-            unique: true,
-            validate: {
-                validator: function(v) {
-                    //return true if empty or valid email format
-                    return !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-                },
-                message: 'Please provide a valid email address'
-            }
         },
         contactNumber: {
             type: String,
-            trim: true,
-            //allow contactNumber to be optional but enforce uniqueness when present
-            sparse: true,
-            unique: true,
-            validate: {
-                validator: function(v) {
-                    //return true if empty or valid PH number format
-                    return !v || /^(09|\+639)\d{9}$/.test(v);
-                },
-                message: 'Please provide a valid contact number'
-            }
+            required: true
         },
         birthdate: {
             type: Date,
@@ -53,14 +29,57 @@ const PersonalPatientSchema = new mongoose.Schema(
             required: true,
             trim: true
         },
-        dateRegistered: {
-            type: Date,
-            default: Date.now
+        //mother's information
+        motherInfo: {
+            name: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            },
+            age: {
+                type: Number,
+                required: false,
+                min: 15,
+                max: 120
+            },
+            occupation: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            }
         },
-        role: {
+        //father's information
+        fatherInfo: {
+            name: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            },
+            age: {
+                type: Number,
+                required: false,
+                min: 15,
+                max: 120
+            },
+            occupation: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            }
+        },
+        religion: {
             type: String,
-            required: true,
-            default: 'Patient'
+            required: false,
+            maxlength: 30,
+            trim: true
+        },
+        isArchive: {
+            type: Boolean,
+            default: false
         }
     },
     {
@@ -77,15 +96,6 @@ const PersonalPatientSchema = new mongoose.Schema(
     }
 );
 
-//pre-save middleware to ensure either email or contactNumber is provided
-PersonalPatientSchema.pre('save', function(next) {
-    if (!this.email && !this.contactNumber) {
-        return next(new Error('Either email or contact number is required'));
-    }
-    next();
-});
-
-//create model from schema
 const PersonalPatient = mongoose.model('PersonalPatient', PersonalPatientSchema);
 
 module.exports = PersonalPatient;

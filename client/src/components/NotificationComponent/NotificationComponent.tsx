@@ -15,6 +15,7 @@ import { NotificationComponentProps } from '../../types/notification';
 import { Notification, NotificationTypeToUICategory } from '../../types/notification';
 import { formatDistanceToNow } from 'date-fns';
 import { getNotifications, markAllAsRead, markAsRead } from '../../pages/services/notificationService';
+import { User } from '../../types/auth';
 
 interface ExtendedNotificationComponentProps extends NotificationComponentProps {
     onUnreadCountChange?: (count: number) => void;
@@ -29,6 +30,33 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        //check if user is authenticated
+        const token = localStorage.getItem('token');
+        const userDataString = localStorage.getItem('userData');
+        
+        if (token && userDataString) {
+            try {
+                const userData = JSON.parse(userDataString) as User;
+                setIsAuthenticated(true);
+                setCurrentUser(userData);
+
+            } catch (error) {
+                //handle invalid JSON
+                console.error("Error parsing user data:", error);
+                //clear invalid data
+                localStorage.removeItem('userData');
+                setIsAuthenticated(false);
+                setCurrentUser(null);
+            }
+        } else {
+            setIsAuthenticated(false);
+            setCurrentUser(null);
+        }
+    }, [location.pathname]);
     
     const fetchNotifications = useCallback(async () => {
         try {
@@ -176,6 +204,28 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
     
     if (!isVisible) return null;
 
+
+
+    const notificationsStaff = [
+        {
+            id: 1,
+            type: "medical",
+            title: "Prescription Refill",
+            message: "Currently unavailable due to stock depletion.",
+            time: "1 hour ago",
+            isRead: false
+        },
+        {
+            id: 2,
+            type: "medical",
+            title: "Insulin Glargine",
+            message: "Limited stock available.",
+            time: "3 hours ago",
+            isRead: true
+        }
+
+    ];
+
   return (
     <div className={styles.notificationPanel}>
         <div className={styles.notificationHeader}>
@@ -183,48 +233,75 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
             <span className={styles.notificationCount}>{unreadCount} new</span>
         </div>
       
-        <div className={styles.notificationList}>
-            {
-                loading ? (
-                <div className={styles.loadingState}>
-                    <FontAwesomeIcon icon={faSpinner} spin />
-                    <p>Loading notifications...</p>
-                </div>
-                ) : error ? (
-                    <div className={styles.errorState}>
-                        <p>{error}</p>
-                        <button type='button' onClick={fetchNotifications}>Retry</button>
-                    </div>
-                ) : notifications.length === 0 ? (
-                    <div className={styles.emptyState}>
-                        <p>No notifications to display</p>
-                    </div>
-                ) : (
-                    notifications.map(notification => {
-                        const uiCategory = NotificationTypeToUICategory[notification.type as keyof typeof NotificationTypeToUICategory] || 'system';
-                        const clickable = isNotificationClickable(notification);
-                        
-                        return (
-                            <div 
-                                key={notification.id} 
-                                className={`${styles.notificationItem} ${!notification.isRead ? styles.unread : ''} ${clickable ? styles.clickable : styles.notClickable}`}
-                                onClick={() => clickable && handleNotificationClick(notification)}
-                            >
-                                <div className={`${styles.notificationIcon} ${styles[uiCategory]}`}>
-                                    {renderNotificationIcon(notification.type)}
-                                </div>
-                                <div className={styles.notificationContent}>
-                                    <div className={styles.notificationTitle}>{notification.type.replace(/([A-Z])/g, ' $1').trim()}</div>
-                                    <div className={styles.notificationMessage}>{notification.message}</div>
-                                    <div className={styles.notificationTime}>{formatTime(notification.createdAt)}</div>
-                                </div>
-                                {/* {!notification.isRead && <div className={styles.unreadDot}></div>} */}
+        {
+            currentUser && (currentUser.role === 'Doctor') ? (
+                <div className={styles.notificationList}>
+                    {
+                        loading ? (
+                        <div className={styles.loadingState}>
+                            <FontAwesomeIcon icon={faSpinner} spin />
+                            <p>Loading notifications...</p>
+                        </div>
+                        ) : error ? (
+                            <div className={styles.errorState}>
+                                <p>{error}</p>
+                                <button type='button' onClick={fetchNotifications}>Retry</button>
                             </div>
-                        );
-                    })
-                )
-            }
-        </div>
+                        ) : notifications.length === 0 ? (
+                            <div className={styles.emptyState}>
+                                <p>No notifications to display</p>
+                            </div>
+                        ) : (
+                            notifications.map(notification => {
+                                const uiCategory = NotificationTypeToUICategory[notification.type as keyof typeof NotificationTypeToUICategory] || 'system';
+                                const clickable = isNotificationClickable(notification);
+                                
+                                return (
+                                    <div 
+                                        key={notification.id} 
+                                        className={`${styles.notificationItem} ${!notification.isRead ? styles.unread : ''} ${clickable ? styles.clickable : styles.notClickable}`}
+                                        onClick={() => clickable && handleNotificationClick(notification)}
+                                    >
+                                        <div className={`${styles.notificationIcon} ${styles[uiCategory]}`}>
+                                            {renderNotificationIcon(notification.type)}
+                                        </div>
+                                        <div className={styles.notificationContent}>
+                                            <div className={styles.notificationTitle}>{notification.type.replace(/([A-Z])/g, ' $1').trim()}</div>
+                                            <div className={styles.notificationMessage}>{notification.message}</div>
+                                            <div className={styles.notificationTime}>{formatTime(notification.createdAt)}</div>
+                                        </div>
+                                        {/* {!notification.isRead && <div className={styles.unreadDot}></div>} */}
+                                    </div>
+                                );
+                            })
+                        )
+                    }
+                </div>
+            ) : (
+                <div className={styles.notificationList}>
+                {
+                    notificationsStaff.map(notification => (
+                        <div 
+                            key={notification.id} 
+                            className={`${styles.notificationItem} ${!notification.isRead ? styles.unread : ''}`}
+                        >
+                            <div className={`${styles.notificationIcon} ${styles[notification.type]}`}>
+                                {notification.type === 'appointment' && <FontAwesomeIcon icon={faCalendar} />}
+                                {notification.type === 'medical' && <FontAwesomeIcon icon={faPrescriptionBottleAlt} />}
+                                {notification.type === 'archive' && <FontAwesomeIcon icon={faFolder} />}
+                            </div>
+                            <div className={styles.notificationContent}>
+                                <div className={styles.notificationTitle}>{notification.title}</div>
+                                <div className={styles.notificationMessage}>{notification.message}</div>
+                                <div className={styles.notificationTime}>{notification.time}</div>
+                            </div>
+                            {!notification.isRead && <div className={styles.unreadDot}></div>}
+                        </div>
+                    ))
+                }
+            </div>
+            )
+        }
         
         <div className={styles.notificationFooter}>
             <button 

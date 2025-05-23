@@ -30,6 +30,8 @@ import { toast, Toaster } from 'sonner'
 import { AppointmentFormData, InventoryItemFormData, LayoutProps, PatientFormData, RouteType } from './types'
 import { addAppointment } from './pages/services/appoinmentService'
 import { addInventoryItem } from './pages/services/inventoryItemService'
+import { addPersonalPatient } from './pages/services/personalPatient'
+import { PersonalPatientFormData } from './types/personalPatient'
 
 //define modal types to match what ModalComponent is expecting
 type ModalType = 'appointment' | 'patient' | 'item';
@@ -114,7 +116,10 @@ function App() {
         }
         break;
       case 'patient':
-        console.log('New patient created');
+        await addPersonalPatient(formData as PersonalPatientFormData);
+          
+        toast.success('Personal patient added successfully');
+        window.dispatchEvent(new CustomEvent('patient-refresh'));
         break;
       case 'item':
           await addInventoryItem(formData as InventoryItemFormData);
