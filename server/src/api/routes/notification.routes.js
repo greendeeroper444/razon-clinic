@@ -8,7 +8,7 @@ router.use(authenticate);
 router.get('/getNotifications', NotificationController.getNotifications);
 router.patch('/markAsRead/:notificationId/mark-read', NotificationController.markAsRead);
 router.patch('/markAllAsRead', NotificationController.markAllAsRead);
-router.post('/createNotification', NotificationController.createNotification);
+// router.post('/createNotification', NotificationController.createNotification);
 router.delete('/deleteNotification/:notificationId', NotificationController.deleteNotification);
 router.delete('/deleteAllRead', NotificationController.deleteAllRead);
 

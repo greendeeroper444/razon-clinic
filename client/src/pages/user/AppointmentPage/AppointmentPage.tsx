@@ -5,7 +5,7 @@ import { faPlus, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
 import { getFirstLetterOfFirstAndLastName } from '../../../utils/user';
 import { AppointmentFormData, AppointmentResponse } from '../../../types/appointment';
-import { getAppointments, updateAppointment, deleteAppointment } from '../../services/appoinmentService';
+import { getMyAppointment, updateAppointment, deleteAppointment } from '../../services/appoinmentService';
 import { formatDate, formatTime } from '../../../utils/formatDateTime';
 import ModalComponent from '../../../components/ModalComponent/ModalComponent';
 import { toast } from 'sonner';
@@ -27,7 +27,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const fetchAppointments = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await getAppointments();
+            const response = await getMyAppointment();
             if (response.data.success) {
                 setAppointments(response.data.data);
                 

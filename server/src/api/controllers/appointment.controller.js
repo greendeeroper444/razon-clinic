@@ -61,29 +61,33 @@ class AppointmentController {
 
                 //only create notifications if the request is from a patient
                 if (createNotifications) {
-                    //patient details for notification
-                    const patient = await OnlinePatient.findById(appointmentData.patientId);
-                    
-                    //all admins (doctors and staff) who should receive the notification
-                    const admins = await Admin.find({});
-                    
-                    //create notifications for each admin
-                    const notificationPromises = admins.map(async (admin) => {
-                        const notification = new Notification({
+                    try {
+                        const existingNotification = await Notification.findOne({
                             sourceId: appointmentData.patientId,
-                            sourceType: 'Patient',
-                            type: 'AppointmentCreated',
                             entityId: appointment._id,
+                            type: 'AppointmentCreated',
                             entityType: 'Appointment',
-                            message: `New appointment request from ${patient ? patient.fullName : 'a patient'} for ${new Date(req.body.preferredDate).toLocaleDateString()} at ${req.body.preferredTime}.`,
-                            isRead: false
                         });
                         
-                        return notification.save();
-                    });
-                    
-                    //wait for all notifications to be created
-                    await Promise.all(notificationPromises);
+                        if (!existingNotification) {
+                            const patient = await OnlinePatient.findById(appointmentData.patientId);
+                            const message = `New appointment request from ${patient?.fullName || 'a patient'} for ${new Date(req.body.preferredDate).toLocaleDateString()} at ${req.body.preferredTime}.`;
+                            
+                            const notification = new Notification({
+                                sourceId: appointmentData.patientId,
+                                sourceType: 'Patient',
+                                type: 'AppointmentCreated',
+                                entityId: appointment._id,
+                                entityType: 'Appointment',
+                                message,
+                                isRead: false
+                            });
+                            
+                            await notification.save();
+                        }
+                    } catch (error) {
+                        console.error('Failed to create notification:', error);
+                    }
                 }
 
                 return res.status(201).json({

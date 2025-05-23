@@ -125,47 +125,47 @@ class NotificationController {
     }
     
 
-    async createNotification(req, res, next) {
-        try {
-            const { 
-                sourceId, 
-                sourceType, 
-                type, 
-                entityId, 
-                entityType, 
-                message 
-            } = req.body;
+    // async createNotification(req, res, next) {
+    //     try {
+    //         const { 
+    //             sourceId, 
+    //             sourceType, 
+    //             type, 
+    //             entityId, 
+    //             entityType, 
+    //             message 
+    //         } = req.body;
             
-            //validate required fields
-            if (!type || !message) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Type and message are required fields'
-                });
-            }
+    //         //validate required fields
+    //         if (!type || !message) {
+    //             return res.status(400).json({
+    //                 success: false,
+    //                 message: 'Type and message are required fields'
+    //             });
+    //         }
             
-            const notification = new Notification({
-                sourceId,
-                sourceType,
-                type,
-                entityId,
-                entityType,
-                message,
-                isRead: false
-            });
+    //         const notification = new Notification({
+    //             sourceId,
+    //             sourceType,
+    //             type,
+    //             entityId,
+    //             entityType,
+    //             message,
+    //             isRead: false
+    //         });
             
-            await notification.save();
+    //         await notification.save();
             
-            return res.status(201).json({
-                success: true,
-                message: 'Notification created successfully',
-                data: notification
-            });
-        } catch (error) {
-            console.error('Error creating notification:', error);
-            next(error);
-        }
-    }
+    //         return res.status(201).json({
+    //             success: true,
+    //             message: 'Notification created successfully',
+    //             data: notification
+    //         });
+    //     } catch (error) {
+    //         console.error('Error creating notification:', error);
+    //         next(error);
+    //     }
+    // }
     
    
     async deleteNotification(req, res, next) {
