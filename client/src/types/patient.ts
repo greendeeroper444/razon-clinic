@@ -1,5 +1,6 @@
 export interface Patient {
     id: string;
+    patientNumber?: string;
     fullName: string;
     email?: string;
     contactNumber?: string;
@@ -10,6 +11,7 @@ export interface Patient {
 
 export interface PatientFormData {
     id?: string;
+    patientNumber?: string;
     fullName: string;
     email?: string;
     contactNumber?: string;

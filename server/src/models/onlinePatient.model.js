@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const OnlinePatientSchema = new mongoose.Schema(
     {
+        patientNumber: {
+            type: String,
+            unique: true
+        },
         fullName: {
             type: String,
             required: true,
@@ -58,6 +62,54 @@ const OnlinePatientSchema = new mongoose.Schema(
             required: true,
             trim: true
         },
+        //mother's information
+        motherInfo: {
+            name: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            },
+            age: {
+                type: Number,
+                required: false,
+                min: 15,
+                max: 120
+            },
+            occupation: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            }
+        },
+        //father's information
+        fatherInfo: {
+            name: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            },
+            age: {
+                type: Number,
+                required: false,
+                min: 15,
+                max: 120
+            },
+            occupation: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            }
+        },
+        religion: {
+            type: String,
+            required: false,
+            maxlength: 30,
+            trim: true
+        },
         dateRegistered: {
             type: Date,
             default: Date.now
@@ -81,6 +133,36 @@ const OnlinePatientSchema = new mongoose.Schema(
         }
     }
 );
+
+//static method to get the next patient number
+OnlinePatientSchema.statics.getNextPatientNumber = async function() {
+    //find the patient with the highest number
+    const highestOnlinePatient = await this.findOne().sort('-patientNumber');
+    
+    //if no patients exist, start with 0001
+    if (!highestOnlinePatient || !highestOnlinePatient.patientNumber) {
+        return '0001';
+    }
+    
+    //get the numeric value and increment
+    const currentNumber = parseInt(highestOnlinePatient.patientNumber, 10);
+    const nextNumber = currentNumber + 1;
+    
+    //format with leading zeros
+    return String(nextNumber).padStart(4, '0');
+};
+
+//pre-validate middleware to ensure patientNumber is set before validation
+OnlinePatientSchema.pre('validate', async function(next) {
+    try {
+        if (!this.patientNumber) {
+            this.patientNumber = await this.constructor.getNextPatientNumber();
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 
 //pre-save middleware to ensure either email or contactNumber is provided
 OnlinePatientSchema.pre('save', function(next) {

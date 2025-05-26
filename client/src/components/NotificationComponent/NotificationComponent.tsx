@@ -15,7 +15,7 @@ import { NotificationComponentProps } from '../../types/notification';
 import { Notification, NotificationTypeToUICategory } from '../../types/notification';
 import { formatDistanceToNow } from 'date-fns';
 import { getNotifications, markAllAsRead, markAsRead } from '../../pages/services/notificationService';
-import { User } from '../../types/auth';
+import { useAuth } from '../../hooks/usesAuth';
 
 interface ExtendedNotificationComponentProps extends NotificationComponentProps {
     onUnreadCountChange?: (count: number) => void;
@@ -30,33 +30,8 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const { isAuthenticated, currentUser, clearAuth } = useAuth();
 
-    useEffect(() => {
-        //check if user is authenticated
-        const token = localStorage.getItem('token');
-        const userDataString = localStorage.getItem('userData');
-        
-        if (token && userDataString) {
-            try {
-                const userData = JSON.parse(userDataString) as User;
-                setIsAuthenticated(true);
-                setCurrentUser(userData);
-
-            } catch (error) {
-                //handle invalid JSON
-                console.error("Error parsing user data:", error);
-                //clear invalid data
-                localStorage.removeItem('userData');
-                setIsAuthenticated(false);
-                setCurrentUser(null);
-            }
-        } else {
-            setIsAuthenticated(false);
-            setCurrentUser(null);
-        }
-    }, [location.pathname]);
     
     const fetchNotifications = useCallback(async () => {
         try {
@@ -205,27 +180,6 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
     if (!isVisible) return null;
 
 
-
-    const notificationsStaff = [
-        {
-            id: 1,
-            type: "medical",
-            title: "Prescription Refill",
-            message: "Currently unavailable due to stock depletion.",
-            time: "1 hour ago",
-            isRead: false
-        },
-        {
-            id: 2,
-            type: "medical",
-            title: "Insulin Glargine",
-            message: "Limited stock available.",
-            time: "3 hours ago",
-            isRead: true
-        }
-
-    ];
-
   return (
     <div className={styles.notificationPanel}>
         <div className={styles.notificationHeader}>
@@ -234,8 +188,8 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
         </div>
       
         {
-            currentUser && (currentUser.role === 'Doctor') ? (
-                <div className={styles.notificationList}>
+            currentUser && (currentUser.role === 'Staff') && (
+               <div className={styles.notificationList}>
                     {
                         loading ? (
                         <div className={styles.loadingState}>
@@ -277,29 +231,6 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
                         )
                     }
                 </div>
-            ) : (
-                <div className={styles.notificationList}>
-                {
-                    notificationsStaff.map(notification => (
-                        <div 
-                            key={notification.id} 
-                            className={`${styles.notificationItem} ${!notification.isRead ? styles.unread : ''}`}
-                        >
-                            <div className={`${styles.notificationIcon} ${styles[notification.type]}`}>
-                                {notification.type === 'appointment' && <FontAwesomeIcon icon={faCalendar} />}
-                                {notification.type === 'medical' && <FontAwesomeIcon icon={faPrescriptionBottleAlt} />}
-                                {notification.type === 'archive' && <FontAwesomeIcon icon={faFolder} />}
-                            </div>
-                            <div className={styles.notificationContent}>
-                                <div className={styles.notificationTitle}>{notification.title}</div>
-                                <div className={styles.notificationMessage}>{notification.message}</div>
-                                <div className={styles.notificationTime}>{notification.time}</div>
-                            </div>
-                            {!notification.isRead && <div className={styles.unreadDot}></div>}
-                        </div>
-                    ))
-                }
-            </div>
             )
         }
         

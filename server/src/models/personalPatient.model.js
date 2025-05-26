@@ -12,8 +12,7 @@ const PersonalPatientSchema = new mongoose.Schema(
             type: String,
         },
         contactNumber: {
-            type: String,
-            required: true
+            type: String
         },
         birthdate: {
             type: Date,

@@ -33,7 +33,6 @@ class AppointmentController {
 
     async addAppointment(req, res, next) {
         try {
-
             const createNotifications = !req.user || req.user.role === 'Patient';
             
             //check specifically for reasonForVisit
@@ -46,14 +45,55 @@ class AppointmentController {
                     message: 'Reason for visit must be between 5 and 200 characters'
                 });
             }
+
+            //validate required patient information fields
+            if (!req.body.birthdate) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Birth date is required'
+                });
+            }
+
+            if (!req.body.sex || !['Male', 'Female', 'Other'].includes(req.body.sex)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Valid sex selection is required'
+                });
+            }
             
             const appointmentData = {
                 patientId: req.body.patientId,
                 preferredDate: req.body.preferredDate,
                 preferredTime: req.body.preferredTime,
                 reasonForVisit: req.body.reasonForVisit?.trim(),
-                status: 'Pending'
+                status: 'Pending',
+                //patient information fields
+                birthdate: req.body.birthdate,
+                sex: req.body.sex,
+                height: req.body.height ? Number(req.body.height) : undefined,
+                weight: req.body.weight ? Number(req.body.weight) : undefined,
+                religion: req.body.religion?.trim(),
+                //mother's information
+                motherInfo: {
+                    name: req.body.motherName?.trim(),
+                    age: req.body.motherAge ? Number(req.body.motherAge) : undefined,
+                    occupation: req.body.motherOccupation?.trim()
+                },
+                //father's information
+                fatherInfo: {
+                    name: req.body.fatherName?.trim(),
+                    age: req.body.fatherAge ? Number(req.body.fatherAge) : undefined,
+                    occupation: req.body.fatherOccupation?.trim()
+                }
             };
+
+            //remove undefined values from nested objects
+            if (!appointmentData.motherInfo.name && !appointmentData.motherInfo.age && !appointmentData.motherInfo.occupation) {
+                delete appointmentData.motherInfo;
+            }
+            if (!appointmentData.fatherInfo.name && !appointmentData.fatherInfo.age && !appointmentData.fatherInfo.occupation) {
+                delete appointmentData.fatherInfo;
+            }
 
             try {
                 const appointment = new Appointment(appointmentData);
@@ -130,8 +170,9 @@ class AppointmentController {
             }
             
             const appointments = await Appointment.find(filter)
-                .sort({ preferredDate: 1, preferredTime: 1 })
-                .populate('patientId', 'fullName emailOrContactNumber');
+                // .sort({ preferredDate: 1, preferredTime: 1 })
+                .sort({ createdAt: -1 })
+                .populate('patientId', 'fullName emailOrContactNumber patientNumber');
             
             return res.status(200).json({
                 success: true,
@@ -219,8 +260,9 @@ class AppointmentController {
             }
             
             const appointments = await Appointment.find(filter)
-                .sort({ preferredDate: 1, preferredTime: 1 })
-                .populate('patientId', 'fullName emailOrContactNumber');
+                // .sort({ preferredDate: 1, preferredTime: 1 })
+                .sort({ createdAt: -1 })
+                .populate('patientId', 'fullName emailOrContactNumber patientNumber');
             
             return res.status(200).json({
                 success: true,
@@ -247,7 +289,7 @@ class AppointmentController {
                 throw new ApiError('Appointment not found', 404);
             }
 
-            //store the old status for comparison
+            // store the old status for comparison
             const oldStatus = appointment.status;
             
             //update based on request type
@@ -255,12 +297,52 @@ class AppointmentController {
                 //for status-only update
                 appointment.status = req.body.status;
             } else {
-                //for full update
+                //for full update - basic appointment fields
                 appointment.patientId = req.body.patientId || appointment.patientId;
                 appointment.preferredDate = req.body.preferredDate || appointment.preferredDate;
                 appointment.preferredTime = req.body.preferredTime || appointment.preferredTime;
                 appointment.reasonForVisit = req.body.reasonForVisit || appointment.reasonForVisit;
                 appointment.status = req.body.status || appointment.status;
+
+                //update patient information fields if provided
+                if (req.body.birthdate) appointment.birthdate = req.body.birthdate;
+                if (req.body.sex) appointment.sex = req.body.sex;
+                if (req.body.address) appointment.address = req.body.address;
+                if (req.body.height !== undefined) appointment.height = req.body.height ? Number(req.body.height) : undefined;
+                if (req.body.weight !== undefined) appointment.weight = req.body.weight ? Number(req.body.weight) : undefined;
+                if (req.body.religion !== undefined) appointment.religion = req.body.religion?.trim();
+
+                //handle mother's information - check both nested object and flat fields
+                const motherName = req.body.motherInfo?.name || req.body.motherName;
+                const motherAge = req.body.motherInfo?.age || req.body.motherAge;
+                const motherOccupation = req.body.motherInfo?.occupation || req.body.motherOccupation;
+
+                if (motherName !== undefined || motherAge !== undefined || motherOccupation !== undefined) {
+                    if (!appointment.motherInfo) appointment.motherInfo = {};
+                    if (motherName !== undefined) appointment.motherInfo.name = motherName?.trim();
+                    if (motherAge !== undefined) appointment.motherInfo.age = motherAge ? Number(motherAge) : undefined;
+                    if (motherOccupation !== undefined) appointment.motherInfo.occupation = motherOccupation?.trim();
+                }
+
+                //handle father's information - check both nested object and flat fields
+                const fatherName = req.body.fatherInfo?.name || req.body.fatherName;
+                const fatherAge = req.body.fatherInfo?.age || req.body.fatherAge;
+                const fatherOccupation = req.body.fatherInfo?.occupation || req.body.fatherOccupation;
+
+                if (fatherName !== undefined || fatherAge !== undefined || fatherOccupation !== undefined) {
+                    if (!appointment.fatherInfo) appointment.fatherInfo = {};
+                    if (fatherName !== undefined) appointment.fatherInfo.name = fatherName?.trim();
+                    if (fatherAge !== undefined) appointment.fatherInfo.age = fatherAge ? Number(fatherAge) : undefined;
+                    if (fatherOccupation !== undefined) appointment.fatherInfo.occupation = fatherOccupation?.trim();
+                }
+
+                //mark nested objects as modified to ensure they're saved
+                if (appointment.motherInfo) {
+                    appointment.markModified('motherInfo');
+                }
+                if (appointment.fatherInfo) {
+                    appointment.markModified('fatherInfo');
+                }
             }
             
             await appointment.save();

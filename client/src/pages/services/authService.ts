@@ -34,6 +34,42 @@ export const loginUser = async (loginData: Omit<LoginFormData, 'rememberMe'>) =>
     }
 };
 
+
+
+
+//get user profile service
+export const getProfile = async () => {
+    try {
+        //get the token from localStorage
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+        
+        //set up request with authorization header
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+        
+        const response = await axios.get(
+            `${API_BASE_URL}/api/auth/getProfile`,
+            config
+        );
+        
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data?.message || 'Failed to fetch profile');
+        }
+        throw new Error('An error occurred while fetching profile');
+    }
+};
+
+
+
 //logout service
 export const logoutUser = async () => {
     try {

@@ -3,12 +3,49 @@ import { AppointmentFilters, AppointmentFormData, AppointmentResponse } from '..
 import API_BASE_URL from '../../ApiBaseUrl';
 
 
+// export const addAppointment = async (appointmentData: AppointmentFormData) => {
+//     //reasonForVisit is properly trimmed before sending
+//     const processedData = {
+//         ...appointmentData,
+//         reasonForVisit: appointmentData.reasonForVisit.trim()
+//     };
+    
+//     return await axios.post<{success: boolean, message: string, data: AppointmentResponse}>(
+//         `${API_BASE_URL}/api/appointments/addAppointment`,
+//         processedData,
+//         {
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `Bearer ${localStorage.getItem('token')}`
+//             }
+//         }
+//     );
+// };
+
 export const addAppointment = async (appointmentData: AppointmentFormData) => {
-    //reasonForVisit is properly trimmed before sending
+    //process the form data to match backend expectations
     const processedData = {
         ...appointmentData,
-        reasonForVisit: appointmentData.reasonForVisit.trim()
+        reasonForVisit: appointmentData.reasonForVisit.trim(),
+        //ensure numeric fields are properly converted
+        height: appointmentData.height ? Number(appointmentData.height) : undefined,
+        weight: appointmentData.weight ? Number(appointmentData.weight) : undefined,
+        motherAge: appointmentData.motherAge ? Number(appointmentData.motherAge) : undefined,
+        fatherAge: appointmentData.fatherAge ? Number(appointmentData.fatherAge) : undefined,
+        //trim string fields
+        religion: appointmentData.religion?.trim(),
+        motherName: appointmentData.motherName?.trim(),
+        motherOccupation: appointmentData.motherOccupation?.trim(),
+        fatherName: appointmentData.fatherName?.trim(),
+        fatherOccupation: appointmentData.fatherOccupation?.trim(),
     };
+    
+    //remove undefined values to avoid sending them to backend
+    Object.keys(processedData).forEach(key => {
+        if (processedData[key] === undefined || processedData[key] === '') {
+            delete processedData[key];
+        }
+    });
     
     return await axios.post<{success: boolean, message: string, data: AppointmentResponse}>(
         `${API_BASE_URL}/api/appointments/addAppointment`,
@@ -21,7 +58,6 @@ export const addAppointment = async (appointmentData: AppointmentFormData) => {
         }
     );
 };
-
 
 
 export const getAppointments = async (filters?: AppointmentFilters) => {
@@ -98,11 +134,63 @@ export const getMyAppointment = async (filters?: Omit<AppointmentFilters, 'patie
     );
 };
 
-
 export const updateAppointment = async (appointmentId: string, appointmentData: AppointmentFormData) => {
+    //process the form data and structure nested objects properly
+    const processedData = {
+        ...appointmentData,
+        reasonForVisit: appointmentData.reasonForVisit?.trim(),
+        height: appointmentData.height ? Number(appointmentData.height) : undefined,
+        weight: appointmentData.weight ? Number(appointmentData.weight) : undefined,
+        religion: appointmentData.religion?.trim(),
+        
+        //structure mother info as nested object
+        motherInfo: {
+            name: appointmentData.motherName?.trim(),
+            age: appointmentData.motherAge ? Number(appointmentData.motherAge) : undefined,
+            occupation: appointmentData.motherOccupation?.trim()
+        },
+        
+        //structure father info as nested object  
+        fatherInfo: {
+            name: appointmentData.fatherName?.trim(),
+            age: appointmentData.fatherAge ? Number(appointmentData.fatherAge) : undefined,
+            occupation: appointmentData.fatherOccupation?.trim()
+        }
+    };
+
+    //remove the flat field names since we're now using nested objects
+    delete processedData.motherName;
+    delete processedData.motherAge;
+    delete processedData.motherOccupation;
+    delete processedData.fatherName;
+    delete processedData.fatherAge;
+    delete processedData.fatherOccupation;
+
+    //remove undefined values
+    Object.keys(processedData).forEach(key => {
+        if (processedData[key] === undefined || processedData[key] === '') {
+            delete processedData[key];
+        }
+    });
+
+    //clean up nested objects - remove if all fields are empty
+    if (processedData.motherInfo && 
+        !processedData.motherInfo.name && 
+        !processedData.motherInfo.age && 
+        !processedData.motherInfo.occupation) {
+        delete processedData.motherInfo;
+    }
+
+    if (processedData.fatherInfo && 
+        !processedData.fatherInfo.name && 
+        !processedData.fatherInfo.age && 
+        !processedData.fatherInfo.occupation) {
+        delete processedData.fatherInfo;
+    }
+
     return await axios.put<{success: boolean, message: string, data: AppointmentResponse}>(
         `${API_BASE_URL}/api/appointments/updateAppointment/${appointmentId}`,
-        appointmentData,
+        processedData,
         {
             headers: {
                 'Content-Type': 'application/json',
@@ -111,6 +199,18 @@ export const updateAppointment = async (appointmentId: string, appointmentData: 
         }
     );
 };
+// export const updateAppointment = async (appointmentId: string, appointmentData: AppointmentFormData) => {
+//     return await axios.put<{success: boolean, message: string, data: AppointmentResponse}>(
+//         `${API_BASE_URL}/api/appointments/updateAppointment/${appointmentId}`,
+//         appointmentData,
+//         {
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `Bearer ${localStorage.getItem('token')}`
+//             }
+//         }
+//     );
+// };
 
 
 

@@ -472,3 +472,12 @@ textarea.formControl {
 .statusOption[data-status="Rebooked"] {
   --status-color: #f59e0b;
 }
+
+
+
+
+.sectionDivider h4{
+    background-color: var(--primary-light);
+    padding: 5px;
+    margin-bottom: 10px;
+}

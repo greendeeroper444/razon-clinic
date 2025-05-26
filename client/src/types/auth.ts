@@ -1,5 +1,11 @@
 
 //register 
+export interface ParentInfo {
+    name?: string;
+    age?: number;
+    occupation?: string;
+}
+
 export interface SignupFormData {
     fullName: string;
     emailOrContactNumber: string;
@@ -8,6 +14,9 @@ export interface SignupFormData {
     birthdate: string;
     sex: string;
     address: string;
+    motherInfo?: ParentInfo;
+    fatherInfo?: ParentInfo;
+    religion?: string;
     agreeToTerms: boolean;
 }
 
@@ -19,6 +28,13 @@ export interface ValidationErrors {
     birthdate?: string;
     sex?: string;
     address?: string;
+    'motherInfo.name'?: string;
+    'motherInfo.age'?: string;
+    'motherInfo.occupation'?: string;
+    'fatherInfo.name'?: string;
+    'fatherInfo.age'?: string;
+    'fatherInfo.occupation'?: string;
+    religion?: string;
     agreeToTerms?: string;
 }
 
@@ -44,6 +60,12 @@ export interface LoginResponse {
             fullName: string;
             email?: string;
             contactNumber?: string;
+            birthdate: Date;
+            sex: string;
+            address: string;
+            motherInfo?: ParentInfo;
+            fatherInfo?: ParentInfo;
+            religion?: string;
             role: string;
         }
     };
@@ -57,5 +79,11 @@ export interface User {
     fullName: string;
     email?: string;
     contactNumber?: string;
+    birthdate: Date;
+    sex: string;
+    address: string;
+    motherInfo?: ParentInfo;
+    fatherInfo?: ParentInfo;
+    religion?: string;
     role: string;
 }

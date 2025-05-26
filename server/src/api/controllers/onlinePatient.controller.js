@@ -26,13 +26,14 @@ class OnlinePatientController {
         try {
             //only find OnlinePatients with role 'Patient'
             const patients = await OnlinePatient.find({ role: 'Patient' })
-                .select('_id fullName')
+                .select('_id fullName patientNumber')
                 .lean();
             
             //format the data for the dropdown
             const formattedPatients = patients.map(patient => ({
                 id: patient._id,
-                fullName: patient.fullName
+                fullName: patient.fullName,
+                patientNumber: patient.patientNumber
             }));
             
             //return patients list

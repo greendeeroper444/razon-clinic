@@ -38,7 +38,8 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                             appointment.patientId.id,
                             {
                                 id: appointment.patientId.id,
-                                fullName: appointment.patientId.fullName
+                                fullName: appointment.patientId.fullName,
+                                patientNumber: appointment.patientId.patientNumber
                             }
                         ])
                     ).values()
@@ -94,8 +95,38 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             preferredTime: appointment.preferredTime,
             reasonForVisit: appointment.reasonForVisit,
             status: appointment.status,
+            
+            //patient information fields
+            birthdate: appointment.birthdate ? appointment.birthdate.split('T')[0] : undefined,
+            sex: appointment.sex,
+            address: appointment.address,
+            height: appointment.height,
+            weight: appointment.weight,
+            religion: appointment.religion,
+            
+            //map nested mother info to flat field names
+            motherName: appointment.motherInfo?.name || '',
+            motherAge: appointment.motherInfo?.age || '',
+            motherOccupation: appointment.motherInfo?.occupation || '',
+            
+            //map nested father info to flat field names
+            fatherName: appointment.fatherInfo?.name || '',
+            fatherAge: appointment.fatherInfo?.age || '',
+            fatherOccupation: appointment.fatherInfo?.occupation || '',
+            
+            //keep nested structure for backward compatibility if needed
+            motherInfo: appointment.motherInfo ? {
+                name: appointment.motherInfo.name,
+                age: appointment.motherInfo.age,
+                occupation: appointment.motherInfo.occupation,
+            } : undefined,
+            fatherInfo: appointment.fatherInfo ? {
+                name: appointment.fatherInfo.name,
+                age: appointment.fatherInfo.age,
+                occupation: appointment.fatherInfo.occupation,
+            } : undefined,
         };
-        
+    
         setSelectedAppointment(formData);
         setIsModalOpen(true);
     };
@@ -103,7 +134,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const handleDeleteClick = (appointment: AppointmentResponse) => {
         setDeleteAppointmentData({
             id: appointment.id,
-            itemName: `${appointment.patientId.fullName}'s appointment on ${formatDate(appointment.preferredDate)}`,
+            itemName: `${appointment.patientId.fullName}'s appointment on ${formatDate(appointment.birthdate)}`,
             itemType: 'Appointment'
         });
         setIsDeleteModalOpen(true);
@@ -276,14 +307,14 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                         {appointment.patientId.fullName}
                                                     </div>
                                                     <div className={styles.patientId}>
-                                                        #{appointment.id}
+                                                        PT-ID: {appointment.patientId.patientNumber}
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div className={styles.appointmentDate}>
-                                                {formatDate(appointment.preferredDate)}
+                                                {formatDate(appointment.birthdate)}
                                             </div>
                                         </td>
                                         <td>

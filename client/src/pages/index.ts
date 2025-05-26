@@ -8,6 +8,7 @@ export { default as AboutPage } from './public/AboutPage/AboutPage';
 export { default as ServicesPage } from './public/ServicesPage/ServicesPage';
 export { default as ContactPage } from './public/ContactPage/ContactPage';
 export { default as TermsAndConditionPage } from './public/TermsAndConditionPage/TermsAndConditionPage';
+export { default as NotFoundPage } from './public/NotFoundPage/NotFoundPage';
 
 //admin pages
 export { default as DashboardPage } from './admin/DashboardPage/DashboardPage';

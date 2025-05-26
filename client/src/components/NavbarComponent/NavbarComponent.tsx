@@ -3,44 +3,18 @@ import styles from './NavbarComponent.module.css'
 import NotificationComponent from '../NotificationComponent/NotificationComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faBell, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { User } from '../../types/auth';
 import { getFirstAndLastName, getFirstLetterOfFirstAndLastName } from '../../utils/user';
 import { NavbarProps } from '../../types/components';
 import { getNotifications } from '../../pages/services/notificationService';
+import { useAuth } from '../../hooks/usesAuth';
 
 const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     const [showNotifications, setShowNotifications] = useState(false);
     const [showMobileSearch, setShowMobileSearch] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const searchInputRef = useRef<HTMLInputElement>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const { isAuthenticated, currentUser } = useAuth();
 
-    useEffect(() => {
-        //check if user is authenticated
-        const token = localStorage.getItem('token');
-        const userDataString = localStorage.getItem('userData');
-        
-        if (token && userDataString) {
-            try {
-                const userData = JSON.parse(userDataString) as User;
-                setIsAuthenticated(true);
-                setCurrentUser(userData);
-                //fetch initial unread count when user is authenticated
-                fetchUnreadCount();
-            } catch (error) {
-                //handle invalid JSON
-                console.error("Error parsing user data:", error);
-                //clear invalid data
-                localStorage.removeItem('userData');
-                setIsAuthenticated(false);
-                setCurrentUser(null);
-            }
-        } else {
-            setIsAuthenticated(false);
-            setCurrentUser(null);
-        }
-    }, [location.pathname]);
 
     //fetch unread count independently
     const fetchUnreadCount = async () => {
@@ -161,7 +135,7 @@ const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar
                 </div>
             </div>
             {
-                currentUser && (currentUser.role === 'Doctor') ? (
+                currentUser && (currentUser.role === 'Staff') && (
                     <div className={styles.notificationIcon} onClick={toggleNotifications}>
                         <FontAwesomeIcon icon={faBell} />
                         
@@ -172,17 +146,6 @@ const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar
                                 </span>
                             )
                         }
-                        <NotificationComponent 
-                            isVisible={showNotifications} 
-                            onUnreadCountChange={handleUnreadCountChange}
-                        />
-                    </div>
-                ) : (
-                    <div className={styles.notificationIcon} onClick={toggleNotifications}>
-                        <FontAwesomeIcon icon={faBell} />
-                        <span className={styles.notificationBadge}>
-                            2
-                        </span>
                         <NotificationComponent 
                             isVisible={showNotifications} 
                             onUnreadCountChange={handleUnreadCountChange}

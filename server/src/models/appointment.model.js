@@ -27,8 +27,77 @@ const appointmentSchema = new mongoose.Schema(
         status: {
             type: String,
             enum: ['Pending', 'Scheduled', 'Completed', 'Cancelled', 'Rebooked'],
-            default: 'Panding'
-        }
+            default: 'Pending'
+        },
+        birthdate: {
+            type: Date,
+            required: true
+        },
+        sex: {
+            type: String,
+            required: true,
+            enum: ['Male', 'Female', 'Other']
+        },
+        height: {
+            type: Number, // in cm or inches
+            required: false,
+            min: 30,  // realistic minimum height
+            max: 300  // realistic maximum height
+        },
+        weight: {
+            type: Number, // in kg or lbs
+            required: false,
+            min: 1,   // realistic minimum weight
+            max: 500  // realistic maximum weight
+        },
+        //mother's information
+        motherInfo: {
+            name: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            },
+            age: {
+                type: Number,
+                required: false,
+                min: 15,
+                max: 120
+            },
+            occupation: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            }
+        },
+        //father's information
+        fatherInfo: {
+            name: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            },
+            age: {
+                type: Number,
+                required: false,
+                min: 15,
+                max: 120
+            },
+            occupation: {
+                type: String,
+                required: false,
+                maxlength: 50,
+                trim: true
+            }
+        },
+        religion: {
+            type: String,
+            required: false,
+            maxlength: 30,
+            trim: true
+        },
     },
     {
         timestamps: true,

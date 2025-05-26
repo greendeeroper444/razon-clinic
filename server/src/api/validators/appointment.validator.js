@@ -4,6 +4,13 @@ const mongoose = require('mongoose');
 
 //validator for creating and updating appointments
 const validateAppointment = [
+    (req, res, next) => {
+        // if no patientId provided and user is a patient, use their ID
+        if (!req.body.patientId && req.user && req.user.role === 'Patient') {
+            req.body.patientId = req.user.id;
+        }
+        next();
+    },
     body('patientId')
         .notEmpty().withMessage('Patient ID is required')
         .custom((value) => {
@@ -12,6 +19,8 @@ const validateAppointment = [
             }
             return true;
         }),
+    
+    //appointment-specific validations
     body('preferredDate')
         .notEmpty().withMessage('Preferred date is required')
         .isISO8601().withMessage('Preferred date must be a valid date')
@@ -31,6 +40,67 @@ const validateAppointment = [
         .trim()
         .notEmpty().withMessage('Reason for visit is required')
         .isLength({ min: 5, max: 200 }).withMessage('Reason for visit must be between 5 and 200 characters'),
+    
+    //patient information validations
+    body('birthdate')
+        .notEmpty().withMessage('Birth date is required')
+        .isISO8601().withMessage('Birth date must be a valid date')
+        .toDate()
+        .custom((value) => {
+            const today = new Date();
+            const age = (today - value) / (365.25 * 24 * 60 * 60 * 1000);
+            if (age < 0) {
+                throw new Error('Birth date cannot be in the future');
+            }
+            if (age > 150) {
+                throw new Error('Birth date seems unrealistic');
+            }
+            return true;
+        }),
+    body('sex')
+        .notEmpty().withMessage('Sex is required')
+        .isIn(['Male', 'Female', 'Other']).withMessage('Sex must be Male, Female, or Other'),
+    body('address')
+        .optional()
+        .trim()
+        .isLength({ min: 5, max: 200 }).withMessage('Address must be between 5 and 200 characters'),
+    body('height')
+        .optional()
+        .isFloat({ min: 30, max: 300 }).withMessage('Height must be between 30 and 300 cm'),
+    body('weight')
+        .optional()
+        .isFloat({ min: 1, max: 500 }).withMessage('Weight must be between 1 and 500 kg'),
+    body('religion')
+        .optional()
+        .trim()
+        .isLength({ max: 30 }).withMessage('Religion must not exceed 30 characters'),
+    
+    //mother's information validations
+    body('motherName')
+        .optional()
+        .trim()
+        .isLength({ max: 50 }).withMessage('Mother\'s name must not exceed 50 characters'),
+    body('motherAge')
+        .optional()
+        .isInt({ min: 15, max: 120 }).withMessage('Mother\'s age must be between 15 and 120'),
+    body('motherOccupation')
+        .optional()
+        .trim()
+        .isLength({ max: 50 }).withMessage('Mother\'s occupation must not exceed 50 characters'),
+    
+    // father's information validations
+    body('fatherName')
+        .optional()
+        .trim()
+        .isLength({ max: 50 }).withMessage('Father\'s name must not exceed 50 characters'),
+    body('fatherAge')
+        .optional()
+        .isInt({ min: 15, max: 120 }).withMessage('Father\'s age must be between 15 and 120'),
+    body('fatherOccupation')
+        .optional()
+        .trim()
+        .isLength({ max: 50 }).withMessage('Father\'s occupation must not exceed 50 characters'),
+    
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

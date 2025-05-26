@@ -38,6 +38,42 @@ const validateRegistration = [
         .trim()
         .notEmpty().withMessage('Address is required'),
 
+    // Optional mother info validation
+    body('motherInfo.name')
+        .optional({ nullable: true, checkFalsy: true })
+        .trim()
+        .isLength({ max: 50 }).withMessage('Mother\'s name must not exceed 50 characters'),
+        
+    body('motherInfo.age')
+        .optional({ nullable: true, checkFalsy: true })
+        .isInt({ min: 15, max: 120 }).withMessage('Mother\'s age must be between 15 and 120'),
+        
+    body('motherInfo.occupation')
+        .optional({ nullable: true, checkFalsy: true })
+        .trim()
+        .isLength({ max: 50 }).withMessage('Mother\'s occupation must not exceed 50 characters'),
+
+    // Optional father info validation
+    body('fatherInfo.name')
+        .optional({ nullable: true, checkFalsy: true })
+        .trim()
+        .isLength({ max: 50 }).withMessage('Father\'s name must not exceed 50 characters'),
+        
+    body('fatherInfo.age')
+        .optional({ nullable: true, checkFalsy: true })
+        .isInt({ min: 15, max: 120 }).withMessage('Father\'s age must be between 15 and 120'),
+        
+    body('fatherInfo.occupation')
+        .optional({ nullable: true, checkFalsy: true })
+        .trim()
+        .isLength({ max: 50 }).withMessage('Father\'s occupation must not exceed 50 characters'),
+
+    // Optional religion validation
+    body('religion')
+        .optional({ nullable: true, checkFalsy: true })
+        .trim()
+        .isLength({ max: 30 }).withMessage('Religion must not exceed 30 characters'),
+
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -47,7 +83,6 @@ const validateRegistration = [
         next();
     }
 ];
-
 
 const validateLogin = [
     body('emailOrContactNumber')

@@ -1,0 +1,376 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #3b82f6;
+  --primary-light: #dbeafe;
+  --secondary: #2563eb;
+  --dark: #1e293b;
+  --dark-light: #334155;
+  --light: #f8fafc;
+  --gray: #94a3b8;
+  --gray-light: #e2e8f0;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --medical: #6366f1;
+  --appointment: #8b5cf6;
+  --archive: #64748b;
+  --archive-light: #f1f5f9;
+}
+
+.container {
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--light) 0%, var(--primary-light) 100%);
+  color: var(--dark);
+  line-height: 1.7;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="25" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="25" r="1" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+}
+
+.headerContent {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.025em;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin: 0 0 2rem 0;
+  opacity: 0.9;
+}
+
+.divider {
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--medical), var(--appointment));
+  margin: 0 auto;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.section {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--gray-light);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid var(--primary-light);
+  position: relative;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.subsection {
+  margin-bottom: 2rem;
+}
+
+.subsectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--dark-light);
+  margin: 0 0 1rem 0;
+}
+
+.text {
+  font-size: 1rem;
+  color: var(--dark-light);
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+.featureCard {
+  background: linear-gradient(135deg, var(--light) 0%, white 100%);
+  border: 2px solid var(--gray-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.featureCard:hover {
+  border-color: var(--primary);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+}
+
+.featureIcon {
+  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-light);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.featureContent h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin: 0 0 0.75rem 0;
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.featureList li {
+  position: relative;
+  padding: 0.25rem 0 0.25rem 1.5rem;
+  color: var(--dark-light);
+  font-size: 0.95rem;
+}
+
+.featureList li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+  color: var(--success);
+  font-weight: 600;
+}
+
+.accessCard {
+  background: linear-gradient(135deg, var(--archive-light) 0%, white 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--medical);
+  transition: all 0.3s ease;
+}
+
+.accessCard:hover {
+  border-left-color: var(--appointment);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.1);
+}
+
+.accessTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin: 0 0 0.75rem 0;
+}
+
+.accessText {
+  color: var(--dark-light);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.automationGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.automationCard {
+  background: white;
+  border: 2px solid var(--gray-light);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.automationCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--success), var(--primary));
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.automationCard:hover::before {
+  transform: translateX(0);
+}
+
+.automationCard:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.automationIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.automationCard h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin: 0 0 0.75rem 0;
+}
+
+.automationCard p {
+  color: var(--dark-light);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.privacyCard {
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--light) 100%);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  padding: 2rem;
+  position: relative;
+}
+
+.privacyCard::before {
+  content: '🔒';
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  font-size: 1.5rem;
+  background: white;
+  padding: 0.5rem;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+  background: var(--dark);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 3rem;
+  border-radius: 16px 16px 0 0;
+}
+
+.footerContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.footerText {
+  font-size: 1rem;
+  margin: 0 0 1rem 0;
+  opacity: 0.9;
+}
+
+.lastUpdated {
+  font-size: 0.875rem;
+  color: var(--gray);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.125rem;
+  }
+  
+  .section {
+    padding: 1.5rem;
+  }
+  
+  .featureCard {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .automationGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .content {
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 2rem 1rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .section {
+    padding: 1rem;
+  }
+  
+  .automationCard {
+    padding: 1.5rem;
+  }
+}

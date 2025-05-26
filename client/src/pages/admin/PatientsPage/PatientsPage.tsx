@@ -348,7 +348,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                         className={`${styles.actionBtn} ${styles.update}`}
                                                         onClick={() => handleEditPatient(patient)}
                                                     >
-                                                        {/* <FontAwesomeIcon icon={faEdit} /> Edit */} Delete
+                                                        {/* <FontAwesomeIcon icon={faEdit} /> Edit */} Update
                                                     </button>
                                                     <button 
                                                         className={`${styles.actionBtn} ${styles.cancel}`} 

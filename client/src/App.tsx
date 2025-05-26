@@ -18,7 +18,8 @@ import {
   AppointmentDetailsPage,
   UserAppointmentDetailsPage,
   MedicalRecordsPage,
-  BillingsPaymentPage
+  BillingsPaymentPage,
+  TermsAndConditionPage
 } from './pages'
 import NavigationComponent from './components/NavigationComponent/NavigationComponent'
 import SidebarComponent from './components/SidebarComponent/SidebarComponent'
@@ -50,7 +51,7 @@ const routes: RouteType[] = [
   { path: '/about', component: AboutPage, layout: 'user' },
   { path: '/services', component: ServicesPage, layout: 'user' },
   { path: '/contact', component: ContactPage, layout: 'user' },
-  { path: '/contact', component: ContactPage, layout: 'user' },
+  { path: '/terms-and-conditions', component: TermsAndConditionPage, layout: 'user' },
 
   //admin routes
   { path: '/admin/dashboard', component: DashboardPage, layout: 'admin' },

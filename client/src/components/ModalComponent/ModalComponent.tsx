@@ -2,7 +2,7 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import styles from './ModalComponent.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { AppointmentFormData, InventoryItemFormData, PatientFormData } from '../../types';
+import { AppointmentFormData, InventoryItemFormData } from '../../types';
 import { getPatients } from '../../pages/services/patientService';
 
 import AppointmentForm from '../Forms/AppointmentForm';
@@ -42,7 +42,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
 
-    // Helper function to format date for input field
+    //helper function to format date for input field
     const formatDateForInput = (dateString: string | Date): string => {
         if (!dateString) return '';
         const date = new Date(dateString);
@@ -50,7 +50,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         return date.toISOString().split('T')[0];
     };
 
-    // Helper function to format date for display
+    //helper function to format date for display
     const formatDateForDisplay = (dateString: string | Date): string => {
         if (!dateString) return '';
         const date = new Date(dateString);
@@ -65,7 +65,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
     //initialize form with edit data if provided or reset when modal type changes
     useEffect(() => {
         if (editData) {
-            // Format birthdate for input field if it exists
+            //format birthdate for input field if it exists
             const processedEditData = { ...editData };
             if (processedEditData.birthdate) {
                 processedEditData.birthdate = formatDateForInput(processedEditData.birthdate as string);
@@ -85,7 +85,35 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                     preferredDate: '',
                     preferredTime: '',
                     reasonForVisit: '',
-                    status: 'Pending'
+                    status: 'Pending',
+                    
+                    //initialize all patient information fields
+                    birthdate: '',
+                    sex: undefined,
+                    address: '',
+                    height: '',
+                    weight: '',
+                    religion: '',
+                    
+                    //flattened parent information fields
+                    motherName: '',
+                    motherAge: '',
+                    motherOccupation: '',
+                    fatherName: '',
+                    fatherAge: '',
+                    fatherOccupation: '',
+                    
+                    //nested parent information objects
+                    motherInfo: {
+                        name: '',
+                        age: '',
+                        occupation: ''
+                    },
+                    fatherInfo: {
+                        name: '',
+                        age: '',
+                        occupation: ''
+                    }
                 } as AppointmentFormData);
             } else if (modalType === 'patient') {
                 setFormData({
@@ -144,7 +172,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         
-        // Handle nested object properties (e.g., motherInfo.name, fatherInfo.age)
+        //handle nested object properties (e.g., motherInfo.name, fatherInfo.age)
         if (name.includes('.')) {
             const [parentKey, childKey] = name.split('.');
             setFormData(prevData => ({
@@ -155,7 +183,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                 }
             }));
         } else {
-            // Handle flat properties
+            //handle flat properties
             setFormData(prevData => ({
                 ...prevData,
                 [name]: value
@@ -225,12 +253,14 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
             case 'patient':
                 return (
                     <>
-                        {/* Display birthdate if editing and birthdate exists */}
-                        {editData && (editData as PersonalPatientFormData).birthdate && (
-                            <div className={styles.birthdateDisplay}>
-                                <p><strong>Current Birthdate:</strong> {formatDateForDisplay((editData as PersonalPatientFormData).birthdate as string)}</p>
-                            </div>
-                        )}
+                        {/* display birthdate if editing and birthdate exists */}
+                        {
+                            editData && (editData as PersonalPatientFormData).birthdate && (
+                                <div className={styles.birthdateDisplay}>
+                                    <p><strong>Current Birthdate:</strong> {formatDateForDisplay((editData as PersonalPatientFormData).birthdate as string)}</p>
+                                </div>
+                            )
+                        }
                         <PatientForm
                             formData={formData as PersonalPatientFormData}
                             onChange={handleChange}
@@ -293,45 +323,45 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         );
     }
 
-    return (
-        <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
-                <div className={styles.modalHeader}>
-                    <h2 className={styles.modalTitle}>{title}</h2>
-                    <button
-                        type='button'
-                        className={styles.closeButton}
-                        onClick={handleClose}
-                    >
-                        <FontAwesomeIcon icon={faTimes} />
-                    </button>
+  return (
+    <div className={styles.modalOverlay}>
+        <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+                <h2 className={styles.modalTitle}>{title}</h2>
+                <button
+                    type='button'
+                    className={styles.closeButton}
+                    onClick={handleClose}
+                >
+                    <FontAwesomeIcon icon={faTimes} />
+                </button>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+                <div className={styles.modalBody}>
+                    {renderFormContent()}
                 </div>
 
-                <form onSubmit={handleSubmit}>
-                    <div className={styles.modalBody}>
-                        {renderFormContent()}
-                    </div>
-
-                    <div className={styles.modalFooter}>
-                        <button
-                            type='button'
-                            className={styles.btnSecondary}
-                            onClick={handleClose}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type='submit'
-                            className={styles.btnPrimary}
-                            disabled={isProcessing}
-                        >
-                            {isProcessing ? 'Saving...' : 'Save'}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div className={styles.modalFooter}>
+                    <button
+                        type='button'
+                        className={styles.btnSecondary}
+                        onClick={handleClose}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type='submit'
+                        className={styles.btnPrimary}
+                        disabled={isProcessing}
+                    >
+                        {isProcessing ? 'Saving...' : 'Save'}
+                    </button>
+                </div>
+            </form>
         </div>
-    );
-};
+    </div>
+  )
+}
 
-export default ModalComponent;
+export default ModalComponent

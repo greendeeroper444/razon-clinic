@@ -1,0 +1,184 @@
+.notFoundContainer {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    padding: 20px;
+}
+
+.contentWrapper {
+    text-align: center;
+    background: var(--light);
+    padding: 60px 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.iconWrapper {
+    margin-bottom: 20px;
+}
+
+.warningIcon {
+    font-size: 4rem;
+    color: var(--danger);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.errorCode {
+    font-size: 8rem;
+    font-weight: 900;
+    color: var(--primary);
+    margin: 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: var(--dark);
+    margin: 20px 0;
+    font-weight: 700;
+}
+
+.description {
+    font-size: 1.1rem;
+    color: var(--gray);
+    margin: 30px 0;
+    line-height: 1.6;
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 40px 0 30px;
+    flex-wrap: wrap;
+}
+
+.homeButton,
+.backButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.homeButton {
+    background: var(--primary);
+    color: var(--light);
+}
+
+.homeButton:hover {
+    background: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+}
+
+.backButton {
+    background: var(--light);
+    color: var(--dark);
+    border: 2px solid var(--gray-light);
+}
+
+.backButton:hover {
+    background: var(--gray-light);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.buttonIcon {
+    font-size: 0.9rem;
+}
+
+.helpText {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gray-light);
+}
+
+.helpText p {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .notFoundContainer {
+        padding: 10px;
+    }
+    
+    .contentWrapper {
+        padding: 40px 20px;
+    }
+    
+    .errorCode {
+        font-size: 6rem;
+    }
+    
+    .title {
+        font-size: 2rem;
+    }
+    
+    .description {
+        font-size: 1rem;
+    }
+    
+    .buttonGroup {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .homeButton,
+    .backButton {
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .errorCode {
+        font-size: 4.5rem;
+    }
+    
+    .title {
+        font-size: 1.8rem;
+    }
+    
+    .warningIcon {
+        font-size: 3rem;
+    }
+}

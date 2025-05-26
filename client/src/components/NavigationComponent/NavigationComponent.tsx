@@ -1,44 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styles from './NavigationComponent.module.css'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faSignOutAlt, faTimes, faUser } from '@fortawesome/free-solid-svg-icons';
 import rpcLogo from '../../assets/icons/rpc-logo.png';
-import { User } from '../../types/auth';
 import { logoutUser } from '../../pages/services/authService';
 import { toast } from 'sonner';
+import { useAuth } from '../../hooks/usesAuth';
 
 
 const NavigationComponent = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const { isAuthenticated, currentUser, clearAuth } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        //check if user is authenticated
-        const token = localStorage.getItem('token');
-        const userDataString = localStorage.getItem('userData');
-        
-        if (token && userDataString) {
-            try {
-                const userData = JSON.parse(userDataString) as User;
-                setIsAuthenticated(true);
-                setCurrentUser(userData);
-            } catch (error) {
-                //handle invalid JSON
-                console.error("Error parsing user data:", error);
-                //clear invalid data
-                localStorage.removeItem('userData');
-                setIsAuthenticated(false);
-                setCurrentUser(null);
-            }
-        } else {
-            setIsAuthenticated(false);
-            setCurrentUser(null);
-        }
-    }, [location.pathname]);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -53,8 +28,7 @@ const NavigationComponent = () => {
             await logoutUser();
             
             //remove token and user data from local storage
-            localStorage.removeItem('token');
-            localStorage.removeItem('rememberUser');
+            clearAuth();
             
             //show success toast
             toast.success('Successfully logged out');
