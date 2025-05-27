@@ -320,12 +320,12 @@ const AppointmentDetailsPage = () => {
                     <h2>Patient Information</h2>
                 </div>
                 <div className={styles.cardContent}>
-                    {appointment.patientId.fullName && (
+                    {appointment.fullName && (
                         <div className={styles.infoItem}>
                             <span className={styles.infoLabel}>
                                 <FontAwesomeIcon icon={faUser} /> Name:
                             </span>
-                            <span className={styles.infoValue}>{appointment.patientId.fullName}</span>
+                            <span className={styles.infoValue}>{appointment.fullName}</span>
                         </div>
                     )}
                     {appointment.patientId.email && (

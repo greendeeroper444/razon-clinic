@@ -400,7 +400,7 @@ const AppointmentDetailsPage = () => {
                 <div className={styles.cardContent}>
                    {/* fixed conditional rendering with proper null checking */}
                     {(() => {
-                        const fullName = appointment.patientId?.fullName || appointment.fullName;
+                        const fullName = appointment.fullName;
                         return fullName && (
                             <div className={styles.infoItem}>
                                 <span className={styles.infoLabel}>

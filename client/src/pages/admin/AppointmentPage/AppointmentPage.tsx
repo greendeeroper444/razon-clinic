@@ -318,7 +318,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                 </div>
                                                 <div>
                                                     <div className={styles.patientName}>
-                                                        {appointment.patientId?.fullName || appointment.fullName}
+                                                        {appointment.fullName}
                                                     </div>
                                                     <div className={styles.patientId}>
                                                         PT-ID: {appointment.patientId?.patientNumber || 'Walk-in'}
