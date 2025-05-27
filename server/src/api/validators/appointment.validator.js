@@ -11,14 +11,14 @@ const validateAppointment = [
         }
         next();
     },
-    body('patientId')
-        .notEmpty().withMessage('Patient ID is required')
-        .custom((value) => {
-            if (!mongoose.Types.ObjectId.isValid(value)) {
-                throw new Error('Invalid patient ID format');
-            }
-            return true;
-        }),
+    // body('patientId')
+    //     .notEmpty().withMessage('Patient ID is required')
+    //     .custom((value) => {
+    //         if (!mongoose.Types.ObjectId.isValid(value)) {
+    //             throw new Error('Invalid patient ID format');
+    //         }
+    //         return true;
+    //     }),
     
     //appointment-specific validations
     body('preferredDate')

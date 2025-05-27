@@ -32,16 +32,19 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                 setAppointments(response.data.data);
                 
                 //extract unique patients from appointments for the modal dropdown
+                //filter out appointments without patientId
                 const uniquePatients = Array.from(
                     new Map(
-                        response.data.data.map(appointment => [
-                            appointment.patientId.id,
-                            {
-                                id: appointment.patientId.id,
-                                fullName: appointment.patientId.fullName,
-                                patientNumber: appointment.patientId.patientNumber
-                            }
-                        ])
+                        response.data.data
+                            .filter(appointment => appointment.patientId?.id) 
+                            .map(appointment => [
+                                appointment.patientId.id,
+                                {
+                                    id: appointment.patientId.id,
+                                    fullName: appointment.patientId.fullName || appointment.fullName || 'N/A',
+                                    patientNumber: appointment.patientId.patientNumber || 'N/A'
+                                }
+                            ])
                     ).values()
                 );
                 setPatients(uniquePatients);
@@ -90,7 +93,8 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         //convert the appointment response to form data format
         const formData: AppointmentFormData & { id?: string } = {
             id: appointment.id,
-            patientId: appointment.patientId.id,
+            patientId: appointment.patientId?.id || '',
+            fullName: appointment.fullName,
             preferredDate: appointment.preferredDate.split('T')[0],
             preferredTime: appointment.preferredTime,
             reasonForVisit: appointment.reasonForVisit,
@@ -132,9 +136,12 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     };
 
     const handleDeleteClick = (appointment: AppointmentResponse) => {
+        const patientName = appointment.patientId?.fullName || 'Unknown Patient';
+        const appointmentDate = appointment.birthdate || appointment.preferredDate;
+        
         setDeleteAppointmentData({
             id: appointment.id,
-            itemName: `${appointment.patientId.fullName}'s appointment on ${formatDate(appointment.birthdate)}`,
+            itemName: `${patientName}'s appointment on ${formatDate(appointmentDate)}`,
             itemType: 'Appointment'
         });
         setIsDeleteModalOpen(true);
@@ -300,21 +307,28 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                         <td>
                                             <div className={styles.patientInfo}>
                                                 <div className={styles.patientAvatar}>
-                                                    {getFirstLetterOfFirstAndLastName(appointment.patientId.fullName)}
+                                                    {
+                                                        (() => {
+                                                            const fullName = appointment.patientId?.fullName || appointment.fullName;
+                                                            return fullName 
+                                                                ? getFirstLetterOfFirstAndLastName(fullName)
+                                                                : 'N/A';
+                                                        })()
+                                                    }
                                                 </div>
                                                 <div>
                                                     <div className={styles.patientName}>
-                                                        {appointment.patientId.fullName}
+                                                        {appointment.patientId?.fullName || appointment.fullName}
                                                     </div>
                                                     <div className={styles.patientId}>
-                                                        PT-ID: {appointment.patientId.patientNumber}
+                                                        PT-ID: {appointment.patientId?.patientNumber || 'Walk-in'}
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div className={styles.appointmentDate}>
-                                                {formatDate(appointment.birthdate)}
+                                                {formatDate(appointment.birthdate || appointment.preferredDate)}
                                             </div>
                                         </td>
                                         <td>

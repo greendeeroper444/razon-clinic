@@ -44,13 +44,13 @@ const DashboardPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [inventoryError, setInventoryError] = useState<string | null>(null);
 
-    // Fetch appointments function
+    //fetch appointments function
     const fetchAppointments = useCallback(async () => {
         try {
             setLoading(true);
             const response = await getAppointments();
             if (response.data.success) {
-                // Show only first 5 appointments for dashboard
+                //show only first 5 appointments for dashboard
                 setAppointments(response.data.data.slice(0, 5));
             } else {
                 setError('Failed to fetch appointments');
@@ -63,13 +63,13 @@ const DashboardPage = () => {
         }
     }, []);
 
-    // Fetch inventory items function
+    //fetch inventory items function
     const fetchInventoryItems = useCallback(async () => {
         try {
             setInventoryLoading(true);
             const response = await getInventoryItems();
             if (response.data.inventoryItems) {
-                // Show only first 4 inventory items for dashboard
+                //show only first 4 inventory items for dashboard
                 setInventoryItems(response.data.inventoryItems.slice(0, 4));
             } else {
                 setInventoryError('Failed to fetch inventory items');
@@ -249,14 +249,21 @@ const DashboardPage = () => {
                                         <td>
                                             <div className={styles.patientInfo}>
                                                 <div className={styles.patientAvatar}>
-                                                    {getFirstLetterOfFirstAndLastName(appointment.patientId.fullName)}
+                                                    {
+                                                        (() => {
+                                                            const fullName = appointment.patientId?.fullName || appointment.fullName;
+                                                            return fullName 
+                                                                ? getFirstLetterOfFirstAndLastName(fullName)
+                                                                : 'N/A';
+                                                        })()
+                                                    }
                                                 </div>
                                                 <div>
                                                     <div className={styles.patientName}>
-                                                        {appointment.patientId.fullName}
+                                                        {appointment.patientId?.fullName || appointment.fullName}
                                                     </div>
                                                     <div className={styles.patientId}>
-                                                        PT-ID: {appointment.patientId.patientNumber}
+                                                        PT-ID: {appointment.patientId?.patientNumber || 'Walk-in'}
                                                     </div>
                                                 </div>
                                             </div>

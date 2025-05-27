@@ -3502,3 +3502,59 @@ Use mongoose.model(name, schema)
 2025-05-27 00:21:55 [INFO]: Server running on port 3000 
 2025-05-27 00:59:20 [INFO]: MongoDB Connected: 127.0.0.1 
 2025-05-27 00:59:20 [INFO]: Server running on port 3000 
+2025-05-27 11:29:35 [ERROR]: Error connecting to database: connect ECONNREFUSED 127.0.0.1:27017 
+2025-05-27 11:30:22 [ERROR]: Error connecting to database: connect ECONNREFUSED 127.0.0.1:27017 
+2025-05-27 11:33:06 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:33:06 [INFO]: Server running on port 3000 
+2025-05-27 11:35:49 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:35:49 [INFO]: Server running on port 3000 
+2025-05-27 11:36:06 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:36:06 [INFO]: Server running on port 3000 
+2025-05-27 11:36:13 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:36:13 [INFO]: Server running on port 3000 
+2025-05-27 11:36:17 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:36:17 [INFO]: Server running on port 3000 
+2025-05-27 11:37:03 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:37:03 [INFO]: Server running on port 3000 
+2025-05-27 11:37:13 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:37:13 [INFO]: Server running on port 3000 
+2025-05-27 11:37:20 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:37:20 [INFO]: Server running on port 3000 
+2025-05-27 11:37:28 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:37:28 [INFO]: Server running on port 3000 
+2025-05-27 11:37:51 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:37:51 [INFO]: Server running on port 3000 
+2025-05-27 11:38:27 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:38:27 [INFO]: Server running on port 3000 
+2025-05-27 11:48:01 [ERROR]: Error: Patient ID is required for field: undefined ApiError: Patient ID is required for field: undefined
+    at validateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\validators\appointment.validator.js:113:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-27 11:48:34 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:48:34 [INFO]: Server running on port 3000 
+2025-05-27 11:49:08 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 11:49:08 [INFO]: Server running on port 3000 
+2025-05-27 12:05:14 [ERROR]: Error: Cannot read properties of undefined (reading 'contactNumber') TypeError: Cannot read properties of undefined (reading 'contactNumber')
+    at updateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:355:75)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-27 12:05:41 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 12:05:41 [INFO]: Server running on port 3000 
+2025-05-27 12:05:56 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 12:05:56 [INFO]: Server running on port 3000 
+2025-05-27 12:07:08 [ERROR]: Error: Cannot read properties of undefined (reading 'contactNumber') TypeError: Cannot read properties of undefined (reading 'contactNumber')
+    at updateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:355:75)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-27 12:12:24 [ERROR]: Error: Cannot read properties of undefined (reading 'contactNumber') TypeError: Cannot read properties of undefined (reading 'contactNumber')
+    at updateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:355:75)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-27 12:13:04 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 12:13:04 [INFO]: Server running on port 3000 
+2025-05-27 12:13:11 [ERROR]: Error: Cannot read properties of undefined (reading 'contactNumber') TypeError: Cannot read properties of undefined (reading 'contactNumber')
+    at updateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:355:75)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-27 12:14:38 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 12:14:38 [INFO]: Server running on port 3000 
+2025-05-27 12:14:41 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-27 12:14:41 [INFO]: Server running on port 3000 

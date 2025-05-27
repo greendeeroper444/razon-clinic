@@ -63,6 +63,7 @@ class AppointmentController {
             
             const appointmentData = {
                 patientId: req.body.patientId,
+                fullName: req.body.fullName,
                 preferredDate: req.body.preferredDate,
                 preferredTime: req.body.preferredTime,
                 reasonForVisit: req.body.reasonForVisit?.trim(),
@@ -299,6 +300,7 @@ class AppointmentController {
             } else {
                 //for full update - basic appointment fields
                 appointment.patientId = req.body.patientId || appointment.patientId;
+                appointment.fullName = req.body.fullName || appointment.fullName;
                 appointment.preferredDate = req.body.preferredDate || appointment.preferredDate;
                 appointment.preferredTime = req.body.preferredTime || appointment.preferredTime;
                 appointment.reasonForVisit = req.body.reasonForVisit || appointment.reasonForVisit;
@@ -350,7 +352,7 @@ class AppointmentController {
             let smsResult = null;
 
             //send SMS notification if status changed and patient has contact number
-            if (oldStatus !== appointment.status && appointment.patientId.contactNumber) {
+            if (oldStatus !== appointment.status && appointment.patientId?.contactNumber) {
                 //only send SMS in production or when SMS_ENABLED is true
                 const shouldSendSMS = process.env.NODE_ENV === 'production' || process.env.SMS_ENABLED === 'true';
                 

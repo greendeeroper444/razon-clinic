@@ -82,6 +82,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
             if (modalType === 'appointment') {
                 setFormData({
                     patientId: '',
+                    fullName: '',
                     preferredDate: '',
                     preferredTime: '',
                     reasonForVisit: '',

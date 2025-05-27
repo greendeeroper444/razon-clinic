@@ -83,13 +83,16 @@ const AppointmentDetailsPage = () => {
                 //extract unique patients from appointments for the modal dropdown
                 const uniquePatients = Array.from(
                     new Map(
-                        response.data.data.map(appointment => [
-                            appointment.patientId.id,
-                            {
-                                id: appointment.patientId.id,
-                                fullName: appointment.patientId.fullName
-                            }
-                        ])
+                        response.data.data
+                            .filter(appointment => appointment.patientId?.id) 
+                            .map(appointment => [
+                                appointment.patientId.id,
+                                {
+                                    id: appointment.patientId.id,
+                                    fullName: appointment.patientId.fullName || appointment.fullName || 'N/A',
+                                    patientNumber: appointment.patientId.patientNumber || 'N/A'
+                                }
+                            ])
                     ).values()
                 );
                 setPatients(uniquePatients);
@@ -125,7 +128,8 @@ const AppointmentDetailsPage = () => {
             //convert the appointment response to form data format
             const formData: AppointmentFormData & { id?: string } = {
                 id: appointment.id,
-                patientId: appointment.patientId.id,
+                patientId: appointment.patientId?.id || '',
+                fullName: appointment.fullName,
                 preferredDate: appointment.preferredDate.split('T')[0],
                 preferredTime: appointment.preferredTime,
                 reasonForVisit: appointment.reasonForVisit,
@@ -315,6 +319,21 @@ const AppointmentDetailsPage = () => {
                     <FontAwesomeIcon icon={faCheckCircle} /> 
                     {isUpdating ? 'Updating...' : 'Status'}
                 </button>
+                {/* {
+                    
+                    appointment.patientId && (
+                        <button 
+                            type='button' 
+                            className={styles.btnOutline}
+                            onClick={handleStatusClick}
+                            disabled={isUpdating}
+                        >
+                            <FontAwesomeIcon icon={faCheckCircle} /> 
+                            {isUpdating ? 'Updating...' : 'Status'}
+                        </button>
+                    )
+                
+                } */}
             </div>
         </div>
 
@@ -379,15 +398,20 @@ const AppointmentDetailsPage = () => {
                     <h2>Patient Information</h2>
                 </div>
                 <div className={styles.cardContent}>
-                    {appointment.patientId.fullName && (
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>
-                                <FontAwesomeIcon icon={faUser} /> Name:
-                            </span>
-                            <span className={styles.infoValue}>{appointment.patientId.fullName}</span>
-                        </div>
-                    )}
-                    {appointment.patientId.email && (
+                   {/* fixed conditional rendering with proper null checking */}
+                    {(() => {
+                        const fullName = appointment.patientId?.fullName || appointment.fullName;
+                        return fullName && (
+                            <div className={styles.infoItem}>
+                                <span className={styles.infoLabel}>
+                                    <FontAwesomeIcon icon={faUser} /> Name:
+                                </span>
+                                <span className={styles.infoValue}>{fullName}</span>
+                            </div>
+                        );
+                    })()}
+                  {/* fixed email, contact, and address with safe null checking */}
+                    {appointment.patientId?.email && (
                         <div className={styles.infoItem}>
                             <span className={styles.infoLabel}>
                                 <FontAwesomeIcon icon={faEnvelope} /> Email:
@@ -395,7 +419,7 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.infoValue}>{appointment.patientId.email}</span>
                         </div>
                     )}
-                    {appointment.patientId.contactNumber && (
+                    {appointment.patientId?.contactNumber && (
                         <div className={styles.infoItem}>
                             <span className={styles.infoLabel}>
                                 <FontAwesomeIcon icon={faPhone} /> Contact:
@@ -403,7 +427,7 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.infoValue}>{appointment.patientId.contactNumber}</span>
                         </div>
                     )}
-                    {appointment.patientId.address && (
+                    {appointment.patientId?.address && (
                         <div className={styles.infoItem}>
                             <span className={styles.infoLabel}>
                                 <FontAwesomeIcon icon={faMapMarkerAlt} /> Address:

@@ -14,6 +14,7 @@ export interface AppointmentFormData {
     
     //basic appointment fields
     patientId: string;
+    fullName: string;
     preferredDate: string;
     preferredTime: string;
     reasonForVisit: string;
@@ -74,6 +75,7 @@ export interface AppointmentResponse {
         emailOrContactNumber: string;
         patientNumber: string;
     };
+    fullName: string;
     preferredDate: string;
     preferredTime: string;
     reasonForVisit: string;
@@ -123,6 +125,7 @@ export interface DeleteFormProps {
 
 export type Appointment = {
     _id: string;
+    fullName: string;
     appointmentNumber: string;
     preferredDate: string;
     preferredTime: string;

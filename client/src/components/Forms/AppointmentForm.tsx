@@ -52,6 +52,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         if (selectedPatient) {
             //create events for each field to populate
             const fieldsToPopulate = [
+                { name: 'fullName', value: selectedPatient.fullName || '' },
                 { name: 'birthdate', value: formatDateForInput(selectedPatient.birthdate) },
                 { name: 'sex', value: selectedPatient.sex || '' },
                 { name: 'height', value: selectedPatient.height || '' },
@@ -77,6 +78,23 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 };
                 onChange(fieldEvent);
             });
+        } else if (selectedPatientId === '') {
+            // Clear form fields when no patient is selected (for walk-ins)
+            const fieldsToClear = [
+                'fullName', 'birthdate', 'sex', 'height', 'weight', 'religion',
+                'motherName', 'motherAge', 'motherOccupation',
+                'fatherName', 'fatherAge', 'fatherOccupation'
+            ];
+            
+            fieldsToClear.forEach(fieldName => {
+                const fieldEvent = {
+                    target: {
+                        name: fieldName,
+                        value: ''
+                    }
+                };
+                onChange(fieldEvent);
+            });
         }
     };
 
@@ -89,6 +107,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             //auto-populate fields if patient data exists and form fields are empty
             if (patient) {
                 const fieldsToCheck = [
+                    { name: 'fullName', value: patient.fullName },
                     { name: 'birthdate', value: formatDateForInput(patient.birthdate) },
                     { name: 'sex', value: patient.sex },
                     { name: 'height', value: patient.height },
@@ -134,6 +153,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             
             //auto-populate patient fields if available
             const fieldsToPopulate = [
+                { name: 'fullName', value: currentUser.fullName || '' },
                 { name: 'birthdate', value: formatDateForInput(currentUser.birthdate) },
                 { name: 'sex', value: currentUser.sex || '' },
                 { name: 'height', value: currentUser.height || '' },
@@ -166,21 +186,20 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
   return (
     <>
         <div className={styles.formGroup}>
-            <label htmlFor='patientId'>Patient *</label>
+            <label htmlFor='patientId'>Patient</label>
                     
             {
                 currentUser && (currentUser.role === 'Doctor' || currentUser.role === 'Staff') ? (
-                    //doctor/staff view - show all patients
+                    //doctor/staff view - show all patients with option for walk-ins
                     <select
                         id='patientId'
                         name='patientId'
                         value={formData?.patientId || ''}
                         onChange={handlePatientChange}
                         className={styles.formControl}
-                        required
                         disabled={isLoading}
                     >
-                        <option value=''>Select Patient</option>
+                        <option value=''>Walk-in Patient (Enter details below)</option>
                         {
                             isLoading ? (
                                 <option value='' disabled>Loading patients...</option>
@@ -192,7 +211,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                                         </option>
                                     ))
                                 ) : (
-                                    <option value='' disabled>No patients available</option>
+                                    <option value='' disabled>No registered patients available</option>
                                 )
                             )
                         }
@@ -222,15 +241,32 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             }
         </div>
 
-        {/* patient information section */}
+        {/* patient information section - now shows for both registered patients and walk-ins */}
         {
-            formData?.patientId && (
+            (currentUser && (currentUser.role === 'Doctor' || currentUser.role === 'Staff')) || formData?.patientId ? (
                 <div className={styles.sectionDivider}>
                     <h4>Patient Information</h4>
                     <small style={{ color: '#666', fontStyle: 'italic' }}>
-                        Information auto-populated from patient record. You can edit as needed.
+                        {formData?.patientId ? 
+                            'Information auto-populated from patient record. You can edit as needed.' :
+                            'Please enter patient information for walk-in appointment.'
+                        }
                     </small>
-                    
+                    <div className={styles.formRow}>
+                        <div className={styles.formGroup}>
+                            <label htmlFor='fullName'>Full Name *</label>
+                            <input
+                                type='text'
+                                id='fullName'
+                                name='fullName'
+                                value={formData?.fullName || ''}
+                                onChange={onChange}
+                                className={styles.formControl}
+                                required
+                                disabled={isLoading}
+                            />
+                        </div>
+                    </div>
                     <div className={styles.formRow}>
                         <div className={styles.formGroup}>
                             <label htmlFor='birthdate'>Birth Date *</label>
@@ -420,7 +456,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                         </div>
                     </div>
                 </div>
-            )
+            ) : null
         }
 
         {/* Appointment Details Section */}

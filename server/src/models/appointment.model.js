@@ -9,6 +9,9 @@ const appointmentSchema = new mongoose.Schema(
         patientId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'OnlinePatient',
+        },
+        fullName: {
+            type: String,
             required: true
         },
         preferredDate: {
