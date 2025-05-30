@@ -70,7 +70,7 @@ const NavigationComponent = () => {
                             //show logout when authenticated
                             <>
                                 <div>
-                                    <span>{currentUser?.fullName}</span>
+                                    <span>{currentUser?.firstName} {currentUser?.lastName}</span>
                                 </div>
                                 |
                                 <button 

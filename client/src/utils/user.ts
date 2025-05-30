@@ -33,3 +33,29 @@ export const getFirstAndLastName = (fullName: string | undefined): string => {
     
     return `${firstName} ${lastName}`;
 };
+
+
+
+export const getMiddleNameInitial = (middleName: string | null) => {
+    if (!middleName || typeof middleName !== 'string') {
+        return '';
+    }
+    
+    const trimmed = middleName.trim();
+    return trimmed ? trimmed.charAt(0).toUpperCase() + '.' : '';
+};
+
+
+
+export const getMiddleNameInitials = (middleName: string | null) => {
+    if (!middleName || typeof middleName !== 'string') {
+        return '';
+    }
+    
+    return middleName
+        .trim()
+        .split(/\s+/)
+        .filter(name => name.length > 0)
+        .map(name => name.charAt(0).toUpperCase())
+        .join('.') + (middleName.trim() ? '.' : '');
+};

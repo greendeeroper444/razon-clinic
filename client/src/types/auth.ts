@@ -7,7 +7,9 @@ export interface ParentInfo {
 }
 
 export interface SignupFormData {
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    middleName: string;
     emailOrContactNumber: string;
     password: string;
     confirmPassword: string;
@@ -21,7 +23,9 @@ export interface SignupFormData {
 }
 
 export interface ValidationErrors {
-    fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    middleName?: string;
     emailOrContactNumber?: string;
     password?: string;
     confirmPassword?: string;
@@ -57,7 +61,9 @@ export interface LoginResponse {
         token: string;
         user: {
             id: string;
-            fullName: string;
+            firstName: string;
+            lastName: string;
+            middleName: string;
             email?: string;
             contactNumber?: string;
             birthdate: Date;
@@ -76,7 +82,9 @@ export interface LoginResponse {
 //user
 export interface User {
     id: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    middleName: string;
     email?: string;
     contactNumber?: string;
     birthdate: Date;

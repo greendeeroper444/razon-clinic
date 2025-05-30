@@ -6,10 +6,20 @@ const OnlinePatientSchema = new mongoose.Schema(
             type: String,
             unique: true
         },
-        fullName: {
+        firstName: {
             type: String,
             required: true,
-            trim: true,
+            minlength: 3,
+            maxlength: 50
+        },
+        lastName: {
+            type: String,
+            required: true,
+            minlength: 3,
+            maxlength: 50
+        },
+        middleName: {
+            type: String,
             minlength: 3,
             maxlength: 50
         },
@@ -61,48 +71,6 @@ const OnlinePatientSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim: true
-        },
-        //mother's information
-        motherInfo: {
-            name: {
-                type: String,
-                required: false,
-                maxlength: 50,
-                trim: true
-            },
-            age: {
-                type: Number,
-                required: false,
-                min: 15,
-                max: 120
-            },
-            occupation: {
-                type: String,
-                required: false,
-                maxlength: 50,
-                trim: true
-            }
-        },
-        //father's information
-        fatherInfo: {
-            name: {
-                type: String,
-                required: false,
-                maxlength: 50,
-                trim: true
-            },
-            age: {
-                type: Number,
-                required: false,
-                min: 15,
-                max: 120
-            },
-            occupation: {
-                type: String,
-                required: false,
-                maxlength: 50,
-                trim: true
-            }
         },
         religion: {
             type: String,

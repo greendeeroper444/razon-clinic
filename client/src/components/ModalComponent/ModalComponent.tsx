@@ -81,8 +81,9 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
             //set default values based on modal type
             if (modalType === 'appointment') {
                 setFormData({
-                    patientId: '',
-                    fullName: '',
+                    firstName: '',
+                    lastName: '',
+                    middleName: '',
                     preferredDate: '',
                     preferredTime: '',
                     reasonForVisit: '',
@@ -90,8 +91,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                     
                     //initialize all patient information fields
                     birthdate: '',
-                    sex: undefined,
-                    address: '',
+                    sex: '',
                     height: '',
                     weight: '',
                     religion: '',
@@ -114,7 +114,9 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                         name: '',
                         age: '',
                         occupation: ''
-                    }
+                    },
+                    contactNumber: '',
+                    address: '',
                 } as AppointmentFormData);
             } else if (modalType === 'patient') {
                 setFormData({

@@ -54,7 +54,7 @@ class AppointmentController {
                 });
             }
 
-            if (!req.body.sex || !['Male', 'Female', 'Other'].includes(req.body.sex)) {
+            if (!req.body.sex || !['Male', 'Female'].includes(req.body.sex)) {
                 return res.status(400).json({
                     success: false,
                     message: 'Valid sex selection is required'
@@ -63,7 +63,9 @@ class AppointmentController {
             
             const appointmentData = {
                 patientId: req.body.patientId,
-                fullName: req.body.fullName,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                middleName: req.body.middleName || null,
                 preferredDate: req.body.preferredDate,
                 preferredTime: req.body.preferredTime,
                 reasonForVisit: req.body.reasonForVisit?.trim(),
@@ -85,7 +87,9 @@ class AppointmentController {
                     name: req.body.fatherName?.trim(),
                     age: req.body.fatherAge ? Number(req.body.fatherAge) : undefined,
                     occupation: req.body.fatherOccupation?.trim()
-                }
+                },
+                contactNumber: req.body.contactNumber,
+                address: req.body.address,
             };
 
             //remove undefined values from nested objects
@@ -173,7 +177,7 @@ class AppointmentController {
             const appointments = await Appointment.find(filter)
                 // .sort({ preferredDate: 1, preferredTime: 1 })
                 .sort({ createdAt: -1 })
-                .populate('patientId', 'fullName emailOrContactNumber patientNumber');
+                .populate('patientId', 'firstName lastName middleName emailOrContactNumber patientNumber');
             
             return res.status(200).json({
                 success: true,
@@ -200,7 +204,7 @@ class AppointmentController {
             
             //find the appointment by ID and populate patient information
             const appointment = await Appointment.findById(appointmentId)
-                .populate('patientId', 'fullName email contactNumber birthdate sex address dateRegistered');
+                .populate('patientId', 'firstName lastName middleName email contactNumber birthdate sex address dateRegistered');
             
             if (!appointment) {
                 return res.status(404).json({
@@ -225,7 +229,7 @@ class AppointmentController {
             const { appointmentId } = req.params;
             
             const appointment = await Appointment.findById(appointmentId)
-                .populate('patientId', 'fullName emailOrContactNumber');
+                .populate('patientId', 'firstName lastName middleName emailOrContactNumber');
             
             if (!appointment) {
                 throw new ApiError('Appointment not found', 404);
@@ -263,7 +267,7 @@ class AppointmentController {
             const appointments = await Appointment.find(filter)
                 // .sort({ preferredDate: 1, preferredTime: 1 })
                 .sort({ createdAt: -1 })
-                .populate('patientId', 'fullName emailOrContactNumber patientNumber');
+                .populate('patientId', 'firstName emailOrContactNumber patientNumber');
             
             return res.status(200).json({
                 success: true,
@@ -300,7 +304,9 @@ class AppointmentController {
             } else {
                 //for full update - basic appointment fields
                 appointment.patientId = req.body.patientId || appointment.patientId;
-                appointment.fullName = req.body.fullName || appointment.fullName;
+                appointment.firstName = req.body.firstName || appointment.firstName;
+                appointment.lastName = req.body.lastName || appointment.lastName;
+                appointment.middleName = req.body.middleName || appointment.middleName;
                 appointment.preferredDate = req.body.preferredDate || appointment.preferredDate;
                 appointment.preferredTime = req.body.preferredTime || appointment.preferredTime;
                 appointment.reasonForVisit = req.body.reasonForVisit || appointment.reasonForVisit;
@@ -309,7 +315,6 @@ class AppointmentController {
                 //update patient information fields if provided
                 if (req.body.birthdate) appointment.birthdate = req.body.birthdate;
                 if (req.body.sex) appointment.sex = req.body.sex;
-                if (req.body.address) appointment.address = req.body.address;
                 if (req.body.height !== undefined) appointment.height = req.body.height ? Number(req.body.height) : undefined;
                 if (req.body.weight !== undefined) appointment.weight = req.body.weight ? Number(req.body.weight) : undefined;
                 if (req.body.religion !== undefined) appointment.religion = req.body.religion?.trim();
@@ -345,6 +350,9 @@ class AppointmentController {
                 if (appointment.fatherInfo) {
                     appointment.markModified('fatherInfo');
                 }
+
+                if (req.body.contactNumber) appointment.contactNumber = req.body.contactNumber;
+                if (req.body.address) appointment.address = req.body.address;
             }
             
             await appointment.save();

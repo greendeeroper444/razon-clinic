@@ -3560,3 +3560,180 @@ Use mongoose.model(name, schema)
 2025-05-27 12:14:41 [INFO]: Server running on port 3000 
 2025-05-27 12:15:06 [INFO]: MongoDB Connected: 127.0.0.1 
 2025-05-27 12:15:06 [INFO]: Server running on port 3000 
+2025-05-27 12:16:56 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:247:23)
+2025-05-29 21:58:02 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 21:58:02 [INFO]: Server running on port 3000 
+2025-05-29 22:16:08 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:247:23)
+2025-05-29 22:20:43 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:20:43 [INFO]: Server running on port 3000 
+2025-05-29 22:21:23 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:21:23 [INFO]: Server running on port 3000 
+2025-05-29 22:21:37 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:21:37 [INFO]: Server running on port 3000 
+2025-05-29 22:21:55 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:21:55 [INFO]: Server running on port 3000 
+2025-05-29 22:22:20 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:22:20 [INFO]: Server running on port 3000 
+2025-05-29 22:22:24 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:22:24 [INFO]: Server running on port 3000 
+2025-05-29 22:24:37 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:24:37 [INFO]: Server running on port 3000 
+2025-05-29 22:24:51 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:24:51 [INFO]: Server running on port 3000 
+2025-05-29 22:27:00 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:27:00 [INFO]: Server running on port 3000 
+2025-05-29 22:27:38 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:27:38 [INFO]: Server running on port 3000 
+2025-05-29 22:28:03 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:28:03 [INFO]: Server running on port 3000 
+2025-05-29 22:29:11 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:29:12 [INFO]: Server running on port 3000 
+2025-05-29 22:38:48 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:38:48 [INFO]: Server running on port 3000 
+2025-05-29 22:39:28 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:39:28 [INFO]: Server running on port 3000 
+2025-05-29 22:43:11 [ERROR]: Error: Patient with this email or contact number already exists ApiError: Patient with this email or contact number already exists
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:131:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-29 22:49:28 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:241:23)
+2025-05-29 22:53:30 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:53:30 [INFO]: Server running on port 3000 
+2025-05-29 22:54:10 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:54:10 [INFO]: Server running on port 3000 
+2025-05-29 22:54:50 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:54:50 [INFO]: Server running on port 3000 
+2025-05-29 22:55:06 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:55:06 [INFO]: Server running on port 3000 
+2025-05-29 22:55:37 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:55:37 [INFO]: Server running on port 3000 
+2025-05-29 22:56:16 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:56:16 [INFO]: Server running on port 3000 
+2025-05-29 22:56:47 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:56:47 [INFO]: Server running on port 3000 
+2025-05-29 22:57:03 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:57:03 [INFO]: Server running on port 3000 
+2025-05-29 22:57:08 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:57:08 [INFO]: Server running on port 3000 
+2025-05-29 22:57:22 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:57:22 [INFO]: Server running on port 3000 
+2025-05-29 22:57:58 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:57:58 [INFO]: Server running on port 3000 
+2025-05-29 22:58:18 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:58:19 [INFO]: Server running on port 3000 
+2025-05-29 22:58:45 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 22:58:45 [INFO]: Server running on port 3000 
+2025-05-29 23:17:31 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 23:17:31 [INFO]: Server running on port 3000 
+2025-05-29 23:17:45 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 23:17:45 [INFO]: Server running on port 3000 
+2025-05-29 23:17:52 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 23:17:52 [INFO]: Server running on port 3000 
+2025-05-29 23:23:47 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 23:23:47 [INFO]: Server running on port 3000 
+2025-05-29 23:24:12 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-29 23:24:12 [INFO]: Server running on port 3000 
+2025-05-30 00:26:43 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:241:23)
+2025-05-30 00:44:44 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:44:44 [INFO]: Server running on port 3000 
+2025-05-30 00:45:29 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:45:29 [INFO]: Server running on port 3000 
+2025-05-30 00:45:34 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:45:34 [INFO]: Server running on port 3000 
+2025-05-30 00:45:47 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:45:47 [INFO]: Server running on port 3000 
+2025-05-30 00:57:15 [ERROR]: Error: Patient with this email or contact number already exists ApiError: Patient with this email or contact number already exists
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:131:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-30 00:57:46 [ERROR]: Error: Online patient not found ApiError: Online patient not found
+    at getProfile (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:299:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-30 00:57:46 [ERROR]: Error: Online patient not found ApiError: Online patient not found
+    at getProfile (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:299:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-30 00:58:33 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:58:33 [INFO]: Server running on port 3000 
+2025-05-30 00:58:57 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:58:57 [INFO]: Server running on port 3000 
+2025-05-30 00:59:12 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:59:12 [INFO]: Server running on port 3000 
+2025-05-30 00:59:30 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:59:30 [INFO]: Server running on port 3000 
+2025-05-30 00:59:32 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:59:32 [INFO]: Server running on port 3000 
+2025-05-30 00:59:46 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:59:46 [INFO]: Server running on port 3000 
+2025-05-30 00:59:51 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 00:59:51 [INFO]: Server running on port 3000 
+2025-05-30 01:00:06 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 01:00:06 [INFO]: Server running on port 3000 
+2025-05-30 01:00:50 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 01:00:50 [INFO]: Server running on port 3000 
+2025-05-30 01:00:58 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 01:00:58 [INFO]: Server running on port 3000 
+2025-05-30 01:02:55 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 01:02:55 [INFO]: Server running on port 3000 
+2025-05-30 01:03:30 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 01:03:30 [INFO]: Server running on port 3000 
+2025-05-30 01:04:37 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 01:04:37 [INFO]: Server running on port 3000 
+2025-05-30 01:13:47 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 01:13:47 [INFO]: Server running on port 3000 
+2025-05-30 01:14:00 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 01:14:00 [INFO]: Server running on port 3000 
+2025-05-30 01:14:37 [ERROR]: Error: token is not defined ReferenceError: token is not defined
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:185:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-30 01:15:47 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 01:15:47 [INFO]: Server running on port 3000 
+2025-05-30 01:15:49 [ERROR]: Error: Patient with this email or contact number already exists ApiError: Patient with this email or contact number already exists
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:131:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-30 01:16:00 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-30 01:17:18 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 01:17:18 [INFO]: Server running on port 3000 
+2025-05-30 01:22:02 [ERROR]: Error: Token expired ApiError: Token expired
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:31:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-30 01:22:02 [ERROR]: Error: Token expired ApiError: Token expired
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:31:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-30 10:47:55 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 10:47:55 [INFO]: Server running on port 3000 
+2025-05-30 11:33:42 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)
+2025-05-30 12:11:44 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)
+2025-05-30 12:23:38 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-05-30 12:23:38 [INFO]: Server running on port 3000 
+2025-05-30 12:24:54 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)

@@ -47,7 +47,6 @@
     gap: 16px;
 }
 
-
 .btnBack {
     background-color: var(--gray-light);
     color: var(--dark);
@@ -148,25 +147,20 @@
     background-color: #fef2f2;
     color: var(--danger);
 }
+
 .statusBadge.statusRebooked {
     background-color: #fef2f2;
     color: var(--warning);
 }
-.appointmentDetailsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 24px;
-}
 
+/* Single table card styles */
 .detailsCard {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     border: 1px solid var(--gray-light);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 24px;
 }
 
 .cardHeader {
@@ -192,19 +186,47 @@
 
 .cardContent {
     padding: 20px;
+}
+
+/* Table-style layout for appointment details */
+.detailsTable {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.tableSection {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    flex-grow: 1;
 }
 
-.infoItem {
+.sectionTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-light);
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    gap: 8px;
 }
 
-.infoLabel {
+.tableRow {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gray-light);
+    align-items: start;
+}
+
+.tableRow:last-child {
+    border-bottom: none;
+}
+
+.tableLabel {
     font-size: 14px;
     color: var(--gray);
     font-weight: 500;
@@ -213,10 +235,11 @@
     gap: 8px;
 }
 
-.infoValue {
+.tableValue {
     font-size: 16px;
     color: var(--dark);
     font-weight: 400;
+    word-break: break-word;
 }
 
 .ageLabel {
@@ -225,7 +248,23 @@
     color: var(--gray);
 }
 
+/* Family information sub-sections */
+.familySubSection {
+    margin-left: 16px;
+    padding-left: 16px;
+    border-left: 3px solid var(--primary-light);
+}
 
+.familyTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark-light);
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Loading and Error states */
 .loadingContainer {
     display: flex;
     flex-direction: column;
@@ -265,7 +304,12 @@
     margin-bottom: 16px;
 }
 
+/* Responsive design */
 @media (max-width: 768px) {
+    .content {
+        padding: 16px;
+    }
+    
     .contentHeader {
         flex-direction: column;
         align-items: flex-start;
@@ -277,7 +321,33 @@
         justify-content: space-between;
     }
     
-    .appointmentDetailsGrid {
+    .appStatusBanner {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    .tableRow {
         grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .tableLabel {
+        font-weight: 600;
+        color: var(--dark-light);
+    }
+    
+    .familySubSection {
+        margin-left: 0;
+        padding-left: 12px;
+        border-left: 2px solid var(--primary-light);
+    }
+    
+    .cardContent {
+        padding: 16px;
+    }
+    
+    .detailsTable {
+        gap: 24px;
     }
 }

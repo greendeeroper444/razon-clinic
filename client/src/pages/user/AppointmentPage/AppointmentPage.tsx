@@ -20,7 +20,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
     const [selectedAppointment, setSelectedAppointment] = useState<AppointmentFormData & { id?: string } | null>(null);
     const [deleteAppointmentData, setDeleteAppointmentData] = useState<{id: string, itemName: string, itemType: string} | null>(null);
-    const [patients, setPatients] = useState<Array<{ id: string; fullName: string }>>([]);
+    const [patients, setPatients] = useState<Array<{ id: string; firstName: string }>>([]);
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
     //create a memoized fetchAppointments function using useCallback
@@ -35,11 +35,11 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                 const uniquePatients = Array.from(
                     new Map(
                         response.data.data.map(appointment => [
-                            appointment.patientId.id,
+                            appointment.id,
                             {
-                                id: appointment.patientId.id,
-                                fullName: appointment.patientId.fullName,
-                                patientNumber: appointment.patientId.patientNumber
+                                id: appointment.id,
+                                firstName: appointment.firstName,
+                                appointmentNumber: appointment.appointmentNumber
                             }
                         ])
                     ).values()
@@ -90,7 +90,9 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         //convert the appointment response to form data format
         const formData: AppointmentFormData & { id?: string } = {
             id: appointment.id,
-            patientId: appointment.patientId.id,
+            firstName: appointment.firstName,
+            lastName: appointment.lastName,
+            middleName: appointment.middleName || null,
             preferredDate: appointment.preferredDate.split('T')[0],
             preferredTime: appointment.preferredTime,
             reasonForVisit: appointment.reasonForVisit,
@@ -99,7 +101,6 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             //patient information fields
             birthdate: appointment.birthdate ? appointment.birthdate.split('T')[0] : undefined,
             sex: appointment.sex,
-            address: appointment.address,
             height: appointment.height,
             weight: appointment.weight,
             religion: appointment.religion,
@@ -125,6 +126,8 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                 age: appointment.fatherInfo.age,
                 occupation: appointment.fatherInfo.occupation,
             } : undefined,
+            contactNumber: appointment.contactNumber,
+            address: appointment.address
         };
     
         setSelectedAppointment(formData);
@@ -134,7 +137,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const handleDeleteClick = (appointment: AppointmentResponse) => {
         setDeleteAppointmentData({
             id: appointment.id,
-            itemName: `${appointment.patientId.fullName}'s appointment on ${formatDate(appointment.birthdate)}`,
+            itemName: `${appointment.firstName}'s appointment on ${formatDate(appointment.preferredDate)}`,
             itemType: 'Appointment'
         });
         setIsDeleteModalOpen(true);
@@ -300,21 +303,21 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                         <td>
                                             <div className={styles.patientInfo}>
                                                 <div className={styles.patientAvatar}>
-                                                    {getFirstLetterOfFirstAndLastName(appointment.patientId.fullName)}
+                                                    {getFirstLetterOfFirstAndLastName(appointment.firstName)}
                                                 </div>
                                                 <div>
                                                     <div className={styles.patientName}>
-                                                        {appointment.fullName}
+                                                        {appointment.firstName} {appointment.lastName}
                                                     </div>
                                                     <div className={styles.patientId}>
-                                                        PT-ID: {appointment.patientId.patientNumber}
+                                                        APT-ID: {appointment.appointmentNumber}
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div className={styles.appointmentDate}>
-                                                {formatDate(appointment.birthdate)}
+                                                {formatDate(appointment.preferredDate)}
                                             </div>
                                         </td>
                                         <td>

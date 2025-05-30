@@ -5,28 +5,23 @@ export interface AppointmentFormProps {
     formData: AppointmentFormData;
     onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
     isLoading: boolean;
-    patients: Array<{ id: string; fullName: string; patientNumber: string; }>;
+    patients: Array<{ id: string; firstName: string; lastName: string; middleName: string | null; patientNumber: string; }>;
 }
 
 export interface AppointmentFormData {
-    //optional id field for updates
-    id?: string;
-    
-    //basic appointment fields
-    patientId: string;
-    fullName: string;
+    id: string;
+    firstName: string;
+    lastName: string;
+    middleName: string | null;
     preferredDate: string;
     preferredTime: string;
     reasonForVisit: string;
     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
-    
-    //patient information fields
-    birthdate?: string;
-    sex: 'Male' | 'Female' | 'Other';
-    address?: string;
+    sex?: string;
     height?: number | string;
     weight?: number | string;
     religion?: string;
+    birthdate: number | string | undefined;
     
     //flattened mother information
     motherName?: string;
@@ -37,7 +32,6 @@ export interface AppointmentFormData {
     fatherName?: string;
     fatherAge?: number | string;
     fatherOccupation?: string;
-    
     //nested structure for backward compatibility if needed
     motherInfo?: {
         name: string;
@@ -49,6 +43,8 @@ export interface AppointmentFormData {
         age: number | string;
         occupation: string;
     };
+    contactNumber: number | string;
+    address?: string;
 }
 
 
@@ -68,14 +64,10 @@ export interface ParentInfo {
 
 
 export interface AppointmentResponse {
-    id: string;
-    patientId: {
-        id: string;
-        fullName: string;
-        emailOrContactNumber: string;
-        patientNumber: string;
-    };
-    fullName: string;
+    id: string;   
+    firstName: string;
+    lastName: string;
+    middleName: string | null;
     preferredDate: string;
     preferredTime: string;
     reasonForVisit: string;
@@ -83,8 +75,7 @@ export interface AppointmentResponse {
     
     //patient information fields
     birthdate?: string;
-    sex?: 'Male' | 'Female' | 'Other';
-    address?: string;
+    sex?: 'Male' | 'Female';
     height?: number | string;
     weight?: number | string;
     religion?: string;
@@ -100,8 +91,9 @@ export interface AppointmentResponse {
     //nested parent information structures (what function expects)
     motherInfo?: ParentInfo;
     fatherInfo?: ParentInfo;
-    
-    appointmentName: string;
+    contactNumber: number | string;
+    address?: string;
+    appointmentNumber: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -125,7 +117,9 @@ export interface DeleteFormProps {
 
 export type Appointment = {
     _id: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    middleName: string | null;
     appointmentNumber: string;
     preferredDate: string;
     preferredTime: string;
@@ -149,4 +143,6 @@ export type Appointment = {
         occupation: string;
     };
     religion: string;
+    contactNumber: number | string;
+    address: string;
 };

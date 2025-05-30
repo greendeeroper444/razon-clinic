@@ -26,6 +26,7 @@ import { calculateAge, formatBirthdate, formatDate } from '../../../utils/format
 import { Appointment, AppointmentFormData, AppointmentResponse } from '../../../types/appointment';
 import ModalComponent from '../../../components/ModalComponent/ModalComponent';
 import { toast } from 'sonner';
+import { getMiddleNameInitial } from '../../../utils/user';
 
 const AppointmentDetailsPage = () => {
     const { appointmentId } = useParams();
@@ -34,7 +35,7 @@ const AppointmentDetailsPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [selectedAppointment, setSelectedAppointment] = useState<AppointmentFormData & { id?: string } | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [patients, setPatients] = useState<Array<{ id: string; fullName: string }>>([]);
+    const [patients, setPatients] = useState<Array<{ id: string; firstName: string }>>([]);
     const [appointments, setAppointments] = useState<AppointmentResponse[]>([]);
 
     //extract appointment details fetching into a separate function
@@ -85,7 +86,7 @@ const AppointmentDetailsPage = () => {
                             appointment.patientId.id,
                             {
                                 id: appointment.patientId.id,
-                                fullName: appointment.patientId.fullName
+                                firstName: appointment.patientId.firstName
                             }
                         ])
                     ).values()
@@ -116,7 +117,9 @@ const AppointmentDetailsPage = () => {
         //convert the appointment response to form data format
         const formData: AppointmentFormData & { id?: string } = {
             id: appointment.id,
-            patientId: appointment.patientId.id,
+            firstName: appointment.firstName,
+            lastName: appointment.lastName,
+            middleName: appointment.middleName || null,
             preferredDate: appointment.preferredDate.split('T')[0],
             preferredTime: appointment.preferredTime,
             reasonForVisit: appointment.reasonForVisit,
@@ -125,7 +128,6 @@ const AppointmentDetailsPage = () => {
             //patient information fields
             birthdate: appointment.birthdate ? appointment.birthdate.split('T')[0] : undefined,
             sex: appointment.sex,
-            address: appointment.address,
             height: appointment.height,
             weight: appointment.weight,
             religion: appointment.religion,
@@ -151,6 +153,8 @@ const AppointmentDetailsPage = () => {
                 age: appointment.fatherInfo.age,
                 occupation: appointment.fatherInfo.occupation,
             } : undefined,
+            contactNumber: appointment.contactNumber,
+            address: appointment.address
         };
     
         setSelectedAppointment(formData);
@@ -253,7 +257,7 @@ const AppointmentDetailsPage = () => {
                 <h1 className={styles.contentTitle}>Appointment Details</h1>
             </div>
             <div className={styles.contentActions}>
-                <button type='button' className={styles.btnPrimary}  onClick={() => handleUpdateClick(appointment)}>
+                <button type='button' className={styles.btnPrimary} onClick={() => handleUpdateClick(appointment)}>
                     <FontAwesomeIcon icon={faEdit} /> Edit
                 </button>
             </div>
@@ -268,178 +272,166 @@ const AppointmentDetailsPage = () => {
             </div>
         </div>
 
-        <div className={styles.appointmentDetailsGrid}>
-            {/* appointment detail card */}
-            <div className={styles.detailsCard}>
-                <div className={styles.cardHeader}>
-                    <FontAwesomeIcon icon={faCalendarAlt} className={styles.cardIcon} />
-                    <h2>Appointment Information</h2>
-                </div>
-                <div className={styles.cardContent}>
-                    <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>
-                            <FontAwesomeIcon icon={faCalendarAlt} /> Preffered Date:
-                        </span>
-                        <span className={styles.infoValue}>{formatDate(appointment.preferredDate)}</span>
-                    </div>
-                    <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>
-                            <FontAwesomeIcon icon={faClock} /> Preffered Time:
-                        </span>
-                        <span className={styles.infoValue}>{appointment.preferredTime}</span>
-                    </div>
-                    <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>
-                            <FontAwesomeIcon icon={faNotesMedical} /> Reason for Visit:
-                        </span>
-                        <span className={styles.infoValue}>{appointment.reasonForVisit}</span>
-                    </div>
-                    <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>Created On:</span>
-                        <span className={styles.infoValue}>
-                            {new Date(appointment.createdAt).toLocaleString()}
-                        </span>
-                    </div>
-                    {
-                        appointment.updatedAt !== appointment.createdAt && (
-                            <div className={styles.infoItem}>
-                                <span className={styles.infoLabel}>Last Updated:</span>
-                                <span className={styles.infoValue}>
-                                {new Date(appointment.updatedAt).toLocaleString()}
+        {/* single comprehensive appointment details table */}
+        <div className={styles.detailsCard}>
+            <div className={styles.cardHeader}>
+                <FontAwesomeIcon icon={faCalendarAlt} className={styles.cardIcon} />
+                <h2>Complete Appointment Details</h2>
+            </div>
+            <div className={styles.cardContent}>
+                <div className={styles.detailsTable}>
+                    {/* appointment sex */}
+                    <div className={styles.tableSection}>
+                        <h3 className={styles.sectionTitle}>
+                            <FontAwesomeIcon icon={faCalendarAlt} /> Appointment Information
+                        </h3>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <FontAwesomeIcon icon={faCalendarAlt} /> Preferred Date:
+                            </span>
+                            <span className={styles.tableValue}>{formatDate(appointment.preferredDate)}</span>
+                        </div>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <FontAwesomeIcon icon={faClock} /> Preferred Time:
+                            </span>
+                            <span className={styles.tableValue}>{appointment.preferredTime}</span>
+                        </div>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <FontAwesomeIcon icon={faNotesMedical} /> Reason for Visit:
+                            </span>
+                            <span className={styles.tableValue}>{appointment.reasonForVisit}</span>
+                        </div>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>Created On:</span>
+                            <span className={styles.tableValue}>
+                                {new Date(appointment.createdAt).toLocaleString()}
+                            </span>
+                        </div>
+                        {appointment.updatedAt !== appointment.createdAt && (
+                            <div className={styles.tableRow}>
+                                <span className={styles.tableLabel}>Last Updated:</span>
+                                <span className={styles.tableValue}>
+                                    {new Date(appointment.updatedAt).toLocaleString()}
                                 </span>
                             </div>
-                        )
-                    }
-                </div>
-            </div>
+                        )}
+                    </div>
 
-            {/* patient contact information card */}
-            <div className={styles.detailsCard}>
-                <div className={styles.cardHeader}>
-                    <FontAwesomeIcon icon={faUser} className={styles.cardIcon} />
-                    <h2>Patient Information</h2>
-                </div>
-                <div className={styles.cardContent}>
-                    {appointment.fullName && (
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>
-                                <FontAwesomeIcon icon={faUser} /> Name:
+                    {/* patient details information */}
+                    <div className={styles.tableSection}>
+                        <h3 className={styles.sectionTitle}>
+                            <FontAwesomeIcon icon={faUser} /> Patient Information
+                        </h3>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <FontAwesomeIcon icon={faUser} /> Full Name:
                             </span>
-                            <span className={styles.infoValue}>{appointment.fullName}</span>
-                        </div>
-                    )}
-                    {appointment.patientId.email && (
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>
-                                <FontAwesomeIcon icon={faEnvelope} /> Email:
+                            <span className={styles.tableValue}>
+                                {appointment.firstName}, {appointment.lastName}
+                                {appointment.middleName ? `, ${getMiddleNameInitial(appointment.middleName)}` : ''}
                             </span>
-                            <span className={styles.infoValue}>{appointment.patientId.email}</span>
                         </div>
-                    )}
-                    {appointment.patientId.contactNumber && (
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>
-                                <FontAwesomeIcon icon={faPhone} /> Contact:
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <FontAwesomeIcon icon={faBirthdayCake} /> Birthdate:
                             </span>
-                            <span className={styles.infoValue}>{appointment.patientId.contactNumber}</span>
+                            <span className={styles.tableValue}>
+                                {formatBirthdate(appointment.birthdate)} 
+                                <span className={styles.ageLabel}>({calculateAge(appointment.birthdate)} years)</span>
+                            </span>
                         </div>
-                    )}
-                    {appointment.patientId.address && (
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <FontAwesomeIcon icon={faVenusMars} /> Sex:
+                            </span>
+                            <span className={styles.tableValue}>{appointment.sex}</span>
+                        </div>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <FontAwesomeIcon icon={faPhone} /> Contact Number:
+                            </span>
+                            <span className={styles.tableValue}>{appointment.contactNumber}</span>
+                        </div>
+                        
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faMapMarkerAlt} /> Address:
                             </span>
-                            <span className={styles.infoValue}>{appointment.patientId.address}</span>
+                            <span className={styles.tableValue}>{appointment.patientId.address}</span>
                         </div>
-                    )}
-                    <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>
-                            <FontAwesomeIcon icon={faBirthdayCake} /> Birthdate:
-                        </span>
-                        <span className={styles.infoValue}>
-                            {formatBirthdate(appointment.birthdate)} 
-                            <span className={styles.ageLabel}>({calculateAge(appointment.birthdate)} years)</span>
-                        </span>
                     </div>
-                    <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>
-                            <FontAwesomeIcon icon={faVenusMars} /> Sex:
-                        </span>
-                        <span className={styles.infoValue}>{appointment.sex}</span>
-                    </div>
-                </div>
-            </div>
 
-            {/* patient medical information card */}
-            <div className={styles.detailsCard}>
-                <div className={styles.cardHeader}>
-                    <FontAwesomeIcon icon={faNotesMedical} className={styles.cardIcon} />
-                    <h2>Medical Information</h2>
-                </div>
-                <div className={styles.cardContent}>
-                    <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>
-                            <FontAwesomeIcon icon={faRulerVertical} /> Height:
-                        </span>
-                        <span className={styles.infoValue}>{appointment.height} cm</span>
+                    {/* medical informations sec*/}
+                    <div className={styles.tableSection}>
+                        <h3 className={styles.sectionTitle}>
+                            <FontAwesomeIcon icon={faNotesMedical} /> Medical Information
+                        </h3>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <FontAwesomeIcon icon={faRulerVertical} /> Height:
+                            </span>
+                            <span className={styles.tableValue}>{appointment.height} cm</span>
+                        </div>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <FontAwesomeIcon icon={faWeight} /> Weight:
+                            </span>
+                            <span className={styles.tableValue}>{appointment.weight} kg</span>
+                        </div>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <FontAwesomeIcon icon={faPray} /> Religion:
+                            </span>
+                            <span className={styles.tableValue}>{appointment.religion}</span>
+                        </div>
                     </div>
-                    <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>
-                            <FontAwesomeIcon icon={faWeight} /> Weight:
-                        </span>
-                        <span className={styles.infoValue}>{appointment.weight} kg</span>
-                    </div>
-                    <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>
-                            <FontAwesomeIcon icon={faPray} /> Religion:
-                        </span>
-                        <span className={styles.infoValue}>{appointment.religion}</span>
-                    </div>
-                </div>
-            </div>
 
-            {/* family information card */}
-            <div className={styles.detailsCard}>
-                <div className={styles.cardHeader}>
-                    <FontAwesomeIcon icon={faUsers} className={styles.cardIcon} />
-                    <h2>Family Information</h2>
-                </div>
-                <div className={styles.cardContent}>
-                    <div className={styles.familySection}>
-                        <h3 className={styles.familyTitle}>Mother's Information</h3>
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>
-                                <FontAwesomeIcon icon={faUser} /> Name:
-                            </span>
-                            <span className={styles.infoValue}>{appointment.motherInfo.name}</span>
+                    {/* family info sex */}
+                    <div className={styles.tableSection}>
+                        <h3 className={styles.sectionTitle}>
+                            <FontAwesomeIcon icon={faUsers} /> Family Information
+                        </h3>
+                        
+                        {/* mother's info */}
+                        <div className={styles.familySubSection}>
+                            <h4 className={styles.familyTitle}>Mother's Information</h4>
+                            <div className={styles.tableRow}>
+                                <span className={styles.tableLabel}>
+                                    <FontAwesomeIcon icon={faUser} /> Name:
+                                </span>
+                                <span className={styles.tableValue}>{appointment.motherInfo?.name}</span>
+                            </div>
+                            <div className={styles.tableRow}>
+                                <span className={styles.tableLabel}>Age:</span>
+                                <span className={styles.tableValue}>{appointment.motherInfo?.age} years</span>
+                            </div>
+                            <div className={styles.tableRow}>
+                                <span className={styles.tableLabel}>Occupation:</span>
+                                <span className={styles.tableValue}>
+                                    {appointment.motherInfo?.occupation === 'n/a' ? 'Not specified' : appointment.motherInfo?.occupation}
+                                </span>
+                            </div>
                         </div>
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>Age:</span>
-                            <span className={styles.infoValue}>{appointment.motherInfo.age} years</span>
-                        </div>
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>Occupation:</span>
-                            <span className={styles.infoValue}>
-                                {appointment.motherInfo.occupation === 'n/a' ? 'Not specified' : appointment.motherInfo.occupation}
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div className={styles.familySection}>
-                        <h3 className={styles.familyTitle}>Father's Information</h3>
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>
-                                <FontAwesomeIcon icon={faUser} /> Name:
-                            </span>
-                            <span className={styles.infoValue}>{appointment.fatherInfo.name}</span>
-                        </div>
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>Age:</span>
-                            <span className={styles.infoValue}>{appointment.fatherInfo.age} years</span>
-                        </div>
-                        <div className={styles.infoItem}>
-                            <span className={styles.infoLabel}>Occupation:</span>
-                            <span className={styles.infoValue}>{appointment.fatherInfo.occupation}</span>
+                        
+                        {/* father info */}
+                        <div className={styles.familySubSection}>
+                            <h4 className={styles.familyTitle}>Father's Information</h4>
+                            <div className={styles.tableRow}>
+                                <span className={styles.tableLabel}>
+                                    <FontAwesomeIcon icon={faUser} /> Name:
+                                </span>
+                                <span className={styles.tableValue}>{appointment.fatherInfo?.name}</span>
+                            </div>
+                            <div className={styles.tableRow}>
+                                <span className={styles.tableLabel}>Age:</span>
+                                <span className={styles.tableValue}>{appointment.fatherInfo?.age} years</span>
+                            </div>
+                            <div className={styles.tableRow}>
+                                <span className={styles.tableLabel}>Occupation:</span>
+                                <span className={styles.tableValue}>{appointment.fatherInfo?.occupation}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

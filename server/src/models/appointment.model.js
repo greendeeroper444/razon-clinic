@@ -10,9 +10,17 @@ const appointmentSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'OnlinePatient',
         },
-        fullName: {
+        firstName: {
             type: String,
             required: true
+        },
+        lastName: {
+            type: String,
+            required: true
+        },
+        middleName: {
+            type: String,
+            required: false
         },
         preferredDate: {
             type: Date,
@@ -39,7 +47,7 @@ const appointmentSchema = new mongoose.Schema(
         sex: {
             type: String,
             required: true,
-            enum: ['Male', 'Female', 'Other']
+            enum: ['Male', 'Female']
         },
         height: {
             type: Number, // in cm or inches
@@ -100,6 +108,14 @@ const appointmentSchema = new mongoose.Schema(
             required: false,
             maxlength: 30,
             trim: true
+        },
+        contactNumber: {
+            type: Number,
+            required: true
+        },
+        address: {
+            type: String,
+            required: true,
         },
     },
     {

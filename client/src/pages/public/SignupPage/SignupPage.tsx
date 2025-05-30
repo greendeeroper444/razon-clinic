@@ -491,14 +491,14 @@ import FooterComponent from '../../../components/FooterComponent/FooterComponent
 import { registerUser } from '../../services/authService'
 import { SignupFormData, ValidationErrors } from '../../../types/auth'
 import { toast } from 'sonner'
-import SectionFeatures from '../../../components/SectionFeatures/SectionFeatures'
+import SectionFeatures from '../../../components/SectionFeatures/SectionFeatures';
+import backgroundImage from '../../../assets/backgrounds/background2.png'
 
 const STEPS = [
     { id: 1, title: 'Basic Info', description: 'Your personal details' },
     { id: 2, title: 'Account Security', description: 'Password and verification' },
     { id: 3, title: 'Personal Details', description: 'Additional information' },
-    { id: 4, title: 'Family Info', description: 'Optional family details' },
-    { id: 5, title: 'Review', description: 'Confirm your information' }
+    { id: 4, title: 'Review', description: 'Confirm your information' }
 ];
 
 const STORAGE_KEY = 'signup_form_data';
@@ -544,23 +544,15 @@ const SignupPage = () => {
     const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
     
     const [formData, setFormData] = useState<SignupFormData>({
-        fullName: '',
+        firstName: '',
+        lastName: '',
+        middleName: '',
         emailOrContactNumber: '',
         password: '',
         confirmPassword: '',
         birthdate: '',
         sex: '',
         address: '',
-        motherInfo: {
-            name: '',
-            age: undefined,
-            occupation: ''
-        },
-        fatherInfo: {
-            name: '',
-            age: undefined,
-            occupation: ''
-        },
         religion: '',
         agreeToTerms: false
     });
@@ -605,14 +597,14 @@ const SignupPage = () => {
     //auto-save when form data changes
     useEffect(() => {
         //fon't save if form is completely empty
-        const hasData = formData.fullName || 
+        const hasData = formData.firstName || 
+            formData.lastName ||
+            formData.middleName ||
             formData.emailOrContactNumber || 
             formData.password || 
             formData.birthdate || 
             formData.sex || 
             formData.address ||
-            formData.motherInfo?.name ||
-            formData.fatherInfo?.name ||
             formData.religion;
         
         if (hasData) {
@@ -660,8 +652,11 @@ const SignupPage = () => {
         
         switch (currentStep) {
             case 1: //basic info
-                if (!formData.fullName.trim()) {
-                    stepErrors.fullName = 'Full name is required';
+                if (!formData.firstName.trim()) {
+                    stepErrors.firstName = 'Full name is required';
+                }
+                if (!formData.lastName.trim()) {
+                    stepErrors.lastName = 'Full name is required';
                 }
                 if (!formData.emailOrContactNumber.trim()) {
                     stepErrors.emailOrContactNumber = 'Email or contact number is required';
@@ -693,10 +688,7 @@ const SignupPage = () => {
                 }
                 break;
                 
-            case 4: //family info (optional - no validation needed)
-                break;
-                
-            case 5: //review
+            case 4: //review
                 if (!formData.agreeToTerms) {
                     stepErrors.agreeToTerms = 'You must agree to the terms and conditions';
                 }
@@ -748,27 +740,14 @@ const SignupPage = () => {
         
         try {
             const cleanedData = {
-                fullName: formData.fullName,
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                middleName: formData.middleName,
                 emailOrContactNumber: formData.emailOrContactNumber,
                 password: formData.password,
                 birthdate: formData.birthdate,
                 sex: formData.sex,
                 address: formData.address,
-                ...(formData.motherInfo?.name || formData.motherInfo?.age || formData.motherInfo?.occupation ? {
-                    motherInfo: {
-                        ...(formData.motherInfo.name && { name: formData.motherInfo.name }),
-                        ...(formData.motherInfo.age && { age: formData.motherInfo.age }),
-                        ...(formData.motherInfo.occupation && { occupation: formData.motherInfo.occupation })
-                    }
-                } : {}),
-                ...(formData.fatherInfo?.name || formData.fatherInfo?.age || formData.fatherInfo?.occupation ? {
-                    fatherInfo: {
-                        ...(formData.fatherInfo.name && { name: formData.fatherInfo.name }),
-                        ...(formData.fatherInfo.age && { age: formData.fatherInfo.age }),
-                        ...(formData.fatherInfo.occupation && { occupation: formData.fatherInfo.occupation })
-                    }
-                } : {}),
-                ...(formData.religion && { religion: formData.religion })
             };
 
             const response = await registerUser(cleanedData);
@@ -811,23 +790,15 @@ const SignupPage = () => {
     const handleClearSavedData = () => {
         clearSavedData();
         setFormData({
-            fullName: '',
+            firstName: '',
+            lastName: '',
+            middleName: '',
             emailOrContactNumber: '',
             password: '',
             confirmPassword: '',
             birthdate: '',
             sex: '',
             address: '',
-            motherInfo: {
-                name: '',
-                age: undefined,
-                occupation: ''
-            },
-            fatherInfo: {
-                name: '',
-                age: undefined,
-                occupation: ''
-            },
             religion: '',
             agreeToTerms: false
         });
@@ -846,10 +817,38 @@ const SignupPage = () => {
                                 <FontAwesomeIcon icon={faUser} className={styles.inputIcon} />
                                 <input 
                                     type='text' 
-                                    name='fullName'
+                                    name='firstName'
                                     placeholder='Full Name' 
-                                    className={`${styles.formInput} ${validationErrors.fullName ? styles.inputError : ''}`}
-                                    value={formData.fullName}
+                                    className={`${styles.formInput} ${validationErrors.firstName ? styles.inputError : ''}`}
+                                    value={formData.firstName}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+
+                        <div className={styles.inputGroup}>
+                            <div className={styles.inputWithIcon}>
+                                <FontAwesomeIcon icon={faUser} className={styles.inputIcon} />
+                                <input 
+                                    type='text' 
+                                    name='lastName'
+                                    placeholder='Last Name' 
+                                    className={`${styles.formInput} ${validationErrors.lastName ? styles.inputError : ''}`}
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+
+                        <div className={styles.inputGroup}>
+                            <div className={styles.inputWithIcon}>
+                                <FontAwesomeIcon icon={faUser} className={styles.inputIcon} />
+                                <input 
+                                    type='text' 
+                                    name='middleName'
+                                    placeholder='Middle Name (Optional)' 
+                                    className={`${styles.formInput} ${validationErrors.middleName ? styles.inputError : ''}`}
+                                    value={formData.middleName}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -927,12 +926,13 @@ const SignupPage = () => {
                             <div className={styles.inputWithIcon}>
                                 <FontAwesomeIcon icon={faCalendar} className={styles.inputIcon} />
                                 <input 
-                                    type='date' 
+                                    type={formData.birthdate ? 'date' : 'text'}
                                     name='birthdate'
-                                    placeholder='Birthdate' 
+                                    placeholder={formData.birthdate ? undefined : 'Select your birthdate'} 
                                     className={`${styles.formInput} ${validationErrors.birthdate ? styles.inputError : ''}`}
                                     value={formData.birthdate}
                                     onChange={handleChange}
+                                    onFocus={(e) => e.target.type = 'date'}
                                 />
                             </div>
                         </div>
@@ -967,105 +967,6 @@ const SignupPage = () => {
                                 />
                             </div>
                         </div>
-                    </>
-                );
-
-            case 4:
-                return (
-                    <div className={styles.optionalFields}>
-                        <h3 className={styles.sectionTitle}>
-                            <FontAwesomeIcon icon={faUserFriends} /> Family Information (Optional)
-                        </h3>
-                        
-                        <div className={styles.parentInfo}>
-                            <h4 className={styles.parentTitle}>Mother's Information</h4>
-                            
-                            <div className={styles.inputGroup}>
-                                <div className={styles.inputWithIcon}>
-                                    <FontAwesomeIcon icon={faUser} className={styles.inputIcon} />
-                                    <input 
-                                        type='text' 
-                                        name='motherInfo.name'
-                                        placeholder="Mother's Name" 
-                                        className={styles.formInput}
-                                        value={formData.motherInfo?.name || ''}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                            <br />
-                            <div className={styles.inputRow}>
-                                <div className={styles.inputGroup}>
-                                    <input 
-                                        type='number' 
-                                        name='motherInfo.age'
-                                        placeholder="Age" 
-                                        min="15"
-                                        max="120"
-                                        className={styles.formInput}
-                                        value={formData.motherInfo?.age || ''}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                
-                                <div className={styles.inputGroup}>
-                                    <input 
-                                        type='text' 
-                                        name='motherInfo.occupation'
-                                        placeholder="Occupation" 
-                                        className={styles.formInput}
-                                        value={formData.motherInfo?.occupation || ''}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className={styles.parentInfo}>
-                            <h4 className={styles.parentTitle}>Father's Information</h4>
-                            
-                            <div className={styles.inputGroup}>
-                                <div className={styles.inputWithIcon}>
-                                    <FontAwesomeIcon icon={faUser} className={styles.inputIcon} />
-                                    <input 
-                                        type='text' 
-                                        name='fatherInfo.name'
-                                        placeholder="Father's Name" 
-                                        className={styles.formInput}
-                                        value={formData.fatherInfo?.name || ''}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                             
-                            <br />
-
-                            <div className={styles.inputRow}>
-                                <div className={styles.inputGroup}>
-                                    <input 
-                                        type='number' 
-                                        name='fatherInfo.age'
-                                        placeholder="Age" 
-                                        min="15"
-                                        max="120"
-                                        className={styles.formInput}
-                                        value={formData.fatherInfo?.age || ''}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                
-                                <div className={styles.inputGroup}>
-                                    <input 
-                                        type='text' 
-                                        name='fatherInfo.occupation'
-                                        placeholder="Occupation" 
-                                        className={styles.formInput}
-                                        value={formData.fatherInfo?.occupation || ''}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                        </div>
 
                         <div className={styles.inputGroup}>
                             <div className={styles.inputWithIcon}>
@@ -1080,17 +981,19 @@ const SignupPage = () => {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </>
                 );
 
-            case 5:
+            case 4:
                 return (
                     <div className={styles.reviewStep}>
                         <h3 className={styles.reviewTitle}>Review Your Information</h3>
                         
                         <div className={styles.reviewSection}>
                             <h4>Basic Information</h4>
-                            <p><strong>Name:</strong> {formData.fullName}</p>
+                            <p><strong>First Name:</strong> {formData.firstName}</p>
+                            <p><strong>Last Name:</strong> {formData.lastName}</p>
+                            <p><strong>Middle Name:</strong> {formData.middleName || 'N/A'}</p>
                             <p><strong>Email/Contact:</strong> {formData.emailOrContactNumber}</p>
                         </div>
 
@@ -1101,16 +1004,6 @@ const SignupPage = () => {
                             <p><strong>Address:</strong> {formData.address}</p>
                         </div>
 
-                        {
-                            (formData.motherInfo?.name || formData.fatherInfo?.name || formData.religion) && (
-                                <div className={styles.reviewSection}>
-                                    <h4>Additional Information</h4>
-                                    {formData.motherInfo?.name && <p><strong>Mother:</strong> {formData.motherInfo.name}</p>}
-                                    {formData.fatherInfo?.name && <p><strong>Father:</strong> {formData.fatherInfo.name}</p>}
-                                    {formData.religion && <p><strong>Religion:</strong> {formData.religion}</p>}
-                                </div>
-                            )
-                        }
 
                         <div className={styles.formOptions}>
                             <div className={`${styles.rememberMe} ${validationErrors.agreeToTerms ? styles.checkboxError : ''}`}>
@@ -1138,110 +1031,115 @@ const SignupPage = () => {
     <div>
         <section className={styles.hero}>
             <div className={styles.loginContainer}>
-                <form className={styles.loginForm} onSubmit={handleSubmit}>
-                    {/* auto-save indicator */}
-                    <div className={styles.autoSaveIndicator}>
-                        <small>✓ Form data is automatically saved for 1 hour</small>
-                        <button 
-                            type="button" 
-                            onClick={handleClearSavedData}
-                            className={styles.clearDataButton}
-                            title="Clear saved form data"
-                        >
-                            Clear Data
-                        </button>
-                    </div>
+                <div className={styles.loginFormSection}>
+                    <form className={styles.loginForm} onSubmit={handleSubmit}>
+                        {/* auto-save indicator */}
+                        <div className={styles.autoSaveIndicator}>
+                            <small>✓ Form data is automatically saved for 1 hour</small>
+                            <button 
+                                type="button" 
+                                onClick={handleClearSavedData}
+                                className={styles.clearDataButton}
+                                title="Clear saved form data"
+                            >
+                                Clear Data
+                            </button>
+                        </div>
 
-                    {/* step progess indicator*/}
-                    <div className={styles.stepIndicator}>
-                        {
-                            STEPS.map((step, index) => (
-                                <div 
-                                    key={step.id}
-                                    className={`${styles.stepItem} ${
-                                        currentStep === step.id ? styles.active : ''
-                                    } ${
-                                        completedSteps.has(step.id) ? styles.completed : ''
-                                    }`}
-                                    onClick={() => goToStep(step.id)}
-                                >
-                                    <div className={styles.stepNumber}>
-                                        {completedSteps.has(step.id) ? (
-                                            <FontAwesomeIcon icon={faCheck} />
-                                        ) : (
-                                            step.id
-                                        )}
+                        {/* step progess indicator*/}
+                        <div className={styles.stepIndicator}>
+                            {
+                                STEPS.map((step, index) => (
+                                    <div 
+                                        key={step.id}
+                                        className={`${styles.stepItem} ${
+                                            currentStep === step.id ? styles.active : ''
+                                        } ${
+                                            completedSteps.has(step.id) ? styles.completed : ''
+                                        }`}
+                                        onClick={() => goToStep(step.id)}
+                                    >
+                                        <div className={styles.stepNumber}>
+                                            {completedSteps.has(step.id) ? (
+                                                <FontAwesomeIcon icon={faCheck} />
+                                            ) : (
+                                                step.id
+                                            )}
+                                        </div>
+                                        <div className={styles.stepContent}>
+                                            <div className={styles.stepTitle}>{step.title}</div>
+                                            <div className={styles.stepDescription}>{step.description}</div>
+                                        </div>
+                                        {index < STEPS.length - 1 && <div className={styles.stepConnector} />}
                                     </div>
-                                    <div className={styles.stepContent}>
-                                        <div className={styles.stepTitle}>{step.title}</div>
-                                        <div className={styles.stepDescription}>{step.description}</div>
-                                    </div>
-                                    {index < STEPS.length - 1 && <div className={styles.stepConnector} />}
-                                </div>
-                            ))
-                        }
-                    </div>
+                                ))
+                            }
+                        </div>
 
-                    <h2 className={styles.formTitle}>
-                        {STEPS[currentStep - 1]?.title}
-                    </h2>
-                    <p className={styles.formSubtitle}>
-                        {STEPS[currentStep - 1]?.description}
-                    </p>
-                    
-                    {/* step content */}
-                    {renderStepContent()}
-                    
-                    {/* navigatoion buttons */}
-                    <div className={styles.stepNavigation}>
-                        {
-                            currentStep > 1 && (
-                                <button 
-                                    type='button' 
-                                    className={styles.prevButton}
-                                    onClick={prevStep}
-                                >
-                                    <FontAwesomeIcon icon={faArrowLeft} /> Previous
-                                </button>
-                            )
-                        }
+                        <h2 className={styles.formTitle}>
+                            {STEPS[currentStep - 1]?.title}
+                        </h2>
+                        <p className={styles.formSubtitle}>
+                            {STEPS[currentStep - 1]?.description}
+                        </p>
                         
-                        <button 
-                            type='submit' 
-                            className={styles.nextButton}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Creating Account...' : 
-                                currentStep === STEPS.length ? 'Create Account' : 
-                                <>Next <FontAwesomeIcon icon={faArrowRight} /></>}
-                        </button>
-                    </div>
-
-                    {/* social login (only on first step) */}
-                    {
-                        currentStep === 1 && (
-                            <>
-                                <div className={styles.formDivider}>
-                                    <span>or</span>
-                                </div>
-                                    
-                                <div className={styles.socialLogin}>
+                        {/* step content */}
+                        {renderStepContent()}
+                        
+                        {/* navigatoion buttons */}
+                        <div className={styles.stepNavigation}>
+                            {
+                                currentStep > 1 && (
                                     <button 
                                         type='button' 
-                                        className={`${styles.socialButton} ${styles.googleButton}`}
-                                        onClick={() => toast.info('Google authentication is not available yet')}
+                                        className={styles.prevButton}
+                                        onClick={prevStep}
                                     >
-                                        Continue with Google
+                                        <FontAwesomeIcon icon={faArrowLeft} /> Previous
                                     </button>
-                                </div>
-                            </>
-                        )
-                    }
-                    
-                    <p className={styles.signupPrompt}>
-                        Already have an account? <Link to='/login' className={styles.signupLink}>Log in</Link>
-                    </p>
-                </form>
+                                )
+                            }
+                            
+                            <button 
+                                type='submit' 
+                                className={styles.nextButton}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Creating Account...' : 
+                                    currentStep === STEPS.length ? 'Create Account' : 
+                                    <>Next <FontAwesomeIcon icon={faArrowRight} /></>}
+                            </button>
+                        </div>
+
+                        {/* social login (only on first step) */}
+                        {/* {
+                            currentStep === 1 && (
+                                <>
+                                    <div className={styles.formDivider}>
+                                        <span>or</span>
+                                    </div>
+                                        
+                                    <div className={styles.socialLogin}>
+                                        <button 
+                                            type='button' 
+                                            className={`${styles.socialButton} ${styles.googleButton}`}
+                                            onClick={() => toast.info('Google authentication is not available yet')}
+                                        >
+                                            Continue with Google
+                                        </button>
+                                    </div>
+                                </>
+                            )
+                        } */}
+                        
+                        <p className={styles.signupPrompt}>
+                            Already have an account? <Link to='/login' className={styles.signupLink}>Log in</Link>
+                        </p>
+                    </form>
+                </div>
+                <div className={styles.backgroundImageSection}>
+                    <img src={backgroundImage} alt="Sign Up background" className={styles.backgroundImage} />
+                </div>
             </div>
         </section>
 

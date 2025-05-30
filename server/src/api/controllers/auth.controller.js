@@ -101,14 +101,14 @@ class AuthController {
     async register(req, res, next) {
         try {
             const { 
-                fullName, 
+                firstName, 
+                lastName,
+                middleName,
                 emailOrContactNumber, 
                 password,
                 birthdate,
                 sex,
                 address,
-                motherInfo,
-                fatherInfo,
                 religion
             } = req.body;
             
@@ -137,7 +137,9 @@ class AuthController {
             
             //create new user with either email or contact number
             const onlinePatientData = {
-                fullName,
+                firstName,
+                lastName,
+                middleName: middleName || null,
                 password: hashedPassword,
                 birthdate: new Date(birthdate),
                 sex,
@@ -153,14 +155,6 @@ class AuthController {
                 onlinePatientData.contactNumber = emailOrContactNumber;
             }
             
-            //add optional fields if provided
-            if (motherInfo) {
-                onlinePatientData.motherInfo = motherInfo;
-            }
-            
-            if (fatherInfo) {
-                onlinePatientData.fatherInfo = fatherInfo;
-            }
             
             if (religion) {
                 onlinePatientData.religion = religion;
@@ -171,35 +165,23 @@ class AuthController {
             //save onlinePatient to database
             await onlinePatient.save();
             
-            //generate JWT token
-            const token = jwt.sign(
-                { 
-                    id: onlinePatient._id,
-                    email: onlinePatient.email,
-                    contactNumber: onlinePatient.contactNumber
-                },
-                config.jwtSecret,
-                { expiresIn: config.jwtExpiration }
-            );
-            
             //return onlinePatient info and token
             res.status(201).json({
                 status: 'success',
                 data: {
                     onlinePatient: {
                         id: onlinePatient._id,
-                        fullName: onlinePatient.fullName,
+                        firstName: onlinePatient.firstName,
+                        lastName: onlinePatient.lastName,
+                        middleName: onlinePatient.middleName,
                         email: onlinePatient.email,
                         contactNumber: onlinePatient.contactNumber,
                         birthdate: onlinePatient.birthdate,
                         sex: onlinePatient.sex,
                         address: onlinePatient.address,
-                        motherInfo: onlinePatient.motherInfo,
-                        fatherInfo: onlinePatient.fatherInfo,
                         religion: onlinePatient.religion,
                         dateRegistered: onlinePatient.dateRegistered
-                    },
-                    token
+                    }
                 }
             });
         } catch (error) {
@@ -266,14 +248,14 @@ class AuthController {
                 data: {
                     user: {
                         id: user._id,
-                        fullName: user.fullName,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        middleName: user.middleName,
                         email: user.email,
                         contactNumber: user.contactNumber,
                         birthdate: user.birthdate,
                         sex: user.sex,
                         address: user.address,
-                        motherInfo: user.motherInfo,
-                        fatherInfo: user.fatherInfo,
                         religion: user.religion,
                         role: user.role,
                         userType: userType
@@ -312,14 +294,14 @@ class AuthController {
                 data: {
                     user: {
                         id: user._id,
-                        fullName: user.fullName,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        middleName: user.middleName,
                         email: user.email,
                         contactNumber: user.contactNumber,
                         birthdate: user.birthdate,
                         sex: user.sex,
                         address: user.address,
-                        motherInfo: user.motherInfo,
-                        fatherInfo: user.fatherInfo,
                         religion: user.religion,
                         role: user.role,
                         userType: userType

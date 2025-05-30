@@ -2,11 +2,14 @@ const { body, validationResult } = require('express-validator');
 const { ApiError } = require('../../utils/errors');
 
 const validateRegistration = [
-    body('fullName')
+    body('firstName')
         .trim()
-        .notEmpty().withMessage('Name is required')
-        .isLength({ min: 3, max: 50 }).withMessage('Name must be between 3 and 50 characters'),
-
+        .notEmpty().withMessage('First name is required')
+        .isLength({ min: 3, max: 50 }).withMessage('First name must be between 3 and 50 characters'),
+    body('lastName')
+        .trim()
+        .notEmpty().withMessage('Last name is required')
+        .isLength({ min: 3, max: 50 }).withMessage('Last name must be between 3 and 50 characters'),
     body('emailOrContactNumber')
         .trim()
         .notEmpty().withMessage('Email or Contact Number is required')

@@ -2,12 +2,23 @@ const mongoose = require('mongoose');
 
 const AdminSchema = new mongoose.Schema(
     {
-        fullName: {
+        firstName: {
             type: String,
             required: true,
+            minlength: 3,
+            maxlength: 50
+        },
+        lastName: {
+            type: String,
+            required: true,
+            minlength: 3,
+            maxlength: 50
+        },
+        middleName: {
+            type: String,
             trim: true,
             minlength: 3,
-            maxlength: 30
+            maxlength: 50
         },
         //separate email and contactNumber fields for better validation
         email: {

@@ -14,6 +14,7 @@ import { LoginFormData, ValidationErrors } from '../../../types/auth'
 import { validateLoginForm } from '../../../utils/validators'
 import { toast } from 'sonner'
 import SectionFeatures from '../../../components/SectionFeatures/SectionFeatures'
+import backgroundImage from '../../../assets/backgrounds/background2.png'
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -115,88 +116,93 @@ const LoginPage = () => {
     <div>
         <section className={styles.hero}>
             <div className={styles.loginContainer}>
-                <form className={styles.loginForm} onSubmit={handleSubmit}>
-                    <h2 className={styles.formTitle}>Welcome back!</h2>
-                    <p className={styles.formSubtitle}>Log in to your account</p>
-                    
-                    <div className={styles.inputGroup}>
-                        <div className={styles.inputWithIcon}>
-                            <FontAwesomeIcon icon={faEnvelope} className={styles.inputIcon} />
-                            <input 
-                                type='text' 
-                                name='emailOrContactNumber'
-                                placeholder='Email Address / Contact Number' 
-                                className={`${styles.formInput} ${validationErrors.emailOrContactNumber ? styles.inputError : ''}`}
-                                value={formData.emailOrContactNumber}
-                                onChange={handleChange}
-                            />
+                <div className={styles.loginFormSection}>
+                    <form className={styles.loginForm} onSubmit={handleSubmit}>
+                        <h2 className={styles.formTitle}>Welcome back!</h2>
+                        <p className={styles.formSubtitle}>Log in to your account</p>
+                        
+                        <div className={styles.inputGroup}>
+                            <div className={styles.inputWithIcon}>
+                                <FontAwesomeIcon icon={faEnvelope} className={styles.inputIcon} />
+                                <input 
+                                    type='text' 
+                                    name='emailOrContactNumber'
+                                    placeholder='Email Address / Contact Number' 
+                                    className={`${styles.formInput} ${validationErrors.emailOrContactNumber ? styles.inputError : ''}`}
+                                    value={formData.emailOrContactNumber}
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div className={styles.inputGroup}>
-                        <div className={styles.inputWithIcon}>
-                            <FontAwesomeIcon icon={faLock} className={styles.inputIcon} />
-                            <input 
-                                type={showPassword ? 'text' : 'password'} 
-                                name='password'
-                                placeholder='Password' 
-                                className={`${styles.formInput} ${validationErrors.password ? styles.inputError : ''}`}
-                                value={formData.password}
-                                onChange={handleChange}
-                            />
+                        
+                        <div className={styles.inputGroup}>
+                            <div className={styles.inputWithIcon}>
+                                <FontAwesomeIcon icon={faLock} className={styles.inputIcon} />
+                                <input 
+                                    type={showPassword ? 'text' : 'password'} 
+                                    name='password'
+                                    placeholder='Password' 
+                                    className={`${styles.formInput} ${validationErrors.password ? styles.inputError : ''}`}
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                />
+                                <button 
+                                    type='button' 
+                                    className={styles.passwordToggle}
+                                    onClick={togglePasswordVisibility}
+                                    title={showPassword ? 'Hide password' : 'Show password'}
+                                >
+                                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className={styles.formOptions}>
+                            <div className={styles.rememberMe}>
+                                <input 
+                                    type='checkbox' 
+                                    id='rememberMe'
+                                    name='rememberMe' 
+                                    checked={formData.rememberMe}
+                                    onChange={handleChange}
+                                />
+                                <label htmlFor='rememberMe'>Remember me</label>
+                            </div>
+                            <Link to='/forgot-password' className={styles.forgotPassword}>
+                                Forgot password?
+                            </Link>
+                        </div>
+                        
+                        <button 
+                            type='submit' 
+                            className={styles.loginButton}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Logging in...' : 'Log In'}
+                        </button>
+                        
+                        <div className={styles.formDivider}>
+                            <span>or</span>
+                        </div>
+                            
+                        <div className={styles.socialLogin}>
                             <button 
                                 type='button' 
-                                className={styles.passwordToggle}
-                                onClick={togglePasswordVisibility}
-                                title={showPassword ? 'Hide password' : 'Show password'}
+                                className={`${styles.socialButton} ${styles.googleButton}`}
+                                onClick={() => toast.info('Google authentication is not available yet')}
                             >
-                                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                                Continue with Google
                             </button>
                         </div>
-                    </div>
-
-                    <div className={styles.formOptions}>
-                        <div className={styles.rememberMe}>
-                            <input 
-                                type='checkbox' 
-                                id='rememberMe'
-                                name='rememberMe' 
-                                checked={formData.rememberMe}
-                                onChange={handleChange}
-                            />
-                            <label htmlFor='rememberMe'>Remember me</label>
-                        </div>
-                        <Link to='/forgot-password' className={styles.forgotPassword}>
-                            Forgot password?
-                        </Link>
-                    </div>
-                    
-                    <button 
-                        type='submit' 
-                        className={styles.loginButton}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Logging in...' : 'Log In'}
-                    </button>
-                    
-                    <div className={styles.formDivider}>
-                        <span>or</span>
-                    </div>
                         
-                    <div className={styles.socialLogin}>
-                        <button 
-                            type='button' 
-                            className={`${styles.socialButton} ${styles.googleButton}`}
-                            onClick={() => toast.info('Google authentication is not available yet')}
-                        >
-                            Continue with Google
-                        </button>
-                    </div>
-                    
-                    <p className={styles.signupPrompt}>
-                        Don't have an account? <Link to='/signup' className={styles.signupLink}>Sign up</Link>
-                    </p>
-                </form>
+                        <p className={styles.signupPrompt}>
+                            Don't have an account? <Link to='/signup' className={styles.signupLink}>Sign up</Link>
+                        </p>
+                    </form>
+                </div>
+                <div className={styles.backgroundImageSection}>
+                    <img src={backgroundImage} alt="Login background" className={styles.backgroundImage} />
+                </div>
             </div>
         </section>
 

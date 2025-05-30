@@ -33,7 +33,7 @@ const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar
         if (isAuthenticated) {
             const interval = setInterval(() => {
                 fetchUnreadCount();
-            }, 10000);
+            }, 1000);
 
             return () => clearInterval(interval);
         }
@@ -154,8 +154,8 @@ const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar
                 )
             }
             <div className={styles.userProfile}>
-                <div className={styles.userAvatar}>{getFirstLetterOfFirstAndLastName(currentUser?.fullName)}</div>
-                <div className={styles.userName}>{getFirstAndLastName(currentUser?.fullName)}</div>
+                <div className={styles.userAvatar}>{getFirstLetterOfFirstAndLastName(currentUser?.firstName)}</div>
+                <div className={styles.userName}>{getFirstAndLastName(currentUser?.firstName)}</div>
                 <FontAwesomeIcon icon={faChevronDown} style={{ fontSize: '0.8rem' }} />
             </div>
         </div>

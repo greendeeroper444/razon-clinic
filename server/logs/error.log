@@ -2071,3 +2071,68 @@ Use mongoose.model(name, schema)
 2025-05-27 12:13:11 [ERROR]: Error: Cannot read properties of undefined (reading 'contactNumber') TypeError: Cannot read properties of undefined (reading 'contactNumber')
     at updateAppointment (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:355:75)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-27 12:16:56 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:247:23)
+2025-05-29 22:16:08 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:247:23)
+2025-05-29 22:43:11 [ERROR]: Error: Patient with this email or contact number already exists ApiError: Patient with this email or contact number already exists
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:131:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-29 22:49:28 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:241:23)
+2025-05-30 00:26:43 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:241:23)
+2025-05-30 00:57:15 [ERROR]: Error: Patient with this email or contact number already exists ApiError: Patient with this email or contact number already exists
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:131:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-30 00:57:46 [ERROR]: Error: Online patient not found ApiError: Online patient not found
+    at getProfile (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:299:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-30 00:57:46 [ERROR]: Error: Online patient not found ApiError: Online patient not found
+    at getProfile (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:299:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-30 01:14:37 [ERROR]: Error: token is not defined ReferenceError: token is not defined
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:185:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-30 01:15:49 [ERROR]: Error: Patient with this email or contact number already exists ApiError: Patient with this email or contact number already exists
+    at register (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:131:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-05-30 01:16:00 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-30 01:22:02 [ERROR]: Error: Token expired ApiError: Token expired
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:31:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-30 01:22:02 [ERROR]: Error: Token expired ApiError: Token expired
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:31:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-05-30 11:33:42 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)
+2025-05-30 12:11:44 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)
+2025-05-30 12:24:54 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)

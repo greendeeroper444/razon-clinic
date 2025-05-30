@@ -26,14 +26,8 @@ export const addAppointment = async (appointmentData: AppointmentFormData) => {
     //process the form data to match backend expectations
     const processedData = {
         ...appointmentData,
-        reasonForVisit: appointmentData.reasonForVisit.trim(),
-        //ensure numeric fields are properly converted
-        height: appointmentData.height ? Number(appointmentData.height) : undefined,
-        weight: appointmentData.weight ? Number(appointmentData.weight) : undefined,
         motherAge: appointmentData.motherAge ? Number(appointmentData.motherAge) : undefined,
         fatherAge: appointmentData.fatherAge ? Number(appointmentData.fatherAge) : undefined,
-        //trim string fields
-        religion: appointmentData.religion?.trim(),
         motherName: appointmentData.motherName?.trim(),
         motherOccupation: appointmentData.motherOccupation?.trim(),
         fatherName: appointmentData.fatherName?.trim(),
@@ -138,18 +132,11 @@ export const updateAppointment = async (appointmentId: string, appointmentData: 
     //process the form data and structure nested objects properly
     const processedData = {
         ...appointmentData,
-        reasonForVisit: appointmentData.reasonForVisit?.trim(),
-        height: appointmentData.height ? Number(appointmentData.height) : undefined,
-        weight: appointmentData.weight ? Number(appointmentData.weight) : undefined,
-        religion: appointmentData.religion?.trim(),
-        
-        //structure mother info as nested object
         motherInfo: {
             name: appointmentData.motherName?.trim(),
             age: appointmentData.motherAge ? Number(appointmentData.motherAge) : undefined,
             occupation: appointmentData.motherOccupation?.trim()
         },
-        
         //structure father info as nested object  
         fatherInfo: {
             name: appointmentData.fatherName?.trim(),
