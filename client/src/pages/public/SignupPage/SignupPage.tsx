@@ -818,7 +818,7 @@ const SignupPage = () => {
                                 <input 
                                     type='text' 
                                     name='firstName'
-                                    placeholder='Full Name' 
+                                    placeholder='First Name' 
                                     className={`${styles.formInput} ${validationErrors.firstName ? styles.inputError : ''}`}
                                     value={formData.firstName}
                                     onChange={handleChange}

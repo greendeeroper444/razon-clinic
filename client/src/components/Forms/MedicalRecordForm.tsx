@@ -16,10 +16,10 @@ const MedicalRecordForm = ({formData, onChange, isLoading, onAutofill}) => {
         
         //update the form data immediately
         onChange({
-        target: {
-            name: 'fullName',
-            value: value
-        }
+            target: {
+                name: 'fullName',
+                value: value
+            }
         });
 
         //clear previous timeout
