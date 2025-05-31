@@ -321,126 +321,169 @@ textarea.formControl {
 }
 
 .statusFormHeader h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
 }
 
 .statusFormHeader p {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin: 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
 }
 
 .statusOptionsGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .statusOption {
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 1.25rem;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  background: #ffffff;
-  position: relative;
-  overflow: hidden;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
 }
 
 .statusOption:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .statusOptionActive {
-  border-width: 2px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+    border-width: 2px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
 }
 
 .statusOptionActive::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: currentColor;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: currentColor;
 }
 
 .statusOptionHeader {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
 }
 
 .statusOptionIcon {
-  font-size: 1.25rem;
-  width: 20px;
-  height: 20px;
+    font-size: 1.25rem;
+    width: 20px;
+    height: 20px;
 }
 
 .statusOptionLabel {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #374151;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #374151;
 }
 
 .statusOptionDescription {
-  font-size: 0.8125rem;
-  color: #6b7280;
-  margin: 0;
-  line-height: 1.4;
+    font-size: 0.8125rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
 }
 
 .currentStatusIndicator {
-  padding: 0.75rem 1rem;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  color: #374151;
-  text-align: center;
+    padding: 0.75rem 1rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: #374151;
+    text-align: center;
 }
 
 .currentStatusIndicator strong {
-  font-weight: 600;
+    font-weight: 600;
 }
 
-/* Responsive adjustments */
+
+
+
+
+.searchContainer {
+    position: relative;
+    flex: 1
+}
+.searchDropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: block
+}
+.searchItem {
+    padding: 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+    background-color: white
+}
+.searchLoading {
+    padding: 0.75rem;
+    text-align: center;
+    color: #666;
+    font-style: italic
+}
+.noResults {
+    padding: 0.75rem;
+    text-align: center;
+    color: #666;
+    font-style: italic
+}
+
+
 @media (max-width: 768px) {
-  .statusOptionsGrid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-  
-  .statusOption {
-    padding: 1rem;
-  }
-  
-  .statusOptionHeader {
-    gap: 0.5rem;
-  }
-  
-  .statusOptionIcon {
-    font-size: 1.125rem;
-  }
-  
-  .statusOptionLabel {
-    font-size: 0.9375rem;
-  }
-  
-  .statusOptionDescription {
-    font-size: 0.75rem;
-  }
+    .statusOptionsGrid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .statusOption {
+        padding: 1rem;
+    }
+    
+    .statusOptionHeader {
+        gap: 0.5rem;
+    }
+    
+    .statusOptionIcon {
+        font-size: 1.125rem;
+    }
+    
+    .statusOptionLabel {
+        font-size: 0.9375rem;
+    }
+    
+    .statusOptionDescription {
+        font-size: 0.75rem;
+    }
 }
 
-/* Animation for status change */
+/* animation for status change */
 .statusOption.statusOptionActive {
   animation: statusSelect 0.3s ease-out;
 }

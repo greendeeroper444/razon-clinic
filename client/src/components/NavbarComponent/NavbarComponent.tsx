@@ -30,14 +30,14 @@ const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar
 
     //auto-refetch unread count every 10 seconds
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated && currentUser?.role !== 'Doctor') {
             const interval = setInterval(() => {
                 fetchUnreadCount();
             }, 1000);
 
             return () => clearInterval(interval);
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, currentUser?.role]);
 
     //handle unread count updates from notification component
     const handleUnreadCountChange = (count: number) => {

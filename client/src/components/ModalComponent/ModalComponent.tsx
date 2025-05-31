@@ -2,19 +2,19 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import styles from './ModalComponent.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { AppointmentFormData, InventoryItemFormData } from '../../types';
+import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData } from '../../types';
 import { getPatients } from '../../pages/services/patientService';
 
-import AppointmentForm from '../Forms/AppointmentForm';
-import PatientForm from '../Forms/PatientForm';
-import InventoryItemForm from '../Forms/InventoryItemForm';
-import DeleteForm from '../Forms/DeleteForm';
+
 import { Patient } from '../../types/patient';
 import { DeleteData, FormDataType } from '../../types/crud';
-import StatusForm from '../Forms/StatusForm';
 import { PersonalPatientFormData } from '../../types/personalPatient';
+import { AppointmentForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../Forms';
 
-type ModalType = 'appointment' | 'patient' | 'item' | 'delete' | 'status';
+
+
+
+type ModalType = 'appointment' | 'patient' | 'medical' | 'item' | 'delete' | 'status';
 
 interface ModalComponentProps {
     isOpen: boolean;
@@ -138,6 +138,44 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                         occupation: ''
                     }
                 } as PersonalPatientFormData);
+            } if (modalType === 'medical') {
+                setFormData({
+                    //personal details
+                    fullName: '',
+                    dateOfBirth: '',
+                    gender: '',
+                    bloodType: '',
+                    address: '',
+                    phone: '',
+                    email: '',
+                    emergencyContact: '',
+
+                    //medical History
+                    allergies: '',
+                    chronicConditions: '',
+                    previousSurgeries: '',
+                    familyHistory: '',
+
+                    //growth Milestones
+                    height: '',
+                    weight: '',
+                    bmi: '',
+                    growthNotes: '',
+
+                    //current Symptoms
+                    chiefComplaint: '',
+                    symptomsDescription: '',
+                    symptomsDuration: '',
+                    painScale: '',
+
+                    //additional fields (existing)
+                    diagnosis: '',
+                    treatmentPlan: '',
+                    prescribedMedications: '',
+                    consultationNotes: '',
+                    followUpDate: '',
+                    vaccinationHistory: ''
+                } as MedicalRecordFormData);
             } else if (modalType === 'status') {
                 setSelectedStatus('Pending');
             } else {
@@ -231,6 +269,9 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         case 'item':
             title = editData ? 'Edit Inventory Item' : 'New Inventory Item';
             break;
+        case 'medical':
+            title = editData ? 'Edit Medical Record' : 'New Medical Record';
+            break;
         case 'delete':
             title = 'Confirm Delete';
             break;
@@ -275,6 +316,15 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                     <InventoryItemForm
                         formData={formData as InventoryItemFormData}
                         onChange={handleChange}
+                    />
+                );
+            case 'medical':
+                return (
+                    <MedicalRecordForm
+                        formData={formData as MedicalRecordFormData}
+                        onChange={handleChange}
+                        isLoading={isLoading}
+                        patients={loadedPatients}
                     />
                 );
             case 'status':

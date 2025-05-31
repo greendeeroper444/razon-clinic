@@ -28,14 +28,15 @@ import styles from './pages/public/HomePage/HomePage.module.css'
 import ModalComponent from './components/ModalComponent/ModalComponent'
 import { ModalContext, useModal, OpenModalProps } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
-import { AppointmentFormData, InventoryItemFormData, LayoutProps, PatientFormData, RouteType } from './types'
+import { AppointmentFormData, InventoryItemFormData, LayoutProps, MedicalRecordFormData, PatientFormData, RouteType } from './types'
 import { addAppointment } from './pages/services/appoinmentService'
 import { addInventoryItem } from './pages/services/inventoryItemService'
 import { addPersonalPatient } from './pages/services/personalPatient'
 import { PersonalPatientFormData } from './types/personalPatient'
+import { addMedicalRecord } from './pages/services/medicalRecordService'
 
 //define modal types to match what ModalComponent is expecting
-type ModalType = 'appointment' | 'patient' | 'item';
+type ModalType = 'appointment' | 'patient' | 'item' | 'medical';
 
 
 //union type for all possible form data
@@ -127,6 +128,16 @@ function App() {
           
           toast.success('Inventory item added successfully');
           window.dispatchEvent(new CustomEvent('inventory-refresh'));
+        break;
+      case 'medical':
+        try {
+          await addMedicalRecord(formData as MedicalRecordFormData);
+          
+          toast.success('Medical record added successfully');
+          window.dispatchEvent(new CustomEvent('medical-refresh'));
+        } catch (error) {
+          console.error('Error adding medical:', error);
+        }
         break;
       default:
         break;

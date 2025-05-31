@@ -30,7 +30,7 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-    const { isAuthenticated, currentUser, clearAuth } = useAuth();
+    const { currentUser } = useAuth();
 
     
     const fetchNotifications = useCallback(async () => {
