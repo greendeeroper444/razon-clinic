@@ -5,76 +5,21 @@ import {
     faPlus, 
     faUser, 
     faHistory, 
-    faRuler, 
-    faSyringe, 
+    faRuler,
     faStethoscope, 
     faDiagnoses,
-    faPrescriptionBottle,
-    faNotesMedical,
-    faCalendarAlt,
-    faEye,
-    faEdit,
-    faTrash,
     faSearch,
-    faFilter,
     faTimes,
-    faList,
-    faFileAlt
+    faFileAlt,
+    faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { getMedicalRecords, getMedicalRecordById } from '../../services/medicalRecordService';
+import { getMedicalRecords, getMedicalRecordById, updateMedicalRecord, deleteMedicalRecord } from '../../services/medicalRecordService';
+import { MedicalRecord, MedicalRecordFormData, PaginationInfo } from '../../../types/medical';
+import { toast } from 'sonner';
+import ModalComponent from '../../../components/ModalComponent/ModalComponent';
+import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 
-interface MedicalRecord {
-    id: string;
-    personalDetails: {
-        fullName: string;
-        dateOfBirth: string;
-        gender: 'Male' | 'Female' | 'Other';
-        bloodType?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-        address?: string;
-        phone: string;
-        email?: string;
-        emergencyContact?: string;
-        age?: number;
-    };
-    medicalHistory: {
-        allergies?: string;
-        chronicConditions?: string;
-        previousSurgeries?: string;
-        familyHistory?: string;
-        general?: string;
-    };
-    growthMilestones: {
-        height?: number;
-        weight?: number;
-        bmi?: number;
-        growthNotes?: string;
-        general?: string;
-    };
-    currentSymptoms: {
-        chiefComplaint: string;
-        symptomsDescription: string;
-        symptomsDuration?: string;
-        painScale?: number;
-        general?: string;
-    };
-    vaccinationHistory?: string;
-    diagnosis?: string;
-    treatmentPlan?: string;
-    prescribedMedications?: string;
-    consultationNotes?: string;
-    followUpDate?: string;
-    dateRecorded: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-interface PaginationInfo {
-    current: number;
-    total: number;
-    count: number;
-    totalRecords: number;
-}
 
 const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([]);
@@ -87,6 +32,13 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
     const [recordsPerPage] = useState(10);
 
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+    const [selectedMedicalRecord, setSelectedMedicalRecord] = useState<MedicalRecordFormData & { id?: string } | null>(null);
+    const [deleteMedicalRecordData, setDeleteMedicalRecordData] = useState<{id: string, itemName: string, itemType: string} | null>(null);
+    const [patients, setPatients] = useState<Array<{ id: string; firstName: string }>>([]);
+    const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
     //fetch medical records
     const fetchMedicalRecords = async (page = 1, search = '') => {
         try {
@@ -96,6 +48,22 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             if (response.success) {
                 setMedicalRecords(response.data);
                 setPagination(response.pagination);
+
+                //extract unique patients from medical records for the modal dropdown
+                const uniquePatients = Array.from(
+                    new Map(
+                        response.data
+                            .filter(record => record?.id) 
+                            .map(record => [
+                                record.id,
+                                {
+                                    id: record.id,
+                                    firstName: record.personalDetails?.fullName || 'N/A'
+                                }
+                            ])
+                    ).values()
+                );
+                setPatients(uniquePatients);
             } else {
                 setError('Failed to fetch medical records');
             }
@@ -170,6 +138,122 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         setCurrentPage(newPage);
     };
 
+    const handleUpdateClick = (record: MedicalRecord) => {
+        //convert the medical record to form data format
+        const formData: MedicalRecordFormData & { id?: string } = {
+            id: record.id,
+            
+            //personal Details
+            fullName: record.personalDetails.fullName,
+            dateOfBirth: record.personalDetails.dateOfBirth.split('T')[0],
+            gender: record.personalDetails.gender,
+            bloodType: record.personalDetails.bloodType || '',
+            phone: record.personalDetails.phone,
+            email: record.personalDetails.email || '',
+            address: record.personalDetails.address || '',
+            emergencyContact: record.personalDetails.emergencyContact || '',
+
+            //current Symptoms
+            chiefComplaint: record.currentSymptoms.chiefComplaint,
+            symptomsDescription: record.currentSymptoms.symptomsDescription,
+            symptomsDuration: record.currentSymptoms.symptomsDuration || '',
+            painScale: record.currentSymptoms.painScale || 0,
+
+            //medical History
+            allergies: record.medicalHistory.allergies || '',
+            chronicConditions: record.medicalHistory.chronicConditions || '',
+            previousSurgeries: record.medicalHistory.previousSurgeries || '',
+            familyHistory: record.medicalHistory.familyHistory || '',
+
+            //growth Milestones
+            height: record.growthMilestones.height || 0,
+            weight: record.growthMilestones.weight || 0,
+            bmi: record.growthMilestones.bmi || '',
+            growthNotes: record.growthMilestones.growthNotes || '',
+
+            //clinical Information
+            diagnosis: record.diagnosis || '',
+            treatmentPlan: record.treatmentPlan || '',
+            prescribedMedications: record.prescribedMedications || '',
+            consultationNotes: record.consultationNotes || '',
+            vaccinationHistory: record.vaccinationHistory || '',
+            followUpDate: record.followUpDate ? record.followUpDate.split('T')[0] : undefined
+        };
+        
+        setSelectedMedicalRecord(formData);
+        setIsModalOpen(true);
+    };
+
+    const handleDeleteClick = (record: MedicalRecord) => {
+        const patientName = record.personalDetails.fullName || 'Unknown Patient';
+        const recordDate = record.dateRecorded;
+        
+        setDeleteMedicalRecordData({
+            id: record.id,
+            itemName: `${patientName}'s medical record from ${new Date(recordDate).toLocaleDateString()}`,
+            itemType: 'Medical Record'
+        });
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+        setSelectedMedicalRecord(null);
+    };
+
+    const handleDeleteModalClose = () => {
+        setIsDeleteModalOpen(false);
+        setDeleteMedicalRecordData(null);
+    };
+
+    const handleSubmitUpdate = async (formData: MedicalRecordFormData) => {
+        try {
+            setLoading(true);
+            
+            if (selectedMedicalRecord?.id) {
+                await updateMedicalRecord(selectedMedicalRecord.id, formData);
+                await fetchMedicalRecords(currentPage, searchTerm);
+                
+                toast.success('Updated medical record successfully!')
+            }
+        } catch (error) {
+            console.error('Error updating medical record:', error);
+            toast.error('Failed to update medical record');
+        } finally {
+            setLoading(false);
+            setIsModalOpen(false);
+        }
+    };
+
+    const handleConfirmDelete = async (medicalRecordId: string) => {
+        try {
+            setIsProcessing(true);
+            
+            await deleteMedicalRecord(medicalRecordId);
+            await fetchMedicalRecords(currentPage, searchTerm);
+            
+            toast.success('Medical record deleted successfully!');
+        } catch (error) {
+            console.error('Error deleting medical record:', error);
+            toast.error('Failed to delete medical record');
+        } finally {
+            setIsProcessing(false);
+            setIsDeleteModalOpen(false);
+        }
+    };
+
+    const handleDownloadReceipt = () => {
+        if (selectedRecord) {
+            try {
+                generateMedicalReceiptPDF(selectedRecord);
+                toast.success('Receipt downloaded successfully!');
+            } catch (error) {
+                console.error('Error generating receipt:', error);
+                toast.error('Failed to generate receipt');
+            }
+        }
+    };
+
     const getStatusFromRecord = (record: MedicalRecord): string => {
         if (record.followUpDate) {
             const followUpDate = new Date(record.followUpDate);
@@ -221,7 +305,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             return `${years} years old`;
         }
     };
-
 
     const getStatusClass = (status: string): string => {
         switch (status.toLowerCase()) {
@@ -301,10 +384,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                         <th>Age</th>
                         <th>Gender</th>
                         <th>Phone</th>
-                        {/* <th>Chief Complaint</th>
-                        <th>Diagnosis</th> */}
                         <th>Date Recorded</th>
-                        {/* <th>Status</th> */}
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -312,7 +392,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                 {
                     medicalRecords.length === 0 ? (
                         <tr>
-                            <td colSpan={10} className={styles.noRecords}>
+                            <td colSpan={7} className={styles.noRecords}>
                             No medical records found
                             </td>
                         </tr>
@@ -330,20 +410,9 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 <td>{calculateAge(record.personalDetails.dateOfBirth)}</td>
                                 <td>{record.personalDetails.gender}</td>
                                 <td>{record.personalDetails.phone}</td>
-                                {/* <td className={styles.chiefComplaint}>
-                                    {record.currentSymptoms.chiefComplaint}
-                                </td>
-                                <td className={styles.diagnosis}>
-                                    {record.diagnosis || 'Pending'}
-                                </td> */}
                                 <td>
                                     {new Date(record.dateRecorded).toLocaleDateString()}
                                 </td>
-                                {/* <td>
-                                    <span className={`${styles.status} ${getStatusClass(status)}`}>
-                                        {status}
-                                    </span>
-                                </td> */}
                                 <td className={styles.actions}>
                                     <button
                                         className={`${styles.actionBtn} ${styles.view}`}
@@ -352,10 +421,18 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                     >
                                         View
                                     </button>
-                                    <button className={`${styles.actionBtn} ${styles.update}`} title="Update">
+                                    <button 
+                                        className={`${styles.actionBtn} ${styles.update}`} 
+                                        onClick={() => handleUpdateClick(record)}
+                                        title="Update"
+                                    >
                                         Update
                                     </button>
-                                    <button className={`${styles.actionBtn} ${styles.delete}`} title="Delete">
+                                    <button 
+                                        className={`${styles.actionBtn} ${styles.delete}`} 
+                                        onClick={() => handleDeleteClick(record)}
+                                        title="Delete"
+                                    >
                                         Delete
                                     </button>
                                 </td>
@@ -402,10 +479,19 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                 <div className={styles.modal}>
                     <div className={styles.modalContent}>
                         <div className={styles.modalHeader}>
-                        <h2>Medical Record Details</h2>
-                        <button onClick={handleCloseDetails} className={styles.closeBtn}>
-                            <FontAwesomeIcon icon={faTimes} />
-                        </button>
+                            <h2>Medical Record Details</h2>
+                            <div className={styles.modalHeaderActions}>
+                                <button 
+                                    onClick={handleDownloadReceipt} 
+                                    className={styles.downloadBtn}
+                                    title="Download Receipt"
+                                >
+                                    <FontAwesomeIcon icon={faDownload} /> Download Receipt
+                                </button>
+                                <button onClick={handleCloseDetails} className={styles.closeBtn}>
+                                    <FontAwesomeIcon icon={faTimes} />
+                                </button>
+                            </div>
                         </div>
                         
                         <div className={styles.modalBody}>
@@ -473,6 +559,34 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                         </div>
                     </div>
                 </div>
+            )
+        }
+
+        {/* update medical record modal */}
+        {
+            isModalOpen && (
+                <ModalComponent
+                    isOpen={isModalOpen}
+                    onClose={handleModalClose}
+                    modalType="medical"
+                    onSubmit={handleSubmitUpdate}
+                    patients={patients}
+                    editData={selectedMedicalRecord}
+                />
+            )
+        }
+
+        {/* delete medical record modal */}
+        {
+            isDeleteModalOpen && deleteMedicalRecordData && (
+                <ModalComponent
+                    isOpen={isDeleteModalOpen}
+                    onClose={handleDeleteModalClose}
+                    modalType="delete"
+                    onSubmit={handleConfirmDelete}
+                    deleteData={deleteMedicalRecordData}
+                    isProcessing={isProcessing}
+                />
             )
         }
     </div>

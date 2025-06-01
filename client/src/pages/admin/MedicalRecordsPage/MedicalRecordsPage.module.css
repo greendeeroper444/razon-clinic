@@ -423,7 +423,29 @@
   color: white;
 }
 
+.modalHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
+.downloadBtn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s;
+}
+
+.downloadBtn:hover {
+  background-color: var(--secondary);
+}
 
 
 .medicalForm {

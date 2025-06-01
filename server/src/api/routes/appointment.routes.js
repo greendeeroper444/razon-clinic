@@ -64,4 +64,5 @@ router.delete(
     AppointmentController.deleteAppointment
 );
 
+
 module.exports = router;

@@ -459,13 +459,13 @@ const HomePage = () => {
                         <div className={`${styles.infoItem} ${styles.slideInUp} ${styles.delay3}`}>
                             <FontAwesomeIcon icon={faPhone} className={styles.infoIcon} />
                             <div className={styles.infoText}>
-                                +63 997 455 9639
+                                +0939-726-6918
                             </div>
                         </div>
                         <div className={`${styles.infoItem} ${styles.slideInUp} ${styles.delay4}`}>
                             <FontAwesomeIcon icon={faEnvelope} className={styles.infoIcon} />
                             <div className={styles.infoText}>
-                                razonpediatric@gmail.com
+                                drnice4kids@gmail.com
                             </div>
                         </div>
                         <div className={`${styles.infoItem} ${styles.slideInUp} ${styles.delay5}`}>

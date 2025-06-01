@@ -1,7 +1,7 @@
 .nav {
     width: 100%;
-    /* background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); */
+    background: white;
+    border-bottom: 1px solid var(--gray-light);
     position: sticky;
     top: 0;
     z-index: 1000;

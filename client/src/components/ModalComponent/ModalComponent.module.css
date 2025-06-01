@@ -524,3 +524,16 @@ textarea.formControl {
     padding: 5px;
     margin-bottom: 10px;
 }
+
+/* unavailable time */
+.unavailableTimeOption {
+    color: #999 !important;
+    background-color: #f5f5f5 !important;
+    font-style: italic;
+    border: 1px solid #dc3545;
+}
+
+.timeSelect:focus .unavailableTimeOption {
+    color: #999 !important;
+    background-color: #f5f5f5 !important;
+}

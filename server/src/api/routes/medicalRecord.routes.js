@@ -14,20 +14,18 @@ router.get(
 );
 
 router.get(
-    '/getMedicalRecord/:id',
+    '/getMedicalRecord/:medicalRecordId',
     authenticate,
     MedicalRecordController.getMedicalRecordById
 );
 
 router.put(
-    '/updateMedicalRecord/:id',
-    authenticate,
+    '/updateMedicalRecord/:medicalRecordId',
     MedicalRecordController.updateMedicalRecord
 );
 
 router.delete(
-    '/deleteMedicalRecord/:id',
-    authenticate,
+    '/deleteMedicalRecord/:medicalRecordId',
     MedicalRecordController.deleteMedicalRecord
 );
 

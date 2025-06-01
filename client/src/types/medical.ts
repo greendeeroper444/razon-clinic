@@ -35,22 +35,22 @@ export interface CurrentSymptoms {
 }
 
 //complete medical record interface matching your Mongoose model
-export interface MedicalRecord {
-    id: string;
-    personalDetails: PersonalDetails;
-    medicalHistory: MedicalHistory;
-    growthMilestones: GrowthMilestones;
-    currentSymptoms: CurrentSymptoms;
-    vaccinationHistory?: string;
-    diagnosis?: string;
-    treatmentPlan?: string;
-    prescribedMedications?: string;
-    consultationNotes?: string;
-    followUpDate?: string;
-    dateRecorded: string;
-    createdAt: string;
-    updatedAt: string;
-}
+// export interface MedicalRecord {
+//     id: string;
+//     personalDetails: PersonalDetails;
+//     medicalHistory: MedicalHistory;
+//     growthMilestones: GrowthMilestones;
+//     currentSymptoms: CurrentSymptoms;
+//     vaccinationHistory?: string;
+//     diagnosis?: string;
+//     treatmentPlan?: string;
+//     prescribedMedications?: string;
+//     consultationNotes?: string;
+//     followUpDate?: string;
+//     dateRecorded: string;
+//     createdAt: string;
+//     updatedAt: string;
+// }
 
 //form data interface for creating/updating records
 export interface MedicalRecordFormData {
@@ -87,7 +87,7 @@ export interface MedicalRecordFormData {
     treatmentPlan: string;
     prescribedMedications: string;
     consultationNotes: string;
-    followUpDate: string;
+    followUpDate: string | undefined;
     vaccinationHistory: string;
 }
 
@@ -107,6 +107,58 @@ export interface MedicalRecordResponse {
     success: boolean;
     data: MedicalRecord;
     message?: string;
+}
+
+export interface MedicalRecord {
+    id: string;
+    personalDetails: {
+        fullName: string;
+        dateOfBirth: string;
+        gender: 'Male' | 'Female' | 'Other';
+        bloodType?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+        address?: string;
+        phone: string;
+        email?: string;
+        emergencyContact?: string;
+        age?: number;
+    };
+    medicalHistory: {
+        allergies?: string;
+        chronicConditions?: string;
+        previousSurgeries?: string;
+        familyHistory?: string;
+        general?: string;
+    };
+    growthMilestones: {
+        height?: number;
+        weight?: number;
+        bmi?: number;
+        growthNotes?: string;
+        general?: string;
+    };
+    currentSymptoms: {
+        chiefComplaint: string;
+        symptomsDescription: string;
+        symptomsDuration?: string;
+        painScale?: number;
+        general?: string;
+    };
+    vaccinationHistory?: string;
+    diagnosis?: string;
+    treatmentPlan?: string;
+    prescribedMedications?: string;
+    consultationNotes?: string;
+    followUpDate?: string;
+    dateRecorded: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface PaginationInfo {
+    current: number;
+    total: number;
+    count: number;
+    totalRecords: number;
 }
 
 export interface ApiError {

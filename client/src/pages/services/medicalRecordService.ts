@@ -45,10 +45,10 @@ export const getMedicalRecords = async (page: number = 1, limit: number = 10, se
 };
 
 //get medical record by ID
-export const getMedicalRecordById = async (id: string) => {
+export const getMedicalRecordById = async (medicalRecordId: string) => {
     try {
         const response = await axios.get(
-            `${API_BASE_URL}/api/medicalRecords/getMedicalRecord/${id}`,
+            `${API_BASE_URL}/api/medicalRecords/getMedicalRecord/${medicalRecordId}`,
             {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -65,7 +65,7 @@ export const getMedicalRecordById = async (id: string) => {
 
 //update medical record
 export const updateMedicalRecord = async (
-    id: string, 
+    medicalRecordId: string, 
     medicalRecordData: Partial<MedicalRecordFormData>
 ) => {
     try {
@@ -73,7 +73,7 @@ export const updateMedicalRecord = async (
         const transformedData = transformFormDataToApiFormat(medicalRecordData as MedicalRecordFormData);
         
         const response = await axios.put(
-            `${API_BASE_URL}/api/medicalRecords/updateMedicalRecord/${id}`,
+            `${API_BASE_URL}/api/medicalRecords/updateMedicalRecord/${medicalRecordId}`,
             transformedData,
             {
                 headers: {
@@ -113,10 +113,10 @@ export const updateMedicalRecord = async (
 
 
 //delete medical record
-export const deleteMedicalRecord = async (id: string) => {
+export const deleteMedicalRecord = async (medicalRecordId: string) => {
     try {
         const response = await axios.delete(
-            `${API_BASE_URL}/api/medicalRecords/deleteMedicalRecord/${id}`,
+            `${API_BASE_URL}/api/medicalRecords/deleteMedicalRecord/${medicalRecordId}`,
             {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`

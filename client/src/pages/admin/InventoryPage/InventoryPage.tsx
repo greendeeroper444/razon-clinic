@@ -365,7 +365,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                     </td>
                                                     <td>
                                                         <button 
-                                                            className={`${styles.actionBtn} ${styles.primary}`}
+                                                            className={`${styles.actionBtn} ${styles.update}`}
                                                             onClick={() => handleEditItem(item)}
                                                             disabled={isProcessing}
                                                         >
@@ -377,6 +377,12 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                             disabled={isProcessing}
                                                         >
                                                             <FontAwesomeIcon icon={faTrash} /> Delete
+                                                        </button>
+                                                        <button 
+                                                            className={`${styles.actionBtn} ${styles.primary}`}
+                                                            disabled={isProcessing}
+                                                        >
+                                                            <FontAwesomeIcon icon={faPlus} /> Restock
                                                         </button>
                                                     </td>
                                                 </tr>

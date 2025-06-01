@@ -278,9 +278,9 @@ class MedicalRecordController {
     //get medical record by ID
     async getMedicalRecordById(req, res, next) {
         try {
-            const { id } = req.params;
+            const { medicalRecordId } = req.params;
 
-            const medicalRecord = await MedicalRecord.findById(id);
+            const medicalRecord = await MedicalRecord.findById(medicalRecordId);
 
             if (!medicalRecord) {
                 return res.status(404).json({
@@ -307,11 +307,11 @@ class MedicalRecordController {
     //update medical record
     async updateMedicalRecord(req, res, next) {
         try {
-            const { id } = req.params;
+            const { medicalRecordId } = req.params;
             const updateData = req.body;
 
             const medicalRecord = await MedicalRecord.findByIdAndUpdate(
-                id,
+                medicalRecordId,
                 updateData,
                 { new: true, runValidators: true }
             );
@@ -342,9 +342,9 @@ class MedicalRecordController {
     //delete medical record
     async deleteMedicalRecord(req, res, next) {
         try {
-            const { id } = req.params;
+            const { medicalRecordId } = req.params;
 
-            const medicalRecord = await MedicalRecord.findByIdAndDelete(id);
+            const medicalRecord = await MedicalRecord.findByIdAndDelete(medicalRecordId);
 
             if (!medicalRecord) {
                 return res.status(404).json({

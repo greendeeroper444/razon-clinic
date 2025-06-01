@@ -1,9 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, ChangeEvent } from 'react'
 import styles from '../ModalComponent/ModalComponent.module.css'
 import { searchAppointmentsByName, getAppointmentForAutofill } from '../../pages/services/medicalRecordService';
+import { MedicalRecordFormData } from '../../types';
+
+interface MedicalRecordFormProps {
+    formData: MedicalRecordFormData;
+    onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+    isLoading?: boolean;
+    onAutofill?: (data: MedicalRecordFormData) => void;
+}
 
 
-const MedicalRecordForm = ({formData, onChange, isLoading, onAutofill}) => {
+const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange, isLoading, onAutofill}) => {
     const [searchResults, setSearchResults] = useState([]);
     const [showSearchDropdown, setShowSearchDropdown] = useState(false);
     const [searchLoading, setSearchLoading] = useState(false);

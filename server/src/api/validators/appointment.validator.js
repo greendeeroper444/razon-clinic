@@ -35,7 +35,15 @@ const validateAppointment = [
         }),
     body('preferredTime')
         .notEmpty().withMessage('Preferred time is required')
-        .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('Time must be in HH:MM format'),
+        .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('Time must be in HH:MM format (24-hour)')
+        .custom((value) => {
+            //additional validation for business hours
+            const hour = parseInt(value.split(':')[0]);
+            if (hour < 8 || hour > 17) {
+                throw new Error('Appointments are only available between 8:00 AM and 5:00 PM');
+            }
+            return true;
+        }),
     body('reasonForVisit')
         .trim()
         .notEmpty().withMessage('Reason for visit is required')
