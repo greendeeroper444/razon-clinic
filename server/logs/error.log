@@ -2565,3 +2565,7 @@ Use mongoose.model(name, schema)
     at param (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:600:14)
     at param (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:610:14)
     at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:664:3)
+2025-06-01 10:27:33 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)
+2025-06-01 10:39:47 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)

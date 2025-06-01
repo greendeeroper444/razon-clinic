@@ -54,9 +54,9 @@ const NavigationComponent = () => {
             <div className={styles.desktopMenu}>
                 <div className={styles.navLinks}>
                     <Link to='/' className={`${styles.navLink} ${isActive('/') ? styles.active : ''}`}>Home</Link>
-                    <Link to='/about' className={`${styles.navLink} ${isActive('/about') ? styles.active : ''}`}>About</Link>
+                    {/* <Link to='/about' className={`${styles.navLink} ${isActive('/about') ? styles.active : ''}`}>About</Link>
                     <Link to='/services' className={`${styles.navLink} ${isActive('/services') ? styles.active : ''}`}>Services</Link>
-                    <Link to='/contact' className={`${styles.navLink} ${isActive('/contact') ? styles.active : ''}`}>Contact</Link>
+                    <Link to='/contact' className={`${styles.navLink} ${isActive('/contact') ? styles.active : ''}`}>Contact</Link> */}
                     {
                         isAuthenticated && (
                             <Link to='/user/appointments' className={`${styles.navLink} ${isActive('/user/appointments') ? styles.active : ''}`}>Appointment</Link>
@@ -108,7 +108,7 @@ const NavigationComponent = () => {
                         onClick={toggleMenu}>
                         Home
                     </Link>
-                    <Link to='/about' 
+                    {/* <Link to='/about' 
                         className={`${styles.navLink} ${isActive('/about') ? styles.active : ''}`}
                         onClick={toggleMenu}>
                         About
@@ -122,7 +122,7 @@ const NavigationComponent = () => {
                         className={`${styles.navLink} ${isActive('/contact') ? styles.active : ''}`}
                         onClick={toggleMenu}>
                         Contact
-                    </Link>
+                    </Link> */}
                     {
                         isAuthenticated && (
                             <Link to='/user/appointments' 

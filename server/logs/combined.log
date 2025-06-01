@@ -4232,3 +4232,9 @@ Use mongoose.model(name, schema)
 2025-06-01 01:55:29 [INFO]: Server running on port 3000 
 2025-06-01 01:57:32 [INFO]: MongoDB Connected: 127.0.0.1 
 2025-06-01 01:57:32 [INFO]: Server running on port 3000 
+2025-06-01 09:41:15 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-06-01 09:41:15 [INFO]: Server running on port 3000 
+2025-06-01 10:27:33 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)
+2025-06-01 10:39:47 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)

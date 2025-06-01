@@ -19,7 +19,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { getAppointments } from '../../services/appoinmentService';
 import { AppointmentResponse } from '../../../types/appointment';
-import { getFirstLetterOfFirstAndLastName } from '../../../utils/user';
+import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial } from '../../../utils/user';
 import { formatDate, formatTime } from '../../../utils/formatDateTime';
 import { useNavigate } from 'react-router-dom';
 import { getInventoryItems } from '../../services/inventoryItemService';
@@ -251,19 +251,19 @@ const DashboardPage = () => {
                                                 <div className={styles.patientAvatar}>
                                                     {
                                                         (() => {
-                                                            const fullName = appointment.patientId?.fullName || appointment.fullName;
-                                                            return fullName 
-                                                                ? getFirstLetterOfFirstAndLastName(fullName)
+                                                            const firstName = appointment.firstName || appointment.firstName;
+                                                            return firstName 
+                                                                ? getFirstLetterOfFirstAndLastName(firstName)
                                                                 : 'N/A';
                                                         })()
                                                     }
                                                 </div>
                                                 <div>
                                                     <div className={styles.patientName}>
-                                                        {appointment.patientId?.fullName || appointment.fullName}
+                                                        {appointment.firstName} {appointment.lastName} {getMiddleNameInitial(appointment.middleName)}
                                                     </div>
                                                     <div className={styles.patientId}>
-                                                        PT-ID: {appointment.patientId?.patientNumber || 'Walk-in'}
+                                                        APT-ID: {appointment.appointmentNumber || 'Walk-in'}
                                                     </div>
                                                 </div>
                                             </div>
