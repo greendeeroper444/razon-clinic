@@ -14,7 +14,7 @@ import {
     faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { getMedicalRecords, getMedicalRecordById, updateMedicalRecord, deleteMedicalRecord } from '../../services/medicalRecordService';
+import { getMedicalRecords, getMedicalRecordById, updateMedicalRecord, deleteMedicalRecord, addMedicalRecord } from '../../services/medicalRecordService';
 import { MedicalRecord, MedicalRecordFormData, PaginationInfo } from '../../../types/medical';
 import { toast } from 'sonner';
 import ModalComponent from '../../../components/ModalComponent/ModalComponent';
@@ -211,7 +211,8 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             setLoading(true);
             
             if (selectedMedicalRecord?.id) {
-                await updateMedicalRecord(selectedMedicalRecord.id, formData);
+                // await updateMedicalRecord(selectedMedicalRecord.id, formData);
+                await addMedicalRecord(formData);
                 await fetchMedicalRecords(currentPage, searchTerm);
                 
                 toast.success('Updated medical record successfully!')
