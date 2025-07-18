@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom';
-import { getProfile } from '../pages/services/authService';
-import { User } from '../types/auth';
+import { useLocation } from 'react-router-dom'
+import { getProfile } from '../pages/services/authService'
+import { User } from '../types'
 
 interface UseAuthReturn {
     isAuthenticated: boolean;

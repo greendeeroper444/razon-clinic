@@ -1,31 +1,12 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import styles from './ModalComponent.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData } from '../../types';
-import { getPatients } from '../../pages/services/patientService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { getPatients } from '../../pages/services/patientService'
+import { AppointmentForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../Forms'
+import { formatDateForDisplay, formatDateForInput } from '../../utils'
+import { AppointmentFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalComponentProps, Patient, PersonalPatientFormData } from '../../types'
 
-
-import { Patient } from '../../types/patient';
-import { DeleteData, FormDataType } from '../../types/crud';
-import { PersonalPatientFormData } from '../../types/personalPatient';
-import { AppointmentForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../Forms';
-
-
-
-
-type ModalType = 'appointment' | 'patient' | 'medical' | 'item' | 'delete' | 'status';
-
-interface ModalComponentProps {
-    isOpen: boolean;
-    onClose: () => void;
-    modalType: ModalType;
-    onSubmit: (data: FormDataType | string) => void;
-    patients?: Array<Patient>;
-    editData?: FormDataType | null;
-    deleteData?: DeleteData | null;
-    isProcessing?: boolean;
-}
 
 const ModalComponent: React.FC<ModalComponentProps> = ({
     isOpen,
@@ -35,32 +16,14 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
     patients = [],
     editData = null,
     deleteData = null,
-    isProcessing = false
+    isProcessing = false,
+    isRestockMode
 }) => {
     const [formData, setFormData] = useState<FormDataType>({});
     const [loadedPatients, setLoadedPatients] = useState<Patient[]>(patients);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
 
-    //helper function to format date for input field
-    const formatDateForInput = (dateString: string | Date): string => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return '';
-        return date.toISOString().split('T')[0];
-    };
-
-    //helper function to format date for display
-    const formatDateForDisplay = (dateString: string | Date): string => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return '';
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
 
     //initialize form with edit data if provided or reset when modal type changes
     useEffect(() => {
@@ -316,6 +279,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                     <InventoryItemForm
                         formData={formData as InventoryItemFormData}
                         onChange={handleChange}
+                        isRestockMode={isRestockMode}
                     />
                 );
             case 'medical':

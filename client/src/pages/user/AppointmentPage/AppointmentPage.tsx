@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import styles from './AppointmentPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { OpenModalProps } from '../../../hooks/hook';
-import { getFirstLetterOfFirstAndLastName } from '../../../utils/user';
-import { AppointmentFormData, AppointmentResponse } from '../../../types/appointment';
-import { getMyAppointment, updateAppointment, deleteAppointment } from '../../services/appoinmentService';
-import { formatDate, formatTime } from '../../../utils/formatDateTime';
-import ModalComponent from '../../../components/ModalComponent/ModalComponent';
-import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+import { faPlus, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { OpenModalProps } from '../../../hooks/hook'
+import { getFirstLetterOfFirstAndLastName, formatDate, formatTime } from '../../../utils'
+import { AppointmentFormData, AppointmentResponse } from '../../../types'
+import { getMyAppointment, updateAppointment, deleteAppointment } from '../../services/appoinmentService'
+import { ModalComponent } from '../../../components'
+import { toast } from 'sonner'
+import { useNavigate } from 'react-router-dom'
 
 const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const navigate = useNavigate();

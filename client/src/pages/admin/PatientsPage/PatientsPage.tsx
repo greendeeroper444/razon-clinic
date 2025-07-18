@@ -1,26 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import styles from './PatientsPage.module.css'
+import styles from './PatientsPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faPlus, 
     faUserInjured, 
     faUserPlus, 
-    faHeartbeat, 
-    faCalendarAlt,
-    faEye,
+    faHeartbeat,
     faIdCard,
     faVenusMars,
     faBirthdayCake,
     faPhone,
     faMapMarkerAlt,
-    faEdit,
-    faCalendarPlus,
     faArchive,
     faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import ModalComponent from '../../../components/ModalComponent/ModalComponent';
-import { PersonalPatientFormData } from '../../../types/personalPatient';
+import { ModalComponent } from '../../../components';
+import { PersonalPatientFormData } from '../../../types';
 import { 
     getPersonalPatients, 
     updatePersonalPatient, 

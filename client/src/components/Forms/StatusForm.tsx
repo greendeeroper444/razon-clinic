@@ -2,16 +2,16 @@ import React from 'react'
 import styles from '../ModalComponent/ModalComponent.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
-  faCalendarCheck, 
-  faCheckCircle, 
-  faTimes, 
-  faRedo,
-  faClock
+    faCalendarCheck, 
+    faCheckCircle, 
+    faTimes, 
+    faRedo,
+    faClock
 } from '@fortawesome/free-solid-svg-icons'
 
 interface StatusFormProps {
-  currentStatus?: string;
-  onStatusChange: (status: string) => void;
+    currentStatus?: string;
+    onStatusChange: (status: string) => void;
 }
 
 const StatusForm: React.FC<StatusFormProps> = ({currentStatus, onStatusChange}) => {

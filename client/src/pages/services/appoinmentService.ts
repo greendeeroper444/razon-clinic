@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { AppointmentFilters, AppointmentFormData, AppointmentResponse } from '../../types/appointment';
+import { AppointmentFilters, AppointmentFormData, AppointmentResponse } from '../../types';
 import API_BASE_URL from '../../ApiBaseUrl';
 
 

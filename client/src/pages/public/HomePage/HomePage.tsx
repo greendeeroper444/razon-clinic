@@ -1,7 +1,7 @@
 // import styles from './HomePage.module.css'
 // import FooterComponent from '../../../components/FooterComponent/FooterComponent';
 // import { useNavigate } from 'react-router-dom';
-// import SectionFeatures from '../../../components/SectionFeatures/SectionFeatures';
+// import SectionFeaturesComponent from '../../../components/SectionFeaturesComponent/SectionFeaturesComponent';
 
 // const HomePage = () => {
 //     const navigate = useNavigate();
@@ -14,7 +14,7 @@
 //             <button className={styles.btnPrimary} onClick={() => navigate('/login')}>Book Now</button>
 //         </section>
 
-//         <SectionFeatures />
+//         <SectionFeaturesComponent />
 
 //         <FooterComponent />
 //     </div>
@@ -22,12 +22,10 @@
 // }
 
 // export default HomePage
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import styles from './HomePage.module.css'
-import FooterComponent from '../../../components/FooterComponent/FooterComponent';
-import { useNavigate, Link } from 'react-router-dom';
-import SectionFeatures from '../../../components/SectionFeatures/SectionFeatures';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate, Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
     faHeart, 
     faStethoscope, 
@@ -44,10 +42,11 @@ import {
     faPhone, 
     faEnvelope, 
     faLocationDot
-} from '@fortawesome/free-solid-svg-icons';
-import { faFacebookF, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
-import razon from '../../../assets/profiles/razon.jpg';
-import secretary from '../../../assets/profiles/secretary.jpg';
+} from '@fortawesome/free-solid-svg-icons'
+import { faFacebookF, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { FooterComponent, SectionFeaturesComponent } from '../../../components'
+import razon from '../../../assets/profiles/razon.jpg'
+import secretary from '../../../assets/profiles/secretary.jpg'
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -280,7 +279,7 @@ const HomePage = () => {
             className={`${styles.featuresSection} ${styles.fadeInSection} ${visibleSections.has('features') ? styles.visible : ''}`}
         >
             <div className={styles.slideInUp}>
-                <SectionFeatures />
+                <SectionFeaturesComponent />
             </div>
         </section>
 

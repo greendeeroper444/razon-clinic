@@ -1,4 +1,4 @@
-import { NotificationType, NotificationUIMapping } from '../types/notification';
+import { NotificationType, NotificationUIMapping } from '../types';
 import { 
     faCalendar, 
     faNotesMedical, 

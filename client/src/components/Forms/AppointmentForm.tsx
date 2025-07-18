@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { AppointmentFormProps } from '../../types/appointment'
 import styles from '../ModalComponent/ModalComponent.module.css'
-import { getAppointments } from '../../pages/services/appoinmentService';
+import { getAppointments } from '../../pages/services/appoinmentService'
+import { convertTo12HourFormat, generateTimeSlots } from '../../utils'
+import { AppointmentFormProps } from '../../types'
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({
     formData,
@@ -11,61 +12,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     const [bookedSlots, setBookedSlots] = useState<{date: string, time: string, time12Hour?: string}[]>([]);
     const [availableTimes, setAvailableTimes] = useState<string[]>([]);
 
-    //convert 24-hour format to 12-hour format for comparison
-    const convertTo12HourFormat = (time24: string) => {
-        if (!time24 || !time24.includes(':')) return time24;
-        
-        const [hourStr, minuteStr] = time24.split(':');
-        let hour = parseInt(hourStr);
-        const minute = minuteStr || '00';
-        
-        if (hour === 0) {
-            return `12:${minute} AM`;
-        } else if (hour < 12) {
-            return `${hour}:${minute} AM`;
-        } else if (hour === 12) {
-            return `12:${minute} PM`;
-        } else {
-            return `${hour - 12}:${minute} PM`;
-        }
-    };
 
-    //convert 12-hour format to 24-hour format for comparison
-    const convertTo24HourFormat = (time12: string) => {
-        if (!time12 || !time12.includes(' ')) return time12;
-        
-        const [timeStr, period] = time12.split(' ');
-        const [hourStr, minuteStr] = timeStr.split(':');
-        let hour = parseInt(hourStr);
-        const minute = minuteStr || '00';
-        
-        if (period === 'AM') {
-            if (hour === 12) hour = 0;
-        } else {
-            if (hour !== 12) hour += 12;
-        }
-        
-        return `${hour.toString().padStart(2, '0')}:${minute}`;
-    };
 
-    //generate available time slots (8:00 AM to 5:00 PM)
-    const generateTimeSlots = () => {
-        const slots = [];
-        
-        //generate AM slots (8:00 AM to 11:00 AM)
-        for (let hour = 8; hour <= 11; hour++) {
-            slots.push(`${hour}:00 AM`);
-        }
-        
-        slots.push(`12:00 PM`); //noon
-
-        //generate PM slots (1:00 PM to 5:00 PM)
-        for (let hour = 1; hour <= 5; hour++) {
-            slots.push(`${hour}:00 PM`);
-        }
-        
-        return slots;
-    };
 
     //fetch existing appointments to check for conflicts
     useEffect(() => {
@@ -151,7 +99,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             
             if (bookedTimesForDate.includes(formData.preferredTime)) {
                 //clear the time selection
-                onChange({ target: { name: 'preferredTime', value: '' } } as any);
+                onChange({
+                    target: {
+                        name: 'preferredTime',
+                        value: '',
+                    }
+                } as React.ChangeEvent<HTMLInputElement>);
             }
         }
     };
@@ -525,7 +478,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         </div>
 
         {/* add custom styles for better visual feedback */}
-        <style jsx>{`
+        <style>{`
             select option:disabled {
                 color: #999 !important;
                 background-color: #f5f5f5 !important;

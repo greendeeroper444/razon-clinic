@@ -1,3 +1,13 @@
+import { ChangeEvent } from "react";
+
+export interface MedicalRecordFormProps {
+    formData: MedicalRecordFormData;
+    onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+    isLoading?: boolean;
+    onAutofill?: (data: MedicalRecordFormData) => void;
+}
+
+
 export interface PersonalDetails {
     fullName: string;
     dateOfBirth: string;
@@ -161,11 +171,11 @@ export interface PaginationInfo {
     totalRecords: number;
 }
 
-export interface ApiError {
-    success: false;
-    message: string;
-    error?: string;
-}
+// export interface ApiError {
+//     success: false;
+//     message: string;
+//     error?: string;
+// }
 
 //utility function to transform form data to nested structure for API
 export const transformFormDataToApiFormat = (formData: MedicalRecordFormData) => {

@@ -1,8 +1,8 @@
 import React from 'react'
 import styles from './NotFoundPage.module.css'
 import { Link, useNavigate } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faArrowLeft, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHome, faArrowLeft, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
 
 const NotFoundPage: React.FC = () => {

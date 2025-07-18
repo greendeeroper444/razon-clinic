@@ -2,7 +2,7 @@ import styles from './ContactPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone, faEnvelope, faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { faFacebookF, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons'
-import FooterComponent from '../../../components/FooterComponent/FooterComponent'
+import { FooterComponent } from '../../../components'
 
 const ContactPage = () => {
   return (

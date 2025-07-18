@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import styles from './InventoryPage.module.css'
+import styles from './InventoryPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faPlus, 
@@ -11,12 +11,11 @@ import {
     faTablets, 
     faCapsules, 
     faPrescriptionBottle, 
-    faPrescriptionBottleAlt, 
     faEdit,
     faTrash
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import ModalComponent from '../../../components/ModalComponent/ModalComponent';
+import { ModalComponent } from '../../../components';
 import { 
     getInventoryItems, 
     addInventoryItem, 
@@ -39,7 +38,7 @@ interface InventoryItem {
     updatedAt: string;
 }
 
-const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
+const InventoryPage: React.FC<OpenModalProps> = () => {
     const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,7 +52,8 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         expiring: 0,
         recentlyAdded: 0
     });
-
+    const [isRestockMode, setIsRestockMode] = useState(false);
+    
     // fetch inventory items on component mount
     useEffect(() => {
         fetchInventoryItems();
@@ -114,7 +114,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         setIsModalOpen(true);
     };
 
-    const handleEditItem = (item: InventoryItem) => {
+    const handleEditItem = (item: InventoryItem, restockMode: boolean = false) => {
         const itemId = item._id || item.id;
         if (!itemId) {
             console.error('Item ID is missing:', item);
@@ -131,7 +131,10 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         };
         setEditData(formData);
         setIsModalOpen(true);
+        setIsRestockMode(restockMode);
     };
+
+    
 
     const handleDeleteItem = (item: InventoryItem) => {
         const itemId = item._id || item.id;
@@ -156,6 +159,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
     const handleModalClose = () => {
         setIsModalOpen(false);
         setEditData(null);
+        setIsRestockMode(false);
     };
 
     const handleDeleteModalClose = () => {
@@ -163,7 +167,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         setDeleteInventoryItemData(null);
     };
 
-    const handleSubmitUpdate = async (data: InventoryItemFormData) => {
+    const handleSubmitUpdate = async (data: InventoryItemFormData | any) => {
         try {
             setIsProcessing(true);
             if (editData && editData._id) {
@@ -365,21 +369,32 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                     </td>
                                                     <td>
                                                         <button 
+                                                            type='button'
                                                             className={`${styles.actionBtn} ${styles.update}`}
-                                                            onClick={() => handleEditItem(item)}
+                                                            onClick={() => handleEditItem(item, false)}
                                                             disabled={isProcessing}
                                                         >
                                                             <FontAwesomeIcon icon={faEdit} /> Edit
                                                         </button>
                                                         <button 
+                                                            type='button'
                                                             className={`${styles.actionBtn} ${styles.cancel}`}
                                                             onClick={() => handleDeleteItem(item)}
                                                             disabled={isProcessing}
                                                         >
                                                             <FontAwesomeIcon icon={faTrash} /> Delete
                                                         </button>
-                                                        <button 
+                                                        {/* <button 
+                                                            type='button'
                                                             className={`${styles.actionBtn} ${styles.primary}`}
+                                                            disabled={isProcessing}
+                                                        >
+                                                            <FontAwesomeIcon icon={faPlus} /> Restock
+                                                        </button> */}
+                                                        <button 
+                                                            type='button'
+                                                            className={`${styles.actionBtn} ${styles.primary}`}
+                                                            onClick={() => handleEditItem(item, true)}
                                                             disabled={isProcessing}
                                                         >
                                                             <FontAwesomeIcon icon={faPlus} /> Restock
@@ -398,17 +413,18 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 
             {/* update inventory item modal */}
             {
-                isModalOpen && (
-                    <ModalComponent
-                        isOpen={isModalOpen}
-                        onClose={handleModalClose}
-                        modalType="item"
-                        onSubmit={handleSubmitUpdate}
-                        editData={editData}
-                        isProcessing={isProcessing}
-                    />
-                )
-            }
+                    isModalOpen && (
+                        <ModalComponent
+                            isOpen={isModalOpen}
+                            onClose={handleModalClose}
+                            modalType="item"
+                            onSubmit={handleSubmitUpdate}
+                            editData={editData}
+                            isProcessing={isProcessing}
+                            isRestockMode={isRestockMode}
+                        />
+                    )
+                }
 
             {/* delete inventory item modal */}
             {

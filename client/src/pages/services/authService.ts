@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LoginFormData, LoginResponse, SignupFormData, SignupResponse } from '../../types/auth';
+import { LoginFormData, LoginResponse, SignupFormData, SignupResponse } from '../../types';
 import API_BASE_URL from '../../ApiBaseUrl';
 
 //register service

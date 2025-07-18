@@ -1,11 +1,6 @@
-import React, { ChangeEvent } from 'react'
+import React from 'react'
 import styles from '../ModalComponent/ModalComponent.module.css';
-import { PersonalPatientFormData } from '../../types/personalPatient';
-
-interface PatientFormProps {
-    formData: PersonalPatientFormData;
-    onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
-}
+import { PatientFormProps } from '../../types';
 
 const PatientForm: React.FC<PatientFormProps> = ({
     formData,

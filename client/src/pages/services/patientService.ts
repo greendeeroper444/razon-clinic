@@ -1,5 +1,5 @@
 import axios from "axios";
-import { PatientResponse, PatientsResponse, PatientDetailed } from "../../types/patient";
+import { PatientResponse, PatientsResponse, PatientDetailed } from "../../types";
 import API_BASE_URL from "../../ApiBaseUrl";
 
 

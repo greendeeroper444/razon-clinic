@@ -43,3 +43,98 @@ export const calculateAge = (birthdate: string) => {
     
     return age;
 };
+
+//convert 24-hour format to 12-hour format for comparison
+export  const convertTo12HourFormat = (time24: string) => {
+    if (!time24 || !time24.includes(':')) return time24;
+    
+    const [hourStr, minuteStr] = time24.split(':');
+    const hour = parseInt(hourStr);
+    const minute = minuteStr || '00';
+    
+    if (hour === 0) {
+        return `12:${minute} AM`;
+    } else if (hour < 12) {
+        return `${hour}:${minute} AM`;
+    } else if (hour === 12) {
+        return `12:${minute} PM`;
+    } else {
+        return `${hour - 12}:${minute} PM`;
+    }
+};
+
+//convert 12-hour format to 24-hour format for comparison
+export const convertTo24HourFormat = (time12: string) => {
+    if (!time12 || !time12.includes(' ')) return time12;
+    
+    const [timeStr, period] = time12.split(' ');
+    const [hourStr, minuteStr] = timeStr.split(':');
+    let hour = parseInt(hourStr);
+    const minute = minuteStr || '00';
+    
+    if (period === 'AM') {
+        if (hour === 12) hour = 0;
+    } else {
+        if (hour !== 12) hour += 12;
+    }
+    
+    return `${hour.toString().padStart(2, '0')}:${minute}`;
+};
+
+
+ //helper function to format date for input field
+export const formatDateForInput = (dateString: string | Date): string => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    return date.toISOString().split('T')[0];
+};
+
+//helper function to format date for display
+export const formatDateForDisplay = (dateString: string | Date): string => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+};
+
+
+ //function to calculate age from date of birth
+export const calculateAge2 = (dateOfBirth: string): string => {
+    if (!dateOfBirth) return '0 months old';
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+    
+    //adjust if birthday hasn't occurred this year
+    if (months < 0 || (months === 0 && today.getDate() < birthDate.getDate())) {
+        years--;
+        months += 12;
+    }
+    
+    //adjust if the day hasn't occurred this month
+    if (today.getDate() < birthDate.getDate()) {
+        months--;
+    }
+    
+    //return appropriate format based on age
+    if (years === 0) {
+        if (months === 0) {
+            return 'Less than 1 month old';
+        } else if (months === 1) {
+            return '1 month old';
+        } else {
+            return `${months} months old`;
+        }
+    } else if (years === 1) {
+        return '1 year old';
+    } else {
+        return `${years} years old`;
+    }
+};

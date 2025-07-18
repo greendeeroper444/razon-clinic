@@ -1,17 +1,14 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import styles from './BillingsPaymentPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faPlus, 
   faSearch, 
-  faFilter, 
   faDownload,
   faCreditCard,
   faCheck,
   faClock,
   faExclamationTriangle,
-  faEye,
-  faEdit,
   faTimes,
   faUser,
   faCalendar,
@@ -22,7 +19,6 @@ import {
 const BillingsPaymentPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
-  const [selectedBills, setSelectedBills] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedBill, setSelectedBill] = useState(null);
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import styles from './MedicalRecordsPage.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import styles from './MedicalRecordsPage.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faPlus, 
     faUser, 
@@ -14,12 +14,12 @@ import {
     faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { getMedicalRecords, getMedicalRecordById, updateMedicalRecord, deleteMedicalRecord, addMedicalRecord } from '../../services/medicalRecordService';
-import { MedicalRecord, MedicalRecordFormData, PaginationInfo } from '../../../types/medical';
-import { toast } from 'sonner';
-import ModalComponent from '../../../components/ModalComponent/ModalComponent';
+import { getMedicalRecords, getMedicalRecordById, deleteMedicalRecord, addMedicalRecord } from '../../services/medicalRecordService';
+import { MedicalRecord, MedicalRecordFormData, ModalType, PaginationInfo } from '../../../types';
+import { ModalComponent } from '../../../components';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
-
+import { toast } from 'sonner';
+import { calculateAge2 } from '../../../utils';
 
 const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([]);
@@ -53,8 +53,8 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                 const uniquePatients = Array.from(
                     new Map(
                         response.data
-                            .filter(record => record?.id) 
-                            .map(record => [
+                            .filter((record: MedicalRecord) => record?.id) 
+                            .map((record: MedicalRecord) => [
                                 record.id,
                                 {
                                     id: record.id,
@@ -63,7 +63,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                             ])
                     ).values()
                 );
-                setPatients(uniquePatients);
+                setPatients(uniquePatients as Array<{ id: string; firstName: string }>);
             } else {
                 setError('Failed to fetch medical records');
             }
@@ -94,7 +94,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     }, [searchTerm]);
 
     const handleOpenModal = () => {
-        const customOpenModal = (type: 'medical') => {
+        const customOpenModal = (type: ModalType) => {
             if (openModal) {
                 openModal(type);
                 
@@ -110,7 +110,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             }
         };
         
-        customOpenModal('medical');
+        customOpenModal('medical' as ModalType);
     };
 
     const handleCloseDetails = () => {
@@ -206,7 +206,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         setDeleteMedicalRecordData(null);
     };
 
-    const handleSubmitUpdate = async (formData: MedicalRecordFormData) => {
+    const handleSubmitUpdate = async (formData: any): Promise<void> => {
         try {
             setLoading(true);
             
@@ -226,7 +226,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     };
 
-    const handleConfirmDelete = async (medicalRecordId: string) => {
+    const handleConfirmDelete = async (medicalRecordId: any): Promise<void> => {
         try {
             setIsProcessing(true);
             
@@ -271,53 +271,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         return 'Active';
     };
 
-    //function to calculate age from date of birth
-    const calculateAge = (dateOfBirth: string): string => {
-        if (!dateOfBirth) return '0 months old';
-        const today = new Date();
-        const birthDate = new Date(dateOfBirth);
-        
-        let years = today.getFullYear() - birthDate.getFullYear();
-        let months = today.getMonth() - birthDate.getMonth();
-        
-        //adjust if birthday hasn't occurred this year
-        if (months < 0 || (months === 0 && today.getDate() < birthDate.getDate())) {
-            years--;
-            months += 12;
-        }
-        
-        //adjust if the day hasn't occurred this month
-        if (today.getDate() < birthDate.getDate()) {
-            months--;
-        }
-        
-        //return appropriate format based on age
-        if (years === 0) {
-            if (months === 0) {
-                return 'Less than 1 month old';
-            } else if (months === 1) {
-                return '1 month old';
-            } else {
-                return `${months} months old`;
-            }
-        } else if (years === 1) {
-            return '1 year old';
-        } else {
-            return `${years} years old`;
-        }
-    };
-
-    const getStatusClass = (status: string): string => {
-        switch (status.toLowerCase()) {
-            case 'completed':
-                return styles.completed;
-            case 'pending':
-                return styles.pending;
-            case 'active':
-            default:
-                return styles.active;
-        }
-    };
 
     if (loading) {
         return (
@@ -334,7 +287,10 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             <div className={styles.content}>
                 <div className={styles.errorContainer}>
                     <p>Error: {error}</p>
-                    <button onClick={() => fetchMedicalRecords(currentPage, searchTerm)} className={styles.btnPrimary}>
+                    <button
+                        type='button'
+                        onClick={() => fetchMedicalRecords(currentPage, searchTerm)} 
+                        className={styles.btnPrimary}>
                         Retry
                     </button>
                 </div>
@@ -408,7 +364,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 <td>
                                     {new Date(record.personalDetails.dateOfBirth).toLocaleDateString()}
                                 </td>
-                                <td>{calculateAge(record.personalDetails.dateOfBirth)}</td>
+                                <td>{calculateAge2(record.personalDetails.dateOfBirth)}</td>
                                 <td>{record.personalDetails.gender}</td>
                                 <td>{record.personalDetails.phone}</td>
                                 <td>
@@ -416,20 +372,23 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 </td>
                                 <td className={styles.actions}>
                                     <button
+                                        type='button'
                                         className={`${styles.actionBtn} ${styles.view}`}
                                         onClick={() => handleViewRecord(record)}
                                         title="View Details"
                                     >
                                         View
                                     </button>
-                                    <button 
+                                    <button
+                                        type='button' 
                                         className={`${styles.actionBtn} ${styles.update}`} 
                                         onClick={() => handleUpdateClick(record)}
                                         title="Update"
                                     >
                                         Update
                                     </button>
-                                    <button 
+                                    <button
+                                        type='button' 
                                         className={`${styles.actionBtn} ${styles.delete}`} 
                                         onClick={() => handleDeleteClick(record)}
                                         title="Delete"
@@ -451,6 +410,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             pagination && pagination.total > 1 && (
                 <div className={styles.pagination}>
                     <button
+                        type='button'
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                         className={styles.paginationBtn}
@@ -464,6 +424,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                     </span>
                     
                     <button
+                        type='button'
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === pagination.total}
                         className={styles.paginationBtn}
@@ -483,13 +444,17 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                             <h2>Medical Record Details</h2>
                             <div className={styles.modalHeaderActions}>
                                 <button 
+                                    type='button'
                                     onClick={handleDownloadReceipt} 
                                     className={styles.downloadBtn}
                                     title="Download Receipt"
                                 >
                                     <FontAwesomeIcon icon={faDownload} /> Download Receipt
                                 </button>
-                                <button onClick={handleCloseDetails} className={styles.closeBtn}>
+                                <button 
+                                    type='button'
+                                    onClick={handleCloseDetails} 
+                                    className={styles.closeBtn}>
                                     <FontAwesomeIcon icon={faTimes} />
                                 </button>
                             </div>
@@ -502,7 +467,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 <div className={styles.detailGrid}>
                                     <div><strong>Name:</strong> {selectedRecord.personalDetails.fullName}</div>
                                     <div><strong>Date of Birth:</strong> {new Date(selectedRecord.personalDetails.dateOfBirth).toLocaleDateString()}</div>
-                                    <div><strong>Age:</strong> {calculateAge(selectedRecord.personalDetails.dateOfBirth)} years</div>
+                                    <div><strong>Age:</strong> {calculateAge2(selectedRecord.personalDetails.dateOfBirth)} years</div>
                                     <div><strong>Gender:</strong> {selectedRecord.personalDetails.gender}</div>
                                     <div><strong>Blood Type:</strong> {selectedRecord.personalDetails.bloodType || 'Not specified'}</div>
                                     <div><strong>Phone:</strong> {selectedRecord.personalDetails.phone}</div>

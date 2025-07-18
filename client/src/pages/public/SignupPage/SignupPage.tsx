@@ -19,7 +19,7 @@
 // import { SignupFormData, ValidationErrors } from '../../../types/auth'
 // import { validateSignupForm } from '../../../utils/validators'
 // import { toast } from 'sonner'
-// import SectionFeatures from '../../../components/SectionFeatures/SectionFeatures'
+// import SectionFeaturesComponent from '../../../components/SectionFeaturesComponent/SectionFeaturesComponent'
 
 // const SignupPage = () => {
 //     const navigate = useNavigate();
@@ -459,7 +459,7 @@
 //             </div>
 //         </section>
 
-//        <SectionFeatures />
+//        <SectionFeaturesComponent />
 
 //         <FooterComponent />
 //     </div>
@@ -480,18 +480,16 @@ import {
     faMapMarkerAlt,
     faVenusMars,
     faCalendar,
-    faUserFriends,
     faChurch,
     faArrowLeft,
     faArrowRight,
     faCheck
 } from '@fortawesome/free-solid-svg-icons'
 import { Link, useNavigate } from 'react-router-dom'
-import FooterComponent from '../../../components/FooterComponent/FooterComponent'
-import { registerUser } from '../../services/authService'
-import { SignupFormData, ValidationErrors } from '../../../types/auth'
 import { toast } from 'sonner'
-import SectionFeatures from '../../../components/SectionFeatures/SectionFeatures';
+import { SectionFeaturesComponent, FooterComponent } from '../../../components'
+import { registerUser } from '../../services/authService'
+import { SignupFormData, ValidationErrors } from '../../../types'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
 
 const STEPS = [
@@ -507,7 +505,7 @@ const ONE_HOUR_MS = 60 * 60 * 1000; // 1 hour in milliseconds
 
 //storage utility functions (replace with localStorage in my)
 const storage = {
-    set: (key: string, value: any) => {
+    set: (key: string, value: string | number) => {
         try {
             // in my, replace sessionStorage with localStorage
             sessionStorage.setItem(key, JSON.stringify(value));
@@ -1143,7 +1141,7 @@ const SignupPage = () => {
             </div>
         </section>
 
-        <SectionFeatures />
+        <SectionFeaturesComponent />
         <FooterComponent />
     </div>
   )

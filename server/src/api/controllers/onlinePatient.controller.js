@@ -7,7 +7,7 @@ class OnlinePatientController {
     async getAllOnlinePatient(req, res, next) {
         try {
             //filter out sensitive data
-            const onlinePatients = await OnlinePatient.find().select('fullName email contactNumber createdAt');
+            const onlinePatients = await OnlinePatient.find().select('firstName lastName email contactNumber createdAt');
             
             //return onlinePatients list
             res.status(200).json({
@@ -26,13 +26,14 @@ class OnlinePatientController {
         try {
             //only find OnlinePatients with role 'Patient'
             const patients = await OnlinePatient.find({ role: 'Patient' })
-                .select('_id fullName patientNumber')
+                .select('_id firstName lastName patientNumber')
                 .lean();
             
             //format the data for the dropdown
             const formattedPatients = patients.map(patient => ({
                 id: patient._id,
-                fullName: patient.fullName,
+                firstName: patient.firstName,
+                lastName: patient.lastName,
                 patientNumber: patient.patientNumber
             }));
             
@@ -66,7 +67,8 @@ class OnlinePatientController {
                 data: {
                     patient: {
                         id: patient._id,
-                        fullName: patient.fullName,
+                        firstName: patient.firstName,
+                        lastName: patient.lastName,
                         email: patient.email,
                         contactNumber: patient.contactNumber,
                         birthdate: patient.birthdate,

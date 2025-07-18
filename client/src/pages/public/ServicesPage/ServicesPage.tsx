@@ -1,6 +1,6 @@
 import styles from './ServicesPage.module.css'
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
     faStethoscope, 
     faBriefcaseMedical,
@@ -11,8 +11,8 @@ import {
     faCalendarCheck,
     faSyringe,
     faCommentMedical
-} from '@fortawesome/free-solid-svg-icons';
-import FooterComponent from '../../../components/FooterComponent/FooterComponent';
+} from '@fortawesome/free-solid-svg-icons'
+import { FooterComponent } from '../../../components'
 
 const ServicesPage = () => {
     const services = [

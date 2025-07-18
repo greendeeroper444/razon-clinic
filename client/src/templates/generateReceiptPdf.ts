@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { MedicalRecord } from '../types/medical'
+import { MedicalRecord } from '../types'
 
 //typescript declaration for autoTable
 declare module 'jspdf' {

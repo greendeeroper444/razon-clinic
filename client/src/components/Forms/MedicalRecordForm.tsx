@@ -1,25 +1,18 @@
-import React, { useState, useEffect, useRef, ChangeEvent } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styles from '../ModalComponent/ModalComponent.module.css'
 import { searchAppointmentsByName, getAppointmentForAutofill } from '../../pages/services/medicalRecordService';
-import { MedicalRecordFormData } from '../../types';
-
-interface MedicalRecordFormProps {
-    formData: MedicalRecordFormData;
-    onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
-    isLoading?: boolean;
-    onAutofill?: (data: MedicalRecordFormData) => void;
-}
+import { Appointment, MedicalRecordFormProps } from '../../types';
 
 
 const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange, isLoading, onAutofill}) => {
     const [searchResults, setSearchResults] = useState([]);
     const [showSearchDropdown, setShowSearchDropdown] = useState(false);
     const [searchLoading, setSearchLoading] = useState(false);
-    const searchTimeoutRef = useRef(null);
-    const dropdownRef = useRef(null);
+    const searchTimeoutRef = useRef<number | null>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     //handle search input change
-    const handleSearchChange = async (e) => {
+    const handleSearchChange = async (e: any) => {
         const value = e.target.value;
         
         //update the form data immediately
@@ -28,7 +21,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 name: 'fullName',
                 value: value
             }
-        });
+        } as unknown as React.ChangeEvent<HTMLInputElement>);
 
         //clear previous timeout
         if (searchTimeoutRef.current) {
@@ -43,7 +36,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
         }
 
         //debounce search
-        searchTimeoutRef.current = setTimeout(async () => {
+        searchTimeoutRef.current = window.setTimeout(async () => {
             try {
                 setSearchLoading(true);
                 const response = await searchAppointmentsByName(value);
@@ -63,17 +56,17 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
     };
 
     //helper function to update form field
-    const updateFormField = (fieldName, value) => {
+    const updateFormField = (fieldName: string, value: string | number) => {
         onChange({
             target: {
                 name: fieldName,
                 value: value
             }
-        });
+        } as unknown as React.ChangeEvent<HTMLInputElement>);
     };
 
     //handle selection from search results
-    const handleSelectAppointment = async (appointment) => {
+    const handleSelectAppointment = async (appointment: Appointment) => {
         try {
             setSearchLoading(true);
             console.log('Selected appointment data:', appointment);
@@ -87,7 +80,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             
             if (onAutofill) {
                 try {
-                    const response = await getAppointmentForAutofill(appointment.id);
+                    const response = await getAppointmentForAutofill(String(appointment.id));
                     const autofillData = response.data;
                     console.log('Autofill API response:', autofillData);
 
@@ -156,31 +149,31 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
 
     //close dropdown when clicking outside
     useEffect(() => {
-        const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setShowSearchDropdown(false);
-        }
+        const handleClickOutside = (event: any) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowSearchDropdown(false);
+            }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
 
     //cleanup timeout on unmount
     useEffect(() => {
         return () => {
-        if (searchTimeoutRef.current) {
-            clearTimeout(searchTimeoutRef.current);
-        }
+            if (searchTimeoutRef.current) {
+                clearTimeout(searchTimeoutRef.current);
+            }
         };
     }, []);
 
     //calculate BMI when height or weight changes
     useEffect(() => {
-        const height = parseFloat(formData?.height);
-        const weight = parseFloat(formData?.weight);
+        const height = parseFloat(formData?.height !== undefined && formData?.height !== null ? String(formData.height) : '');
+        const weight = parseFloat(formData?.weight !== undefined && formData?.weight !== null ? String(formData.weight) : '');
         
         if (height && weight && height > 0) {
             const heightInMeters = height / 100;
@@ -221,33 +214,37 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                             searchLoading ? (
                                 <div className={styles.searchLoading}>Searching...</div>
                             ) : searchResults.length > 0 ? (
-                                searchResults.map((appointment) => (
+                                searchResults.map((appointment: Appointment) => (
                                 <div
                                     key={appointment.id}
                                     className={styles.searchItem}
                                     onClick={() => handleSelectAppointment(appointment)}
                                     onMouseEnter={(e) => {
-                                    e.target.style.backgroundColor = '#f8f9fa';
+                                        (e.target as HTMLDivElement).style.backgroundColor = '#f8f9fa';
                                     }}
                                     onMouseLeave={(e) => {
-                                    e.target.style.backgroundColor = 'white';
+                                        (e.target as HTMLDivElement).style.backgroundColor = 'white';
                                     }}
                                 >
                                     <div><strong>
-                                    {appointment.fullName || 
-                                    `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}`.trim() ||
-                                    'Unknown Name'}
+                                        {appointment.fullName || 
+                                        `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}`.trim() ||
+                                        'Unknown Name'}
                                     </strong></div>
-                                    <div className={{ fontSize: '0.9em', color: '#666' }}>
-                                    {appointment.dateOfBirth && new Date(appointment.dateOfBirth).toLocaleDateString()} 
-                                    {appointment.gender && ` • ${appointment.gender}`}
+                                    <div className={styles.appointmentBirthGender}>
+                                        {appointment.dateOfBirth && new Date(appointment.dateOfBirth).toLocaleDateString()} 
+                                        {appointment.gender && ` • ${appointment.gender}`}
                                     </div>
-                                    {appointment.phone && (
-                                    <div className={{ fontSize: '0.8em', color: '#888' }}>{appointment.phone}</div>
-                                    )}
-                                    {appointment.address && (
-                                    <div className={{ fontSize: '0.8em', color: '#888' }}>{appointment.address}</div>
-                                    )}
+                                    {
+                                        appointment.phone && (
+                                            <div className={styles.appointmentContact}>{appointment.phone}</div>
+                                        )
+                                    }
+                                    {
+                                        appointment.address && (
+                                            <div className={styles.appointmentContact}>{appointment.address}</div>
+                                        )
+                                    }
                                 </div>
                                 ))
                             ) : formData?.fullName && formData.fullName.length >= 2 && !searchLoading ? (

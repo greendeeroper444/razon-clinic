@@ -583,8 +583,28 @@ class AppointmentController {
             next(error);
         }
     }
-    
    
+
+    async deleteAppointment(req, res, next) {
+        try {
+            const { appointmentId } = req.params;
+            
+            const appointment = await Appointment.findByIdAndDelete(appointmentId);
+            
+            if (!appointment) {
+                throw new ApiError('Appointment not found', 404);
+            }
+            
+            return res.status(200).json({
+                success: true,
+                message: 'Appointment deleted successfully'
+            });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+
     async updateAppointment(req, res, next) {
         try {
             const { appointmentId } = req.params;
@@ -599,7 +619,7 @@ class AppointmentController {
                 throw new ApiError('Appointment not found', 404);
             }
 
-            // store the old status for comparison
+            //store the old status for comparison
             const oldStatus = appointment.status;
             
             //update based on request type
@@ -664,15 +684,22 @@ class AppointmentController {
 
             let smsResult = null;
 
-            //send SMS notification if status changed and patient has contact number
-            if (oldStatus !== appointment.status && appointment.patientId?.contactNumber) {
-                //only send SMS in production or when SMS_ENABLED is true
-                const shouldSendSMS = process.env.NODE_ENV === 'production' || process.env.SMS_ENABLED === 'true';
+            //dend SMS notification if status changed
+            if (oldStatus !== appointment.status) {
+                //get contact number from either appointment or populated patient
+                const contactNumber = appointment.contactNumber || appointment.patientId?.contactNumber;
                 
-                if (shouldSendSMS) {
-                    smsResult = await sendStatusUpdateSMS(appointment);
+                if (contactNumber) {
+                    //only send SMS in production or when SMS_ENABLED is true
+                    const shouldSendSMS = process.env.NODE_ENV === 'production' || process.env.SMS_ENABLED === 'true';
+                    
+                    if (shouldSendSMS) {
+                        smsResult = await sendStatusUpdateSMS(appointment, contactNumber);
+                    } else {
+                        console.log('SMS sending disabled in development environment');
+                    }
                 } else {
-                    console.log('SMS sending disabled in development environment');
+                    console.log('No contact number available for SMS notification');
                 }
             }
             
@@ -693,40 +720,19 @@ class AppointmentController {
             next(error);
         }
     }
-   
-
-    async deleteAppointment(req, res, next) {
-        try {
-            const { appointmentId } = req.params;
-            
-            const appointment = await Appointment.findByIdAndDelete(appointmentId);
-            
-            if (!appointment) {
-                throw new ApiError('Appointment not found', 404);
-            }
-            
-            return res.status(200).json({
-                success: true,
-                message: 'Appointment deleted successfully'
-            });
-        } catch (error) {
-            next(error);
-        }
-    };
 }
 
-
-async function sendStatusUpdateSMS(appointment) {
+async function sendStatusUpdateSMS(appointment, contactNumber) {
     try {
-        const patient = appointment.patientId;
-        const contactNumber = patient.contactNumber;
+        //convert contact number to string if it's a number
+        const contactNumberStr = String(contactNumber);
         
         //convert Philippine mobile number format for Twilio
-        let twilioNumber = contactNumber;
-        if (contactNumber.startsWith('09')) {
-            twilioNumber = '+63' + contactNumber.substring(1);
-        } else if (!contactNumber.startsWith('+63')) {
-            twilioNumber = '+63' + contactNumber;
+        let twilioNumber = contactNumberStr;
+        if (contactNumberStr.startsWith('09')) {
+            twilioNumber = '+63' + contactNumberStr.substring(1);
+        } else if (!contactNumberStr.startsWith('+63')) {
+            twilioNumber = '+63' + contactNumberStr;
         }
 
         //determine which template to use based on status
@@ -754,9 +760,14 @@ async function sendStatusUpdateSMS(appointment) {
                 };
         }
 
+        //get patient name - either from populated patient or appointment fields
+        const patientName = appointment.patientId?.firstName 
+            ? `${appointment.patientId.firstName} ${appointment.patientId.lastName}`
+            : `${appointment.firstName} ${appointment.lastName}`;
+
         //prepare replacement data for the SMS template
         const replacements = {
-            patientName: patient.fullName,
+            patientName: patientName,
             appointmentNumber: appointment.appointmentNumber,
             preferredDate: new Date(appointment.preferredDate).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -773,12 +784,12 @@ async function sendStatusUpdateSMS(appointment) {
         
         if (result.success) {
             if (result.reason === 'development_skip') {
-                console.log(`SMS notification skipped for ${contactNumber} (development mode) - appointment ${appointment.appointmentNumber} status update: ${appointment.status}`);
+                console.log(`SMS notification skipped for ${contactNumberStr} (development mode) - appointment ${appointment.appointmentNumber} status update: ${appointment.status}`);
             } else {
-                console.log(`SMS notification sent to ${contactNumber} for appointment ${appointment.appointmentNumber} status update: ${appointment.status}`);
+                console.log(`SMS notification sent to ${contactNumberStr} for appointment ${appointment.appointmentNumber} status update: ${appointment.status}`);
             }
         } else {
-            console.log(`SMS notification failed for ${contactNumber}: ${result.message}`);
+            console.log(`SMS notification failed for ${contactNumberStr}: ${result.message}`);
         }
 
         return result;
@@ -792,7 +803,5 @@ async function sendStatusUpdateSMS(appointment) {
         };
     }
 }
-
-
 
 module.exports = new AppointmentController();

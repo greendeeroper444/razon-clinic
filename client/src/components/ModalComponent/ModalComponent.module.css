@@ -455,6 +455,17 @@ textarea.formControl {
     font-style: italic
 }
 
+.appointmentBirthGender {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.appointmentContact {
+    font-size: 0.8em;
+    color: #888;
+}
+
+
 
 @media (max-width: 768px) {
     .statusOptionsGrid {

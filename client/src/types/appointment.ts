@@ -1,5 +1,4 @@
 import { ChangeEvent } from 'react'
-import { Patient } from './patient';
 
 export interface AppointmentFormProps {
     formData: AppointmentFormData;
@@ -46,7 +45,26 @@ export interface AppointmentFormData {
     contactNumber: number | string;
     address?: string;
 }
+export interface Appointment {
+    id: string | number;
+    fullName?: string;
+    firstName?: string;
+    middleName?: string;
+    lastName?: string;
+    dateOfBirth?: string;
+    gender?: string;
+    phone?: string;
+    address?: string;
+    email?: string;
+    height?: number | string;
+    weight?: number | string;
+    bloodType?: string;
+    [key: string]: string | number | undefined;
+}
 
+export interface AutofillData {
+    [key: string]: string | number | undefined;
+}
 
 
 export interface AppointmentStatusUpdate {
@@ -112,37 +130,3 @@ export interface DeleteFormProps {
     onConfirm: () => void;
     isDeleting?: boolean;
 }
-
-
-
-export type Appointment = {
-    _id: string;
-    firstName: string;
-    lastName: string;
-    middleName: string | null;
-    appointmentNumber: string;
-    preferredDate: string;
-    preferredTime: string;
-    reasonForVisit: string;
-    createdAt: string;
-    updatedAt: string;
-    status: string;
-    patientId: Patient;
-    birthdate: string;
-    sex: string;
-    height: number;
-    weight: number;
-    motherInfo: {
-        name: string;
-        age: number;
-        occupation: string;
-    };
-    fatherInfo: {
-        name: string;
-        age: number;
-        occupation: string;
-    };
-    religion: string;
-    contactNumber: number | string;
-    address: string;
-};

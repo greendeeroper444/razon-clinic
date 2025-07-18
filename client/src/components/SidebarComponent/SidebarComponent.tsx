@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import styles from './SidebarComponent.module.css'
+import styles from './SidebarComponent.module.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -17,8 +17,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'sonner';
 import { logoutUser } from '../../pages/services/authService';
-import { SidebarProps } from '../../types/components';
 import { useAuth } from '../../hooks/usesAuth';
+import { SidebarProps } from '../../types';
 
 
 const SidebarComponent: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {

@@ -8,12 +8,11 @@ import {
     faEyeSlash
 } from '@fortawesome/free-solid-svg-icons'
 import { Link, useNavigate } from 'react-router-dom'
-import FooterComponent from '../../../components/FooterComponent/FooterComponent'
-import { loginUser } from '../../services/authService'
-import { LoginFormData, ValidationErrors } from '../../../types/auth'
-import { validateLoginForm } from '../../../utils/validators'
 import { toast } from 'sonner'
-import SectionFeatures from '../../../components/SectionFeatures/SectionFeatures'
+import { SectionFeaturesComponent, FooterComponent } from '../../../components'
+import { loginUser } from '../../services/authService'
+import { LoginFormData, ValidationErrors } from '../../../types'
+import { validateLoginForm } from '../../../utils'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
 
 const LoginPage = () => {
@@ -206,7 +205,7 @@ const LoginPage = () => {
             </div>
         </section>
 
-        <SectionFeatures />
+        <SectionFeaturesComponent />
 
         <FooterComponent />
     </div>

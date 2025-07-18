@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from '../ModalComponent/ModalComponent.module.css'
-import { DeleteFormProps } from '../../types/appointment';
+import { DeleteFormProps } from '../../types'
 
 const DeleteForm: React.FC<DeleteFormProps> = ({
     itemName,

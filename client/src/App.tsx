@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import {
   HomePage,
   DashboardPage,
@@ -21,26 +21,15 @@ import {
   BillingsPaymentPage,
   TermsAndConditionPage
 } from './pages'
-import NavigationComponent from './components/NavigationComponent/NavigationComponent'
-import SidebarComponent from './components/SidebarComponent/SidebarComponent'
-import NavbarComponent from './components/NavbarComponent/NavbarComponent'
-import styles from './pages/public/HomePage/HomePage.module.css'
-import ModalComponent from './components/ModalComponent/ModalComponent'
-import { ModalContext, useModal, OpenModalProps } from './hooks/hook'
+import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
-import { AppointmentFormData, InventoryItemFormData, LayoutProps, MedicalRecordFormData, PatientFormData, RouteType } from './types'
+import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, RouteType, PersonalPatientFormData, FormDataType, ModalType } from './types'
+import { addMedicalRecord } from './pages/services/medicalRecordService'
 import { addAppointment } from './pages/services/appoinmentService'
 import { addInventoryItem } from './pages/services/inventoryItemService'
 import { addPersonalPatient } from './pages/services/personalPatient'
-import { PersonalPatientFormData } from './types/personalPatient'
-import { addMedicalRecord } from './pages/services/medicalRecordService'
+import { Layout, ModalComponent, PageTitle } from './components'
 
-//define modal types to match what ModalComponent is expecting
-type ModalType = 'appointment' | 'patient' | 'item' | 'medical';
-
-
-//union type for all possible form data
-type FormDataType = AppointmentFormData | PatientFormData | InventoryItemFormData;
 
 
 const routes: RouteType[] = [
@@ -101,9 +90,18 @@ function App() {
 
   const closeModal = (): void => setIsModalOpen(false);
 
-  const handleSubmit = async (formData: FormDataType): Promise<void> => {
+  const handleSubmit = async (formData: FormDataType | string): Promise<void> => {
     console.log('Form submitted:', formData);
     console.log('Form type:', modalType);
+
+    //handle delete operations (when formData is a string ID)
+    if (typeof formData === 'string') {
+      //handle delete logic here
+      console.log('Deleting item with ID:', formData);
+      toast.success('Item deleted successfully');
+      closeModal();
+      return;
+    }
     
     //handle the data based on modal type
     switch (modalType) {
@@ -163,7 +161,7 @@ function App() {
                   key={route.path}
                   path={route.path} 
                   element={
-                    <Layout 
+                    <Layout
                       type={route.layout}
                       sidebarCollapsed={sidebarCollapsed}
                       toggleSidebar={toggleSidebar}
@@ -185,73 +183,6 @@ function App() {
       </ModalContext.Provider>
     </BrowserRouter>
   )
-}
-
-//dynamic Layout component that handles both admin and user layouts
-function Layout({children, type, sidebarCollapsed, toggleSidebar}: LayoutProps) {
-  const {openModal} = useModal();
-  
-  //clone children to pass openModal prop for backward compatibility
-  const childrenWithProps = React.Children.map(children, child => {
-    if (React.isValidElement(child)) {
-      //using type assertion to fix the cloneElement typing error
-      return React.cloneElement(child, {openModal} as OpenModalProps);
-    }
-    return child;
-  });
-  
-  return (
-    <div className={`app-container ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-      {
-        type === 'admin' && (
-          <div className='sidebar'>
-            <SidebarComponent 
-              sidebarCollapsed={sidebarCollapsed}
-              toggleSidebar={toggleSidebar}
-            />
-          </div>
-        )
-      }
-     
-        {
-          type === 'admin' ? (
-           <div className='main-content-admin'>
-              <NavbarComponent 
-                sidebarCollapsed={sidebarCollapsed}
-                toggleSidebar={toggleSidebar}
-              />
-               <div className='content-area'>
-                {childrenWithProps} 
-              </div>
-           </div>
-          ) : (
-            <div className='main-content-public'>
-              <header className={styles.header}>
-                <NavigationComponent />
-              </header>
-
-               <div className='content-area'>
-                {childrenWithProps} 
-              </div>
-            </div>
-            
-          )
-        }
-       
-    </div>
-  )
-}
-
-//component that sets page title based on current route
-function PageTitle() {
-  const location = useLocation();
-
-  useEffect(() => {
-    const path = location.pathname === '/' ? ' - home' : ` - ${location.pathname.substring(1)}`;
-    document.title = `Razon Pediatric Clinic${path}`;
-  }, [location.pathname]);
-
-  return null;
 }
 
 export default App;

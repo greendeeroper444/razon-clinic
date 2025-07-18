@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import styles from './NavbarComponent.module.css'
-import NotificationComponent from '../NotificationComponent/NotificationComponent';
+import NotificationComponent from '../NotificationComponent/NotificationComponent'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faBell, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { getFirstAndLastName, getFirstLetterOfFirstAndLastName } from '../../utils/user';
-import { NavbarProps } from '../../types/components';
-import { getNotifications } from '../../pages/services/notificationService';
-import { useAuth } from '../../hooks/usesAuth';
+import { getFirstAndLastName, getFirstLetterOfFirstAndLastName } from '../../utils'
+import { getNotifications } from '../../pages/services/notificationService'
+import { useAuth } from '../../hooks/usesAuth'
+import { NavbarProps } from '../../types'
 
 const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     const [showNotifications, setShowNotifications] = useState(false);

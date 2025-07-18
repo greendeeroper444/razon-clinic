@@ -1,6 +1,6 @@
 import axios from 'axios'
 import API_BASE_URL from '../../ApiBaseUrl'
-import { Notification, NotificationResponse } from '../../types/notification';
+import { Notification, NotificationResponse } from '../../types';
 
 export const getNotifications = async (
     page: number = 1, 

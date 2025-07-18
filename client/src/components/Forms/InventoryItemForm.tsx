@@ -1,48 +1,71 @@
-import React, { ChangeEvent } from 'react'
+import React from 'react'
 import styles from '../ModalComponent/ModalComponent.module.css';
-import { InventoryItemFormData } from '../../types';
+import { InventoryItemFormProps } from '../../types';
 
 
-interface InventoryItemFormProps {
-    formData: InventoryItemFormData;
-    onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
-}
 
 const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
     formData,
-    onChange
+    onChange,
+    isRestockMode = false
 }) => {
   return (
     <>
-        <div className={styles.formGroup}>
-            <label htmlFor="itemName">Item Name</label>
-            <input
-                type="text"
-                id="itemName"
-                name="itemName"
-                value={formData.itemName || ''}
-                onChange={onChange}
-                className={styles.formControl}
-                required
-            />
-        </div>
+        {/* show item name as read-only in restock mode */}
+        {
+            isRestockMode && (
+                <div className={styles.formGroup}>
+                    <label htmlFor="itemName">Item Name</label>
+                    <input
+                        type="text"
+                        id="itemName"
+                        name="itemName"
+                        value={formData.itemName || ''}
+                        className={styles.formControl}
+                        readOnly
+                        disabled
+                    />
+                </div>
+            )
+        }
 
-        <div className={styles.formGroup}>
-            <label htmlFor="category">Category</label>
-            <select
-                id="category"
-                name="category"
-                value={formData.category || ''}
-                onChange={onChange}
-                className={styles.formControl}
-                required
-            >
-                <option value="">Select Category</option>
-                <option value="Vaccine">Vaccine</option>
-                <option value="Medical Supply">Medical Supply</option>
-            </select>
-        </div>
+        {/* show all fields in normal mode */}
+        {
+            !isRestockMode && (
+                <>
+                    <div className={styles.formGroup}>
+                        <label htmlFor="itemName">Item Name</label>
+                        <input
+                            type="text"
+                            id="itemName"
+                            name="itemName"
+                            value={formData.itemName || ''}
+                            onChange={onChange}
+                            className={styles.formControl}
+                            required
+                        />
+                    </div>
 
+                    <div className={styles.formGroup}>
+                        <label htmlFor="category">Category</label>
+                        <select
+                            id="category"
+                            name="category"
+                            value={formData.category || ''}
+                            onChange={onChange}
+                            className={styles.formControl}
+                            required
+                        >
+                            <option value="">Select Category</option>
+                            <option value="Vaccine">Vaccine</option>
+                            <option value="Medical Supply">Medical Supply</option>
+                        </select>
+                    </div>
+                </>
+            )
+        }
+
+        {/* always show quantity fields */}
         <div className={styles.formGroup}>
             <label htmlFor="quantityInStock">Quantity in Stock</label>
             <input
@@ -67,21 +90,28 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
                 onChange={onChange}
                 className={styles.formControl}
                 min="0"
+                readOnly={!isRestockMode}
+                disabled={!isRestockMode}
             />
         </div>
 
-        <div className={styles.formGroup}>
-            <label htmlFor="expiryDate">Expiry Date</label>
-            <input
-                type="date"
-                id="expiryDate"
-                name="expiryDate"
-                value={formData.expiryDate || ''}
-                onChange={onChange}
-                className={styles.formControl}
-                required
-            />
-        </div>
+        {/* hide expiry date in restock mode */}
+        {
+            !isRestockMode && (
+                <div className={styles.formGroup}>
+                    <label htmlFor="expiryDate">Expiry Date</label>
+                    <input
+                        type="date"
+                        id="expiryDate"
+                        name="expiryDate"
+                        value={formData.expiryDate || ''}
+                        onChange={onChange}
+                        className={styles.formControl}
+                        required
+                    />
+                </div>
+            )
+        }
     </>
   )
 }

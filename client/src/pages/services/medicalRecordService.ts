@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { MedicalRecordFormData, transformFormDataToApiFormat } from '../../types/medical';
+import { MedicalRecordFormData, transformFormDataToApiFormat } from '../../types';
 import API_BASE_URL from '../../ApiBaseUrl';
 
 

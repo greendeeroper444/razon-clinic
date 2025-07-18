@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
-import styles from './NotificationComponent.module.css'
+import styles from './NotificationComponent.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router-dom'
 import { 
   faCalendar, 
   faPrescriptionBottleAlt, 
@@ -11,11 +11,10 @@ import {
   faBoxes,
   faSpinner
 } from '@fortawesome/free-solid-svg-icons';
-import { NotificationComponentProps } from '../../types/notification';
-import { Notification, NotificationTypeToUICategory } from '../../types/notification';
 import { formatDistanceToNow } from 'date-fns';
 import { getNotifications, markAllAsRead, markAsRead } from '../../pages/services/notificationService';
 import { useAuth } from '../../hooks/usesAuth';
+import { NotificationComponentProps, NotificationTypeToUICategory, Notification } from '../../types';
 
 interface ExtendedNotificationComponentProps extends NotificationComponentProps {
     onUnreadCountChange?: (count: number) => void;

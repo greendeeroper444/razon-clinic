@@ -1,10 +1,6 @@
+import { ParentInfo } from "./appointment";
 
-//register 
-export interface ParentInfo {
-    name?: string;
-    age?: number;
-    occupation?: string;
-}
+
 
 export interface SignupFormData {
     firstName: string;

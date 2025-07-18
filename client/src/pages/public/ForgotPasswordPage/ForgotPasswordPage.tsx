@@ -1,14 +1,14 @@
 import { FormEvent, useState } from 'react'
 import styles from './ForgotPasswordPage.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
     faCalendarCheck, 
     faUserMd, 
     faShieldAlt,
     faEnvelope
-} from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate } from 'react-router-dom';
-import FooterComponent from '../../../components/FooterComponent/FooterComponent';
+} from '@fortawesome/free-solid-svg-icons'
+import { Link, useNavigate } from 'react-router-dom'
+import { FooterComponent } from '../../../components'
 
 const ForgotPasswordPage = () => {
     const navigate = useNavigate();

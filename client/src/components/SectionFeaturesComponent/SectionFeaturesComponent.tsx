@@ -1,13 +1,13 @@
-import { FC } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FC } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
     faCalendarCheck, 
     faUserMd, 
     faShieldAlt 
-} from '@fortawesome/free-solid-svg-icons';
-import styles from './SectionFeatures.module.css';
+} from '@fortawesome/free-solid-svg-icons'
+import styles from './SectionFeaturesComponent.module.css';
 
-const SectionFeatures: FC = () => {
+const SectionFeaturesComponent: FC = () => {
   return (
     <section className={styles.features}>
         <h2>Why Choose MediCare?</h2>
@@ -34,4 +34,4 @@ const SectionFeatures: FC = () => {
   )
 }
 
-export default SectionFeatures
+export default SectionFeaturesComponent

@@ -1,3 +1,11 @@
+import { ChangeEvent } from "react";
+
+export interface PatientFormProps {
+    formData: PersonalPatientFormData;
+    onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+}
+
+
 export interface PersonalPatientFormData {
     id?: string;
     fullName: string;
@@ -48,7 +56,7 @@ export interface GetPatientsResponse {
     };
 }
 
-export interface PatientResponse {
+export interface PersonalPatientResponse {
     success: boolean;
     message: string;
     data: {

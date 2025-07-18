@@ -1,3 +1,11 @@
+import { ChangeEvent } from "react";
+
+export interface InventoryItemFormProps {
+    formData: InventoryItemFormData;
+    onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+    isRestockMode?: boolean;
+}
+
 // export interface InventoryItemFormData {
 //     medicine?: string;
 //     category?: string;
@@ -19,8 +27,9 @@ export interface InventoryItem {
 
 
 export interface InventoryItemFormData {
+    _id: string;
     itemName?: string;
-    category?: 'Vaccine' | 'Medical Supply';
+    category?: 'Vaccine' | 'Medical Supply' | string;
     quantityInStock?: number;
     quantityUsed?: number;
     expiryDate?: string;

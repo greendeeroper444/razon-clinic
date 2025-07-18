@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import styles from './NavigationComponent.module.css'
+import styles from './NavigationComponent.module.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faSignOutAlt, faTimes, faUser } from '@fortawesome/free-solid-svg-icons';

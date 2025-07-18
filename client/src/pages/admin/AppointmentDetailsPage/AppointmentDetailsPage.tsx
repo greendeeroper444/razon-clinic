@@ -1,19 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
-import styles from './AppointmentDetailsPage.module.css'
+import styles from './AppointmentDetailsPage.module.css';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faCalendarAlt, 
     faClock, 
     faUser,
-    faEnvelope, 
     faPhone, 
     faNotesMedical, 
     faMapMarkerAlt, 
     faBirthdayCake, 
     faVenusMars,
     faArrowLeft,
-    faPrint,
     faEdit,
     faCheckCircle,
     faRulerVertical,
@@ -21,12 +19,11 @@ import {
     faUsers,
     faPray
 } from '@fortawesome/free-solid-svg-icons';
-import { getAppointmentDetails, updateAppointmentStatus, updateAppointment, getMyAppointment } from '../../services/appoinmentService';
-import { calculateAge, formatBirthdate, formatDate } from '../../../utils/formatDateTime';
-import ModalComponent from '../../../components/ModalComponent/ModalComponent';
 import { toast } from 'sonner';
-import { Appointment, AppointmentFormData } from '../../../types/appointment';
-import { getMiddleNameInitial } from '../../../utils/user';
+import { getAppointmentDetails, updateAppointmentStatus, updateAppointment, getMyAppointment } from '../../services/appoinmentService';
+import { calculateAge, formatBirthdate, formatDate, getMiddleNameInitial } from '../../../utils';
+import { ModalComponent } from '../../../components';
+import { Appointment, AppointmentFormData } from '../../../types';
 
 const AppointmentDetailsPage = () => {
     const { appointmentId } = useParams();

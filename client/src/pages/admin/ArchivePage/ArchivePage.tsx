@@ -1,4 +1,3 @@
-// ArchivePage.jsx
 import { useState } from 'react'
 import styles from './ArchivePage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

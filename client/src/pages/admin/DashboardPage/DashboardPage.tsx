@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import styles from './DashboardPage.module.css'
+import { useState, useEffect, useCallback } from 'react'
+import styles from './DashboardPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faCalendarDay, 
@@ -13,16 +13,13 @@ import {
     faSyringe,
     faTablets,
     faCapsules,
-    faPrescriptionBottle,
-    faEdit,
-    faTrash
+    faPrescriptionBottle
 } from '@fortawesome/free-solid-svg-icons';
 import { getAppointments } from '../../services/appoinmentService';
-import { AppointmentResponse } from '../../../types/appointment';
-import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial } from '../../../utils/user';
-import { formatDate, formatTime } from '../../../utils/formatDateTime';
-import { useNavigate } from 'react-router-dom';
 import { getInventoryItems } from '../../services/inventoryItemService';
+import { AppointmentResponse } from '../../../types';
+import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial, formatDate, formatTime } from '../../../utils';
+import { useNavigate } from 'react-router-dom';
 
 interface InventoryItem {
     id: string;

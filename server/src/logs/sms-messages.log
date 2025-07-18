@@ -146,3 +146,155 @@ Appointment Details:
 If you would like to reschedule, please contact us. We apologize for any inconvenience.
 
 ---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-07-15T11:02:40.668Z
+To: +639501049657
+Status: SKIPPED_DEVELOPMENT
+Message:
+Hello Meriam Apatan,
+
+Your appointment #0002 has been marked as COMPLETED.
+
+Date: July 16, 2025
+Time: 12:00
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-07-15T11:09:26.502Z
+To: +639501049657
+Status: SKIPPED_DEVELOPMENT
+Message:
+Hello Meriam Apatan,
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0002
+- Date: July 16, 2025
+- Time: 12:00
+- Reason: pacheck up kay nagsakit ang likod
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-07-15T11:10:38.621Z
+To: +639501049657
+Status: SKIPPED_DEVELOPMENT
+Message:
+Hello Meriam Apatan,
+
+Your appointment has been SCHEDULED!
+
+Appointment Details:
+- Appointment #: 0002
+- Date: July 16, 2025
+- Time: 12:00
+- Reason: pacheck up kay nagsakit ang likod
+
+Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-07-15T11:12:31.398Z
+To: +639501049657
+Status: SKIPPED_DEVELOPMENT
+Message:
+Hello Meriam Apatan,
+
+Your appointment #0002 has been marked as COMPLETED.
+
+Date: July 16, 2025
+Time: 12:00
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-07-15T11:16:51.934Z
+To: +639501049657
+Status: FAILED_AUTH
+Message:
+Hello Meriam Apatan,
+
+Your appointment has been SCHEDULED!
+
+Appointment Details:
+- Appointment #: 0002
+- Date: July 16, 2025
+- Time: 12:00
+- Reason: pacheck up kay nagsakit ang likod
+
+Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-07-15T11:20:45.793Z
+To: +639501049657
+Status: FAILED_AUTH
+Message:
+Hello Meriam Apatan,
+
+Your appointment #0002 has been marked as COMPLETED.
+
+Date: July 16, 2025
+Time: 12:00
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-07-15T11:22:37.017Z
+To: +639501049657
+Status: FAILED_UNVERIFIED
+Message:
+Hello Meriam Apatan,
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0002
+- Date: July 16, 2025
+- Time: 12:00
+- Reason: pacheck up kay nagsakit ang likod
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-07-15T11:24:41.849Z
+To: +639501049657
+Status: FAILED_UNVERIFIED
+Message:
+Hello Meriam Apatan,
+
+Your appointment has been SCHEDULED!
+
+Appointment Details:
+- Appointment #: 0002
+- Date: July 16, 2025
+- Time: 12:00
+- Reason: pacheck up kay nagsakit ang likod
+
+Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!
+---END MESSAGE---
