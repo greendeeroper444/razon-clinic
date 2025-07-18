@@ -19,6 +19,7 @@ export { default as ArchivePage } from './admin/ArchivePage/ArchivePage';
 export { default as AppointmentDetailsPage } from './admin/AppointmentDetailsPage/AppointmentDetailsPage';
 export { default as MedicalRecordsPage } from './admin/MedicalRecordsPage/MedicalRecordsPage';
 export { default as BillingsPaymentPage } from './admin/BillingsPaymentPage/BillingsPaymentPage';
+export { default as CalendarDateDetailsPage } from './admin/CalendarDateDetailsPage/CalendarDateDetailsPage';
 
 //user pages
 export { default as UserAppointmentPage } from './user/AppointmentPage/AppointmentPage';

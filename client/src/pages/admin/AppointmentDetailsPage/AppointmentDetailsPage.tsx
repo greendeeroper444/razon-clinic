@@ -245,17 +245,17 @@ const AppointmentDetailsPage = () => {
 
     if (error) {
         return (
-        <div className={styles.errorContainer}>
-            <p className={styles.errorMessage}>{error}</p>
-            <button
-                type='button'
-                className={styles.btnPrimary}
-                onClick={() => window.history.back()}
-                title="Go Back"
-            >
-                <FontAwesomeIcon icon={faArrowLeft} /> Go Back
-            </button>
-        </div>
+            <div className={styles.errorContainer}>
+                <p className={styles.errorMessage}>{error}</p>
+                <button
+                    type='button'
+                    className={styles.btnPrimary}
+                    onClick={() => window.history.back()}
+                    title="Go Back"
+                >
+                    <FontAwesomeIcon icon={faArrowLeft} /> Go Back
+                </button>
+            </div>
         );
     }
 
@@ -292,7 +292,12 @@ const AppointmentDetailsPage = () => {
     <div className={styles.content}>
         <div className={styles.contentHeader}>
            <div className={styles.headerLeft}>
-                <button type='button' className={styles.btnBack} onClick={() => window.history.back()}>
+                <button
+                    type='button'
+                    className={styles.btnBack}
+                    onClick={() => window.history.back()}
+                    title='Go Back'
+                >
                     <FontAwesomeIcon icon={faArrowLeft} />
                 </button>
                 <h1 className={styles.contentTitle}>Appointment Details</h1>

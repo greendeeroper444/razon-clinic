@@ -6,190 +6,6 @@ const { ApiError } = require('../../utils/errors');
 const sendSMS = require('../../utils/smsSender');
 
 class AppointmentController {
-    
-    // async addAppointment(req, res, next) {
-    //     try {
-    //         const appointmentData = {
-    //             patientId: req.body.patientId,
-    //             preferredDate: req.body.preferredDate,
-    //             preferredTime: req.body.preferredTime,
-    //             reasonForVisit: req.body.reasonForVisit,
-    //             status: req.body.status || 'Scheduled'
-    //         };
-
-    //         const appointment = new Appointment(appointmentData);
-    //         await appointment.save();
-
-    //         return res.status(201).json({
-    //             success: true,
-    //             message: 'Appointment created successfully',
-    //             data: appointment
-    //         });
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // };
-;
-
-    // async addAppointment(req, res, next) {
-    //     try {
-    //         const createNotifications = !req.user || req.user.role === 'Patient';
-            
-    //         //check specifically for reasonForVisit
-    //         if (!req.body.reasonForVisit || req.body.reasonForVisit.trim().length < 5 || 
-    //             req.body.reasonForVisit.trim().length > 200) {
-    //             console.log(`Invalid reasonForVisit length: ${req.body.reasonForVisit ? 
-    //                 req.body.reasonForVisit.trim().length : 0} characters`);
-    //             return res.status(400).json({
-    //                 success: false,
-    //                 message: 'Reason for visit must be between 5 and 200 characters'
-    //             });
-    //         }
-
-    //         //validate required patient information fields
-    //         if (!req.body.birthdate) {
-    //             return res.status(400).json({
-    //                 success: false,
-    //                 message: 'Birth date is required'
-    //             });
-    //         }
-
-    //         if (!req.body.sex || !['Male', 'Female'].includes(req.body.sex)) {
-    //             return res.status(400).json({
-    //                 success: false,
-    //                 message: 'Valid sex selection is required'
-    //             });
-    //         }
-            
-    //         const appointmentData = {
-    //             patientId: req.body.patientId,
-    //             firstName: req.body.firstName,
-    //             lastName: req.body.lastName,
-    //             middleName: req.body.middleName || null,
-    //             preferredDate: req.body.preferredDate,
-    //             preferredTime: req.body.preferredTime,
-    //             reasonForVisit: req.body.reasonForVisit?.trim(),
-    //             status: 'Pending',
-    //             //patient information fields
-    //             birthdate: req.body.birthdate,
-    //             sex: req.body.sex,
-    //             height: req.body.height ? Number(req.body.height) : undefined,
-    //             weight: req.body.weight ? Number(req.body.weight) : undefined,
-    //             religion: req.body.religion?.trim(),
-    //             //mother's information
-    //             motherInfo: {
-    //                 name: req.body.motherName?.trim(),
-    //                 age: req.body.motherAge ? Number(req.body.motherAge) : undefined,
-    //                 occupation: req.body.motherOccupation?.trim()
-    //             },
-    //             //father's information
-    //             fatherInfo: {
-    //                 name: req.body.fatherName?.trim(),
-    //                 age: req.body.fatherAge ? Number(req.body.fatherAge) : undefined,
-    //                 occupation: req.body.fatherOccupation?.trim()
-    //             },
-    //             contactNumber: req.body.contactNumber,
-    //             address: req.body.address,
-    //         };
-
-    //         //remove undefined values from nested objects
-    //         if (!appointmentData.motherInfo.name && !appointmentData.motherInfo.age && !appointmentData.motherInfo.occupation) {
-    //             delete appointmentData.motherInfo;
-    //         }
-    //         if (!appointmentData.fatherInfo.name && !appointmentData.fatherInfo.age && !appointmentData.fatherInfo.occupation) {
-    //             delete appointmentData.fatherInfo;
-    //         }
-
-    //         try {
-    //             const appointment = new Appointment(appointmentData);
-    //             await appointment.save();
-
-    //             //only create notifications if the request is from a patient
-    //             if (createNotifications) {
-    //                 try {
-    //                     const existingNotification = await Notification.findOne({
-    //                         sourceId: appointmentData.patientId,
-    //                         entityId: appointment._id,
-    //                         type: 'AppointmentCreated',
-    //                         entityType: 'Appointment',
-    //                     });
-                        
-    //                     if (!existingNotification) {
-    //                         const patient = await OnlinePatient.findById(appointmentData.patientId);
-    //                         const message = `New appointment request from ${patient?.fullName || 'a patient'} for ${new Date(req.body.preferredDate).toLocaleDateString()} at ${req.body.preferredTime}.`;
-                            
-    //                         const notification = new Notification({
-    //                             sourceId: appointmentData.patientId,
-    //                             sourceType: 'Patient',
-    //                             type: 'AppointmentCreated',
-    //                             entityId: appointment._id,
-    //                             entityType: 'Appointment',
-    //                             message,
-    //                             isRead: false
-    //                         });
-                            
-    //                         await notification.save();
-    //                     }
-    //                 } catch (error) {
-    //                     console.error('Failed to create notification:', error);
-    //                 }
-    //             }
-
-    //             return res.status(201).json({
-    //                 success: true,
-    //                 message: createNotifications ? 
-    //                     'Appointment request submitted successfully' : 
-    //                     'Appointment created successfully',
-    //                 data: appointment
-    //             });
-    //         } catch (err) {
-    //             console.error('Error saving appointment:', err);
-    //             return res.status(500).json({
-    //                 success: false,
-    //                 message: 'Failed to create appointment',
-    //                 error: err.message
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error('Error creating appointment:', error);
-    //         next(error);
-    //     }
-    // }
-
-
-    // async getAppointment(req, res, next) {
-    //     try {
-    //         const { patientId, status, fromDate, toDate } = req.query;
-            
-    //         //build filter object
-    //         const filter = {};
-            
-    //         if (patientId) filter.patientId = patientId;
-    //         if (status) filter.status = status;
-            
-    //         //date range filter
-    //         if (fromDate || toDate) {
-    //             filter.preferredDate = {};
-    //             if (fromDate) filter.preferredDate.$gte = new Date(fromDate);
-    //             if (toDate) filter.preferredDate.$lte = new Date(toDate);
-    //         }
-            
-    //         const appointments = await Appointment.find(filter)
-    //             // .sort({ preferredDate: 1, preferredTime: 1 })
-    //             .sort({ createdAt: -1 })
-    //             .populate('patientId', 'firstName lastName middleName emailOrContactNumber patientNumber');
-            
-    //         return res.status(200).json({
-    //             success: true,
-    //             count: appointments.length,
-    //             data: appointments
-    //         });
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // };
-
-
 
     async addAppointment(req, res, next) {
         try {
@@ -396,106 +212,6 @@ class AppointmentController {
         }
     }
 
-    //new method to check available time slots for a specific date
-    // async getAvailableTimeSlots(req, res, next) {
-    //     try {
-    //         const { date } = req.query;
-            
-    //         if (!date) {
-    //             return res.status(400).json({
-    //                 success: false,
-    //                 message: 'Date parameter is required'
-    //             });
-    //         }
-
-    //         //generate all possible time slots (8:00 AM to 5:00 PM)
-    //         const allTimeSlots = [];
-    //         for (let hour = 8; hour <= 17; hour++) {
-    //             allTimeSlots.push(`${hour.toString().padStart(2, '0')}:00`);
-    //         }
-
-    //         //get booked appointments for the specific date
-    //         const startOfDay = new Date(date);
-    //         startOfDay.setHours(0, 0, 0, 0);
-    //         const endOfDay = new Date(date);
-    //         endOfDay.setHours(23, 59, 59, 999);
-
-    //         const bookedAppointments = await Appointment.find({
-    //             preferredDate: {
-    //                 $gte: startOfDay,
-    //                 $lte: endOfDay
-    //             },
-    //             status: { $ne: 'Cancelled' } //exclude cancelled appointments
-    //         });
-
-    //         //get booked time slots
-    //         const bookedTimeSlots = bookedAppointments.map(apt => apt.preferredTime);
-
-    //         // filter available time slots
-    //         const availableTimeSlots = allTimeSlots.filter(time => !bookedTimeSlots.includes(time));
-
-    //         return res.status(200).json({
-    //             success: true,
-    //             date: date,
-    //             availableSlots: availableTimeSlots,
-    //             bookedSlots: bookedTimeSlots,
-    //             totalSlots: allTimeSlots.length,
-    //             availableCount: availableTimeSlots.length
-    //         });
-    //     } catch (error) {
-    //         console.error('Error getting available time slots:', error);
-    //         next(error);
-    //     }
-    // }
-
-    //method to validate appointment time slot before booking
-    // async validateTimeSlot(req, res, next) {
-    //     try {
-    //         const { date, time } = req.body;
-
-    //         if (!date || !time) {
-    //             return res.status(400).json({
-    //                 success: false,
-    //                 message: 'Date and time are required'
-    //             });
-    //         }
-
-    //         //normalize time format
-    //         let normalizedTime = time;
-    //         if (!time.endsWith(':00')) {
-    //             const hour = time.split(':')[0];
-    //             normalizedTime = `${hour}:00`;
-    //         }
-
-    //         //check if time slot is available
-    //         const preferredDate = new Date(date);
-    //         const startOfDay = new Date(preferredDate);
-    //         startOfDay.setHours(0, 0, 0, 0);
-    //         const endOfDay = new Date(preferredDate);
-    //         endOfDay.setHours(23, 59, 59, 999);
-
-    //         const conflictingAppointment = await Appointment.findOne({
-    //             preferredDate: {
-    //                 $gte: startOfDay,
-    //                 $lte: endOfDay
-    //             },
-    //             preferredTime: normalizedTime,
-    //             status: { $ne: 'Cancelled' }
-    //         });
-
-    //         const isAvailable = !conflictingAppointment;
-
-    //         return res.status(200).json({
-    //             success: true,
-    //             available: isAvailable,
-    //             message: isAvailable ? 'Time slot is available' : 'Time slot is already booked'
-    //         });
-    //     } catch (error) {
-    //         console.error('Error validating time slot:', error);
-    //         next(error);
-    //     }
-    // }
-
     async getAppointmentDetails(req, res, next) {
         try {
             const { appointmentId } = req.params;
@@ -528,6 +244,66 @@ class AppointmentController {
         }
     }
    
+    async getAllTimePerDate(req, res, next) {
+        try {
+            const { date } = req.query;
+            
+            if (!date) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Date parameter is required'
+                });
+            }
+            
+            // parse the date and create date range for the entire day
+            const selectedDate = new Date(date);
+            const startOfDay = new Date(selectedDate);
+            startOfDay.setHours(0, 0, 0, 0);
+            
+            const endOfDay = new Date(selectedDate);
+            endOfDay.setHours(23, 59, 59, 999);
+            
+            //build filter for the specific date
+            const filter = {
+                preferredDate: {
+                    $gte: startOfDay,
+                    $lte: endOfDay
+                }
+            };
+            
+            //find all appointments for the specified date
+            const appointments = await Appointment.find(filter)
+                .sort({ preferredTime: 1 })
+                .populate('patientId', 'firstName lastName middleName emailOrContactNumber patientNumber');
+            
+            //group appointments by time slots
+            const timeSlots = appointments.reduce((acc, appointment) => {
+                const timeKey = appointment.preferredTime;
+                if (!acc[timeKey]) {
+                    acc[timeKey] = [];
+                }
+                acc[timeKey].push(appointment);
+                return acc;
+            }, {});
+            
+            //get unique time slots and sort them
+            const availableTimeSlots = Object.keys(timeSlots).sort();
+            
+            return res.status(200).json({
+                success: true,
+                date: selectedDate.toISOString().split('T')[0],
+                totalAppointments: appointments.length,
+                availableTimeSlots,
+                timeSlots,
+                appointments
+            });
+            
+        } catch (error) {
+            console.error('Error in getAllTimePerDate:', error);
+            next(error);
+        }
+    }
+
 
     async getAppointmentById(req, res, next) {
         try {

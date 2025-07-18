@@ -20,6 +20,7 @@ import { getInventoryItems } from '../../services/inventoryItemService';
 import { AppointmentResponse } from '../../../types';
 import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial, formatDate, formatTime } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
+import CalendarComponent from '../../../components/CalendarComponent/CalendarComponent';
 
 interface InventoryItem {
     id: string;
@@ -194,6 +195,8 @@ const DashboardPage = () => {
                         </div>
                     ))
                 }
+
+                <CalendarComponent />
             </div>
 
             {/* upcoming appointments */}

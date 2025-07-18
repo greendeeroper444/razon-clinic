@@ -146,6 +146,28 @@ export const getAppointments = async (filters?: AppointmentFilters) => {
     );
 };
 
+
+export const getAppointmentsByDate = async (date: string) => {
+    const url = `${API_BASE_URL}/api/appointments/getAllTimePerDate?date=${date}`;
+    
+    return await axios.get<{
+        success: boolean,
+        date: string,
+        totalAppointments: number,
+        availableTimeSlots: string[],
+        timeSlots: {[key: string]: AppointmentResponse[]},
+        appointments: AppointmentResponse[]
+    }>(
+        url,
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        }
+    );
+};
+
+
 //check appointment availability
 export const checkAppointmentAvailability = async (date: string, time: string) => {
     try {

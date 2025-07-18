@@ -4839,3 +4839,71 @@ Use mongoose.model(name, schema)
 2025-07-18 23:02:33 [INFO]: Server running on port 3000 
 2025-07-18 23:03:12 [INFO]: MongoDB Connected: 127.0.0.1 
 2025-07-18 23:03:12 [INFO]: Server running on port 3000 
+2025-07-19 01:52:52 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 01:52:52 [INFO]: Server running on port 3000 
+2025-07-19 01:53:00 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 01:53:00 [INFO]: Server running on port 3000 
+2025-07-19 01:55:17 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 01:55:17 [INFO]: Server running on port 3000 
+2025-07-19 01:55:40 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 01:55:40 [INFO]: Server running on port 3000 
+2025-07-19 02:48:39 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 02:48:39 [INFO]: Server running on port 3000 
+2025-07-19 02:49:04 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 02:49:04 [INFO]: Server running on port 3000 
+2025-07-19 02:49:56 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 02:49:56 [INFO]: Server running on port 3000 
+2025-07-19 02:49:58 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 02:49:58 [INFO]: Server running on port 3000 
+2025-07-19 02:50:07 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 02:50:07 [INFO]: Server running on port 3000 
+2025-07-19 02:50:32 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 02:50:32 [INFO]: Server running on port 3000 
+2025-07-19 03:06:43 [ERROR]: Error: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Appointment" CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Appointment"
+    at SchemaObjectId.cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getAppointmentDetails (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:227:33)
+2025-07-19 03:06:43 [ERROR]: Error: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Appointment" CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Appointment"
+    at SchemaObjectId.cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getAppointmentDetails (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:227:33)
+2025-07-19 03:06:55 [ERROR]: Error: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Appointment" CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Appointment"
+    at SchemaObjectId.cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getAppointmentDetails (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:227:33)
+2025-07-19 03:06:55 [ERROR]: Error: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Appointment" CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "Appointment"
+    at SchemaObjectId.cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getAppointmentDetails (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:227:33)
+2025-07-19 03:14:06 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 03:14:06 [INFO]: Server running on port 3000 
+2025-07-19 03:49:24 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 03:49:24 [INFO]: Server running on port 3000 

@@ -45,9 +45,12 @@ export interface AppointmentFormData {
     contactNumber: number | string;
     address?: string;
 }
+
+export interface PatientId {
+    patientNumber: string;
+}
 export interface Appointment {
-    id: string | number;
-    fullName?: string;
+    id: string;
     firstName?: string;
     middleName?: string;
     lastName?: string;
@@ -59,7 +62,11 @@ export interface Appointment {
     height?: number | string;
     weight?: number | string;
     bloodType?: string;
-    [key: string]: string | number | undefined;
+    appointmentNumber: string;
+    reasonForVisit: string;
+    contactNumber: string;
+    status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
+    patientId?: PatientId;
 }
 
 export interface AutofillData {
@@ -114,6 +121,10 @@ export interface AppointmentResponse {
     appointmentNumber: string;
     createdAt: string;
     updatedAt: string;
+    data: {
+        success: boolean;
+        data: Appointment[];
+    };
 }
 
 export interface AppointmentFilters {
@@ -129,4 +140,35 @@ export interface DeleteFormProps {
     onCancel: () => void;
     onConfirm: () => void;
     isDeleting?: boolean;
+}
+
+
+// export interface AppointmentCalendar {
+//     id: string;
+//     appointmentNumber: string;
+//     firstName: string;
+//     middleName?: string;
+//     lastName: string;
+//     reasonForVisit: string;
+//     contactNumber: string;
+//     address: string;
+//     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
+//     patientId?: PatientId;
+// }
+
+export interface AppointmentDataCalendar {
+    success: boolean;
+    totalAppointments: number;
+    availableTimeSlots: string[];
+    timeSlots: {
+        [key: string]: Appointment[];
+    };
+}
+
+// export interface ApiResponse {
+//     data: AppointmentData;
+// }
+
+export interface AppointmentCounts {
+    [dateKey: string]: number;
 }

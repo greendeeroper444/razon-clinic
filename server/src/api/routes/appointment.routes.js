@@ -20,6 +20,13 @@ router.get(
 );
 
 router.get(
+    '/getAllTimePerDate', 
+    authenticate, 
+    AppointmentController.getAllTimePerDate
+);
+
+
+router.get(
     '/getAppointmentDetails/:appointmentId', 
     authenticate, 
     AppointmentController.getAppointmentDetails 
