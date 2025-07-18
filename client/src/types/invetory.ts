@@ -4,6 +4,7 @@ export interface InventoryItemFormProps {
     formData: InventoryItemFormData;
     onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
     isRestockMode?: boolean;
+    isAddQuantityMode?: boolean;
 }
 
 // export interface InventoryItemFormData {

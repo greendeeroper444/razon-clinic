@@ -13,4 +13,5 @@ export interface ModalComponentProps {
     deleteData?: DeleteData | null;
     isProcessing?: boolean;
     isRestockMode?: boolean;
+    isAddQuantityMode?: boolean;
 }

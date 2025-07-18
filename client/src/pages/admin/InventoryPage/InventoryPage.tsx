@@ -53,6 +53,7 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         recentlyAdded: 0
     });
     const [isRestockMode, setIsRestockMode] = useState(false);
+    const [isAddQuantityMode, setIsAddQuantityMode] = useState(false);
     
     // fetch inventory items on component mount
     useEffect(() => {
@@ -114,7 +115,7 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         setIsModalOpen(true);
     };
 
-    const handleEditItem = (item: InventoryItem, restockMode: boolean = false) => {
+    const handleEditItem = (item: InventoryItem, restockMode: boolean = false, addQuantityMode: boolean = false) => {
         const itemId = item._id || item.id;
         if (!itemId) {
             console.error('Item ID is missing:', item);
@@ -132,6 +133,7 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         setEditData(formData);
         setIsModalOpen(true);
         setIsRestockMode(restockMode);
+        setIsAddQuantityMode(addQuantityMode);
     };
 
     
@@ -371,7 +373,7 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
                                                         <button 
                                                             type='button'
                                                             className={`${styles.actionBtn} ${styles.update}`}
-                                                            onClick={() => handleEditItem(item, false)}
+                                                            onClick={() => handleEditItem(item, false, false)}
                                                             disabled={isProcessing}
                                                         >
                                                             <FontAwesomeIcon icon={faEdit} /> Edit
@@ -384,17 +386,10 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
                                                         >
                                                             <FontAwesomeIcon icon={faTrash} /> Delete
                                                         </button>
-                                                        {/* <button 
-                                                            type='button'
-                                                            className={`${styles.actionBtn} ${styles.primary}`}
-                                                            disabled={isProcessing}
-                                                        >
-                                                            <FontAwesomeIcon icon={faPlus} /> Restock
-                                                        </button> */}
                                                         <button 
                                                             type='button'
                                                             className={`${styles.actionBtn} ${styles.primary}`}
-                                                            onClick={() => handleEditItem(item, true)}
+                                                            onClick={() => handleEditItem(item, true, true)}
                                                             disabled={isProcessing}
                                                         >
                                                             <FontAwesomeIcon icon={faPlus} /> Restock
@@ -422,6 +417,7 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
                             editData={editData}
                             isProcessing={isProcessing}
                             isRestockMode={isRestockMode}
+                            isAddQuantityMode={isAddQuantityMode}
                         />
                     )
                 }

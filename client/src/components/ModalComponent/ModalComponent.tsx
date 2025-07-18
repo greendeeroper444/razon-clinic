@@ -17,7 +17,8 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
     editData = null,
     deleteData = null,
     isProcessing = false,
-    isRestockMode
+    isRestockMode,
+    isAddQuantityMode
 }) => {
     const [formData, setFormData] = useState<FormDataType>({});
     const [loadedPatients, setLoadedPatients] = useState<Patient[]>(patients);
@@ -280,6 +281,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                         formData={formData as InventoryItemFormData}
                         onChange={handleChange}
                         isRestockMode={isRestockMode}
+                        isAddQuantityMode={isAddQuantityMode}
                     />
                 );
             case 'medical':
