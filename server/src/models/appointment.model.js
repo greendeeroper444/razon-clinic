@@ -32,16 +32,16 @@ const appointmentSchema = new mongoose.Schema(
             enum: ['Male', 'Female']
         },
         height: {
-            type: Number, // in cm or inches
+            type: Number,
             required: false,
-            min: 30,  // realistic minimum height
-            max: 300  // realistic maximum height
+            min: 30,
+            max: 300
         },
         weight: {
-            type: Number, // in kg or lbs
+            type: Number,
             required: false,
-            min: 1,   // realistic minimum weight
-            max: 500  // realistic maximum weight
+            min: 1,
+            max: 500
         },
         contactNumber: {
             type: Number,
