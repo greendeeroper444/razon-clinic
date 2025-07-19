@@ -615,7 +615,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             </small>
         </div>
 
-        {/* add custom styles for better visual feedback */}
+
         <style>{`
             select option:disabled {
                 color: #999 !important;
