@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import styles from '../ModalComponent/ModalComponent.module.css'
 import { searchAppointmentsByName, getAppointmentForAutofill } from '../../pages/services/medicalRecordService';
 import { Appointment, MedicalRecordFormProps } from '../../types';
+import { convertTo12HourFormat, formatDate } from '../../utils';
 
 
 const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange, isLoading, onAutofill}) => {
@@ -114,7 +115,9 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     email: appointment.email || '',
                     height: appointment.height ? appointment.height.toString() : '',
                     weight: appointment.weight ? appointment.weight.toString() : '',
-                    bloodType: appointment.bloodType || ''
+                    bloodType: appointment.bloodType || '',
+                    preferredDate: appointment.preferredDate || '',
+                    preferredTime: appointment.preferredTime || ''
                 };
 
                 //update each field individually with a small delay to ensure proper state updates
@@ -226,14 +229,20 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                                         (e.target as HTMLDivElement).style.backgroundColor = 'white';
                                     }}
                                 >
-                                    <div><strong>
-                                        {appointment.fullName || 
-                                        `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}`.trim() ||
-                                        'Unknown Name'}
-                                    </strong></div>
+                                    <div>
+                                        <strong>
+                                            {appointment.fullName || 
+                                            `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}`.trim() ||
+                                            'Unknown Name'}
+                                        </strong>
+                                    </div>
+                                    <div>
+                                        Appointment Day: {formatDate(String(appointment.preferredDate))} - {convertTo12HourFormat(String(appointment.preferredTime))}
+                                    </div>
                                     <div className={styles.appointmentBirthGender}>
-                                        {appointment.dateOfBirth && new Date(appointment.dateOfBirth).toLocaleDateString()} 
-                                        {appointment.gender && ` • ${appointment.gender}`}
+                                        {/* {appointment.dateOfBirth}  */}
+                                        {/* {appointment.gender && ` • ${appointment.gender}`} */}
+                                         {appointment.gender}
                                     </div>
                                     {
                                         appointment.phone && (

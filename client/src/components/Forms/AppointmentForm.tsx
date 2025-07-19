@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react'
 import styles from '../ModalComponent/ModalComponent.module.css'
 import { getAppointments } from '../../pages/services/appoinmentService'
@@ -11,9 +12,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 }) => {
     const [bookedSlots, setBookedSlots] = useState<{date: string, time: string, time12Hour?: string}[]>([]);
     const [availableTimes, setAvailableTimes] = useState<string[]>([]);
-
-
-
+    const [additionalPatients, setAdditionalPatients] = useState<any[]>([]);
 
     //fetch existing appointments to check for conflicts
     useEffect(() => {
@@ -23,11 +22,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 if (response.data.success) {
                     const appointments = response.data.data;
                     const slots = appointments
-                        .filter(apt => apt.status !== 'Cancelled') //exclude cancelled appointments
+                        .filter(apt => apt.status !== 'Cancelled') // exclude cancelled appointments
                         .map(apt => ({
                             date: new Date(apt.preferredDate).toISOString().split('T')[0],
                             time: apt.preferredTime,
-                            time12Hour: convertTo12HourFormat(apt.preferredTime) //convert to 12-hour format
+                            time12Hour: convertTo12HourFormat(apt.preferredTime) // convert to 12-hour format
                         }));
                     setBookedSlots(slots);
                 }
@@ -48,7 +47,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             //filter out booked times for the selected date
             const bookedTimesForDate = bookedSlots
                 .filter(slot => slot.date === selectedDate)
-                .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); //12-hour format for comparison
+                .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); // 12-hour format for comparison
             
             const available = allTimes.filter(time => !bookedTimesForDate.includes(time));
             setAvailableTimes(available);
@@ -57,11 +56,37 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         }
     }, [formData?.preferredDate, bookedSlots]);
 
-    //check if a date has any available times
+    //update formData when patients change
+    useEffect(() => {
+        if (additionalPatients.length > 0) {
+            //create patients array including primary patient
+            const primaryPatient = {
+                firstName: formData?.firstName || '',
+                lastName: formData?.lastName || '',
+                middleName: formData?.middleName || '',
+                birthdate: formData?.birthdate || '',
+                sex: formData?.sex || '',
+                height: formData?.height || '',
+                weight: formData?.weight || ''
+            };
+            
+            const allPatients = [primaryPatient, ...additionalPatients];
+            
+            //update formData with patients array
+            onChange({
+                target: {
+                    name: 'patients',
+                    value: allPatients
+                }
+            } as any);
+        }
+    }, [additionalPatients, formData?.firstName, formData?.lastName, formData?.middleName, formData?.birthdate, formData?.sex, formData?.height, formData?.weight]);
+
+    // check if a date has any available times
     const isDateAvailable = (dateString: string) => {
         const bookedTimesForDate = bookedSlots
             .filter(slot => slot.date === dateString)
-            .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); //12-hour format
+            .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); // 12-hour format
         
         const allTimes = generateTimeSlots();
         return allTimes.some(time => !bookedTimesForDate.includes(time));
@@ -73,7 +98,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         
         const bookedTimesForDate = bookedSlots
             .filter(slot => slot.date === formData.preferredDate)
-            .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); //12-hour format for comparison
+            .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); // 12-hour format for comparison
         
         return !bookedTimesForDate.includes(time);
     };
@@ -95,7 +120,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         if (formData?.preferredTime && selectedDate) {
             const bookedTimesForDate = bookedSlots
                 .filter(slot => slot.date === selectedDate)
-                .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); //12-hour format
+                .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); // 12-hour format
             
             if (bookedTimesForDate.includes(formData.preferredTime)) {
                 //clear the time selection
@@ -122,134 +147,232 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         onChange(e);
     };
 
+    //add new patient
+    const addPatient = () => {
+        const newPatient = {
+            firstName: '',
+            lastName: '',
+            middleName: '',
+            birthdate: '',
+            sex: '',
+            height: '',
+            weight: '',
+        };
+        setAdditionalPatients([...additionalPatients, newPatient]);
+    };
+
+    //remove patient
+    const removePatient = (index: number) => {
+        const updatedPatients = additionalPatients.filter((_, i) => i !== index);
+        setAdditionalPatients(updatedPatients);
+    };
+
+    //handle additional patient data change
+    const handleAdditionalPatientChange = (index: number, field: string, value: string) => {
+        const updatedPatients = [...additionalPatients];
+        updatedPatients[index] = { ...updatedPatients[index], [field]: value };
+        setAdditionalPatients(updatedPatients);
+    };
+
+    //handle primary patient change
+    const handlePrimaryPatientChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        onChange(e);
+    };
+
+    //render patient information form
+    const renderPatientForm = (patient: any, index: number, isAdditional: boolean = false) => {
+        const fieldPrefix = isAdditional ? `additional_${index}_` : '';
+        const patientData = isAdditional ? patient : formData;
+        const handleChange = isAdditional 
+            ? (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => 
+                handleAdditionalPatientChange(index, e.target.name.replace(fieldPrefix, ''), e.target.value)
+            : handlePrimaryPatientChange;
+
+        return (
+            <div key={isAdditional ? `additional_${index}` : 'primary'}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <h4>{isAdditional ? `Patient ${index + 2} Information` : 'Patient Information'}</h4>
+                    {
+                        isAdditional && (
+                            <button
+                                type="button"
+                                onClick={() => removePatient(index)}
+                                style={{
+                                    background: '#dc3545',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    padding: '0.5rem 1rem',
+                                    cursor: 'pointer',
+                                    fontSize: '0.875rem'
+                                }}
+                                disabled={isLoading}
+                            >
+                                Remove Patient
+                            </button>
+                        )
+                    }
+                </div>
+                
+                <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                        <label htmlFor={`${fieldPrefix}firstName`}>First Name *</label>
+                        <input
+                            type='text'
+                            id={`${fieldPrefix}firstName`}
+                            name={`${fieldPrefix}firstName`}
+                            value={patientData?.firstName || ''}
+                            onChange={handleChange}
+                            className={styles.formControl}
+                            required
+                            disabled={isLoading}
+                            placeholder="Patient's first name"
+                        />
+                    </div>
+                </div>
+                <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                        <label htmlFor={`${fieldPrefix}lastName`}>Last Name *</label>
+                        <input
+                            type='text'
+                            id={`${fieldPrefix}lastName`}
+                            name={`${fieldPrefix}lastName`}
+                            value={patientData?.lastName || ''}
+                            onChange={handleChange}
+                            className={styles.formControl}
+                            required
+                            disabled={isLoading}
+                            placeholder="Patient's last name"
+                        />
+                    </div>
+                </div>
+                <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                        <label htmlFor={`${fieldPrefix}middleName`}>Middle Name (Optional)</label>
+                        <input
+                            type='text'
+                            id={`${fieldPrefix}middleName`}
+                            name={`${fieldPrefix}middleName`}
+                            value={patientData?.middleName || ''}
+                            onChange={handleChange}
+                            className={styles.formControl}
+                            disabled={isLoading}
+                            placeholder="Patient's middle name (optional)"
+                        />
+                    </div>
+                </div>
+                <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                        <label htmlFor={`${fieldPrefix}birthdate`}>Birth Date *</label>
+                        <input
+                            type='date'
+                            id={`${fieldPrefix}birthdate`}
+                            name={`${fieldPrefix}birthdate`}
+                            value={patientData?.birthdate || ''}
+                            onChange={handleChange}
+                            className={styles.formControl}
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label htmlFor={`${fieldPrefix}sex`}>Sex *</label>
+                        <select
+                            id={`${fieldPrefix}sex`}
+                            name={`${fieldPrefix}sex`}
+                            value={patientData?.sex || ''}
+                            onChange={handleChange}
+                            className={styles.formControl}
+                            required
+                            disabled={isLoading}
+                        >
+                            <option value=''>Select Sex</option>
+                            <option value='Male'>Male</option>
+                            <option value='Female'>Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                        <label htmlFor={`${fieldPrefix}height`}>Height (cm)</label>
+                        <input
+                            type='number'
+                            id={`${fieldPrefix}height`}
+                            name={`${fieldPrefix}height`}
+                            value={patientData?.height || ''}
+                            onChange={handleChange}
+                            className={styles.formControl}
+                            min={30}
+                            max={300}
+                            placeholder="Height in cm"
+                            disabled={isLoading}
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label htmlFor={`${fieldPrefix}weight`}>Weight (kg)</label>
+                        <input
+                            type='number'
+                            id={`${fieldPrefix}weight`}
+                            name={`${fieldPrefix}weight`}
+                            value={patientData?.weight || ''}
+                            onChange={handleChange}
+                            className={styles.formControl}
+                            min={1}
+                            max={500}
+                            placeholder="Weight in kg"
+                            disabled={isLoading}
+                        />
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
   return (
     <div className={styles.sectionDivider}>
-        <h4>Patient Information</h4>
-        <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-                <label htmlFor='firstName'>First Name *</label>
-                <input
-                    type='text'
-                    id='firstName'
-                    name='firstName'
-                    value={formData?.firstName || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    required
-                    disabled={isLoading}
-                    placeholder="Patient's first name"
-                />
-            </div>
-        </div>
-        <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-                <label htmlFor='lastName'>Last Name *</label>
-                <input
-                    type='text'
-                    id='lastName'
-                    name='lastName'
-                    value={formData?.lastName || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    required
-                    disabled={isLoading}
-                    placeholder="Patient's last name"
-                />
-            </div>
-        </div>
-        <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-                <label htmlFor='middleName'>Middle Name (Optional)</label>
-                <input
-                    type='text'
-                    id='middleName'
-                    name='middleName'
-                    value={formData?.middleName || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="Patient's middle name (optional)"
-                />
-            </div>
-        </div>
-        <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-                <label htmlFor='birthdate'>Birth Date *</label>
-                <input
-                    type='date'
-                    id='birthdate'
-                    name='birthdate'
-                    value={formData?.birthdate || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    required
-                    disabled={isLoading}
-                />
-            </div>
+        {/* primary patient information */}
+        {renderPatientForm(null, 0, false)}
 
-            <div className={styles.formGroup}>
-                <label htmlFor='sex'>Sex *</label>
-                <select
-                    id='sex'
-                    name='sex'
-                    value={formData?.sex || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    required
-                    disabled={isLoading}
-                >
-                    <option value=''>Select Sex</option>
-                    <option value='Male'>Male</option>
-                    <option value='Female'>Female</option>
-                </select>
-            </div>
-        </div>
-        <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-                <label htmlFor='height'>Height (cm)</label>
-                <input
-                    type='number'
-                    id='height'
-                    name='height'
-                    value={formData?.height || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    min={30}
-                    max={300}
-                    placeholder="Height in cm"
-                    disabled={isLoading}
-                />
-            </div>
+        {/* additional patients */}
+        {
+            additionalPatients.map((patient, index) => (
+                <div key={index} className={styles.sectionDivider}>
+                    {renderPatientForm(patient, index, true)}
+                </div>
+            ))
+        }
 
-            <div className={styles.formGroup}>
-                <label htmlFor='weight'>Weight (kg)</label>
-                <input
-                    type='number'
-                    id='weight'
-                    name='weight'
-                    value={formData?.weight || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    min={1}
-                    max={500}
-                    placeholder="Weight in kg"
-                    disabled={isLoading}
-                />
-            </div>
-        </div>
-        <div className={styles.formGroup}>
-            <label htmlFor='religion'>Religion</label>
-            <input
-                type='text'
-                id='religion'
-                name='religion'
-                value={formData?.religion || ''}
-                onChange={onChange}
-                className={styles.formControl}
-                maxLength={30}
-                placeholder="Religion (optional)"
+        {/* add patient button */}
+        <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+            <button
+                type="button"
+                onClick={addPatient}
                 disabled={isLoading}
-            />
+                style={{
+                    background: '#007bff',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    padding: '0.75rem 1.5rem',
+                    cursor: 'pointer',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                    transition: 'background-color 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
+            >
+                + Add Another Patient
+            </button>
+            {
+                additionalPatients.length > 0 && (
+                    <p style={{ marginTop: '0.5rem', color: '#666', fontSize: '0.875rem' }}>
+                        Total patients: {additionalPatients.length + 1}
+                    </p>
+                )
+            }
         </div>
 
         {/* mother's information */}
@@ -384,6 +507,21 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 disabled={isLoading}
                 placeholder="Enter address"
                 title="Address"
+            />
+        </div>
+        <div className={styles.formGroup}>
+            <label htmlFor='religion'>Religion *</label>
+            <input
+                type='text'
+                id='religion'
+                name='religion'
+                value={formData?.religion || ''}
+                onChange={onChange}
+                className={styles.formControl}
+                required
+                disabled={isLoading}
+                placeholder="Enter religion"
+                title="Religion"
             />
         </div>
 

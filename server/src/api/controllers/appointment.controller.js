@@ -22,19 +22,45 @@ class AppointmentController {
                 });
             }
 
-            //validate required patient information fields
-            if (!req.body.birthdate) {
+            //extract patients array from request body
+            const { patients = [], ...appointmentInfo } = req.body;
+            
+            //if no patients array, create one with the primary patient data
+            const patientsToProcess = patients.length > 0 ? patients : [{
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                middleName: req.body.middleName,
+                birthdate: req.body.birthdate,
+                sex: req.body.sex,
+                height: req.body.height,
+                weight: req.body.weight
+            }];
+
+            //validate that we have at least one patient
+            if (patientsToProcess.length === 0) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Birth date is required'
+                    message: 'At least one patient is required'
                 });
             }
 
-            if (!req.body.sex || !['Male', 'Female'].includes(req.body.sex)) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Valid sex selection is required'
-                });
+            //validate each patient's required fields
+            for (let i = 0; i < patientsToProcess.length; i++) {
+                const patient = patientsToProcess[i];
+                
+                if (!patient.birthdate) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Birth date is required for patient ${i + 1}`
+                    });
+                }
+
+                if (!patient.sex || !['Male', 'Female'].includes(patient.sex)) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Valid sex selection is required for patient ${i + 1}`
+                    });
+                }
             }
 
             //normalize time format - ensure minutes are always :00
@@ -75,7 +101,7 @@ class AppointmentController {
                     $lte: endOfDay
                 },
                 preferredTime: preferredTime,
-                status: { $ne: 'Cancelled' } //exclude cancelled appointments
+                status: { $ne: 'Cancelled' } // exclude cancelled appointments
             });
 
             if (conflictingAppointment) {
@@ -84,102 +110,117 @@ class AppointmentController {
                     message: `This time slot (${preferredTime} on ${req.body.preferredDate}) is already booked. Please choose a different time.`
                 });
             }
+
+            const createdAppointments = [];
             
-            const appointmentData = {
-                patientId: req.body.patientId,
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                middleName: req.body.middleName || null,
-                preferredDate: req.body.preferredDate,
-                preferredTime: preferredTime,
-                reasonForVisit: req.body.reasonForVisit?.trim(),
-                status: 'Pending',
-                //patient information fields
-                birthdate: req.body.birthdate,
-                sex: req.body.sex,
-                height: req.body.height ? Number(req.body.height) : undefined,
-                weight: req.body.weight ? Number(req.body.weight) : undefined,
-                religion: req.body.religion?.trim(),
-                //mother's information
-                motherInfo: {
-                    name: req.body.motherName?.trim(),
-                    age: req.body.motherAge ? Number(req.body.motherAge) : undefined,
-                    occupation: req.body.motherOccupation?.trim()
-                },
-                //father's information
-                fatherInfo: {
-                    name: req.body.fatherName?.trim(),
-                    age: req.body.fatherAge ? Number(req.body.fatherAge) : undefined,
-                    occupation: req.body.fatherOccupation?.trim()
-                },
-                contactNumber: req.body.contactNumber,
-                address: req.body.address,
-            };
+            //create appointments for each patient
+            for (let i = 0; i < patientsToProcess.length; i++) {
+                const patient = patientsToProcess[i];
+                
+                const appointmentData = {
+                    patientId: req.body.patientId,
+                    firstName: patient.firstName,
+                    lastName: patient.lastName,
+                    middleName: patient.middleName || null,
+                    preferredDate: req.body.preferredDate,
+                    preferredTime: preferredTime,
+                    reasonForVisit: req.body.reasonForVisit?.trim(),
+                    status: 'Pending',
+                    //patient information fields
+                    birthdate: patient.birthdate,
+                    sex: patient.sex,
+                    height: patient.height ? Number(patient.height) : undefined,
+                    weight: patient.weight ? Number(patient.weight) : undefined,
+                    religion: req.body.religion?.trim(),
+                    //mother's information (shared across all patients)
+                    motherInfo: {
+                        name: req.body.motherName?.trim(),
+                        age: req.body.motherAge ? Number(req.body.motherAge) : undefined,
+                        occupation: req.body.motherOccupation?.trim()
+                    },
+                    //father's information (shared across all patients)
+                    fatherInfo: {
+                        name: req.body.fatherName?.trim(),
+                        age: req.body.fatherAge ? Number(req.body.fatherAge) : undefined,
+                        occupation: req.body.fatherOccupation?.trim()
+                    },
+                    contactNumber: req.body.contactNumber,
+                    address: req.body.address,
+                    //add patient number for multiple patients
+                    patientNumber: i + 1,
+                    totalPatients: patientsToProcess.length
+                };
 
-            //remove undefined values from nested objects
-            if (!appointmentData.motherInfo.name && !appointmentData.motherInfo.age && !appointmentData.motherInfo.occupation) {
-                delete appointmentData.motherInfo;
-            }
-            if (!appointmentData.fatherInfo.name && !appointmentData.fatherInfo.age && !appointmentData.fatherInfo.occupation) {
-                delete appointmentData.fatherInfo;
-            }
-
-            try {
-                const appointment = new Appointment(appointmentData);
-                await appointment.save();
-
-                //only create notifications if the request is from a patient
-                if (createNotifications) {
-                    try {
-                        const existingNotification = await Notification.findOne({
-                            sourceId: appointmentData.patientId,
-                            entityId: appointment._id,
-                            type: 'AppointmentCreated',
-                            entityType: 'Appointment',
-                        });
-                        
-                        if (!existingNotification) {
-                            const patient = await OnlinePatient.findById(appointmentData.patientId);
-                            const message = `New appointment request from ${patient?.fullName || 'a patient'} for ${new Date(req.body.preferredDate).toLocaleDateString()} at ${preferredTime}.`;
-                            
-                            const notification = new Notification({
-                                sourceId: appointmentData.patientId,
-                                sourceType: 'Patient',
-                                type: 'AppointmentCreated',
-                                entityId: appointment._id,
-                                entityType: 'Appointment',
-                                message,
-                                isRead: false
-                            });
-                            
-                            await notification.save();
-                        }
-                    } catch (error) {
-                        console.error('Failed to create notification:', error);
-                    }
+                //remove undefined values from nested objects
+                if (!appointmentData.motherInfo.name && !appointmentData.motherInfo.age && !appointmentData.motherInfo.occupation) {
+                    delete appointmentData.motherInfo;
+                }
+                if (!appointmentData.fatherInfo.name && !appointmentData.fatherInfo.age && !appointmentData.fatherInfo.occupation) {
+                    delete appointmentData.fatherInfo;
                 }
 
-                return res.status(201).json({
-                    success: true,
-                    message: createNotifications ? 
-                        'Appointment request submitted successfully' : 
-                        'Appointment created successfully',
-                    data: appointment
-                });
-            } catch (err) {
-                console.error('Error saving appointment:', err);
-                return res.status(500).json({
-                    success: false,
-                    message: 'Failed to create appointment',
-                    error: err.message
-                });
+                try {
+                    const appointment = new Appointment(appointmentData);
+                    await appointment.save();
+                    createdAppointments.push(appointment);
+
+                    //only create notifications for the first patient to avoid duplicates
+                    if (i === 0 && createNotifications) {
+                        try {
+                            const existingNotification = await Notification.findOne({
+                                sourceId: appointmentData.patientId,
+                                entityId: appointment._id,
+                                type: 'AppointmentCreated',
+                                entityType: 'Appointment',
+                            });
+                            
+                            if (!existingNotification) {
+                                const patient = await OnlinePatient.findById(appointmentData.patientId);
+                                const patientCountMsg = patientsToProcess.length > 1 ? ` for ${patientsToProcess.length} patients` : '';
+                                const message = `New appointment request from ${patient?.fullName || 'a patient'}${patientCountMsg} for ${new Date(req.body.preferredDate).toLocaleDateString()} at ${preferredTime}.`;
+                                
+                                const notification = new Notification({
+                                    sourceId: appointmentData.patientId,
+                                    sourceType: 'Patient',
+                                    type: 'AppointmentCreated',
+                                    entityId: appointment._id,
+                                    entityType: 'Appointment',
+                                    message,
+                                    isRead: false
+                                });
+                                
+                                await notification.save();
+                            }
+                        } catch (error) {
+                            console.error('Failed to create notification:', error);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Error saving appointment:', err);
+                    return res.status(500).json({
+                        success: false,
+                        message: `Failed to create appointment for patient ${i + 1}`,
+                        error: err.message
+                    });
+                }
             }
+
+            return res.status(201).json({
+                success: true,
+                message: createNotifications ? 
+                    `Appointment request submitted successfully for ${createdAppointments.length} patient(s)` : 
+                    `Appointment(s) created successfully for ${createdAppointments.length} patient(s)`,
+                data: createdAppointments,
+                appointmentCount: createdAppointments.length
+            });
+
         } catch (error) {
             console.error('Error creating appointment:', error);
             next(error);
         }
     }
 
+    
     async getAppointment(req, res, next) {
         try {
             const { patientId, status, fromDate, toDate } = req.query;

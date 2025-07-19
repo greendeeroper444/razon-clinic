@@ -44,6 +44,15 @@ export interface AppointmentFormData {
     preferredTime: string;
     reasonForVisit: string;
     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
+    patients?: {
+        firstName?: string;
+        lastName?: string;
+        middleName?: string;
+        birthdate?: string;
+        sex?: string;
+        height?: number | string;
+        weight?: number | string;
+    }[];
 }
 
 export interface PatientId {
@@ -51,6 +60,7 @@ export interface PatientId {
 }
 export interface Appointment {
     id: string;
+    fullName: string;
     firstName?: string;
     middleName?: string;
     lastName?: string;
@@ -67,6 +77,8 @@ export interface Appointment {
     contactNumber: string;
     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
     patientId?: PatientId;
+    preferredTime: number | string;
+    preferredDate: number | string
 }
 
 export interface AutofillData {

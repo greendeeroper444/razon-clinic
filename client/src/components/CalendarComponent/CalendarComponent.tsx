@@ -52,16 +52,17 @@ const CalendarComponent: React.FC = () => {
         const counts: AppointmentCounts = {};
         
         appointmentData.forEach(appointment => {
-            const date = new Date(appointment.preferredDate);
-            const dateKey = date.toISOString().split('T')[0];
-            
-            if (counts[dateKey]) {
-                counts[dateKey]++;
+            //extract just the date part from the ISO string to avoid timezone issues
+            const dateString = String(appointment.preferredDate).split('T')[0];
+          
+            if (counts[dateString]) {
+                counts[dateString]++;
             } else {
-                counts[dateKey] = 1;
+                counts[dateString] = 1;
             }
         });
         
+        console.log('Final appointment counts:', counts);
         setAppointmentCounts(counts);
     };
 
@@ -99,8 +100,16 @@ const CalendarComponent: React.FC = () => {
 
     const getDateKey = (day: number | null): string | null => {
         if (!day) return null;
-        const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-        return date.toISOString().split('T')[0];
+        
+        //create date in local timezone to avoid timezone conversion issues
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const date = new Date(year, month, day);
+        
+        //format as YYYY-MM-DD
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        
+        return dateKey;
     };
 
     const hasAppointments = (day: number | null): boolean => {
@@ -117,9 +126,12 @@ const CalendarComponent: React.FC = () => {
     const handleDateClick = (day: number | null): void => {
         if (!day) return;
         
-        const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-        const dateString = selectedDate.toISOString().split('T')[0];
+        //create date and format manually to avoid timezone issues
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         
+        console.log(`Clicked day ${day}, navigating to date:`, dateString);
         
         navigate(`/admin/calendar-date-details?date=${dateString}`);
     };

@@ -148,7 +148,7 @@ class MedicalRecordController {
                     }
                 ]
             })
-            .select('firstName lastName middleName birthdate sex address contactNumber height weight')
+            .select('firstName lastName middleName birthdate sex address contactNumber height weight preferredDate preferredTime')
             .limit(10)
             .sort({ createdAt: -1 });
 
@@ -167,7 +167,9 @@ class MedicalRecordController {
                     address: appointment.address,
                     phone: appointment.contactNumber?.toString(),
                     height: appointment.height,
-                    weight: appointment.weight
+                    weight: appointment.weight,
+                    preferredDate: appointment.preferredDate,
+                    preferredTime: appointment.preferredTime
                 };
             });
 
@@ -193,7 +195,7 @@ class MedicalRecordController {
             const { appointmentId } = req.params;
 
             const appointment = await Appointment.findById(appointmentId)
-                .select('firstName lastName middleName birthdate sex address contactNumber height weight motherInfo fatherInfo religion');
+                .select('firstName lastName middleName birthdate sex address contactNumber height weight motherInfo fatherInfo religion preferredDate preferredTime');
 
             if (!appointment) {
                 return res.status(404).json({
@@ -212,7 +214,9 @@ class MedicalRecordController {
                 address: appointment.address || '',
                 phone: appointment.contactNumber?.toString() || '',
                 height: appointment.height || '',
-                weight: appointment.weight || ''
+                weight: appointment.weight || '',
+                preferredDate: appointment.preferredDate || '',
+                preferredTime: appointment.preferredTime || ''
             };
 
             res.status(200).json({
