@@ -433,7 +433,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
 
         {/* growth milestone section */}
         <div className={styles.sectionDivider}>
-            <h4>Growth Milestones</h4>
+            <h4>Pediatric Growth Monitor</h4>
             
             <div className={styles.formRow}>
                 <div className={styles.formGroup}>

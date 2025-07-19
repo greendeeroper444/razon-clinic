@@ -4909,3 +4909,44 @@ Use mongoose.model(name, schema)
 2025-07-19 03:49:24 [INFO]: Server running on port 3000 
 2025-07-19 03:49:31 [INFO]: MongoDB Connected: 127.0.0.1 
 2025-07-19 03:49:31 [INFO]: Server running on port 3000 
+2025-07-19 13:52:53 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 13:52:53 [INFO]: Server running on port 3000 
+2025-07-19 14:09:05 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at param (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:600:14)
+    at param (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:610:14)
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:664:3)
+2025-07-19 14:31:54 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)
+2025-07-19 14:31:56 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)
+2025-07-19 15:34:56 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 15:34:56 [INFO]: Server running on port 3000 
+2025-07-19 15:42:34 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 15:42:34 [INFO]: Server running on port 3000 
+2025-07-19 15:42:40 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 15:42:40 [INFO]: Server running on port 3000 
+2025-07-19 15:44:34 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 15:44:34 [INFO]: Server running on port 3000 
+2025-07-19 15:44:39 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 15:44:39 [INFO]: Server running on port 3000 
+2025-07-19 15:44:53 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 15:44:53 [INFO]: Server running on port 3000 
+2025-07-19 15:45:24 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 15:45:24 [INFO]: Server running on port 3000 
+2025-07-19 15:45:58 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 15:45:58 [INFO]: Server running on port 3000 
+2025-07-19 15:50:10 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 15:50:10 [INFO]: Server running on port 3000 
+2025-07-19 20:53:49 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 20:53:49 [INFO]: Server running on port 3000 
+2025-07-19 20:54:14 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 20:54:14 [INFO]: Server running on port 3000 
+2025-07-19 20:54:23 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-19 20:54:23 [INFO]: Server running on port 3000 

@@ -20,7 +20,8 @@ import {
   MedicalRecordsPage,
   BillingsPaymentPage,
   TermsAndConditionPage,
-  CalendarDateDetailsPage
+  CalendarDateDetailsPage,
+  GrowthMilestonePage
 } from './pages'
 import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
@@ -54,6 +55,7 @@ const routes: RouteType[] = [
   { path: '/admin/medical-records', component: MedicalRecordsPage, layout: 'admin' },
   { path: '/admin/billings-payment', component: BillingsPaymentPage, layout: 'admin' },
   { path: '/admin/calendar-date-details', component: CalendarDateDetailsPage, layout: 'admin' },
+  { path: '/admin/growth-milestone', component: GrowthMilestonePage, layout: 'admin' },
 
   //user routees
   { path: '/user/appointments', component: UserAppointmentPage, layout: 'user' },

@@ -20,6 +20,8 @@ export { default as AppointmentDetailsPage } from './admin/AppointmentDetailsPag
 export { default as MedicalRecordsPage } from './admin/MedicalRecordsPage/MedicalRecordsPage';
 export { default as BillingsPaymentPage } from './admin/BillingsPaymentPage/BillingsPaymentPage';
 export { default as CalendarDateDetailsPage } from './admin/CalendarDateDetailsPage/CalendarDateDetailsPage';
+export { default as GrowthMilestonePage } from './admin/GrowthMilestonePage/GrowthMilestonePage';
+
 
 //user pages
 export { default as UserAppointmentPage } from './user/AppointmentPage/AppointmentPage';

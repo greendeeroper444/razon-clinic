@@ -48,17 +48,11 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                     firstName: '',
                     lastName: '',
                     middleName: '',
-                    preferredDate: '',
-                    preferredTime: '',
-                    reasonForVisit: '',
-                    status: 'Pending',
-                    
                     //initialize all patient information fields
                     birthdate: '',
                     sex: '',
                     height: '',
                     weight: '',
-                    religion: '',
                     
                     //flattened parent information fields
                     motherName: '',
@@ -81,6 +75,11 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                     },
                     contactNumber: '',
                     address: '',
+                    religion: '',
+                    preferredDate: '',
+                    preferredTime: '',
+                    reasonForVisit: '',
+                    status: 'Pending',
                 } as AppointmentFormData);
             } else if (modalType === 'patient') {
                 setFormData({

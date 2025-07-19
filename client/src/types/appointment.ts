@@ -12,14 +12,9 @@ export interface AppointmentFormData {
     firstName: string;
     lastName: string;
     middleName: string | null;
-    preferredDate: string;
-    preferredTime: string;
-    reasonForVisit: string;
-    status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
     sex?: string;
     height?: number | string;
     weight?: number | string;
-    religion?: string;
     birthdate: number | string | undefined;
     
     //flattened mother information
@@ -44,6 +39,11 @@ export interface AppointmentFormData {
     };
     contactNumber: number | string;
     address?: string;
+    religion?: string;
+    preferredDate: string;
+    preferredTime: string;
+    reasonForVisit: string;
+    status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
 }
 
 export interface PatientId {

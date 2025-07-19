@@ -13,7 +13,9 @@ import {
     faBars,
     faChevronLeft,
     faFileMedical,
-    faCreditCard
+    faCreditCard,
+    faChild,
+    faChartLine
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'sonner';
 import { logoutUser } from '../../pages/services/authService';
@@ -146,14 +148,24 @@ const SidebarComponent: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSideb
 
                 {
                     currentUser && (currentUser.role === 'Doctor') ? (
-                        <Link
-                            to='/admin/medical-records'
-                            className={`${styles.menuItem} ${isActive('/admin/medical-records') ? styles.active : ''}`}
-                            title='Medical Records'
-                        >
-                            <FontAwesomeIcon icon={faFileMedical} color='#94a3b8' />
-                            <span className={styles.menuText}>Medical Records</span>
-                        </Link>
+                        <>
+                            <Link
+                                to='/admin/medical-records'
+                                className={`${styles.menuItem} ${isActive('/admin/medical-records') ? styles.active : ''}`}
+                                title='Medical Records'
+                            >
+                                <FontAwesomeIcon icon={faFileMedical} color='#94a3b8' />
+                                <span className={styles.menuText}>Medical Records</span>
+                            </Link>
+                            {/* <Link
+                                to='/admin/growth-milestone'
+                                className={`${styles.menuItem} ${isActive('/admin/growth-milestone') ? styles.active : ''}`}
+                                title='Growth Milestone'
+                            >
+                                <FontAwesomeIcon icon={faChartLine} color='#94a3b8' />
+                                <span className={styles.menuText}>Growth Milestone</span>
+                            </Link> */}
+                        </>
                     ) : (
                         <Link
                             to='/admin/inventory'

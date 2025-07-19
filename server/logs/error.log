@@ -3092,3 +3092,18 @@ Use mongoose.model(name, schema)
     at model.Query.exec (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\mongoose\lib\query.js:4604:80)
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async getAppointmentDetails (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\appointment.controller.js:227:33)
+2025-07-19 14:09:05 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at param (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:600:14)
+    at param (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:610:14)
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:664:3)
+2025-07-19 14:31:54 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)
+2025-07-19 14:31:56 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:229:23)

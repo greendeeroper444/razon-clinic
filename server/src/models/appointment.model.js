@@ -22,24 +22,6 @@ const appointmentSchema = new mongoose.Schema(
             type: String,
             required: false
         },
-        preferredDate: {
-            type: Date,
-            required: true
-        },
-        preferredTime: {
-            type: String,
-            required: true
-        },
-        reasonForVisit: {
-            type: String,
-            trim: true,
-            required: true
-        },
-        status: {
-            type: String,
-            enum: ['Pending', 'Scheduled', 'Completed', 'Cancelled', 'Rebooked'],
-            default: 'Pending'
-        },
         birthdate: {
             type: Date,
             required: true
@@ -60,6 +42,20 @@ const appointmentSchema = new mongoose.Schema(
             required: false,
             min: 1,   // realistic minimum weight
             max: 500  // realistic maximum weight
+        },
+        contactNumber: {
+            type: Number,
+            required: true
+        },
+        address: {
+            type: String,
+            required: true,
+        },
+        religion: {
+            type: String,
+            required: false,
+            maxlength: 30,
+            trim: true
         },
         //mother's information
         motherInfo: {
@@ -103,19 +99,24 @@ const appointmentSchema = new mongoose.Schema(
                 trim: true
             }
         },
-        religion: {
-            type: String,
-            required: false,
-            maxlength: 30,
-            trim: true
-        },
-        contactNumber: {
-            type: Number,
+        //appointment details
+        preferredDate: {
+            type: Date,
             required: true
         },
-        address: {
+        preferredTime: {
             type: String,
-            required: true,
+            required: true
+        },
+        reasonForVisit: {
+            type: String,
+            trim: true,
+            required: true
+        },
+        status: {
+            type: String,
+            enum: ['Pending', 'Scheduled', 'Completed', 'Cancelled', 'Rebooked'],
+            default: 'Pending'
         },
     },
     {
