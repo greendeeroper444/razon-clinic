@@ -30,10 +30,10 @@ export const addAppointment = async (appointmentData: AppointmentFormData) => {
         `${API_BASE_URL}/api/appointments/addAppointment`,
         processedData,
         {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
         }
     );
 };

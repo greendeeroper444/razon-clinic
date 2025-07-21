@@ -22,6 +22,14 @@ const CalendarComponent: React.FC = () => {
 
     useEffect(() => {
         fetchAppointments();
+
+        //polling every 10 seconds
+        // const interval = setInterval(() => {
+        //     fetchAppointments();
+        // }, 10000); //10 seconds
+
+        // //cleanup interval on unmount or when currentDate changes
+        // return () => clearInterval(interval);
     }, [currentDate]);
 
     const fetchAppointments = async (): Promise<void> => {

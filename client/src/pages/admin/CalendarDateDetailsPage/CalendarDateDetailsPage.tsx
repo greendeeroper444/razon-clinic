@@ -254,7 +254,7 @@ const CalendarDateDetailsPage: React.FC = () => {
                                                 {
                                                     appointment.patientId && (
                                                         <div className={styles.detailRow}>
-                                                            <strong>Patient ID:</strong> 
+                                                            <strong>User ID:</strong> 
                                                             <span>{appointment.patientId.patientNumber}</span>
                                                         </div>
                                                     )

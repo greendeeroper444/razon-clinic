@@ -195,6 +195,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         }
     };
 
+    //we can clear field after submit
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (modalType === 'delete' && deleteData) {
@@ -203,6 +204,14 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
             onSubmit({ ...editData, status: selectedStatus });
         } else {
             onSubmit(formData);
+            
+            //clear fields for appoitment
+            if (modalType === 'appointment') {
+                setFormData(prev => ({
+                    ...prev,
+                    preferredTime: '',
+                }));
+            }
         }
         handleClose();
     };

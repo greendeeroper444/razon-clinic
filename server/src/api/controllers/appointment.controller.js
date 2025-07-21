@@ -63,32 +63,81 @@ class AppointmentController {
                 }
             }
 
-            //normalize time format - ensure minutes are always :00
-            let preferredTime = req.body.preferredTime;
-            if (preferredTime && !preferredTime.endsWith(':00')) {
-                const hour = preferredTime.split(':')[0];
-                preferredTime = `${hour}:00`;
-            }
+            // //normalize time format - ensure minutes are always :00
+            // let preferredTime = req.body.preferredTime;
+            // if (preferredTime && !preferredTime.endsWith(':00')) {
+            //     const hour = preferredTime.split(':')[0];
+            //     preferredTime = `${hour}:00`;
+            // }
 
-            //validate time format (must be in HH:00 format)
-            const timeRegex = /^([0-1]?[0-9]|2[0-3]):00$/;
+            // //validate time format (must be in HH:00 format)
+            // const timeRegex = /^([0-1]?[0-9]|2[0-3]):00$/;
+            // if (!timeRegex.test(preferredTime)) {
+            //     return res.status(400).json({
+            //         success: false,
+            //         message: 'Invalid time format. Time must be in HH:00 format (e.g., 08:00, 14:00)'
+            //     });
+            // }
+
+            // //validate business hours (8:00 AM to 5:00 PM)
+            // const hour = parseInt(preferredTime.split(':')[0]);
+            // if (hour < 8 || hour > 17) {
+            //     return res.status(400).json({
+            //         success: false,
+            //         message: 'Appointments are only available between 8:00 AM and 5:00 PM'
+            //     });
+            // }
+
+            // //check for appointment conflicts
+            // const preferredDate = new Date(req.body.preferredDate);
+            // const startOfDay = new Date(preferredDate);
+            // startOfDay.setHours(0, 0, 0, 0);
+            // const endOfDay = new Date(preferredDate);
+            // endOfDay.setHours(23, 59, 59, 999);
+
+            // const conflictingAppointment = await Appointment.findOne({
+            //     preferredDate: {
+            //         $gte: startOfDay,
+            //         $lte: endOfDay
+            //     },
+            //     preferredTime: preferredTime,
+            //     status: { $ne: 'Cancelled' } // exclude cancelled appointments
+            // });
+
+            // if (conflictingAppointment) {
+            //     return res.status(409).json({
+            //         success: false,
+            //         message: `This time slot (${preferredTime} on ${req.body.preferredDate}) is already booked. Please choose a different time.`
+            //     });
+            // }
+
+
+            //15 minutes intervals
+            //extract preferredTime from request
+            let preferredTime = req.body.preferredTime;
+
+            //validate time format: must be in HH:MM format, and MM should be 00, 15, 30, or 45
+            const timeRegex = /^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/;
             if (!timeRegex.test(preferredTime)) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Invalid time format. Time must be in HH:00 format (e.g., 08:00, 14:00)'
+                    message: 'Invalid time format. Time must be in HH:MM format using 15-minute intervals (e.g., 08:00, 08:15, 08:30, 08:45).'
                 });
             }
 
-            //validate business hours (8:00 AM to 5:00 PM)
-            const hour = parseInt(preferredTime.split(':')[0]);
-            if (hour < 8 || hour > 17) {
+            //validate business hours (between 08:00 and 17:00)
+            const [hourStr, minuteStr] = preferredTime.split(':');
+            const hour = parseInt(hourStr);
+            const minute = parseInt(minuteStr);
+
+            if (hour < 8 || (hour === 17 && minute > 0) || hour > 17) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Appointments are only available between 8:00 AM and 5:00 PM'
+                    message: 'Appointments are only available between 08:00 and 17:00.'
                 });
             }
 
-            //check for appointment conflicts
+            //check for appointment conflicts on the same date and time
             const preferredDate = new Date(req.body.preferredDate);
             const startOfDay = new Date(preferredDate);
             startOfDay.setHours(0, 0, 0, 0);
@@ -101,7 +150,7 @@ class AppointmentController {
                     $lte: endOfDay
                 },
                 preferredTime: preferredTime,
-                status: { $ne: 'Cancelled' } // exclude cancelled appointments
+                status: { $ne: 'Cancelled' }
             });
 
             if (conflictingAppointment) {

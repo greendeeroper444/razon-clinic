@@ -95,8 +95,6 @@ function App() {
   const closeModal = (): void => setIsModalOpen(false);
 
   const handleSubmit = async (formData: FormDataType | string): Promise<void> => {
-    console.log('Form submitted:', formData);
-    console.log('Form type:', modalType);
 
     //handle delete operations (when formData is a string ID)
     if (typeof formData === 'string') {
