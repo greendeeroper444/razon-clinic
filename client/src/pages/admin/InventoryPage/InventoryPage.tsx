@@ -20,7 +20,7 @@ import {
     getLowStockItems,
     getExpiringItems
 } from '../../../services';
-import { InventoryItem, InventoryItemFormData } from '../../../types';
+import { FormDataType, InventoryItem, InventoryItemFormData } from '../../../types';
 import { toast } from 'sonner';
 import { formatDate, getExpiryStatus, getItemIcon, getStockStatus, openModalWithRefresh } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
@@ -159,15 +159,23 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         setDeleteInventoryItemData(null);
     };
 
-    const handleSubmitUpdate = async (data: InventoryItemFormData | any) => {
+    const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string') {
+            console.error('Invalid data or missing medical ID');
+            return;
+        }
+
+        //asertion simce we know it's MedicalRecordFormData in this context
+        const medicalData = data as InventoryItemFormData;
+
         try {
             setIsProcessing(true);
             if (editData && editData.id) {
                 //update existing item
-                await updateInventoryItem(editData.id, data);
+                await updateInventoryItem(editData.id, medicalData);
             } else {
                 //add new item
-                await addInventoryItem(data);
+                await addInventoryItem(medicalData);
             }
             fetchInventoryItems();
             fetchSummaryStats();
@@ -178,18 +186,15 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     };
 
-    const handleConfirmDelete = async (itemId: string | any) => {
-        //handle both direct ID and object with ID
-        const actualId = typeof itemId === 'string' ? itemId : itemId?.id || itemId;
-        
-        if (!actualId || actualId === 'undefined' || actualId === undefined) {
-            console.error('Invalid item ID for deletion:', actualId);
+    const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data !== 'string') {
+            console.error('Invalid patient ID');
             return;
         }
         
         try {
             setIsProcessing(true);
-            await deleteInventoryItem(actualId);
+            await deleteInventoryItem(data);
             fetchInventoryItems();
             fetchSummaryStats();
             setIsDeleteModalOpen(false);
@@ -341,7 +346,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                     <ModalComponent
                         isOpen={isModalOpen}
                         onClose={handleModalClose}
-                        modalType="item"
+                        modalType='item'
                         onSubmit={handleSubmitUpdate}
                         editData={editData}
                         isProcessing={isProcessing}
@@ -357,7 +362,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                 <ModalComponent
                     isOpen={isDeleteModalOpen}
                     onClose={handleDeleteModalClose}
-                    modalType="delete"
+                    modalType='delete'
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteInventoryItemData}
                     isProcessing={isProcessing}

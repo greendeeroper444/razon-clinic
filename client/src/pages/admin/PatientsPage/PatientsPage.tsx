@@ -1,25 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import styles from './PatientsPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faPlus, 
-    faUserInjured, 
-    faUserPlus, 
-    faHeartbeat,
-    faIdCard,
-    faVenusMars,
-    faBirthdayCake,
-    faPhone,
-    faMapMarkerAlt,
-    faArchive,
-    faArrowLeft
-} from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faIdCard, faVenusMars, faBirthdayCake, faPhone, faMapMarkerAlt, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
 import { ModalComponent } from '../../../components';
-import { PatientApiResponse, PersonalPatientDisplayData, PersonalPatientFormData } from '../../../types';
+import { FormDataType, PatientApiResponse, PersonalPatientDisplayData, PersonalPatientFormData } from '../../../types';
 import { getPersonalPatients, updatePersonalPatient, deletePersonalPatient } from '../../../services';
 import { toast } from 'sonner';
 import { calculateAge2, openModalWithRefresh } from '../../../utils';
+import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
 
 
 
@@ -39,40 +28,29 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     } | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
 
-    const STATS_CARDS = [
-        { 
-            title: 'Total Patients', 
-            value: patients.length.toString(), 
-            footer: 'Registered in system', 
-            icon: faUserInjured, 
-            color: 'blue' 
-        },
-        { 
-            title: 'Active Patients', 
-            value: patients.filter(p => !p.isArchive).length.toString(), 
-            footer: 'Currently active', 
-            icon: faHeartbeat, 
-            color: 'green' 
-        },
-        { 
-            title: 'Archived Patients', 
-            value: patients.filter(p => p.isArchive).length.toString(), 
-            footer: 'Archived patients', 
-            icon: faArchive, 
-            color: 'orange' 
-        },
-        { 
-            title: 'This Month', 
-            value: patients.filter(p => {
+    //calculate summary stats using useMemo for performance
+    const summaryStats = useMemo(() => {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+
+        return {
+            total: patients.length,
+            active: patients.filter(p => !p.isArchive).length,
+            archived: patients.filter(p => p.isArchive).length,
+            thisMonth: patients.filter(p => {
                 const patientDate = new Date(p.birthdate);
-                const currentDate = new Date();
-                return patientDate.getMonth() === currentDate.getMonth();
-            }).length.toString(), 
-            footer: 'Registered this month', 
-            icon: faUserPlus, 
-            color: 'purple' 
-        }
-    ];
+                return patientDate.getMonth() === currentMonth && 
+                       patientDate.getFullYear() === currentYear;
+            }).length
+        };
+    }, [patients]);
+
+    //get summary cards using the reusable function
+    const summaryCards = useMemo(() => 
+        getPatientSummaryCards(summaryStats), 
+        [summaryStats]
+    );
 
     //generate initials from full name
     const generateInitials = (firstName: string): string => {
@@ -171,16 +149,19 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     };
 
     
-    const handleSubmitUpdate = async (data: PersonalPatientFormData) => {
-        if (!editData || !editData.id) {
-            console.error('Edit data or patient ID is missing');
+    const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string' || !editData || !editData.id) {
+            console.error('Invalid data or missing patient ID');
             return;
         }
+
+        //assertion since we know it's PersonalPatientFormData in this context
+        const patientData = data as PersonalPatientFormData;
 
         try {
             setIsProcessing(true);
             
-            await updatePersonalPatient(editData.id, data);
+            await updatePersonalPatient(editData.id, patientData);
             
             //refresh the patients list after successful update/add
             await fetchPatients();
@@ -216,10 +197,15 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     };
 
     //handle delete confirmation
-    const handleConfirmDelete = async (patientId: string) => {
+    const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data !== 'string') {
+            console.error('Invalid patient ID');
+            return;
+        }
+
         try {
             setIsProcessing(true);
-            await deletePersonalPatient(patientId);
+            await deletePersonalPatient(data);
             await fetchPatients();
             setIsDeleteModalOpen(false);
             setDeletePersonalPatientData(null);
@@ -235,18 +221,6 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const handleTabChange = (tab: string) => {
         setActiveTab(tab);
     };
-
-    //listen for modal close events to refresh data
-    useEffect(() => {
-        const handleModalClosed = () => {
-            fetchPatients();
-        };
-
-        window.addEventListener('modal-closed', handleModalClosed);
-        return () => {
-            window.removeEventListener('modal-closed', handleModalClosed);
-        };
-    }, []);
 
   return (
     <div className={styles.content}>
@@ -267,11 +241,11 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* patients cards */}
         <div className={styles.patientCards}>
             {
-                STATS_CARDS.map((card, index) => (
+                summaryCards.map((card, index) => (
                     <div className={styles.card} key={index}>
                         <div className={styles.cardHeader}>
                             <div className={styles.cardTitle}>{card.title}</div>
-                            <div className={`${styles.cardIcon} ${styles[card.color]}`}>
+                            <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
                                 <FontAwesomeIcon icon={card.icon} />
                             </div>
                         </div>
@@ -321,7 +295,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                     <div className={styles.patientInfo}>
                                                         <div className={styles.patientAvatar}>{patient.initials}</div>
                                                         <div style={{ textAlign: 'start' }}>
-                                                            <div className={styles.patientName}>{patient.firstName || 'Unknown'}</div>
+                                                            <div className={styles.patientName}>{patient.firstName} {patient.lastName}</div>
                                                             <div className={styles.patientId}>#{patient.id}</div>
                                                         </div>
                                                     </div>
@@ -525,7 +499,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                 <ModalComponent
                     isOpen={isModalOpen}
                     onClose={handleModalClose}
-                    modalType="patient"
+                    modalType='patient'
                     onSubmit={handleSubmitUpdate}
                     editData={editData}
                     isProcessing={isProcessing}
@@ -539,7 +513,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                 <ModalComponent
                     isOpen={isDeleteModalOpen}
                     onClose={handleDeleteModalClose}
-                    modalType="delete"
+                    modalType='delete'
                     onSubmit={handleConfirmDelete}
                     deleteData={deletePersonalPatientData}
                     isProcessing={isProcessing}

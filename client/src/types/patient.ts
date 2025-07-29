@@ -1,7 +1,9 @@
 export interface Patient {
     id: string;
     patientNumber?: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    middleName: string;
     email?: string;
     contactNumber?: string;
     birthdate: string;
@@ -12,7 +14,9 @@ export interface Patient {
 export interface PatientFormData {
     id?: string;
     patientNumber?: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    middleName: string;
     email?: string;
     contactNumber?: string;
     password?: string;

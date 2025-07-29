@@ -15,7 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
 import { getMedicalRecords, getMedicalRecordById, deleteMedicalRecord, addMedicalRecord } from '../../../services';
-import { MedicalRecord, MedicalRecordFormData, PaginationInfo } from '../../../types';
+import { FormDataType, MedicalRecord, MedicalRecordFormData, PaginationInfo } from '../../../types';
 import { ModalComponent } from '../../../components';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
@@ -196,13 +196,21 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         setDeleteMedicalRecordData(null);
     };
 
-    const handleSubmitUpdate = async (formData: MedicalRecordFormData): Promise<void> => {
+    const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string') {
+            console.error('Invalid data or missing medical ID');
+            return;
+        }
+
+        //asertion simce we know it's MedicalRecordFormData in this context
+        const medicalData = data as MedicalRecordFormData;
+
         try {
             setLoading(true);
             
             if (selectedMedicalRecord?.id) {
                 // await updateMedicalRecord(selectedMedicalRecord.id, formData);
-                await addMedicalRecord(formData);
+                await addMedicalRecord(medicalData);
                 await fetchMedicalRecords(currentPage, searchTerm);
                 
                 toast.success('Updated medical record successfully!')
@@ -216,11 +224,16 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     };
 
-    const handleConfirmDelete = async (medicalRecordId: string): Promise<void> => {
+    const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data !== 'string') {
+            console.error('Invalid patient ID');
+            return;
+        }
+
         try {
             setIsProcessing(true);
             
-            await deleteMedicalRecord(medicalRecordId);
+            await deleteMedicalRecord(data);
             await fetchMedicalRecords(currentPage, searchTerm);
             
             toast.success('Medical record deleted successfully!');
@@ -526,7 +539,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                 <ModalComponent
                     isOpen={isModalOpen}
                     onClose={handleModalClose}
-                    modalType="medical"
+                    modalType='medical'
                     onSubmit={handleSubmitUpdate}
                     editData={selectedMedicalRecord}
                 />
@@ -539,7 +552,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                 <ModalComponent
                     isOpen={isDeleteModalOpen}
                     onClose={handleDeleteModalClose}
-                    modalType="delete"
+                    modalType='delete'
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteMedicalRecordData}
                     isProcessing={isProcessing}

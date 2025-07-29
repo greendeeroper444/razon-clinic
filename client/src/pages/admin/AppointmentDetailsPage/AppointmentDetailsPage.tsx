@@ -47,9 +47,7 @@ const AppointmentDetailsPage = () => {
 
         try {
             setLoading(true);
-            console.log("Fetching appointment details for ID:", appointmentId);
             const response = await getAppointmentDetails(appointmentId as string);
-            console.log("API Response:", response);
             
             if (response.data && response.data.success) {
                 setAppointment(response.data.data);

@@ -9542,3 +9542,5 @@ Use mongoose.model(name, schema)
     at param (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:600:14)
     at param (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:610:14)
     at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:664:3)
+2025-07-30 00:39:14 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-30 00:39:14 [INFO]: Server running on port 3000 

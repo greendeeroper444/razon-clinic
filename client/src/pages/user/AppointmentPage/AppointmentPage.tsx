@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { OpenModalProps } from '../../../hooks/hook'
 import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass } from '../../../utils'
-import { AppointmentFormData, AppointmentResponse } from '../../../types'
+import { AppointmentFormData, AppointmentResponse, FormDataType, Patient } from '../../../types'
 import { getMyAppointment, updateAppointment, deleteAppointment } from '../../../services'
 import { ModalComponent } from '../../../components'
 import { toast } from 'sonner'
@@ -19,7 +19,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
     const [selectedAppointment, setSelectedAppointment] = useState<AppointmentFormData & { id?: string } | null>(null);
     const [deleteAppointmentData, setDeleteAppointmentData] = useState<{id: string, itemName: string, itemType: string} | null>(null);
-    const [patients, setPatients] = useState<Array<{ id: string; firstName: string }>>([]);
+    const [patients, setPatients] = useState<Patient[]>([]);
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
     //create a memoized fetchAppointments function using useCallback
@@ -139,13 +139,21 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         setDeleteAppointmentData(null);
     };
 
-    const handleSubmitUpdate = async (formData: AppointmentFormData) => {
+    const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string') {
+            console.error('Invalid data or missing medical ID');
+            return;
+        }
+
+        //asertion simce we know it's MedicalRecordFormData in this context
+        const medicalData = data as AppointmentFormData;
+
         try {
             setLoading(true);
             
             if (selectedAppointment?.id) {
 
-                await updateAppointment(selectedAppointment.id, formData);
+                await updateAppointment(selectedAppointment.id, medicalData);
                 await fetchAppointments();
                 
                 toast.success('Updated appointment successfully!')
@@ -159,11 +167,16 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     };
 
-    const handleConfirmDelete = async (appointmentId: string) => {
+    const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data !== 'string') {
+            console.error('Invalid patient ID');
+            return;
+        }
+
         try {
             setIsProcessing(true);
             
-            await deleteAppointment(appointmentId);
+            await deleteAppointment(data);
             await fetchAppointments();
             
             toast.success('Appointment deleted successfully!');

@@ -36,89 +36,92 @@ const ArchivePage = () => {
         }
     }
 
-    return (
-        <div className={styles.content}>
-            <div className={styles.contentHeader}>
-                <div className={styles.titleSection}>
-                    <h1 className={styles.contentTitle}>
-                        <FontAwesomeIcon icon={faArchive} className={styles.headerIcon} />
-                        Patient Archive
-                    </h1>
-                    <p className={styles.pageSubtitle}>
-                        Manage and review patients who have been inactive for 2+ years
-                    </p>
+  return (
+    <div className={styles.content}>
+        <div className={styles.contentHeader}>
+            <div className={styles.titleSection}>
+                <h1 className={styles.contentTitle}>
+                    <FontAwesomeIcon icon={faArchive} className={styles.headerIcon} />
+                    Patient Archive
+                </h1>
+                <p className={styles.pageSubtitle}>
+                    Manage and review patients who have been inactive for 2+ years
+                </p>
+            </div>
+            
+            <div className={styles.actionSection}>
+                <div className={styles.searchWrapper}>
+                    <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+                    <input 
+                        type="text"
+                        title='Search'
+                        placeholder="Search archived patients..."
+                        className={styles.searchInput}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                 </div>
                 
-                <div className={styles.actionSection}>
-                    <div className={styles.searchWrapper}>
-                        <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
-                        <input 
-                            type="text"
-                            placeholder="Search archived patients..."
-                            className={styles.searchInput}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
-                    
-                    <button className={styles.filterButton}>
-                        <FontAwesomeIcon icon={faFilter} />
-                        <span>Filter</span>
-                    </button>
+                <button type='button' className={styles.filterButton}>
+                    <FontAwesomeIcon icon={faFilter} />
+                    <span>Filter</span>
+                </button>
+            </div>
+        </div>
+
+        <div className={styles.contentCards}>
+            <div className={styles.statsCard}>
+                <div className={styles.statItem}>
+                    <span className={styles.statNumber}>4</span>
+                    <span className={styles.statLabel}>This Month</span>
+                </div>
+                <div className={styles.statItem}>
+                    <span className={styles.statNumber}>23</span>
+                    <span className={styles.statLabel}>This Year</span>
+                </div>
+                <div className={styles.statItem}>
+                    <span className={styles.statNumber}>182</span>
+                    <span className={styles.statLabel}>Total Archived</span>
+                </div>
+            </div>
+        </div>
+
+        <div className={styles.tableContainer}>
+            <div className={styles.tableHeader}>
+                <div className={styles.bulkActions}>
+                    <input
+                        type="checkbox"
+                        title='Select All'
+                        checked={selectedPatients.length === filteredPatients.length && filteredPatients.length > 0}
+                        onChange={toggleSelectAll}
+                        className={styles.selectAllCheckbox}
+                    />
+                    <span className={styles.selectedCount}>
+                        {selectedPatients.length} selected
+                    </span>
+                </div>
+                <div className={styles.tableControls}>
+                    <span className={styles.recordCount}>
+                        {filteredPatients.length} records
+                    </span>
                 </div>
             </div>
 
-            <div className={styles.contentCards}>
-                <div className={styles.statsCard}>
-                    <div className={styles.statItem}>
-                        <span className={styles.statNumber}>4</span>
-                        <span className={styles.statLabel}>This Month</span>
-                    </div>
-                    <div className={styles.statItem}>
-                        <span className={styles.statNumber}>23</span>
-                        <span className={styles.statLabel}>This Year</span>
-                    </div>
-                    <div className={styles.statItem}>
-                        <span className={styles.statNumber}>182</span>
-                        <span className={styles.statLabel}>Total Archived</span>
-                    </div>
-                </div>
-            </div>
-
-            <div className={styles.tableContainer}>
-                <div className={styles.tableHeader}>
-                    <div className={styles.bulkActions}>
-                        <input
-                            type="checkbox"
-                            checked={selectedPatients.length === filteredPatients.length && filteredPatients.length > 0}
-                            onChange={toggleSelectAll}
-                            className={styles.selectAllCheckbox}
-                        />
-                        <span className={styles.selectedCount}>
-                            {selectedPatients.length} selected
-                        </span>
-                    </div>
-                    <div className={styles.tableControls}>
-                        <span className={styles.recordCount}>
-                            {filteredPatients.length} records
-                        </span>
-                    </div>
-                </div>
-
-                <div className={styles.tableWrapper}>
-                    <table className={styles.archiveTable}>
-                        <thead>
-                            <tr className={styles.tableHeaderRow}>
-                                <th></th>
-                                <th>Patient</th>
-                                <th>Last Visit</th>
-                                <th>Active Date</th>
-                                <th>Archive Date</th>
-                                <th>Reason</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredPatients.map(patient => (
+            <div className={styles.tableWrapper}>
+                <table className={styles.archiveTable}>
+                    <thead>
+                        <tr className={styles.tableHeaderRow}>
+                            <th></th>
+                            <th>Patient</th>
+                            <th>Last Visit</th>
+                            <th>Active Date</th>
+                            <th>Archive Date</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            filteredPatients.map(patient => (
                                 <tr 
                                     key={patient.id} 
                                     className={`${styles.tableRow} ${selectedPatients.includes(patient.id) ? styles.selectedRow : ''}`}
@@ -127,6 +130,7 @@ const ArchivePage = () => {
                                     <td className={styles.checkboxCell}>
                                         <input
                                             type="checkbox"
+                                            title='Select Patient'
                                             checked={selectedPatients.includes(patient.id)}
                                             onChange={() => togglePatientSelection(patient.id)}
                                             className={styles.rowCheckbox}
@@ -159,28 +163,30 @@ const ArchivePage = () => {
                                         </span>
                                     </td>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div className={styles.archiveActions}>
-                <button 
-                    className={`${styles.restoreButton} ${selectedPatients.length === 0 ? styles.disabled : ''}`}
-                    disabled={selectedPatients.length === 0}
-                >
-                    Restore Selected ({selectedPatients.length})
-                </button>
-                <div className={styles.pagination}>
-                    <button className={`${styles.pageButton} ${styles.active}`}>1</button>
-                    <button className={styles.pageButton}>2</button>
-                    <button className={styles.pageButton}>3</button>
-                    <button className={`${styles.pageButton} ${styles.nextPage}`}>Next</button>
-                </div>
+                            ))
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
-    )
+        
+        <div className={styles.archiveActions}>
+            <button 
+                type='button'
+                className={`${styles.restoreButton} ${selectedPatients.length === 0 ? styles.disabled : ''}`}
+                disabled={selectedPatients.length === 0}
+            >
+                Restore Selected ({selectedPatients.length})
+            </button>
+            <div className={styles.pagination}>
+                <button type='button' className={`${styles.pageButton} ${styles.active}`}>1</button>
+                <button type='button' className={styles.pageButton}>2</button>
+                <button type='button' className={styles.pageButton}>3</button>
+                <button type='button' className={`${styles.pageButton} ${styles.nextPage}`}>Next</button>
+            </div>
+        </div>
+    </div>
+  )
 }
 
 export default ArchivePage

@@ -7,7 +7,7 @@ export interface ModalComponentProps {
     isOpen: boolean;
     onClose: () => void;
     modalType: ModalType;
-    onSubmit: (data: FormDataType | string) => void;
+    onSubmit: (data: FormDataType | string) => void | Promise<void>;
     patients?: Array<Patient>;
     editData?: FormDataType | null;
     deleteData?: DeleteData | null;
