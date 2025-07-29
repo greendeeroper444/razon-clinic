@@ -7,6 +7,7 @@ class InventoryItemController {
             const { 
                 itemName, 
                 category, 
+                price,
                 quantityInStock, 
                 quantityUsed = 0, 
                 expiryDate 
@@ -15,6 +16,7 @@ class InventoryItemController {
             const inventoryItemData = {
                 itemName,
                 category,
+                price,
                 quantityInStock,
                 quantityUsed,
                 expiryDate
@@ -38,7 +40,7 @@ class InventoryItemController {
             const { 
                 page = 1, 
                 limit = 10, 
-                category, 
+                category,
                 itemName, 
                 sortBy = 'createdAt', 
                 sortOrder = 'desc' 

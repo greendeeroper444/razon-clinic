@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { getProfile } from '../pages/services/authService'
+import { getProfile } from '../services'
 import { User } from '../types'
 
 interface UseAuthReturn {

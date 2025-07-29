@@ -488,7 +488,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { SectionFeaturesComponent, FooterComponent } from '../../../components'
-import { registerUser } from '../../services/authService'
+import { registerUser } from '../../../services'
 import { SignupFormData, ValidationErrors } from '../../../types'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
 

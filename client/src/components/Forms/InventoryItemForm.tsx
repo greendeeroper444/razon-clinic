@@ -91,6 +91,22 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
                             <option value='Medical Supply'>Medical Supply</option>
                         </select>
                     </div>
+
+                    <div className={styles.formGroup}>
+                        <label htmlFor='price'>Price</label>
+                        <input
+                            type='number'
+                            id='price'
+                            name='price'
+                            value={formData.price || ''}
+                            onChange={onChange}
+                            className={styles.formControl}
+                            min='0'
+                            required
+                            readOnly={isAddQuantityMode}
+                            disabled={isAddQuantityMode}
+                        />
+                    </div>
                 </>
             )
         }

@@ -5,6 +5,7 @@ const notificationRoutes = require('./notification.routes');
 const inventoryItemRoutes = require('./inventoryItem.routes');
 const personalPatientRoutes = require('./personalPatient.routes');
 const medicalRecordRoutes = require('./medicalRecord.routes');
+const billingRoutes = require('./billing.routes');
 const { ApiError } = require('../../utils/errors');
 
 
@@ -16,6 +17,7 @@ const setupRoutes = (app) => {
     app.use('/api/inventoryItems', inventoryItemRoutes);
     app.use('/api/personalPatients', personalPatientRoutes);
     app.use('/api/medicalRecords', medicalRecordRoutes);
+     app.use('/api/billings', billingRoutes);
     
     app.use((req, res, next) => {
        next(new ApiError(`Resource not found: ${req.originalUrl}`, 404));

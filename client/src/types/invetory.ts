@@ -7,18 +7,11 @@ export interface InventoryItemFormProps {
     isAddQuantityMode?: boolean;
 }
 
-// export interface InventoryItemFormData {
-//     medicine?: string;
-//     category?: string;
-//     minLevel?: number;
-//     expirationDate?: string;
-//     location?: string;
-// }
-
 export interface InventoryItem {
     id: string;
     itemName: string;
     category: 'Vaccine' | 'Medical Supply';
+    price: number;
     quantityInStock: number;
     quantityUsed: number;
     expiryDate: string;
@@ -28,9 +21,10 @@ export interface InventoryItem {
 
 
 export interface InventoryItemFormData {
-    _id: string;
+    id: string;
     itemName?: string;
     category?: 'Vaccine' | 'Medical Supply' | string;
+    price: number;
     quantityInStock?: number;
     quantityUsed?: number;
     expiryDate?: string;

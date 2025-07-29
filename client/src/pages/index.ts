@@ -10,6 +10,7 @@ export { default as ContactPage } from './public/ContactPage/ContactPage';
 export { default as TermsAndConditionPage } from './public/TermsAndConditionPage/TermsAndConditionPage';
 export { default as NotFoundPage } from './public/NotFoundPage/NotFoundPage';
 
+
 //admin pages
 export { default as DashboardPage } from './admin/DashboardPage/DashboardPage';
 export { default as AppointmentPage } from './admin/AppointmentPage/AppointmentPage';
@@ -26,4 +27,5 @@ export { default as GrowthMilestonePage } from './admin/GrowthMilestonePage/Grow
 //user pages
 export { default as UserAppointmentPage } from './user/AppointmentPage/AppointmentPage';
 export { default as UserAppointmentDetailsPage } from './user/AppointmentDetailsPage/AppointmentDetailsPage';
-
+export { default as UserMedicalRecordsPage } from './user/MedicalRecordsPage/MedicalRecordsPage';
+export { default as UserMedicalRecordDetailsPage } from './user/MedicalRecordDetailsPage/MedicalRecordDetailsPage';

@@ -2,9 +2,24 @@ const mongoose = require('mongoose');
 
 const PersonalPatientSchema = new mongoose.Schema(
     {
-        fullName: {
+        patientNumber: {
+            type: String,
+            unique: true
+        },
+        firstName: {
             type: String,
             required: true,
+            minlength: 3,
+            maxlength: 50
+        },
+        lastName: {
+            type: String,
+            required: true,
+            minlength: 3,
+            maxlength: 50
+        },
+        middleName: {
+            type: String,
             minlength: 3,
             maxlength: 50
         },
@@ -94,6 +109,37 @@ const PersonalPatientSchema = new mongoose.Schema(
         }
     }
 );
+
+
+//static method to get the next patient number
+PersonalPatientSchema.statics.getNextPatientNumber = async function() {
+    //find the patient with the highest number
+    const highestPatient = await this.findOne().sort('-patientNumber');
+    
+    //if no patients exist, start with 0001
+    if (!highestPatient || !highestPatient.patientNumber) {
+        return '0001';
+    }
+    
+    //get the numeric value and increment
+    const currentNumber = parseInt(highestPatient.patientNumber, 10);
+    const nextNumber = currentNumber + 1;
+    
+    //format with leading zeros
+    return String(nextNumber).padStart(4, '0');
+};
+
+//pre-validate middleware to ensure patientNumber is set before validation
+PersonalPatientSchema.pre('validate', async function(next) {
+    try {
+        if (!this.patientNumber) {
+            this.patientNumber = await this.constructor.getNextPatientNumber();
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 
 const PersonalPatient = mongoose.model('PersonalPatient', PersonalPatientSchema);
 

@@ -12,3 +12,4 @@ export * from './layout';
 export * from './notification';
 export * from './personalPatient';
 export * from './routes';
+export * from './billing';

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react'
 import styles from '../ModalComponent/ModalComponent.module.css'
-import { getAppointments } from '../../pages/services/appoinmentService'
+import { getAppointments } from '../../services'
 import { convertTo12HourFormat, generateTimeSlots } from '../../utils'
 import { AppointmentFormProps } from '../../types'
 

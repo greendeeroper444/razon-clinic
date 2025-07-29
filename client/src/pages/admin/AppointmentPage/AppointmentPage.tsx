@@ -3,9 +3,9 @@ import styles from './AppointmentPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { OpenModalProps } from '../../../hooks/hook'
-import { getFirstLetterOfFirstAndLastName, formatDate, formatTime } from '../../../utils'
+import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse } from '../../../types'
-import { getAppointments, updateAppointment, deleteAppointment } from '../../services/appoinmentService'
+import { getAppointments, updateAppointment, deleteAppointment } from '../../../services'
 import { ModalComponent } from '../../../components'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
@@ -62,27 +62,13 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         fetchAppointments();
     }, [fetchAppointments]);
 
-    //function to create a custom event for appointment refresh
-    const createRefreshEvent = () => {
-        //create a custom event to trigger refresh
-        const refreshEvent = new CustomEvent('appointment-refresh');
-        window.dispatchEvent(refreshEvent);
+    const handleOpenModal = () => {
+        openModalWithRefresh({
+            modalType: 'appointment',
+            openModal,
+            onRefresh: fetchAppointments,
+        });
     };
-
-    //listen for the custom event
-    useEffect(() => {
-        const handleRefresh = () => {
-            fetchAppointments();
-        };
-        
-        //add event listener
-        window.addEventListener('appointment-refresh', handleRefresh);
-        
-        //cleanup function
-        return () => {
-            window.removeEventListener('appointment-refresh', handleRefresh);
-        };
-    }, [fetchAppointments]);
 
     const handleViewClick = (appointment: AppointmentResponse) => {
         navigate(`/admin/appointments/details/${appointment.id}`);
@@ -101,7 +87,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             status: appointment.status,
             
             //patient information fields
-            birthdate: appointment.birthdate ? appointment.birthdate.split('T')[0] : undefined,
+            birthdate: appointment.birthdate,
             sex: appointment.sex,
             height: appointment.height,
             weight: appointment.weight,
@@ -195,22 +181,6 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     };
    
-    const getStatusClass = (status: string) => {
-        switch (status) {
-            case 'Pending':
-                return styles.statusPending;
-            case 'Scheduled':
-                return styles.statusScheduled;
-            case 'Completed':
-                return styles.statusCompleted;
-            case 'Cancelled':
-                return styles.statusCancelled;
-            case 'Rebooked':
-                return styles.statusRebooked;
-            default:
-                return '';
-        }
-    };
 
     if (loading && appointments.length === 0) {
         return (
@@ -228,30 +198,6 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         );
     }
 
-    //function to open modal with auto-refresh capability
-    const handleOpenModal = () => {
-        const customOpenModal = (type: 'appointment') => {
-            if (openModal) {
-                openModal(type);
-                
-                //set up a one-time event listener for modal close
-                const checkForRefresh = () => {
-                    //this will trigger after the modal is closed
-                    setTimeout(() => {
-                        //refresh appointments data
-                        createRefreshEvent();
-                    }, 100);
-                    
-                    //remove this listener to prevent memory leaks
-                    window.removeEventListener('modal-closed', checkForRefresh);
-                };
-                
-                window.addEventListener('modal-closed', checkForRefresh);
-            }
-        };
-        
-        customOpenModal('appointment');
-    };
 
   return (
     <div className={styles.content}>
@@ -338,7 +284,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                             </div>
                                         </td>
                                         <td>
-                                            <span className={`${styles.statusBadge} ${getStatusClass(appointment.status)}`}>
+                                            <span className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
                                                 {appointment.status}
                                             </span>
                                         </td>

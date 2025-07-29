@@ -2,15 +2,23 @@ const mongoose = require('mongoose');
 
 const billingSchema = new mongoose.Schema(
     {
-        appointmentId: {
+        medicalRecordId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Appointment',
+            ref: 'MedicalRecord',
             required: true
         },
-        patientId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
+        patientName: {
+            type: String,
+        },
+        itemName: {
+            type: [String],
+        },
+        itemQuantity: {
+            type: [Number]
+        },
+        itemPrices: {
+            type: [Number],
+            default: []
         },
         amount: {
             type: Number,
@@ -22,7 +30,7 @@ const billingSchema = new mongoose.Schema(
             enum: ['Paid', 'Unpaid', 'Pending'],
             default: 'Unpaid'
         },
-        dateIssued: {
+        medicalRecordDate: {
             type: Date,
             default: Date.now
         }
@@ -39,6 +47,12 @@ const billingSchema = new mongoose.Schema(
         }
     }
 );
+
+//index for better query performance
+billingSchema.index({ medicalRecordId: 1 });
+billingSchema.index({ paymentStatus: 1 });
+billingSchema.index({ patientName: 1 });
+billingSchema.index({ createdAt: -1 });
 
 const Billing = mongoose.model('Billing', billingSchema);
 

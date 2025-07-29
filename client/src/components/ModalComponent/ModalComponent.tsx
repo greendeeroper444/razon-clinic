@@ -2,10 +2,10 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import styles from './ModalComponent.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import { getPatients } from '../../pages/services/patientService'
-import { AppointmentForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../Forms'
-import { formatDateForDisplay, formatDateForInput } from '../../utils'
-import { AppointmentFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalComponentProps, Patient, PersonalPatientFormData } from '../../types'
+import { getPatients } from '../../services'
+import { AppointmentForm, BillingsForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../Forms'
+import { formatDateForDisplay, formatDateForInput, transformPatientForAppointment } from '../../utils'
+import { AppointmentFormData, AppointmentStatus, BillingFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalComponentProps, Patient, PersonalPatientFormData } from '../../types'
 
 
 const ModalComponent: React.FC<ModalComponentProps> = ({
@@ -31,14 +31,14 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         if (editData) {
             //format birthdate for input field if it exists
             const processedEditData = { ...editData };
-            if (processedEditData.birthdate) {
+            if ((modalType === 'appointment' || modalType === 'patient') && 'birthdate' in processedEditData && processedEditData.birthdate) {
                 processedEditData.birthdate = formatDateForInput(processedEditData.birthdate as string);
             }
             
             setFormData(processedEditData);
 
             //set initial status for status modal
-            if (modalType === 'status' && editData.status) {
+            if (modalType === 'status' && 'status' in editData && editData.status) {
                 setSelectedStatus(editData.status as string);
             }
         } else {
@@ -83,7 +83,9 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                 } as AppointmentFormData);
             } else if (modalType === 'patient') {
                 setFormData({
-                    fullName: '',
+                    firstName: '',
+                    lastName: '',
+                    middleName: '',
                     email: '',
                     contactNumber: '',
                     birthdate: '',
@@ -101,7 +103,20 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                         occupation: ''
                     }
                 } as PersonalPatientFormData);
-            } if (modalType === 'medical') {
+            } else if (modalType === 'item') {
+                setFormData({
+                    itemName: '',
+                    category: '',
+                    price: 0,
+                    quantityInStock: 0,
+                    quantityUsed: 0,
+                    expiryDate: '',
+                    medicine: '',
+                    minLevel: 0,
+                    expirationDate: '',
+                    location: '',
+                } as InventoryItemFormData);
+            } else if (modalType === 'medical') {
                 setFormData({
                     //personal details
                     fullName: '',
@@ -139,6 +154,17 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                     followUpDate: '',
                     vaccinationHistory: ''
                 } as MedicalRecordFormData);
+            } else if (modalType === 'billing') {
+                setFormData({
+                    medicalRecordId: '',
+                    patientName: '',
+                    itemName: [],
+                    itemQuantity: [],
+                    itemPrices: [],
+                    amount: 0,
+                    paymentStatus: 'Unpaid',
+                    medicalRecordDate: new Date().toISOString()
+                } as BillingFormData);
             } else if (modalType === 'status') {
                 setSelectedStatus('Pending');
             } else {
@@ -195,13 +221,18 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         }
     };
 
+
+    const handleStatusChange = (status: string) => {
+        setSelectedStatus(status as AppointmentStatus);
+    };
+    
     //we can clear field after submit
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (modalType === 'delete' && deleteData) {
             onSubmit(deleteData.id);
         } else if (modalType === 'status') {
-            onSubmit({ ...editData, status: selectedStatus });
+            onSubmit({ ...editData, status: selectedStatus } as any);
         } else {
             onSubmit(formData);
             
@@ -216,9 +247,6 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         handleClose();
     };
 
-    const handleStatusChange = (status: string) => {
-        setSelectedStatus(status);
-    };
     
     const handleConfirmDelete = () => {
         if (deleteData) {
@@ -250,6 +278,9 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         case 'status':
             title = 'Update Status';
             break;
+        case 'billing':
+            title = editData ? 'Edit Billing' : 'New Billing';
+            break;
         default:
             title = 'Form';
     }
@@ -263,7 +294,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                         formData={formData as AppointmentFormData}
                         onChange={handleChange}
                         isLoading={isLoading}
-                        patients={loadedPatients}
+                        patients={loadedPatients.map(transformPatientForAppointment)}
                     />
                 );
             case 'patient':
@@ -298,7 +329,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                         formData={formData as MedicalRecordFormData}
                         onChange={handleChange}
                         isLoading={isLoading}
-                        patients={loadedPatients}
+                        // patients={loadedPatients}
                     />
                 );
             case 'status':
@@ -320,6 +351,14 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                 ) : (
                     <p>Missing delete information</p>
                 );
+            case 'billing':
+                return (
+                    <BillingsForm
+                        formData={formData as BillingFormData}
+                        onChange={handleChange}
+                        isLoading={isLoading}
+                    />
+                );
             default:
                 return <p>Unknown form type</p>;
         }
@@ -334,6 +373,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                         <h2 className={styles.modalTitle}>{title}</h2>
                         <button
                             type='button'
+                            title='Close'
                             className={styles.closeButton}
                             onClick={handleClose}
                             disabled={isProcessing}
@@ -357,6 +397,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                 <h2 className={styles.modalTitle}>{title}</h2>
                 <button
                     type='button'
+                    title='Close'
                     className={styles.closeButton}
                     onClick={handleClose}
                 >

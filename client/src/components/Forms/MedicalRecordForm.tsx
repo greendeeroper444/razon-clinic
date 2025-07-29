@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styles from '../ModalComponent/ModalComponent.module.css'
-import { searchAppointmentsByName, getAppointmentForAutofill } from '../../pages/services/medicalRecordService';
+import { searchAppointmentsByName, getAppointmentForAutofill } from '../../services';
 import { Appointment, MedicalRecordFormProps } from '../../types';
 import { convertTo12HourFormat, formatDate } from '../../utils';
 
 
 const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange, isLoading, onAutofill}) => {
-    const [searchResults, setSearchResults] = useState([]);
-    const [showSearchDropdown, setShowSearchDropdown] = useState(false);
-    const [searchLoading, setSearchLoading] = useState(false);
+    const [searchResults, setSearchResults] = useState<any>([]);
+    const [showSearchDropdown, setShowSearchDropdown] = useState<boolean>(false);
+    const [searchLoading, setSearchLoading] = useState<boolean>(false);
     const searchTimeoutRef = useRef<number | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 

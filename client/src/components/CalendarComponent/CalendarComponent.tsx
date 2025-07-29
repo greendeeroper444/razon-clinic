@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import styles from './CalendarComponent.module.css'
-import { getAppointments } from '../../pages/services/appoinmentService'
+import { getAppointments } from '../../services'
 import { Appointment, AppointmentCounts, AppointmentFilters } from '../../types'
 
 

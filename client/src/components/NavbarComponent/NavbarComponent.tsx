@@ -4,14 +4,14 @@ import NotificationComponent from '../NotificationComponent/NotificationComponen
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faBell, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { getFirstAndLastName, getFirstLetterOfFirstAndLastName } from '../../utils'
-import { getNotifications } from '../../pages/services/notificationService'
+import { getNotifications } from '../../services'
 import { useAuth } from '../../hooks/usesAuth'
 import { NavbarProps } from '../../types'
 
 const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
-    const [showNotifications, setShowNotifications] = useState(false);
-    const [showMobileSearch, setShowMobileSearch] = useState(false);
-    const [unreadCount, setUnreadCount] = useState(0);
+    const [showNotifications, setShowNotifications] = useState<boolean>(false);
+    const [showMobileSearch, setShowMobileSearch] = useState<boolean>(false);
+    const [unreadCount, setUnreadCount] = useState<number>(0);
     const searchInputRef = useRef<HTMLInputElement>(null);
     const { isAuthenticated, currentUser } = useAuth();
 
@@ -30,12 +30,15 @@ const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar
 
     //auto-refetch unread count every 10 seconds
     useEffect(() => {
-        if (isAuthenticated && currentUser?.role !== 'Doctor') {
-            const interval = setInterval(() => {
-                fetchUnreadCount();
-            }, 1000);
+        // if (isAuthenticated && currentUser?.role !== 'Doctor') {
+        //     const interval = setInterval(() => {
+        //         fetchUnreadCount();
+        //     }, 1000);
 
-            return () => clearInterval(interval);
+        //     return () => clearInterval(interval);
+        // }
+        if (isAuthenticated && currentUser?.role !== 'Doctor') {
+            fetchUnreadCount();
         }
     }, [isAuthenticated, currentUser?.role]);
 
@@ -149,6 +152,7 @@ const NavbarComponent: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar
                         <NotificationComponent 
                             isVisible={showNotifications} 
                             onUnreadCountChange={handleUnreadCountChange}
+                            onClose={() => setShowNotifications(false)}
                         />
                     </div>
                 )

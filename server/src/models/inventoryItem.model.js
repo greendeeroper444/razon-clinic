@@ -12,6 +12,11 @@ const inventoryItemSchema = new mongoose.Schema(
             required: true,
             enum: ['Vaccine', 'Medical Supply']
         },
+        price: {
+            type: Number,
+            required: true,
+            min: 0
+        },
         quantityInStock: {
             type: Number,
             required: true,

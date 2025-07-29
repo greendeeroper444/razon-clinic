@@ -21,16 +21,15 @@ import {
   BillingsPaymentPage,
   TermsAndConditionPage,
   CalendarDateDetailsPage,
-  GrowthMilestonePage
+  GrowthMilestonePage,
+  UserMedicalRecordsPage,
+  UserMedicalRecordDetailsPage
 } from './pages'
 import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
-import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, RouteType, PersonalPatientFormData, FormDataType, ModalType } from './types'
-import { addMedicalRecord } from './pages/services/medicalRecordService'
-import { addAppointment } from './pages/services/appoinmentService'
-import { addInventoryItem } from './pages/services/inventoryItemService'
-import { addPersonalPatient } from './pages/services/personalPatient'
+import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, RouteType, PersonalPatientFormData, FormDataType, ModalType, BillingFormData } from './types'
 import { Layout, ModalComponent, PageTitle } from './components'
+import { addAppointment, addBilling, addInventoryItem, addMedicalRecord, addPersonalPatient } from './services'
 
 
 
@@ -60,6 +59,8 @@ const routes: RouteType[] = [
   //user routees
   { path: '/user/appointments', component: UserAppointmentPage, layout: 'user' },
       { path: '/user/appointments/details/:appointmentId', component: UserAppointmentDetailsPage, layout: 'user' },
+      { path: '/user/medical-records', component: UserMedicalRecordsPage, layout: 'user' },
+      { path: '/user/medical-records/details/:medicalId', component: UserMedicalRecordDetailsPage, layout: 'user' },
   
 ]
 
@@ -112,7 +113,7 @@ function App() {
           await addAppointment(formData as AppointmentFormData);
           
           toast.success('Appointment added successfully');
-          window.dispatchEvent(new CustomEvent('appointment-refresh'));
+          // window.dispatchEvent(new CustomEvent('appointment-refresh'));
         } catch (error) {
           console.error('Error adding appointment:', error);
         }
@@ -121,22 +122,32 @@ function App() {
         await addPersonalPatient(formData as PersonalPatientFormData);
           
         toast.success('Personal patient added successfully');
-        window.dispatchEvent(new CustomEvent('patient-refresh'));
+        // window.dispatchEvent(new CustomEvent('patient-refresh'));
         break;
       case 'item':
           await addInventoryItem(formData as InventoryItemFormData);
           
           toast.success('Inventory item added successfully');
-          window.dispatchEvent(new CustomEvent('inventory-refresh'));
+          // window.dispatchEvent(new CustomEvent('inventory-refresh'));
         break;
       case 'medical':
         try {
           await addMedicalRecord(formData as MedicalRecordFormData);
           
           toast.success('Medical record added successfully');
-          window.dispatchEvent(new CustomEvent('medical-refresh'));
+          // window.dispatchEvent(new CustomEvent('medical-refresh'));
         } catch (error) {
           console.error('Error adding medical:', error);
+        }
+        break;
+      case 'billing':
+        try {
+          await addBilling(formData as BillingFormData);
+          
+          toast.success('Billings added successfully');
+          // window.dispatchEvent(new CustomEvent('billing-refresh'));
+        } catch (error) {
+          console.error('Error adding billing:', error);
         }
         break;
       default:

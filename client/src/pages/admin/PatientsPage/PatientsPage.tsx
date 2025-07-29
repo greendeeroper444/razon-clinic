@@ -16,24 +16,21 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
 import { ModalComponent } from '../../../components';
-import { PersonalPatientFormData } from '../../../types';
-import { 
-    getPersonalPatients, 
-    updatePersonalPatient, 
-    deletePersonalPatient 
-} from '../../services/personalPatient';
+import { PatientApiResponse, PersonalPatientDisplayData, PersonalPatientFormData } from '../../../types';
+import { getPersonalPatients, updatePersonalPatient, deletePersonalPatient } from '../../../services';
 import { toast } from 'sonner';
+import { calculateAge2, openModalWithRefresh } from '../../../utils';
 
 
 
 const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [activeTab, setActiveTab] = useState('overview');
-    const [showPatientDetail, setShowPatientDetail] = useState(false);
-    const [patients, setPatients] = useState<PersonalPatientFormData[]>([]);
-    const [selectedPatient, setSelectedPatient] = useState<PersonalPatientFormData | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [showPatientDetail, setShowPatientDetail] = useState<boolean>(false);
+    const [patients, setPatients] = useState<PersonalPatientDisplayData[]>([]);
+    const [selectedPatient, setSelectedPatient] = useState<PersonalPatientDisplayData | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
     const [editData, setEditData] = useState<PersonalPatientFormData | null>(null);
     const [deletePersonalPatientData, setDeletePersonalPatientData] = useState<{
         id: string;
@@ -77,55 +74,14 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     ];
 
-    //calculate age from birthdate
-    // const calculateAge = (birthdate: string): number => {
-    //     const birth = new Date(birthdate);
-    //     const today = new Date();
-    //     let age = today.getFullYear() - birth.getFullYear();
-    //     const monthDiff = today.getMonth() - birth.getMonth();
-    //     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    //         age--;
-    //     }
-    //     return age;
-    // };
-     const calculateAge = (dateOfBirth: string): string => {
-        if (!dateOfBirth) return '0 months old';
-        const today = new Date();
-        const birthDate = new Date(dateOfBirth);
-        
-        let years = today.getFullYear() - birthDate.getFullYear();
-        let months = today.getMonth() - birthDate.getMonth();
-        
-        //adjust if birthday hasn't occurred this year
-        if (months < 0 || (months === 0 && today.getDate() < birthDate.getDate())) {
-            years--;
-            months += 12;
-        }
-        
-        //adjust if the day hasn't occurred this month
-        if (today.getDate() < birthDate.getDate()) {
-            months--;
-        }
-        
-        //return appropriate format based on age
-        if (years === 0) {
-            if (months === 0) {
-                return 'Less than 1 month old';
-            } else if (months === 1) {
-                return '1 month old';
-            } else {
-                return `${months} months old`;
-            }
-        } else if (years === 1) {
-            return '1 year old';
-        } else {
-            return `${years} years old`;
-        }
-    };
-
     //generate initials from full name
-    const generateInitials = (fullName: string): string => {
-        return fullName
+    const generateInitials = (firstName: string): string => {
+        if (!firstName || typeof firstName !== 'string') {
+            return 'NA';
+        }
+        
+        return firstName
+            .trim() //remove leading/trailing whitespace
             .split(' ')
             .map(name => name.charAt(0).toUpperCase())
             .join('')
@@ -133,11 +89,11 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     };
 
     //transform API data to display format
-    const transformPatientData = (apiData: any[]): PersonalPatientFormData[] => {
+    const transformPatientData = (apiData: PatientApiResponse[]): PersonalPatientDisplayData[] => {
         return apiData.map(patient => ({
             ...patient,
-            age: calculateAge(patient.birthdate),
-            initials: generateInitials(patient.fullName)
+            age: calculateAge2(patient.birthdate),
+            initials: generateInitials(patient.firstName)
         }));
     };
 
@@ -160,8 +116,16 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
         fetchPatients();
     }, []);
 
+    const handleOpenModal = () => {
+        openModalWithRefresh({
+            modalType: 'patient',
+            openModal,
+            onRefresh: fetchPatients
+        });
+    };
+
     //handle view patient details
-    const handleViewPatient = (patient: PersonalPatientFormData) => {
+    const handleViewPatient = (patient: PersonalPatientDisplayData) => {
         setSelectedPatient(patient);
         setShowPatientDetail(true);
     };
@@ -180,8 +144,10 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
     const handleEditPatient = (patient: PersonalPatientFormData) => {
         const editFormData: PersonalPatientFormData & { patientId?: string } = {
-            patientId: patient.id,
-            fullName: patient.fullName,
+            id: patient.id,
+            firstName: patient.firstName,
+            lastName: patient.lastName,
+            middleName: patient.middleName,
             email: patient.email,
             contactNumber: patient.contactNumber,
             birthdate: patient.birthdate,
@@ -206,12 +172,15 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
     
     const handleSubmitUpdate = async (data: PersonalPatientFormData) => {
-        if (!editData) return;
+        if (!editData || !editData.id) {
+            console.error('Edit data or patient ID is missing');
+            return;
+        }
 
         try {
             setIsProcessing(true);
             
-            await updatePersonalPatient(editData.patientId, data);
+            await updatePersonalPatient(editData.id, data);
             
             //refresh the patients list after successful update/add
             await fetchPatients();
@@ -233,9 +202,14 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
     //handle archive/delete patient
     const handleDeletePatient = (patient: PersonalPatientFormData) => {
+        if (!patient.id) {
+            console.error('Patient ID is missing');
+            return;
+        }
+        
         setDeletePersonalPatientData({
             id: patient.id,
-            itemName: patient.fullName,
+            itemName: patient.firstName || 'Unknown Patient',
             itemType: 'Patient'
         });
         setIsDeleteModalOpen(true);
@@ -256,11 +230,6 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
         } finally {
             setIsProcessing(false);
         }
-    };
-
-    const togglePatientDetail = () => {
-        setShowPatientDetail(!showPatientDetail);
-        setSelectedPatient(null);
     };
 
     const handleTabChange = (tab: string) => {
@@ -288,7 +257,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                     type='submit'
                     className={styles.btnPrimary} 
                     id="newPatientBtn" 
-                    onClick={() => openModal && openModal('patient')}
+                    onClick={handleOpenModal}
                 >
                     <FontAwesomeIcon icon={faPlus} /> New Patient
                 </button>
@@ -351,17 +320,17 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                 <td>
                                                     <div className={styles.patientInfo}>
                                                         <div className={styles.patientAvatar}>{patient.initials}</div>
-                                                        <div>
-                                                            <div className={styles.patientName}>{patient.fullName}</div>
+                                                        <div style={{ textAlign: 'start' }}>
+                                                            <div className={styles.patientName}>{patient.firstName || 'Unknown'}</div>
                                                             <div className={styles.patientId}>#{patient.id}</div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span className={`${styles.patientGender} ${styles[patient.sex.toLowerCase()]}`}>{patient.sex}</span>
+                                                    <span className={`${styles.patientGender} ${styles[patient.sex?.toLowerCase() || 'unknown']}`}>{patient.sex || 'N/A'}</span>
                                                 </td>
-                                                <td>{patient.age}</td>
-                                                <td>{patient.contactNumber}</td>
+                                                <td>{patient.age || 'N/A'}</td>
+                                                <td>{patient.contactNumber || 'N/A'}</td>
                                                 <td>
                                                     <span className={`${styles.patientStatus} ${patient.isArchive ? styles.archived : styles.active}`}>
                                                         {patient.isArchive ? 'Archived' : 'Active'}
@@ -369,18 +338,21 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                 </td>
                                                 <td>
                                                     <button 
+                                                        type='button'
                                                         className={`${styles.actionBtn} ${styles.primary}`} 
                                                         onClick={() => handleViewPatient(patient)}
                                                     >
                                                         {/* <FontAwesomeIcon icon={faEye} /> View */} View
                                                     </button>
                                                     <button 
+                                                        type='button'
                                                         className={`${styles.actionBtn} ${styles.update}`}
                                                         onClick={() => handleEditPatient(patient)}
                                                     >
                                                         {/* <FontAwesomeIcon icon={faEdit} /> Edit */} Update
                                                     </button>
                                                     <button 
+                                                        type='button'
                                                         className={`${styles.actionBtn} ${styles.cancel}`} 
                                                         onClick={() => handleDeletePatient(patient)}
                                                     >
@@ -403,13 +375,13 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
         {
             showPatientDetail && selectedPatient && (
                 <div className={styles.patientDetailContainer}>
-                    <button type='button' className={styles.btnBack} onClick={() => window.history.back()}>
+                    <button type='button' title='Back' className={styles.btnBack} onClick={() => setShowPatientDetail(false)}>
                         <FontAwesomeIcon icon={faArrowLeft} />
                     </button>
                     <div className={styles.patientHeader}>
                         <div className={styles.patientAvatarLg}>{selectedPatient.initials}</div>
                         <div className={styles.patientHeaderInfo}>
-                            <div className={styles.patientNameLg}>{selectedPatient.fullName}</div>
+                            <div className={styles.patientNameLg}>{selectedPatient.firstName || 'Unknown Patient'}</div>
                             <div className={styles.patientMeta}>
                                 <div className={styles.patientMetaItem}>
                                     <FontAwesomeIcon icon={faIdCard} />
@@ -417,20 +389,20 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 </div>
                                 <div className={styles.patientMetaItem}>
                                     <FontAwesomeIcon icon={faVenusMars} />
-                                    <span>{selectedPatient.sex}</span>
+                                    <span>{selectedPatient.sex || 'N/A'}</span>
                                 </div>
                                 <div className={styles.patientMetaItem}>
                                     <FontAwesomeIcon icon={faBirthdayCake} />
-                                    <span>{selectedPatient.age} years ({selectedPatient.birthdate})</span>
+                                    <span>{selectedPatient.age || 'N/A'} years ({selectedPatient.birthdate || 'N/A'})</span>
                                 </div>
                                 <div className={styles.patientMetaItem}>
                                     <FontAwesomeIcon icon={faPhone} />
-                                    <span>{selectedPatient.contactNumber}</span>
+                                    <span>{selectedPatient.contactNumber || 'N/A'}</span>
                                 </div>
                             </div>
                             <div className={styles.patientMetaItem}>
                                 <FontAwesomeIcon icon={faMapMarkerAlt} />
-                                <span>{selectedPatient.address}</span>
+                                <span>{selectedPatient.address || 'N/A'}</span>
                             </div>
                         </div>
                         <div className={styles.patientActions}>
@@ -452,15 +424,17 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                     </div>
 
                     <div className={styles.patientTabs}>
-                        {['overview', 'medical', 'appointments', 'billing', 'documents'].map((tab) => (
-                            <div 
-                                key={tab}
-                                className={`${styles.patientTab} ${activeTab === tab ? styles.active : ''}`} 
-                                onClick={() => handleTabChange(tab)}
-                            >
-                                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                            </div>
-                        ))}
+                        {
+                            ['overview', 'medical', 'appointments', 'billing', 'documents'].map((tab) => (
+                                <div 
+                                    key={tab}
+                                    className={`${styles.patientTab} ${activeTab === tab ? styles.active : ''}`} 
+                                    onClick={() => handleTabChange(tab)}
+                                >
+                                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                </div>
+                            ))
+                        }
                     </div>
 
                     <div className={`${styles.patientTabContent} ${activeTab === 'overview' ? styles.active : ''}`}>

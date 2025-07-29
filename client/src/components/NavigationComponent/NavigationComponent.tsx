@@ -4,13 +4,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faSignOutAlt, faTimes, faUser } from '@fortawesome/free-solid-svg-icons';
 import rpcLogo from '../../assets/icons/rpc-logo.png';
-import { logoutUser } from '../../pages/services/authService';
+import { logoutUser } from '../../services';
 import { toast } from 'sonner';
 import { useAuth } from '../../hooks/usesAuth';
 
 
 const NavigationComponent = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const { isAuthenticated, currentUser, clearAuth } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
@@ -59,7 +59,10 @@ const NavigationComponent = () => {
                     <Link to='/contact' className={`${styles.navLink} ${isActive('/contact') ? styles.active : ''}`}>Contact</Link> */}
                     {
                         isAuthenticated && (
-                            <Link to='/user/appointments' className={`${styles.navLink} ${isActive('/user/appointments') ? styles.active : ''}`}>Appointment</Link>
+                           <>
+                                <Link to='/user/appointments' className={`${styles.navLink} ${isActive('/user/appointments') ? styles.active : ''}`}>Appointment</Link>
+                                <Link to='/user/medical-records' className={`${styles.navLink} ${isActive('/user/medical-records') ? styles.active : ''}`}>Medical Records</Link>
+                           </>
                         )
                     }
                 </div>
@@ -140,7 +143,7 @@ const NavigationComponent = () => {
                             //show logout when authenticated
                               <>
                                 <div>
-                                    <span>{currentUser?.fullName}</span>
+                                    <span>{currentUser?.firstName}</span>
                                 </div>
                                 <button 
                                     type='submit'

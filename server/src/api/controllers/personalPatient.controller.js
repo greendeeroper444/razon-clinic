@@ -7,7 +7,9 @@ class PersonalPatientController {
     async addPersonalPatient(req, res, next) {
         try {
             const { 
-                fullName, 
+                firstName, 
+                lastName,
+                middleName,
                 email, 
                 contactNumber, 
                 birthdate,
@@ -19,7 +21,9 @@ class PersonalPatientController {
             } = req.body;
 
             const personalPatientData = {
-                fullName,
+                firstName,
+                lastName,
+                middleName,
                 email,
                 contactNumber,
                 birthdate,
@@ -60,7 +64,7 @@ class PersonalPatientController {
                 page = 1, 
                 limit = 10, 
                 email, 
-                fullName,
+                firstName,
                 religion,
                 sortBy = 'createdAt', 
                 sortOrder = 'desc' 
@@ -71,8 +75,8 @@ class PersonalPatientController {
             if (email) {
                 filter.email = { $regex: email, $options: 'i' };
             }
-            if (fullName) {
-                filter.fullName = { $regex: fullName, $options: 'i' };
+            if (firstName) {
+                filter.firstName = { $regex: firstName, $options: 'i' };
             }
             if (religion) {
                 filter.religion = { $regex: religion, $options: 'i' };

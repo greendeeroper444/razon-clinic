@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { MedicalRecordFormData, transformFormDataToApiFormat } from '../../types';
-import API_BASE_URL from '../../ApiBaseUrl';
+import { MedicalRecordFormData, transformFormDataToApiFormat } from '../types';
+import API_BASE_URL from '../ApiBaseUrl';
 
 
 export const addMedicalRecord = async (medicalRecordData: MedicalRecordFormData) => {

@@ -6,3 +6,7 @@ export * from './validators';
 export * from './clean';
 export * from './convert';
 export * from './process';
+export * from './modalHandlers';
+export * from './transformers';
+export * from './display';
+export * from './calculate';

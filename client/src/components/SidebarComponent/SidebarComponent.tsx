@@ -13,12 +13,10 @@ import {
     faBars,
     faChevronLeft,
     faFileMedical,
-    faCreditCard,
-    faChild,
-    faChartLine
+    faCreditCard
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'sonner';
-import { logoutUser } from '../../pages/services/authService';
+import { logoutUser } from '../../services';
 import { useAuth } from '../../hooks/usesAuth';
 import { SidebarProps } from '../../types';
 
@@ -26,7 +24,7 @@ import { SidebarProps } from '../../types';
 const SidebarComponent: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     const location = useLocation();
     const navigate = useNavigate();
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
     const { currentUser, clearAuth } = useAuth();
 
     
@@ -126,25 +124,27 @@ const SidebarComponent: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSideb
 
                 {
                     currentUser && (currentUser.role === 'Staff') && (
-                        <Link
-                            to='/admin/appointments'
-                            className={`${styles.menuItem} ${isActive('/admin/appointments') ? styles.active : ''}`}
-                            title='Appointments'
-                        >
-                            <FontAwesomeIcon icon={faCalendarCheck} color='#94a3b8' />
-                            <span className={styles.menuText}>Appointments</span>
-                        </Link>
+                        <>
+                            <Link
+                                to='/admin/appointments'
+                                className={`${styles.menuItem} ${isActive('/admin/appointments') ? styles.active : ''}`}
+                                title='Appointments'
+                            >
+                                <FontAwesomeIcon icon={faCalendarCheck} color='#94a3b8' />
+                                <span className={styles.menuText}>Appointments</span>
+                            </Link>
+
+                            <Link
+                                to='/admin/patients'
+                                className={`${styles.menuItem} ${isActive('/admin/patients') ? styles.active : ''}`}
+                                title='Patients'
+                            >
+                                <FontAwesomeIcon icon={faProcedures} color='#94a3b8' />
+                                <span className={styles.menuText}>Patients</span>
+                            </Link>
+                        </>
                     )
                 }
-
-                <Link
-                    to='/admin/patients'
-                    className={`${styles.menuItem} ${isActive('/admin/patients') ? styles.active : ''}`}
-                    title='Patients'
-                >
-                    <FontAwesomeIcon icon={faProcedures} color='#94a3b8' />
-                    <span className={styles.menuText}>Patients</span>
-                </Link>
 
                 {
                     currentUser && (currentUser.role === 'Doctor') ? (

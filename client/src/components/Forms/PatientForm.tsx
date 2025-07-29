@@ -9,12 +9,42 @@ const PatientForm: React.FC<PatientFormProps> = ({
   return (
     <>
         <div className={styles.formGroup}>
-            <label htmlFor="fullName">Full Name</label>
+            <label htmlFor="firstName">First Name</label>
             <input
             type="text"
-                id="fullName"
-                name="fullName"
-                value={formData.fullName || ''}
+                id="firstName"
+                name="firstName"
+                value={formData.firstName || ''}
+                onChange={onChange}
+                className={styles.formControl}
+                required
+                minLength={3}
+                maxLength={50}
+            />
+        </div>
+
+        <div className={styles.formGroup}>
+            <label htmlFor="lastName">Last Name</label>
+            <input
+            type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName || ''}
+                onChange={onChange}
+                className={styles.formControl}
+                required
+                minLength={3}
+                maxLength={50}
+            />
+        </div>
+
+        <div className={styles.formGroup}>
+            <label htmlFor="middleName">Middle Name</label>
+            <input
+            type="text"
+                id="middleName"
+                name="middleName"
+                value={formData.middleName || ''}
                 onChange={onChange}
                 className={styles.formControl}
                 required

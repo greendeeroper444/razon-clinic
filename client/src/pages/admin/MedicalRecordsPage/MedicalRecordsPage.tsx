@@ -14,21 +14,21 @@ import {
     faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { getMedicalRecords, getMedicalRecordById, deleteMedicalRecord, addMedicalRecord } from '../../services/medicalRecordService';
-import { MedicalRecord, MedicalRecordFormData, ModalType, PaginationInfo } from '../../../types';
+import { getMedicalRecords, getMedicalRecordById, deleteMedicalRecord, addMedicalRecord } from '../../../services';
+import { MedicalRecord, MedicalRecordFormData, PaginationInfo } from '../../../types';
 import { ModalComponent } from '../../../components';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
-import { calculateAge2 } from '../../../utils';
+import { calculateAge2, openModalWithRefresh } from '../../../utils';
 
 const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [showDetails, setShowDetails] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
     const [recordsPerPage] = useState(10);
 
@@ -82,36 +82,26 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
     //search with debounce
     useEffect(() => {
-        const delayedSearch = setTimeout(() => {
-            if (currentPage === 1) {
-                fetchMedicalRecords(1, searchTerm);
-            } else {
-                setCurrentPage(1); //trigger the fetch via useEffect
-            }
-        }, 500);
+        // const delayedSearch = setTimeout(() => {
+        //     if (currentPage === 1) {
+        //         fetchMedicalRecords(1, searchTerm);
+        //     } else {
+        //         setCurrentPage(1); //trigger the fetch via useEffect
+        //     }
+        // }, 500);
 
-        return () => clearTimeout(delayedSearch);
+        // return () => clearTimeout(delayedSearch);
+        fetchMedicalRecords();
     }, [searchTerm]);
 
     const handleOpenModal = () => {
-        const customOpenModal = (type: ModalType) => {
-            if (openModal) {
-                openModal(type);
-                
-                const checkForRefresh = () => {
-                setTimeout(() => {
-                    fetchMedicalRecords(currentPage, searchTerm);
-                }, 100);
-                
-                window.removeEventListener('modal-closed', checkForRefresh);
-                };
-                
-                window.addEventListener('modal-closed', checkForRefresh);
-            }
-        };
-        
-        customOpenModal('medical' as ModalType);
+        openModalWithRefresh({
+            modalType: 'medical',
+            openModal,
+            onRefresh: () => fetchMedicalRecords(currentPage, searchTerm),
+        });
     };
+
 
     const handleCloseDetails = () => {
         setShowDetails(false);
@@ -206,7 +196,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         setDeleteMedicalRecordData(null);
     };
 
-    const handleSubmitUpdate = async (formData: any): Promise<void> => {
+    const handleSubmitUpdate = async (formData: MedicalRecordFormData): Promise<void> => {
         try {
             setLoading(true);
             
@@ -226,7 +216,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     };
 
-    const handleConfirmDelete = async (medicalRecordId: any): Promise<void> => {
+    const handleConfirmDelete = async (medicalRecordId: string): Promise<void> => {
         try {
             setIsProcessing(true);
             
@@ -355,7 +345,8 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                         </tr>
                     ) : (
                     medicalRecords.map((record) => {
-                        const status = getStatusFromRecord(record);
+                        // const status = getStatusFromRecord(record);
+                        getStatusFromRecord(record);
                         return (
                             <tr key={record.id} className={styles.tableRow}>
                                 <td className={styles.patientName}>
@@ -453,6 +444,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 </button>
                                 <button 
                                     type='button'
+                                    title='Close'
                                     onClick={handleCloseDetails} 
                                     className={styles.closeBtn}>
                                     <FontAwesomeIcon icon={faTimes} />
@@ -536,7 +528,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                     onClose={handleModalClose}
                     modalType="medical"
                     onSubmit={handleSubmitUpdate}
-                    patients={patients}
                     editData={selectedMedicalRecord}
                 />
             )

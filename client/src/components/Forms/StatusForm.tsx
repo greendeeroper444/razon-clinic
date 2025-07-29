@@ -8,11 +8,8 @@ import {
     faRedo,
     faClock
 } from '@fortawesome/free-solid-svg-icons'
+import { StatusFormProps } from '../../types'
 
-interface StatusFormProps {
-    currentStatus?: string;
-    onStatusChange: (status: string) => void;
-}
 
 const StatusForm: React.FC<StatusFormProps> = ({currentStatus, onStatusChange}) => {
     const statusOptions = [

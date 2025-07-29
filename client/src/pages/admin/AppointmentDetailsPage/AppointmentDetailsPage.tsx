@@ -20,10 +20,10 @@ import {
     faPray
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'sonner';
-import { getAppointmentDetails, updateAppointmentStatus, updateAppointment, getMyAppointment } from '../../services/appoinmentService';
-import { calculateAge, formatBirthdate, formatDate, getMiddleNameInitial } from '../../../utils';
+import { getAppointmentDetails, updateAppointmentStatus, updateAppointment, getMyAppointment } from '../../../services';
+import { calculateAge, formatBirthdate, formatDate, getAppointmentStatusClass, getMiddleNameInitial } from '../../../utils';
 import { ModalComponent } from '../../../components';
-import { Appointment, AppointmentFormData } from '../../../types';
+import { Appointment, AppointmentFormData, AppointmentStatus } from '../../../types';
 
 const AppointmentDetailsPage = () => {
     const { appointmentId } = useParams();
@@ -35,7 +35,7 @@ const AppointmentDetailsPage = () => {
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
     const [selectedAppointmentForEdit, setSelectedAppointmentForEdit] = useState<AppointmentFormData & { id?: string } | null>(null);
     const [isUpdating, setIsUpdating] = useState(false);
-    const [patients, setPatients] = useState<Array<{ id: string; fullName: string }>>([]);
+    const [patients, setPatients] = useState<Array<{ id: string; firstName: string }>>([]);
 
     //extract appointment details fetching into a separate function
     const fetchAppointmentDetails = useCallback(async () => {
@@ -79,18 +79,15 @@ const AppointmentDetailsPage = () => {
             const response = await getMyAppointment();
             if (response.data.success) {
                 //extract unique patients from appointments for the modal dropdown
-                const uniquePatients = Array.from(
+               const uniquePatients = Array.from(
                     new Map(
-                        response.data.data
-                            .filter(appointment => appointment.patientId?.id) 
-                            .map(appointment => [
-                                appointment.patientId.id,
-                                {
-                                    id: appointment.patientId.id,
-                                    fullName: appointment.patientId.fullName || appointment.fullName || 'N/A',
-                                    patientNumber: appointment.patientId.patientNumber || 'N/A'
-                                }
-                            ])
+                        response.data.data.map(appointment => [
+                            appointment.patientId.id,
+                            {
+                                id: appointment.patientId.id,
+                                firstName: appointment.patientId.firstName
+                            }
+                        ])
                     ).values()
                 );
                 setPatients(uniquePatients);
@@ -135,7 +132,7 @@ const AppointmentDetailsPage = () => {
                 status: appointment.status,
                 
                 //patient information fields
-                birthdate: appointment.birthdate ? appointment.birthdate.split('T')[0] : undefined,
+                birthdate: appointment.birthdate,
                 sex: appointment.sex,
                 height: appointment.height,
                 weight: appointment.weight,
@@ -192,7 +189,7 @@ const AppointmentDetailsPage = () => {
                 if (appointment) {
                     setAppointment({
                         ...appointment,
-                        status: data.status,
+                        status: data.status as AppointmentStatus,
                         updatedAt: new Date().toISOString()
                     });
                 }
@@ -261,32 +258,14 @@ const AppointmentDetailsPage = () => {
 
     if (!appointment) {
         return (
-        <div className={styles.errorContainer}>
-            <p className={styles.errorMessage}>Appointment not found</p>
-            <button type='button' className={styles.btnPrimary} onClick={() => window.history.back()}>
-                <FontAwesomeIcon icon={faArrowLeft} /> Go Back
-            </button>
-        </div>
+            <div className={styles.errorContainer}>
+                <p className={styles.errorMessage}>Appointment not found</p>
+                <button type='button' className={styles.btnPrimary} onClick={() => window.history.back()}>
+                    <FontAwesomeIcon icon={faArrowLeft} /> Go Back
+                </button>
+            </div>
         );
     }
-
-    //get status class
-    const getStatusClass = (status: string) => {
-        switch (status) {
-        case 'Pending':
-            return styles.statusPending;
-        case 'Scheduled':
-            return styles.statusScheduled;
-        case 'Completed':
-            return styles.statusCompleted;
-        case 'Cancelled':
-            return styles.statusCancelled;
-        case 'Rebooked':
-            return styles.statusRebooked;
-        default:
-            return '';
-        }
-    };
 
   return (
     <div className={styles.content}>
@@ -346,7 +325,7 @@ const AppointmentDetailsPage = () => {
             <div className={styles.appointmentNumber}>
                 Appointment #{appointment.appointmentNumber}
             </div>
-            <div className={`${styles.statusBadge} ${getStatusClass(appointment.status)}`}>
+            <div className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
                 {appointment.status}
             </div>
         </div>

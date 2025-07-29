@@ -10,7 +10,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { SectionFeaturesComponent, FooterComponent } from '../../../components'
-import { loginUser } from '../../services/authService'
+import { loginUser } from '../../../services'
 import { LoginFormData, ValidationErrors } from '../../../types'
 import { validateLoginForm } from '../../../utils'
 import backgroundImage from '../../../assets/backgrounds/background2.png'

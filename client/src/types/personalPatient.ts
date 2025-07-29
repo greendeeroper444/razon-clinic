@@ -5,13 +5,15 @@ export interface PatientFormProps {
     onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
 }
 
-
 export interface PersonalPatientFormData {
     id?: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    middleName?: string;
     email: string;
     contactNumber: string;
     birthdate: string;
+    age?: number | string;
     sex: 'Male' | 'Female' | 'Other' | '';
     address: string;
     religion?: string;
@@ -28,6 +30,11 @@ export interface PersonalPatientFormData {
     isArchive?: boolean;
 }
 
+
+export interface PersonalPatientDisplayData extends PersonalPatientFormData {
+    initials: string;
+    age: number | string;
+}
 
 export interface PersonalPatient extends PersonalPatientFormData {
     _id: string;
@@ -72,6 +79,34 @@ export interface PatientQueryParams {
     search?: string;
     sex?: 'Male' | 'Female' | 'Other';
     isArchive?: boolean;
-    sortBy?: 'fullName' | 'createdAt' | 'birthdate';
+    sortBy?: 'firstName' | 'createdAt' | 'birthdate';
     sortOrder?: 'asc' | 'desc';
+}
+
+//for the transform function
+export interface PatientApiResponse {
+    id?: string;
+    firstName: string;
+    lastName: string;
+    middleName?: string;
+    email: string;
+    contactNumber: string;
+    birthdate: string;
+    sex: 'Male' | 'Female' | 'Other' | '';
+    address: string;
+    religion?: string;
+    motherInfo?: {
+        name?: string;
+        age?: number;
+        occupation?: string;
+    };
+    fatherInfo?: {
+        name?: string;
+        age?: number;
+        occupation?: string;
+    };
+    isArchive?: boolean;
+    _id?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }

@@ -4,5 +4,6 @@ export { default as NavbarComponent } from './NavbarComponent/NavbarComponent';
 export { default as NavigationComponent } from './NavigationComponent/NavigationComponent';
 export { default as NotificationComponent } from './NotificationComponent/NotificationComponent';
 export { default as SectionFeaturesComponent } from './SectionFeaturesComponent/SectionFeaturesComponent';
+export { default as CalendarComponent } from './CalendarComponent/CalendarComponent';
 export { default as Layout } from './Layout/Layout';
 export { default as PageTitle } from './Layout/PageTitle';

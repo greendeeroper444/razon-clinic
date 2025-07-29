@@ -2,19 +2,11 @@ import { useEffect, useState, useCallback } from 'react'
 import styles from './NotificationComponent.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom'
-import { 
-  faCalendar, 
-  faPrescriptionBottleAlt, 
-  faFolder, 
-  faCheckDouble, 
-  faUserPlus,
-  faBoxes,
-  faSpinner
-} from '@fortawesome/free-solid-svg-icons';
-import { formatDistanceToNow } from 'date-fns';
-import { getNotifications, markAllAsRead, markAsRead } from '../../pages/services/notificationService';
+import { faCalendar, faPrescriptionBottleAlt, faFolder, faCheckDouble, faUserPlus, faBoxes, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { getNotifications, markAllAsRead, markAsRead } from '../../services';
 import { useAuth } from '../../hooks/usesAuth';
 import { NotificationComponentProps, NotificationTypeToUICategory, Notification } from '../../types';
+import { formatTimeAgo } from '../../utils';
 
 interface ExtendedNotificationComponentProps extends NotificationComponentProps {
     onUnreadCountChange?: (count: number) => void;
@@ -25,8 +17,8 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
     onUnreadCountChange 
 }) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [unreadCount, setUnreadCount] = useState(0);
-    const [loading, setLoading] = useState(true);
+    const [unreadCount, setUnreadCount] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
     const { currentUser } = useAuth();
@@ -68,11 +60,12 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
 
     //auto-refetch notifications every 10 seconds
     useEffect(() => {
-        const interval = setInterval(() => {
-            fetchNotifications();
-        }, 10000); // 10 seconds
+        // const interval = setInterval(() => {
+        //     fetchNotifications();
+        // }, 10000); // 10 seconds
 
-        return () => clearInterval(interval);
+        // return () => clearInterval(interval);
+        fetchNotifications();
     }, [fetchNotifications]);
     
     const handleMarkAllAsRead = async () => {
@@ -161,14 +154,7 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
         }
     };
     
-    //function to format date relative to now
-    const formatTime = (dateString: string) => {
-        try {
-            return formatDistanceToNow(new Date(dateString), { addSuffix: true });
-        } catch {
-            return 'recently';
-        }
-    };
+
     
     //helper function to check if notification is clickable
     const isNotificationClickable = (notification: Notification) => {
@@ -221,7 +207,7 @@ const NotificationComponent: React.FC<ExtendedNotificationComponentProps> = ({
                                         <div className={styles.notificationContent}>
                                             <div className={styles.notificationTitle}>{notification.type.replace(/([A-Z])/g, ' $1').trim()}</div>
                                             <div className={styles.notificationMessage}>{notification.message}</div>
-                                            <div className={styles.notificationTime}>{formatTime(notification.createdAt)}</div>
+                                            <div className={styles.notificationTime}>{formatTimeAgo(notification.createdAt)}</div>
                                         </div>
                                         {/* {!notification.isRead && <div className={styles.unreadDot}></div>} */}
                                     </div>

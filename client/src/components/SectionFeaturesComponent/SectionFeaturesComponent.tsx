@@ -1,10 +1,6 @@
 import { FC } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { 
-    faCalendarCheck, 
-    faUserMd, 
-    faShieldAlt 
-} from '@fortawesome/free-solid-svg-icons'
+import { faCalendarCheck, faUserMd, faShieldAlt } from '@fortawesome/free-solid-svg-icons'
 import styles from './SectionFeaturesComponent.module.css';
 
 const SectionFeaturesComponent: FC = () => {

@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { AppointmentFilters, AppointmentFormData, AppointmentResponse } from '../../types'
-import API_BASE_URL from '../../ApiBaseUrl'
-import { cleanObject, convertTo24Hour, createParentInfo, generateTimeSlots, processPatient } from '../../utils';
+import { AppointmentFilters, AppointmentFormData, AppointmentResponse } from '../types'
+import API_BASE_URL from '../ApiBaseUrl'
+import { cleanObject, convertTo24Hour, createParentInfo, generateTimeSlots, processPatient } from '../utils';
 
 
 export const addAppointment = async (appointmentData: AppointmentFormData) => {

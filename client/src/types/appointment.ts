@@ -9,13 +9,13 @@ export interface AppointmentFormProps {
 
 export interface AppointmentFormData {
     id: string;
-    firstName: string;
-    lastName: string;
-    middleName: string | null;
+    firstName?: string;
+    lastName?: string;
+    middleName?: string | null;
     sex?: string;
     height?: number | string;
     weight?: number | string;
-    birthdate: number | string | undefined;
+    birthdate?: number | string;
     
     //flattened mother information
     motherName?: string;
@@ -29,19 +29,19 @@ export interface AppointmentFormData {
     //nested structure for backward compatibility if needed
     motherInfo?: {
         name: string;
-        age: number | string;
+        age?: number | string;
         occupation: string;
     };
     fatherInfo?: {
         name: string;
-        age: number | string;
+        age?: number | string;
         occupation: string;
     };
     contactNumber: number | string;
     address?: string;
     religion?: string;
     preferredDate: string;
-    preferredTime: string;
+    preferredTime?: string | number;
     reasonForVisit: string;
     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
     patients?: {
@@ -56,18 +56,25 @@ export interface AppointmentFormData {
 }
 
 export interface PatientId {
+    id: string;
+    firstName: string;
     patientNumber: string;
+    address: string;
 }
 export interface Appointment {
     id: string;
+    patientId: PatientId;
     fullName: string;
     firstName?: string;
     middleName?: string;
     lastName?: string;
     dateOfBirth?: string;
+    birthdate: string;
+    sex?: 'Male' | 'Female';
     gender?: string;
     phone?: string;
     address?: string;
+    religion?: string;
     email?: string;
     height?: number | string;
     weight?: number | string;
@@ -75,10 +82,21 @@ export interface Appointment {
     appointmentNumber: string;
     reasonForVisit: string;
     contactNumber: string;
+    motherInfo?: {
+        name: string;
+        age?: number | string;
+        occupation: string;
+    };
+    fatherInfo?: {
+        name: string;
+        age?: number | string;
+        occupation: string;
+    };
     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
-    patientId?: PatientId;
-    preferredTime: number | string;
-    preferredDate: number | string
+    preferredTime?: number | string;
+    preferredDate: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface AutofillData {
@@ -90,18 +108,19 @@ export interface AppointmentStatusUpdate {
     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
 }
 
-
+export type AppointmentStatus = "Pending" | "Scheduled" | "Completed" | "Cancelled" | "Rebooked";
 
 export interface ParentInfo {
     name: string;
-    age: number | string;
+    age?: number | string;
     occupation: string;
 }
 
 
 
 export interface AppointmentResponse {
-    id: string;   
+    id: string; 
+    patientId: PatientId; 
     firstName: string;
     lastName: string;
     middleName: string | null;

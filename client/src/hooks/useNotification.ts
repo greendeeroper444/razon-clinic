@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { getNotifications } from '../pages/services/notificationService'
+import { getNotifications } from '../services'
 import { Notification, NotificationFilters } from '../types'
 
 interface UseNotificationsResult {

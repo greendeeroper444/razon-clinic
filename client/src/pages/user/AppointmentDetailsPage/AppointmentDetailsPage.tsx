@@ -18,8 +18,8 @@ import {
     faUsers,
     faPray
 } from '@fortawesome/free-solid-svg-icons'
-import { getAppointmentDetails, getMyAppointment, updateAppointment } from '../../services/appoinmentService'
-import { calculateAge, formatBirthdate, formatDate, getMiddleNameInitial } from '../../../utils'
+import { getAppointmentDetails, getMyAppointment, updateAppointment } from '../../../services'
+import { calculateAge, formatBirthdate, formatDate, getAppointmentStatusClass, getMiddleNameInitial } from '../../../utils'
 import { Appointment, AppointmentFormData, AppointmentResponse } from '../../../types'
 import { ModalComponent } from '../../../components'
 import { toast } from 'sonner'
@@ -27,7 +27,7 @@ import { toast } from 'sonner'
 const AppointmentDetailsPage = () => {
     const { appointmentId } = useParams();
     const [appointment, setAppointment] = useState<Appointment | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedAppointment, setSelectedAppointment] = useState<AppointmentFormData & { id?: string } | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -109,7 +109,7 @@ const AppointmentDetailsPage = () => {
         window.dispatchEvent(refreshEvent);
     };
 
-    const handleUpdateClick = (appointment: AppointmentResponse) => {
+    const handleUpdateClick = (appointment: Appointment | AppointmentResponse) => {
         //convert the appointment response to form data format
         const formData: AppointmentFormData & { id?: string } = {
             id: appointment.id,
@@ -122,7 +122,7 @@ const AppointmentDetailsPage = () => {
             status: appointment.status,
             
             //patient information fields
-            birthdate: appointment.birthdate ? appointment.birthdate.split('T')[0] : undefined,
+            birthdate: appointment.birthdate,
             sex: appointment.sex,
             height: appointment.height,
             weight: appointment.weight,
@@ -225,29 +225,11 @@ const AppointmentDetailsPage = () => {
         );
     }
 
-    //get status class
-    const getStatusClass = (status: string) => {
-        switch (status) {
-        case 'Pending':
-            return styles.statusPending;
-        case 'Scheduled':
-            return styles.statusScheduled;
-        case 'Completed':
-            return styles.statusCompleted;
-        case 'Cancelled':
-            return styles.statusCancelled;
-        case 'Rebooked':
-            return styles.statusRebooked;
-        default:
-            return '';
-        }
-    };
-
   return (
     <div className={styles.content}>
         <div className={styles.contentHeader}>
             <div className={styles.headerLeft}>
-                <button type='button' className={styles.btnBack} onClick={() => window.history.back()}>
+                <button type='button' title='Back Button' className={styles.btnBack} onClick={() => window.history.back()}>
                     <FontAwesomeIcon icon={faArrowLeft} />
                 </button>
                 <h1 className={styles.contentTitle}>Appointment Details</h1>
@@ -263,7 +245,7 @@ const AppointmentDetailsPage = () => {
             <div className={styles.appointmentNumber}>
                 Appointment #{appointment.appointmentNumber}
             </div>
-            <div className={`${styles.statusBadge} ${getStatusClass(appointment.status)}`}>
+            <div className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
                 {appointment.status}
             </div>
         </div>
@@ -305,14 +287,16 @@ const AppointmentDetailsPage = () => {
                                 {new Date(appointment.createdAt).toLocaleString()}
                             </span>
                         </div>
-                        {appointment.updatedAt !== appointment.createdAt && (
-                            <div className={styles.tableRow}>
-                                <span className={styles.tableLabel}>Last Updated:</span>
-                                <span className={styles.tableValue}>
-                                    {new Date(appointment.updatedAt).toLocaleString()}
-                                </span>
-                            </div>
-                        )}
+                        {
+                            appointment.updatedAt !== appointment.createdAt && (
+                                <div className={styles.tableRow}>
+                                    <span className={styles.tableLabel}>Last Updated:</span>
+                                    <span className={styles.tableValue}>
+                                        {new Date(appointment.updatedAt).toLocaleString()}
+                                    </span>
+                                </div>
+                            )
+                        }
                     </div>
 
                     {/* patient details information */}

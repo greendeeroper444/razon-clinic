@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ChevronLeft, Clock, User, Phone, MapPin, Calendar, Eye, AlertCircle } from 'lucide-react'
 import styles from './CalendarDateDetailsPage.module.css'
-import { getAppointmentsByDate } from '../../services/appoinmentService'
+import { getAppointmentsByDate } from '../../../services'
 import { Appointment, AppointmentDataCalendar } from '../../../types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { formatDateWithDay, formatTime, getStatusColor } from '../../../utils'
 
 
 const CalendarDateDetailsPage: React.FC = () => {
@@ -55,42 +56,6 @@ const CalendarDateDetailsPage: React.FC = () => {
             setError('Error loading appointment details');
         } finally {
             setLoading(false);
-        }
-    };
-
-    const formatDate = (dateString: string): string => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
-
-    const formatTime = (timeString: string): string => {
-        //convert 24-hour format to 12-hour format
-        const [hours, minutes] = timeString.split(':');
-        const hour = parseInt(hours);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const displayHour = hour % 12 || 12;
-        return `${displayHour}:${minutes} ${ampm}`;
-    };
-
-    const getStatusColor = (status: Appointment['status']): string => {
-        switch (status) {
-            case 'Pending': 
-                return 'var(--warning)';
-            case 'Scheduled': 
-                return 'var(--primary)';
-            case 'Completed': 
-                return 'var(--success)';
-            case 'Cancelled': 
-                return 'var(--danger)';
-            case 'Rebooked': 
-                return 'var(--appointment)';
-            default: 
-                return 'var(--gray)';
         }
     };
 
@@ -172,7 +137,7 @@ const CalendarDateDetailsPage: React.FC = () => {
             </div>
             <div className={styles.dateInfo}>
                 <h2 className={styles.selectedDate}>
-                    {formatDate(selectedDate)}
+                    {formatDateWithDay(selectedDate)}
                 </h2>
                 <p className={styles.appointmentSummary}>
                     {appointmentData?.totalAppointments || 0} appointment(s) scheduled
