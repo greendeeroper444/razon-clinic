@@ -3,7 +3,7 @@ import styles from './BillingsPaymentPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faSearch, faDownload, faCreditCard, faCheck, faExclamationTriangle, faTimes, faUser, faCalendar, faEye, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { BillingResponse } from '../../../types'
-import { ModalComponent } from '../../../components'
+import { Modal } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
 import { getAllBillings } from '../../../services'
 import { formatDate, getPaymentStatusClass, getStatusIcon, openModalWithRefresh } from '../../../utils'
@@ -429,7 +429,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             {/* modal component */}
             {
                 isModalOpen && (
-                    <ModalComponent
+                    <Modal
                         isOpen={isModalOpen}
                         onClose={handleModalClose}
                         modalType="billing"

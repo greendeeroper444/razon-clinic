@@ -1,25 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import styles from './InventoryPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faPlus, 
-    faPills, 
-    faExclamationTriangle, 
-    faClock, 
-    faCube,
-    faEdit,
-    faTrash
-} from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { ModalComponent } from '../../../components';
-import { 
-    getInventoryItems, 
-    addInventoryItem, 
-    updateInventoryItem, 
-    deleteInventoryItem,
-    getLowStockItems,
-    getExpiringItems
-} from '../../../services';
+import { Modal } from '../../../components';
+import { getInventoryItems, addInventoryItem, updateInventoryItem, deleteInventoryItem, getLowStockItems, getExpiringItems } from '../../../services';
 import { FormDataType, InventoryItem, InventoryItemFormData } from '../../../types';
 import { toast } from 'sonner';
 import { formatDate, getExpiryStatus, getItemIcon, getStockStatus, openModalWithRefresh } from '../../../utils';
@@ -343,7 +328,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* update inventory item modal */}
         {
                 isModalOpen && (
-                    <ModalComponent
+                    <Modal
                         isOpen={isModalOpen}
                         onClose={handleModalClose}
                         modalType='item'
@@ -359,7 +344,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* delete inventory item modal */}
         {
             isDeleteModalOpen && deleteInventoryItemData && (
-                <ModalComponent
+                <Modal
                     isOpen={isDeleteModalOpen}
                     onClose={handleDeleteModalClose}
                     modalType='delete'

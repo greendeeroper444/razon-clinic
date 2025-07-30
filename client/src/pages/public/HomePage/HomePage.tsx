@@ -1,7 +1,7 @@
 // import styles from './HomePage.module.css'
-// import FooterComponent from '../../../components/FooterComponent/FooterComponent';
+// import Footer from '../../../components/Footer/Footer';
 // import { useNavigate } from 'react-router-dom';
-// import SectionFeaturesComponent from '../../../components/SectionFeaturesComponent/SectionFeaturesComponent';
+// import SectionFeatures from '../../../components/SectionFeatures/SectionFeatures';
 
 // const HomePage = () => {
 //     const navigate = useNavigate();
@@ -14,9 +14,9 @@
 //             <button className={styles.btnPrimary} onClick={() => navigate('/login')}>Book Now</button>
 //         </section>
 
-//         <SectionFeaturesComponent />
+//         <SectionFeatures />
 
-//         <FooterComponent />
+//         <Footer />
 //     </div>
 //   )
 // }
@@ -44,7 +44,7 @@ import {
     faLocationDot
 } from '@fortawesome/free-solid-svg-icons'
 import { faFacebookF, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { FooterComponent, SectionFeaturesComponent } from '../../../components'
+import { Footer, SectionFeatures } from '../../../components'
 import razon from '../../../assets/profiles/razon.jpg'
 import secretary from '../../../assets/profiles/secretary.jpg'
 
@@ -279,7 +279,7 @@ const HomePage = () => {
             className={`${styles.featuresSection} ${styles.fadeInSection} ${visibleSections.has('features') ? styles.visible : ''}`}
         >
             <div className={styles.slideInUp}>
-                <SectionFeaturesComponent />
+                <SectionFeatures />
             </div>
         </section>
 
@@ -523,7 +523,7 @@ const HomePage = () => {
             </div>
         </section>
 
-        <FooterComponent />
+        <Footer />
     </div>
   )
 }

@@ -12,7 +12,7 @@ import {
     faSyringe,
     faCommentMedical
 } from '@fortawesome/free-solid-svg-icons'
-import { FooterComponent } from '../../../components'
+import { Footer } from '../../../components'
 
 const ServicesPage = () => {
     const services = [
@@ -120,7 +120,7 @@ const ServicesPage = () => {
             </div>
         </div>
 
-        <FooterComponent />
+        <Footer />
     </div>
   )
 }

@@ -16,7 +16,7 @@ import {
 import { OpenModalProps } from '../../../hooks/hook';
 import { getMedicalRecords, getMedicalRecordById, deleteMedicalRecord, addMedicalRecord } from '../../../services';
 import { FormDataType, MedicalRecord, MedicalRecordFormData, PaginationInfo } from '../../../types';
-import { ModalComponent } from '../../../components';
+import { Modal } from '../../../components';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
 import { calculateAge2, openModalWithRefresh } from '../../../utils';
@@ -25,12 +25,12 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [showDetails, setShowDetails] = useState(false);
+    const [showDetails, setShowDetails] = useState<boolean>(false);
     const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
-    const [recordsPerPage] = useState(10);
+    const [recordsPerPage] = useState<number>(10);
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -411,7 +411,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         {/* pagination */}
         {
-            pagination && pagination.total > 1 && (
+            pagination && pagination.totalPages > 1 && (
                 <div className={styles.pagination}>
                     <button
                         type='button'
@@ -423,14 +423,14 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                     </button>
                     
                     <span className={styles.paginationInfo}>
-                        Page {pagination.current} of {pagination.total} 
+                        Page {pagination.currentPage} of {pagination.totalPages} 
                         ({pagination.totalRecords} total records)
                     </span>
                     
                     <button
                         type='button'
                         onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === pagination.total}
+                        disabled={currentPage === pagination.totalPages}
                         className={styles.paginationBtn}
                     >
                         Next
@@ -536,7 +536,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* update medical record modal */}
         {
             isModalOpen && (
-                <ModalComponent
+                <Modal
                     isOpen={isModalOpen}
                     onClose={handleModalClose}
                     modalType='medical'
@@ -549,7 +549,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* delete medical record modal */}
         {
             isDeleteModalOpen && deleteMedicalRecordData && (
-                <ModalComponent
+                <Modal
                     isOpen={isDeleteModalOpen}
                     onClose={handleDeleteModalClose}
                     modalType='delete'

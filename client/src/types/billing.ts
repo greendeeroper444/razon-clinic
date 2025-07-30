@@ -68,11 +68,3 @@ export interface BillingFilters {
     paymentStatus?: string;
     patientName?: string;
 }
-
-export interface PaginationInfo {
-    currentPage: number;
-    totalPages: number;
-    totalRecords: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-}

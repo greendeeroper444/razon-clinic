@@ -6,7 +6,7 @@ import { getAppointments, getInventoryItems } from '../../../services';
 import { AppointmentResponse, InventoryItem } from '../../../types';
 import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial, formatDate, formatTime, getAppointmentStatusClass, getItemIcon, getStockStatus, getExpiryStatus } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
-import { CalendarComponent } from '../../../components';
+import { Calendar } from '../../../components';
 
 const DashboardPage = () => {
     const navigate = useNavigate();
@@ -124,7 +124,7 @@ const DashboardPage = () => {
                     ))
                 }
 
-                <CalendarComponent />
+                <Calendar />
             </div>
 
             {/* upcoming appointments */}

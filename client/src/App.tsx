@@ -28,7 +28,7 @@ import {
 import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
 import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, RouteType, PersonalPatientFormData, FormDataType, ModalType, BillingFormData } from './types'
-import { Layout, ModalComponent, PageTitle } from './components'
+import { Layout, Modal, PageTitle } from './components'
 import { addAppointment, addBilling, addInventoryItem, addMedicalRecord, addPersonalPatient } from './services'
 
 
@@ -186,7 +186,7 @@ function App() {
               ))
             }
           </Routes>
-          <ModalComponent
+          <Modal
             isOpen={isModalOpen}
             onClose={closeModal}
             modalType={modalType}

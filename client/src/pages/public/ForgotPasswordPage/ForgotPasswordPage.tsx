@@ -8,7 +8,7 @@ import {
     faEnvelope
 } from '@fortawesome/free-solid-svg-icons'
 import { Link, useNavigate } from 'react-router-dom'
-import { FooterComponent } from '../../../components'
+import { Footer } from '../../../components'
 
 const ForgotPasswordPage = () => {
     const navigate = useNavigate();
@@ -76,7 +76,7 @@ const ForgotPasswordPage = () => {
             </div>
         </section>
 
-        <FooterComponent />
+        <Footer />
     </div>
   )
 }

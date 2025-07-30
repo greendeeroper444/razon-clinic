@@ -1,4 +1,7 @@
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { ModalType } from "./modal";
+import { ActionButton } from "./action";
+import { ReactNode } from "react";
 
 //navbar
 export interface NavbarProps {
@@ -22,4 +25,34 @@ export interface OpenModalWithRefreshProps {
 export interface StatusFormProps {
     currentStatus?: string;
     onStatusChange: (status: string) => void;
+}
+
+export interface BackButtonProps {
+    onClick?: () => void;
+    icon?: IconDefinition;
+}
+
+export interface NotificationProps {
+    isVisible: boolean;
+    onUnreadCountChange?: (count: number) => void;
+    onClose: () => void;
+}
+
+
+export interface HeaderProps {
+    title: string;
+    subtitle?: string;
+    backButton?: BackButtonProps;
+    actions?: ActionButton[];
+    children?: ReactNode;
+    className?: string;
+}
+
+export interface MainProps {
+    children: ReactNode;
+    className?: string;
+    loading?: boolean;
+    error?: string | null;
+    loadingMessage?: string;
+    onErrorRetry?: () => void;
 }

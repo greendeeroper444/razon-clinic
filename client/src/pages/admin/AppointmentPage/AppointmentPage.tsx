@@ -6,7 +6,7 @@ import { OpenModalProps } from '../../../hooks/hook'
 import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType, Patient } from '../../../types'
 import { getAppointments, updateAppointment, deleteAppointment } from '../../../services'
-import { ModalComponent } from '../../../components'
+import { Main, Header, Modal } from '../../../components'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
 
@@ -194,38 +194,25 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     };
    
 
-    if (loading && appointments.length === 0) {
-        return (
-            <div className={styles.content}>
-                <div className={styles.loadingMessage}>Loading appointments...</div>
-            </div>
-        );
-    }
 
-    if (error) {
-        return (
-            <div className={styles.content}>
-                <div className={styles.errorMessage}>{error}</div>
-            </div>
-        );
-    }
 
+    const headerActions = [
+        {
+            id: 'newAppointmentBtn',
+            label: 'New Appointment',
+            icon: faPlus,
+            onClick: handleOpenModal,
+            type: 'primary' as const
+        }
+    ];
 
   return (
-    <div className={styles.content}>
-        <div className={styles.contentHeader}>
-            <h1 className={styles.contentTitle}>Appointments</h1>
-            <div className={styles.contentActions}>
-                <button 
-                    type='button'
-                    className={styles.btnPrimary} 
-                    id='newAppointmentBtn' 
-                    onClick={handleOpenModal}
-                >
-                    <FontAwesomeIcon icon={faPlus} /> New Appointment
-                </button>
-            </div>
-        </div>
+    <Main loading={loading} error={error} loadingMessage='Loading appointments...'>
+        <Header
+            title='Appointments'
+            actions={headerActions}
+        />
+
 
         {/* appointments */}
         <div className={styles.appointmentsSection}>
@@ -335,7 +322,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* update appointment modal */}
         {
             isModalOpen && (
-                <ModalComponent
+                <Modal
                     isOpen={isModalOpen}
                     onClose={handleModalClose}
                     modalType="appointment"
@@ -349,7 +336,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* delete appointment modal */}
         {
             isDeleteModalOpen && deleteAppointmentData && (
-                <ModalComponent
+                <Modal
                     isOpen={isDeleteModalOpen}
                     onClose={handleDeleteModalClose}
                     modalType="delete"
@@ -359,7 +346,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                 />
             )
         }
-    </div>
+    </Main>
   )
 }
 

@@ -6,7 +6,7 @@ import { OpenModalProps } from '../../../hooks/hook'
 import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType, Patient } from '../../../types'
 import { getMyAppointment, updateAppointment, deleteAppointment } from '../../../services'
-import { ModalComponent } from '../../../components'
+import { Modal } from '../../../components'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
 
@@ -322,7 +322,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* update appointment modal */}
         {
             isModalOpen && (
-                <ModalComponent
+                <Modal
                     isOpen={isModalOpen}
                     onClose={handleModalClose}
                     modalType="appointment"
@@ -336,7 +336,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* delete appointment modal */}
         {
             isDeleteModalOpen && deleteAppointmentData && (
-                <ModalComponent
+                <Modal
                     isOpen={isDeleteModalOpen}
                     onClose={handleDeleteModalClose}
                     modalType="delete"

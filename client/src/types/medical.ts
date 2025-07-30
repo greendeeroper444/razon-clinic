@@ -164,12 +164,6 @@ export interface MedicalRecord {
     updatedAt: string;
 }
 
-export interface PaginationInfo {
-    current: number;
-    total: number;
-    count: number;
-    totalRecords: number;
-}
 
 // export interface ApiError {
 //     success: false;

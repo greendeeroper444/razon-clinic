@@ -9,7 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { SectionFeaturesComponent, FooterComponent } from '../../../components'
+import { SectionFeatures, Footer } from '../../../components'
 import { loginUser } from '../../../services'
 import { LoginFormData, ValidationErrors } from '../../../types'
 import { validateLoginForm } from '../../../utils'
@@ -205,9 +205,9 @@ const LoginPage = () => {
             </div>
         </section>
 
-        <SectionFeaturesComponent />
+        <SectionFeatures />
 
-        <FooterComponent />
+        <Footer />
     </div>
   )
 }

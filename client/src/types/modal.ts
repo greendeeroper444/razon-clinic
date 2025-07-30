@@ -3,7 +3,7 @@ import { Patient } from "./patient";
 
 export type ModalType = 'appointment' | 'patient' | 'item' | 'medical' | 'delete' | 'status' | 'billing';
 
-export interface ModalComponentProps {
+export interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     modalType: ModalType;

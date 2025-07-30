@@ -1,4 +1,4 @@
-export interface Notification {
+export interface NotificationFormData {
     id: string;
     sourceId?: string;
     sourceType: 'Patient' | 'Doctor' | 'Secretary' | 'System';
@@ -24,19 +24,13 @@ export type NotificationType =
 export interface NotificationResponse {
     success: boolean;
     message: string;
-    data: Notification[];
+    data: NotificationFormData[];
     unreadCount?: number;
 }
 
-// export interface NotificationComponentProps {
+// export interface NotificationProps {
 //   isVisible: boolean;
 // }
-export interface NotificationComponentProps {
-    isVisible: boolean;
-    onUnreadCountChange?: (count: number) => void;
-    onClose: () => void;
-}
-
 
 //for mapping notification types to UI categories
 export const NotificationTypeToUICategory = {

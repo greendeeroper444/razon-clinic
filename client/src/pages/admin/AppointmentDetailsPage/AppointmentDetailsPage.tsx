@@ -22,7 +22,7 @@ import {
 import { toast } from 'sonner';
 import { getAppointmentDetails, updateAppointmentStatus, updateAppointment, getMyAppointment } from '../../../services';
 import { calculateAge, formatBirthdate, formatDate, getAppointmentStatusClass, getMiddleNameInitial } from '../../../utils';
-import { ModalComponent } from '../../../components';
+import { Main, Header, Modal } from '../../../components';
 import { Appointment, AppointmentFormData, AppointmentStatus } from '../../../types';
 
 const AppointmentDetailsPage = () => {
@@ -265,59 +265,35 @@ const AppointmentDetailsPage = () => {
         );
     }
 
+    const headerActions = [
+        {
+            label: isUpdating ? 'Updating...' : 'Edit',
+            icon: faEdit,
+            onClick: handleEditClick,
+            disabled: isUpdating,
+            type: 'primary' as const
+        },
+        {
+            label: isUpdating ? 'Updating...' : 'Status',
+            icon: faCheckCircle,
+            onClick: handleStatusClick,
+            disabled: isUpdating,
+            type: 'outline' as const
+        }
+    ];
+
+    const backButton = {
+        icon: faArrowLeft,
+        onClick: () => window.history.back()
+    };
+
   return (
-    <div className={styles.content}>
-        <div className={styles.contentHeader}>
-           <div className={styles.headerLeft}>
-                <button
-                    type='button'
-                    className={styles.btnBack}
-                    onClick={() => window.history.back()}
-                    title='Go Back'
-                >
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
-                <h1 className={styles.contentTitle}>Appointment Details</h1>
-            </div>
-            <div className={styles.contentActions}>
-                {/* <button type='button' className={styles.btnOutline}>
-                    <FontAwesomeIcon icon={faPrint} /> Print
-                </button> */}
-                <button 
-                    type='button' 
-                    className={styles.btnPrimary}
-                    onClick={handleEditClick}
-                    disabled={isUpdating}
-                >
-                    <FontAwesomeIcon icon={faEdit} /> 
-                    {isUpdating ? 'Updating...' : 'Edit'}
-                </button>
-                <button 
-                    type='button' 
-                    className={styles.btnOutline}
-                    onClick={handleStatusClick}
-                    disabled={isUpdating}
-                >
-                    <FontAwesomeIcon icon={faCheckCircle} /> 
-                    {isUpdating ? 'Updating...' : 'Status'}
-                </button>
-                {/* {
-                    
-                    appointment.patientId && (
-                        <button 
-                            type='button' 
-                            className={styles.btnOutline}
-                            onClick={handleStatusClick}
-                            disabled={isUpdating}
-                        >
-                            <FontAwesomeIcon icon={faCheckCircle} /> 
-                            {isUpdating ? 'Updating...' : 'Status'}
-                        </button>
-                    )
-                
-                } */}
-            </div>
-        </div>
+    <Main loading={loading} error={error} loadingMessage='Loading appointment details...'>
+        <Header
+            title='Appointment Details'
+            backButton={backButton}
+            actions={headerActions}
+        />
 
         <div className={styles.appStatusBanner}>
             <div className={styles.appointmentNumber}>
@@ -497,7 +473,7 @@ const AppointmentDetailsPage = () => {
         {/* update appointment status modal */}
         {
             isStatusModalOpen && (
-                <ModalComponent
+                <Modal
                     isOpen={isStatusModalOpen}
                     onClose={handleStatusModalClose}
                     modalType='status'
@@ -511,7 +487,7 @@ const AppointmentDetailsPage = () => {
         {/* update appointment modal */}
         {
             isEditModalOpen && (
-                <ModalComponent
+                <Modal
                     isOpen={isEditModalOpen}
                     onClose={handleEditModalClose}
                     modalType="appointment"
@@ -523,7 +499,7 @@ const AppointmentDetailsPage = () => {
             )
         }
 
-    </div>
+    </Main>
   )
 }
 

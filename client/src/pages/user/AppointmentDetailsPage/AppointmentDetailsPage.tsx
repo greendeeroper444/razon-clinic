@@ -21,7 +21,7 @@ import {
 import { getAppointmentDetails, getMyAppointment, updateAppointment } from '../../../services'
 import { calculateAge, formatBirthdate, formatDate, getAppointmentStatusClass, getMiddleNameInitial } from '../../../utils'
 import { Appointment, AppointmentFormData, AppointmentResponse } from '../../../types'
-import { ModalComponent } from '../../../components'
+import { Modal } from '../../../components'
 import { toast } from 'sonner'
 
 const AppointmentDetailsPage = () => {
@@ -420,7 +420,7 @@ const AppointmentDetailsPage = () => {
 
         {
             isModalOpen && (
-                <ModalComponent
+                <Modal
                     isOpen={isModalOpen}
                     onClose={handleModalClose}
                     modalType="appointment"

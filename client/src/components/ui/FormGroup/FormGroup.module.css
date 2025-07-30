@@ -1,0 +1,126 @@
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.required {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+
+.formControl {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--gray);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--dark);
+    background-color: var(--light);
+    transition: var(--transition);
+    box-sizing: border-box;
+}
+
+.formControl:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+.formControl:disabled {
+    background-color: var(--gray-light);
+    color: var(--gray);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.formControl::placeholder {
+    color: var(--gray);
+    opacity: 0.8;
+}
+
+
+.formControl.error {
+    border-color: var(--danger);
+    background-color: rgba(var(--danger-rgb), 0.05);
+}
+
+.formControl.error:focus {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.1);
+}
+
+
+select.formControl {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+    appearance: none;
+}
+
+select.formControl:disabled {
+    cursor: not-allowed;
+}
+
+textarea.formControl {
+    resize: vertical;
+    min-height: 4rem;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.helperText {
+    font-size: 0.75rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+    line-height: 1.4;
+}
+
+.errorMessage {
+    font-size: 0.75rem;
+    color: var(--danger);
+    margin-top: 0.25rem;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+
+.formRow {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.formRow .formGroup {
+    flex: 1;
+}
+
+
+
+
+@media (max-width: 768px) {
+    .formRow {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .formControl {
+        padding: 0.625rem;
+        font-size: 1rem;
+    }
+}

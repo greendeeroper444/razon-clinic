@@ -1,0 +1,134 @@
+.btnPrimary {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btnPrimary:hover:not(:disabled) {
+    background-color: var(--secondary);
+}
+
+.btnPrimary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+
+.btnSecondary {
+    background-color: var(--gray-light);
+    color: var(--dark-light);
+    border: none;
+    border-radius: 8px;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btnSecondary:hover:not(:disabled) {
+    background-color: var(--gray);
+    color: var(--light);
+}
+
+.btnSecondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+.btnClose {
+    background: none;
+    border: none;
+    color: var(--gray);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btnClose:hover:not(:disabled) {
+    color: var(--danger);
+}
+
+.btnClose:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+.btnRemove {
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 4px;
+}
+
+.btnRemove:hover:not(:disabled) {
+    color: var(--danger);
+    background-color: var(--gray-light);
+}
+
+.btnRemove:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+.btnAdd {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border: 1px dashed var(--primary);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+    text-align: center;
+}
+
+.btnAdd:hover:not(:disabled) {
+    background-color: var(--primary-light);
+    color: var(--secondary);
+}
+
+.btnAdd:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+.btnDelete {
+    padding: 0.5rem 1rem;
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btnDelete:hover {
+    background-color: #ff7875;
+}
+
+.btnDelete:disabled {
+    background-color: #ffccc7;
+    cursor: not-allowed;
+}

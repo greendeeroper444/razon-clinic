@@ -9544,3 +9544,51 @@ Use mongoose.model(name, schema)
     at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:664:3)
 2025-07-30 00:39:14 [INFO]: MongoDB Connected: 127.0.0.1 
 2025-07-30 00:39:14 [INFO]: Server running on port 3000 
+2025-07-30 15:43:22 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-30 15:43:22 [INFO]: Server running on port 3000 
+2025-07-30 23:14:54 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-07-30 23:14:54 [INFO]: Server running on port 3000 
+2025-07-31 01:03:34 [ERROR]: Error: Token expired ApiError: Token expired
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:31:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-07-31 01:03:34 [ERROR]: Error: Token expired ApiError: Token expired
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:31:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-07-31 01:03:34 [ERROR]: Error: Token expired ApiError: Token expired
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:31:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-07-31 01:03:34 [ERROR]: Error: Token expired ApiError: Token expired
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:31:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)

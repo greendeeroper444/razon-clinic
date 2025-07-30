@@ -3,7 +3,7 @@ import styles from './PatientsPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faIdCard, faVenusMars, faBirthdayCake, faPhone, faMapMarkerAlt, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { ModalComponent } from '../../../components';
+import { Main, Header, Modal } from '../../../components';
 import { FormDataType, PatientApiResponse, PersonalPatientDisplayData, PersonalPatientFormData } from '../../../types';
 import { getPersonalPatients, updatePersonalPatient, deletePersonalPatient } from '../../../services';
 import { toast } from 'sonner';
@@ -17,7 +17,8 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [showPatientDetail, setShowPatientDetail] = useState<boolean>(false);
     const [patients, setPatients] = useState<PersonalPatientDisplayData[]>([]);
     const [selectedPatient, setSelectedPatient] = useState<PersonalPatientDisplayData | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
     const [editData, setEditData] = useState<PersonalPatientFormData | null>(null);
@@ -78,14 +79,15 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     //fetch patients data
     const fetchPatients = async () => {
         try {
-            setIsLoading(true);
+            setLoading(true);
             const response = await getPersonalPatients();
             const transformedData = transformPatientData(response.data.personalPatients || []);
             setPatients(transformedData);
         } catch (error) {
+            setError('An error occurred while fetching patients');
             console.error('Error fetching patients:', error);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
@@ -222,21 +224,22 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
         setActiveTab(tab);
     };
 
+    const headerActions = [
+        {
+            id: 'newPatientBtn',
+            label: 'New Patient',
+            icon: faPlus,
+            onClick: handleOpenModal,
+            type: 'primary' as const
+        }
+    ];
+
   return (
-    <div className={styles.content}>
-        <div className={styles.contentHeader}>
-            <h1 className={styles.contentTitle}>Patients</h1>
-            <div className={styles.contentActions}>
-                <button 
-                    type='submit'
-                    className={styles.btnPrimary} 
-                    id="newPatientBtn" 
-                    onClick={handleOpenModal}
-                >
-                    <FontAwesomeIcon icon={faPlus} /> New Patient
-                </button>
-            </div>
-        </div>
+    <Main loading={loading} error={error} loadingMessage='Loading patients...'>
+        <Header
+            title='Patients'
+            actions={headerActions}
+        />
 
         {/* patients cards */}
         <div className={styles.patientCards}>
@@ -280,7 +283,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                             </thead>
                             <tbody>
                                 {
-                                    isLoading ? (
+                                    loading ? (
                                         <tr>
                                             <td colSpan={6} style={{textAlign: 'center'}}>Loading...</td>
                                         </tr>
@@ -496,7 +499,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* update patient modal */}
         {
             isModalOpen && (
-                <ModalComponent
+                <Modal
                     isOpen={isModalOpen}
                     onClose={handleModalClose}
                     modalType='patient'
@@ -510,7 +513,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* delete patient modal */}
         {
             isDeleteModalOpen && deletePersonalPatientData && (
-                <ModalComponent
+                <Modal
                     isOpen={isDeleteModalOpen}
                     onClose={handleDeleteModalClose}
                     modalType='delete'
@@ -520,7 +523,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                 />
             )
         }
-    </div>
+    </Main>
   )
 }
 

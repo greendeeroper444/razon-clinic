@@ -23,7 +23,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [showDetails, setShowDetails] = useState(false);
+    const [showDetails, setShowDetails] = useState<boolean>(false);
     const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -253,7 +253,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
 
         {/* pagination */}
         {
-            pagination && pagination.total > 1 && (
+            pagination && pagination.totalPages > 1 && (
                 <div className={styles.pagination}>
                     <button
                         type='button'
@@ -265,14 +265,14 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                     </button>
                     
                     <span className={styles.paginationInfo}>
-                        Page {pagination.current} of {pagination.total} 
+                        Page {pagination.currentPage} of {pagination.totalPages} 
                         ({pagination.totalRecords} total records)
                     </span>
                     
                     <button
                         type='button'
                         onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === pagination.total}
+                        disabled={currentPage === pagination.totalPages}
                         className={styles.paginationBtn}
                     >
                         Next

@@ -7,7 +7,7 @@ import {
     faUsers, 
     faShieldAlt
 } from '@fortawesome/free-solid-svg-icons'
-import { FooterComponent } from '../../../components'
+import { Footer } from '../../../components'
 import razon from '../../../assets/profiles/razon.jpg'
 import secretary from '../../../assets/profiles/secretary.jpg'
 
@@ -133,7 +133,7 @@ const AboutPage = () => {
             </section>
         </main>
 
-        <FooterComponent />
+        <Footer />
     </div>
   )
 }
