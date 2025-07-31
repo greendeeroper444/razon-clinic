@@ -3,7 +3,7 @@ import styles from './BillingsPaymentPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faSearch, faDownload, faCreditCard, faCheck, faExclamationTriangle, faTimes, faUser, faCalendar, faEye, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { BillingResponse } from '../../../types'
-import { Modal } from '../../../components'
+import { Header, Main, Modal } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
 import { getAllBillings } from '../../../services'
 import { formatDate, getPaymentStatusClass, getStatusIcon, openModalWithRefresh } from '../../../utils'
@@ -83,6 +83,10 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             onRefresh: () => fetchBillings(currentPage, searchTerm, filterStatus),
         });
     };
+    
+    const handleExport = () => {
+
+    }
 
     const handleModalClose = () => {
         setIsModalOpen(false);
@@ -136,24 +140,29 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const paidAmount = billingData.filter(bill => bill.paymentStatus === 'Paid').reduce((sum, bill) => sum + (bill.amount || 0), 0);
     const unpaidAmount = billingData.filter(bill => bill.paymentStatus === 'Unpaid').reduce((sum, bill) => sum + (bill.amount || 0), 0);
 
+
+    const headerActions = [
+        {
+            id: 'newBillingBtn',
+            label: 'New Billing',
+            icon: faPlus,
+            onClick: handleOpenModal,
+            type: 'primary' as const
+        },
+        {
+            label: 'Export',
+            icon: faDownload,
+            onClick: handleExport,
+            type: 'outline' as const
+        }
+    ];
+
     return (
-        <div className={styles.content}>
-            <div className={styles.contentHeader}>
-                <h1 className={styles.contentTitle}>Billing & Payments</h1>
-                <div className={styles.contentActions}>
-                    <button 
-                        type='button'
-                        className={styles.btnPrimary} 
-                        id='newBillingBtn'
-                        onClick={handleOpenModal}
-                    >
-                        <FontAwesomeIcon icon={faPlus} /> New Bill
-                    </button>
-                    <button type='button' className={styles.btnOutline}>
-                        <FontAwesomeIcon icon={faDownload} /> Export
-                    </button>
-                </div>
-            </div>
+        <Main loading={loading} error={error} loadingMessage='Loading billings...'>
+            <Header
+                title='Billing & Payments'
+                actions={headerActions}
+            />
 
             {/* summary cards */}
             <div className={styles.summaryCards}>
@@ -437,7 +446,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                     />
                 )
             }
-        </div>
+        </Main>
     )
 }
 

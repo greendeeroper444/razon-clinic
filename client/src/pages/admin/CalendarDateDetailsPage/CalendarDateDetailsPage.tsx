@@ -4,9 +4,9 @@ import { ChevronLeft, Clock, User, Phone, MapPin, Calendar, Eye, AlertCircle } f
 import styles from './CalendarDateDetailsPage.module.css'
 import { getAppointmentsByDate } from '../../../services'
 import { Appointment, AppointmentDataCalendar } from '../../../types'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { formatDateWithDay, formatTime, getStatusColor } from '../../../utils'
+import { Header, Main } from '../../../components'
 
 
 const CalendarDateDetailsPage: React.FC = () => {
@@ -67,34 +67,6 @@ const CalendarDateDetailsPage: React.FC = () => {
         navigate(`/admin/appointments/details/${appointmentId}`);
     };
 
-    if (loading) {
-        return (
-            <div className={styles.container}>
-                <div className={styles.loadingState}>
-                    <div className={styles.spinner}></div>
-                    <p>Loading appointment details...</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className={styles.container}>
-                <div className={styles.errorState}>
-                    <AlertCircle size={48} />
-                    <h3>Error Loading Appointments</h3>
-                    <p>{error}</p>
-                    <button 
-                        type='button'
-                        onClick={handleBack} className={styles.backButton}>
-                        <ChevronLeft size={16} />
-                        Go Back
-                    </button>
-                </div>
-            </div>
-        );
-    }
 
     if (!selectedDate) {
         return (
@@ -114,21 +86,17 @@ const CalendarDateDetailsPage: React.FC = () => {
         );
     }
 
+    const backButton = {
+        icon: faArrowLeft,
+        onClick: () => window.history.back()
+    };
+
   return (
-    <div className={styles.content}>
-        <div className={styles.contentHeader}>
-           <div className={styles.headerLeft}>
-                <button
-                    type='button'
-                    className={styles.btnBack}
-                    onClick={() => window.history.back()}
-                    title='Go Back'
-                >
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
-                <h1 className={styles.contentTitle}>Appointment Calendar Details</h1>
-            </div>
-        </div>
+    <Main loading={loading} error={error} loadingMessage='Loading calendar details...'>
+        <Header
+            title='Calendar Details'
+            backButton={backButton}
+        />
 
         {/* date header */}
         <div className={styles.dateHeader}>
@@ -234,7 +202,7 @@ const CalendarDateDetailsPage: React.FC = () => {
                 )
             }
         </div>
-    </div>
+    </Main>
   )
 }
 

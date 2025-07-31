@@ -194,8 +194,6 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     };
    
 
-
-
     const headerActions = [
         {
             id: 'newAppointmentBtn',

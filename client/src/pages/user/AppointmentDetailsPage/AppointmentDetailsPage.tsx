@@ -21,7 +21,7 @@ import {
 import { getAppointmentDetails, getMyAppointment, updateAppointment } from '../../../services'
 import { calculateAge, formatBirthdate, formatDate, getAppointmentStatusClass, getMiddleNameInitial } from '../../../utils'
 import { Appointment, AppointmentFormData, AppointmentResponse } from '../../../types'
-import { Modal } from '../../../components'
+import { Header, Main, Modal } from '../../../components'
 import { toast } from 'sonner'
 
 const AppointmentDetailsPage = () => {
@@ -225,21 +225,27 @@ const AppointmentDetailsPage = () => {
         );
     }
 
+    const headerActions = [
+        {
+            label: 'Edit',
+            icon: faEdit,
+            onClick: () => handleUpdateClick(appointment),
+            type: 'primary' as const
+        }
+    ];
+
+    const backButton = {
+        icon: faArrowLeft,
+        onClick: () => window.history.back()
+    };
+
   return (
-    <div className={styles.content}>
-        <div className={styles.contentHeader}>
-            <div className={styles.headerLeft}>
-                <button type='button' title='Back Button' className={styles.btnBack} onClick={() => window.history.back()}>
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
-                <h1 className={styles.contentTitle}>Appointment Details</h1>
-            </div>
-            <div className={styles.contentActions}>
-                <button type='button' className={styles.btnPrimary} onClick={() => handleUpdateClick(appointment)}>
-                    <FontAwesomeIcon icon={faEdit} /> Edit
-                </button>
-            </div>
-        </div>
+    <Main loading={loading} error={error} loadingMessage='Loading appointment details...'>
+        <Header
+            title='Appointment Details'
+            backButton={backButton}
+            actions={headerActions}
+        />
 
         <div className={styles.appStatusBanner}>
             <div className={styles.appointmentNumber}>
@@ -339,7 +345,7 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faMapMarkerAlt} /> Address:
                             </span>
-                            <span className={styles.tableValue}>{appointment.patientId.address}</span>
+                            <span className={styles.tableValue}>{appointment.address}</span>
                         </div>
                     </div>
 
@@ -430,7 +436,7 @@ const AppointmentDetailsPage = () => {
                 />
             )
         }
-    </div>
+    </Main>
   )
 }
 

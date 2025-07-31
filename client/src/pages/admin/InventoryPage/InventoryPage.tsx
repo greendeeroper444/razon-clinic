@@ -3,7 +3,7 @@ import styles from './InventoryPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { Modal } from '../../../components';
+import { Header, Main, Modal } from '../../../components';
 import { getInventoryItems, addInventoryItem, updateInventoryItem, deleteInventoryItem, getLowStockItems, getExpiringItems } from '../../../services';
 import { FormDataType, InventoryItem, InventoryItemFormData } from '../../../types';
 import { toast } from 'sonner';
@@ -13,7 +13,8 @@ import { getInventorySummaryCards } from '../../../config/inventorySummaryCards'
 
 const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [editData, setEditData] = useState<InventoryItemFormData | null>(null);
@@ -47,13 +48,14 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 
     const fetchInventoryItems = async () => {
         try {
-            setIsLoading(true);
+            setLoading(true);
             const response = await getInventoryItems();
             setInventoryItems(response.data.inventoryItems || []);
         } catch (error) {
+            setError('An error occurred while fetching items');
             console.error('Error fetching inventory items:', error);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
@@ -79,6 +81,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                 recentlyAdded: recentlyAdded
             });
         } catch (error) {
+            setError('An error occurred while fetching sumamary stats');
             console.error('Error fetching summary stats:', error);
         }
     };
@@ -194,21 +197,22 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 
     const summaryCards = getInventorySummaryCards(summaryStats);
 
+    const headerActions = [
+        {
+            id: 'newItemBtn',
+            label: 'New Item',
+            icon: faPlus,
+            onClick: handleOpenModal,
+            type: 'primary' as const
+        }
+    ];
+    
   return (
-    <div className={styles.content}>
-        <div className={styles.contentHeader}>
-            <h1 className={styles.contentTitle}>Inventory</h1>
-            <div className={styles.contentActions}>
-                <button 
-                    type='button'
-                    className={styles.btnPrimary} 
-                    id="newItemBtn"
-                    onClick={handleOpenModal}
-                >
-                    <FontAwesomeIcon icon={faPlus} /> Add Item
-                </button>
-            </div>
-        </div>
+    <Main loading={loading} error={error} loadingMessage='Loading items...'>
+        <Header
+            title='Inventory'
+            actions={headerActions}
+        />
 
         {/* inventory cards */}
         <div className={styles.inventoryCards}>
@@ -238,7 +242,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 
             <div className={styles.tableResponsive}>
                 {
-                    isLoading ? (
+                    loading ? (
                         <div className={styles.loadingState}>Loading inventory items...</div>
                     ) : (
                         <table className={styles.inventoryTable}>
@@ -354,7 +358,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                 />
             )
         }
-    </div>
+    </Main>
   )
 }
 

@@ -10,9 +10,6 @@ import {
   ArchivePage,
   LoginPage,
   SignupPage,
-  AboutPage,
-  ServicesPage,
-  ContactPage,
   UserAppointmentPage,
   ForgotPasswordPage,
   AppointmentDetailsPage,
@@ -39,9 +36,6 @@ const routes: RouteType[] = [
   { path: '/login', component: LoginPage, layout: 'user' },
   { path: '/signup', component: SignupPage, layout: 'user' },
   { path: '/forgot-password', component: ForgotPasswordPage, layout: 'user' },
-  { path: '/about', component: AboutPage, layout: 'user' },
-  { path: '/services', component: ServicesPage, layout: 'user' },
-  { path: '/contact', component: ContactPage, layout: 'user' },
   { path: '/terms-and-conditions', component: TermsAndConditionPage, layout: 'user' },
 
   //admin routes

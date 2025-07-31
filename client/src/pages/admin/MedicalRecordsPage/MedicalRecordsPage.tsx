@@ -16,7 +16,7 @@ import {
 import { OpenModalProps } from '../../../hooks/hook';
 import { getMedicalRecords, getMedicalRecordById, deleteMedicalRecord, addMedicalRecord } from '../../../services';
 import { FormDataType, MedicalRecord, MedicalRecordFormData, PaginationInfo } from '../../../types';
-import { Modal } from '../../../components';
+import { Header, Main, Modal } from '../../../components';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
 import { calculateAge2, openModalWithRefresh } from '../../../utils';
@@ -101,6 +101,10 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             onRefresh: () => fetchMedicalRecords(currentPage, searchTerm),
         });
     };
+
+    const handleReport = () => {
+        
+    }
 
 
     const handleCloseDetails = () => {
@@ -274,51 +278,28 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         return 'Active';
     };
 
-
-    if (loading) {
-        return (
-            <div className={styles.content}>
-                <div className={styles.loadingContainer}>
-                    <p>Loading medical records...</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className={styles.content}>
-                <div className={styles.errorContainer}>
-                    <p>Error: {error}</p>
-                    <button
-                        type='button'
-                        onClick={() => fetchMedicalRecords(currentPage, searchTerm)} 
-                        className={styles.btnPrimary}>
-                        Retry
-                    </button>
-                </div>
-            </div>
-        );
-    }
+    const headerActions = [
+        {
+            id: 'newMedicalRecordBtn',
+            label: 'New Record',
+            icon: faPlus,
+            onClick: handleOpenModal,
+            type: 'primary' as const
+        },
+        {
+            label: 'Report',
+            icon: faFileAlt,
+            onClick: handleReport,
+            type: 'outline' as const
+        }
+    ];
 
   return (
-    <div className={styles.content}>
-        <div className={styles.contentHeader}>
-            <h1 className={styles.contentTitle}>Medical Records</h1>
-            <div className={styles.contentActions}>
-                <button 
-                    type='button'
-                    className={styles.btnPrimary} 
-                    id='newMedicalRecordBtn' 
-                    onClick={handleOpenModal}
-                >
-                    <FontAwesomeIcon icon={faPlus} /> New Medical Record
-                </button>
-                <button type='button' className={styles.btnOutline}>
-                    <FontAwesomeIcon icon={faFileAlt} /> Generate Report
-                </button>
-            </div>
-        </div>
+    <Main loading={loading} error={error} loadingMessage='Loading medical records...'>
+        <Header
+            title='Medical Records'
+            actions={headerActions}
+        />
 
         {/* search section */}
         <div className={styles.searchFilterSection}>
@@ -559,7 +540,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                 />
             )
         }
-    </div>
+    </Main>
   )
 }
 

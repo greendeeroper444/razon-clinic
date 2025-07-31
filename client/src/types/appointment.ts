@@ -41,7 +41,7 @@ export interface AppointmentFormData {
     address?: string;
     religion?: string;
     preferredDate: string;
-    preferredTime: string;
+    preferredTime?: string | undefined | number;
     reasonForVisit: string;
     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
     patients?: {

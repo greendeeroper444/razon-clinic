@@ -29,7 +29,7 @@ const Main: React.FC<MainProps> = ({
             {
                 onErrorRetry && (
                     <button
-                        type="button"
+                        type='button'
                         className={styles.btnPrimary}
                         onClick={onErrorRetry}
                     >

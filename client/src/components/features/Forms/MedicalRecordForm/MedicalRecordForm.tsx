@@ -89,7 +89,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     onAutofill(autofillData);
                     autofillSuccessful = true;
                 } catch (autofillError) {
-                    console.log('Autofill API not available, falling back to direct field updates');
+                    console.log('Autofill API not available, falling back to direct field updates', autofillError);
                 }
             }
             

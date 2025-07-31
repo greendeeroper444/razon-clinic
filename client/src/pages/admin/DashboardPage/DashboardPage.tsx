@@ -6,7 +6,7 @@ import { getAppointments, getInventoryItems } from '../../../services';
 import { AppointmentResponse, InventoryItem } from '../../../types';
 import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial, formatDate, formatTime, getAppointmentStatusClass, getItemIcon, getStockStatus, getExpiryStatus } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
-import { Calendar } from '../../../components';
+import { Calendar, Header, Main } from '../../../components';
 
 const DashboardPage = () => {
     const navigate = useNavigate();
@@ -101,224 +101,224 @@ const DashboardPage = () => {
         }
     ];
 
-    return (
-        <div className={styles.content}>
-            <div className={styles.contentHeader}>
-                <h1 className={styles.contentTitle}>Clinic Overview</h1>
-            </div>
+  return (
+    <Main loading={loading} error={error} loadingMessage='Loading dashboard...'>
+        <Header
+            title='Clinic Overview'
+        />
 
-            {/* dashboard cards */}
-            <div className={styles.dashboardCards}>
-                {
-                    dashboardCards.map((card, index) => (
-                        <div className={styles.card} key={index}>
-                            <div className={styles.cardHeader}>
-                            <div className={styles.cardTitle}>{card.title}</div>
-                            <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
-                                <FontAwesomeIcon icon={card.icon} />
-                            </div>
-                            </div>
-                            <div className={styles.cardValue}>{card.value}</div>
-                            <div className={styles.cardFooter}>{card.footer}</div>
+        {/* dashboard cards */}
+        <div className={styles.dashboardCards}>
+            {
+                dashboardCards.map((card, index) => (
+                    <div className={styles.card} key={index}>
+                        <div className={styles.cardHeader}>
+                        <div className={styles.cardTitle}>{card.title}</div>
+                        <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
+                            <FontAwesomeIcon icon={card.icon} />
                         </div>
-                    ))
-                }
-
-                <Calendar />
-            </div>
-
-            {/* upcoming appointments */}
-            <div className={styles.appointmentsSection}>
-                <div className={styles.sectionHeader}>
-                    <h3 className={styles.sectionTitle}>
-                        Upcoming Appointments ({appointments.length})
-                    </h3>
-                    <div className={styles.sectionActions}>
-                        <a href="#" onClick={() => navigate('/admin/appointments')}>
-                            <span>View All</span>
-                            <FontAwesomeIcon icon={faChevronRight} />
-                        </a>
+                        </div>
+                        <div className={styles.cardValue}>{card.value}</div>
+                        <div className={styles.cardFooter}>{card.footer}</div>
                     </div>
-                </div>
+                ))
+            }
 
-                <div className={styles.tableResponsive}>
-                    <table className={styles.appointmentsTable}>
-                        <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>Preferred Date</th>
-                                <th>Preferred Time</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                loading ? (
-                                    <tr>
-                                        <td colSpan={5} className={styles.noData}>
-                                            Loading appointments...
-                                        </td>
-                                    </tr>
-                                ) : error ? (
-                                    <tr>
-                                        <td colSpan={5} className={styles.noData}>
-                                            {error}
-                                        </td>
-                                    </tr>
-                                ) : appointments.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={5} className={styles.noData}>
-                                            No appointments found.
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    appointments.map((appointment) => (
-                                        <tr key={appointment.id}>
-                                            <td>
-                                                <div className={styles.patientInfo}>
-                                                    <div className={styles.patientAvatar}>
-                                                        {
-                                                            (() => {
-                                                                const firstName = appointment.firstName || appointment.firstName;
-                                                                return firstName 
-                                                                    ? getFirstLetterOfFirstAndLastName(firstName)
-                                                                    : 'N/A';
-                                                            })()
-                                                        }
-                                                    </div>
-                                                    <div>
-                                                        <div className={styles.patientName}>
-                                                            {appointment.firstName} {appointment.lastName} {getMiddleNameInitial(appointment.middleName)}
-                                                        </div>
-                                                        <div className={styles.patientId}>
-                                                            APT-ID: {appointment.appointmentNumber || 'Walk-in'}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className={styles.appointmentDate}>
-                                                    {formatDate(appointment.preferredDate)}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className={styles.appointmentTime}>
-                                                    {formatTime(appointment.preferredTime)}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
-                                                    {appointment.status}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <button 
-                                                    type='button' 
-                                                    className={`${styles.actionBtn} ${styles.view}`}
-                                                    onClick={() => handleViewClick(appointment)}
-                                                >
-                                                    View
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <Calendar />
+        </div>
 
-            {/* inventory section */}
-            <div className={styles.inventorySection}>
-                <div className={styles.sectionHeader}>
+        {/* upcoming appointments */}
+        <div className={styles.appointmentsSection}>
+            <div className={styles.sectionHeader}>
                 <h3 className={styles.sectionTitle}>
-                    Medicine Inventory ({inventoryItems.length})
+                    Upcoming Appointments ({appointments.length})
                 </h3>
                 <div className={styles.sectionActions}>
-                    <a href="#" onClick={() => navigate('/admin/inventory')}>
-                    <span>Manage Inventory</span>
-                    <FontAwesomeIcon icon={faChevronRight} />
+                    <a href="#" onClick={() => navigate('/admin/appointments')}>
+                        <span>View All</span>
+                        <FontAwesomeIcon icon={faChevronRight} />
                     </a>
                 </div>
-                </div>
+            </div>
 
-                <div className={styles.tableResponsive}>
-                    <table className={styles.inventoryTable}>
-                        <thead>
-                            <tr>
-                            <th>Medicine</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Used</th>
-                            <th>Expiry Date</th>
+            <div className={styles.tableResponsive}>
+                <table className={styles.appointmentsTable}>
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Preferred Date</th>
+                            <th>Preferred Time</th>
+                            <th>Status</th>
                             <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                inventoryLoading ? (
-                                    <tr>
-                                        <td colSpan={6} className={styles.noData}>
-                                            Loading inventory items...
-                                        </td>
-                                    </tr>
-                                ) : inventoryError ? (
-                                    <tr>
-                                        <td colSpan={6} className={styles.noData}>
-                                            {inventoryError}
-                                        </td>
-                                    </tr>
-                                ) : inventoryItems.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={6} className={styles.noData}>
-                                            No inventory items found.
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    inventoryItems.map((item) => (
-                                        <tr key={item.id}>
-                                            <td>
-                                                <div className={styles.medicineInfo}>
-                                                    <div className={styles.medicineIcon}>
-                                                        <FontAwesomeIcon icon={getItemIcon(item.category)} />
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            loading ? (
+                                <tr>
+                                    <td colSpan={5} className={styles.noData}>
+                                        Loading appointments...
+                                    </td>
+                                </tr>
+                            ) : error ? (
+                                <tr>
+                                    <td colSpan={5} className={styles.noData}>
+                                        {error}
+                                    </td>
+                                </tr>
+                            ) : appointments.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className={styles.noData}>
+                                        No appointments found.
+                                    </td>
+                                </tr>
+                            ) : (
+                                appointments.map((appointment) => (
+                                    <tr key={appointment.id}>
+                                        <td>
+                                            <div className={styles.patientInfo}>
+                                                <div className={styles.patientAvatar}>
+                                                    {
+                                                        (() => {
+                                                            const firstName = appointment.firstName || appointment.firstName;
+                                                            return firstName 
+                                                                ? getFirstLetterOfFirstAndLastName(firstName)
+                                                                : 'N/A';
+                                                        })()
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <div className={styles.patientName}>
+                                                        {appointment.firstName} {appointment.lastName} {getMiddleNameInitial(appointment.middleName)}
                                                     </div>
-                                                    <div>
-                                                        <div className={styles.medicineName}>{item.itemName}</div>
-                                                        <div className={styles.medicineCategory}>{item.category}</div>
+                                                    <div className={styles.patientId}>
+                                                        APT-ID: {appointment.appointmentNumber || 'Walk-in'}
                                                     </div>
                                                 </div>
-                                            </td>
-                                            <td>{item.category}</td>
-                                            <td>
-                                                ₱{item.price}.00
-                                            </td>
-                                            <td className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
-                                                {item.quantityInStock}
-                                            </td>
-                                            <td>{item.quantityUsed || 0}</td>
-                                            <td>
-                                                <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
-                                                    {formatInventoryDate(item.expiryDate)}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <button type='button' className={`${styles.actionBtn} ${styles.restock}`} onClick={() => navigate('/admin/inventory')}>
-                                                    <FontAwesomeIcon icon={faPlus} /> Restock
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className={styles.appointmentDate}>
+                                                {formatDate(appointment.preferredDate)}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className={styles.appointmentTime}>
+                                                {formatTime(appointment.preferredTime)}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
+                                                {appointment.status}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button 
+                                                type='button' 
+                                                className={`${styles.actionBtn} ${styles.view}`}
+                                                onClick={() => handleViewClick(appointment)}
+                                            >
+                                                View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
-    )
+
+        {/* inventory section */}
+        <div className={styles.inventorySection}>
+            <div className={styles.sectionHeader}>
+            <h3 className={styles.sectionTitle}>
+                Medicine Inventory ({inventoryItems.length})
+            </h3>
+            <div className={styles.sectionActions}>
+                <a href="#" onClick={() => navigate('/admin/inventory')}>
+                <span>Manage Inventory</span>
+                <FontAwesomeIcon icon={faChevronRight} />
+                </a>
+            </div>
+            </div>
+
+            <div className={styles.tableResponsive}>
+                <table className={styles.inventoryTable}>
+                    <thead>
+                        <tr>
+                        <th>Medicine</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Used</th>
+                        <th>Expiry Date</th>
+                        <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            inventoryLoading ? (
+                                <tr>
+                                    <td colSpan={6} className={styles.noData}>
+                                        Loading inventory items...
+                                    </td>
+                                </tr>
+                            ) : inventoryError ? (
+                                <tr>
+                                    <td colSpan={6} className={styles.noData}>
+                                        {inventoryError}
+                                    </td>
+                                </tr>
+                            ) : inventoryItems.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className={styles.noData}>
+                                        No inventory items found.
+                                    </td>
+                                </tr>
+                            ) : (
+                                inventoryItems.map((item) => (
+                                    <tr key={item.id}>
+                                        <td>
+                                            <div className={styles.medicineInfo}>
+                                                <div className={styles.medicineIcon}>
+                                                    <FontAwesomeIcon icon={getItemIcon(item.category)} />
+                                                </div>
+                                                <div>
+                                                    <div className={styles.medicineName}>{item.itemName}</div>
+                                                    <div className={styles.medicineCategory}>{item.category}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{item.category}</td>
+                                        <td>
+                                            ₱{item.price}.00
+                                        </td>
+                                        <td className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
+                                            {item.quantityInStock}
+                                        </td>
+                                        <td>{item.quantityUsed || 0}</td>
+                                        <td>
+                                            <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
+                                                {formatInventoryDate(item.expiryDate)}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button type='button' className={`${styles.actionBtn} ${styles.restock}`} onClick={() => navigate('/admin/inventory')}>
+                                                <FontAwesomeIcon icon={faPlus} /> Restock
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </Main>
+  )
 }
 
 export default DashboardPage

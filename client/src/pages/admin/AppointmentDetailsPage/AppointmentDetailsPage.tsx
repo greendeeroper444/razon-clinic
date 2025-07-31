@@ -23,7 +23,7 @@ import { toast } from 'sonner';
 import { getAppointmentDetails, updateAppointmentStatus, updateAppointment, getMyAppointment } from '../../../services';
 import { calculateAge, formatBirthdate, formatDate, getAppointmentStatusClass, getMiddleNameInitial } from '../../../utils';
 import { Main, Header, Modal } from '../../../components';
-import { Appointment, AppointmentFormData, AppointmentStatus } from '../../../types';
+import { Appointment, AppointmentFormData, AppointmentStatus, FormDataType } from '../../../types';
 
 const AppointmentDetailsPage = () => {
     const { appointmentId } = useParams();
@@ -205,12 +205,20 @@ const AppointmentDetailsPage = () => {
         }
     };
 
-    const handleSubmitAppointmentUpdate = async (formData: AppointmentFormData) => {
+    const handleSubmitAppointmentUpdate = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string') {
+            console.error('Invalid data or missing medical ID');
+            return;
+        }
+
+        //asertion simce we know it's MedicalRecordFormData in this context
+        const medicalData = data as AppointmentFormData;
+
         try {
             setIsUpdating(true);
             
             if (selectedAppointmentForEdit?.id) {
-                await updateAppointment(selectedAppointmentForEdit.id, formData);
+                await updateAppointment(selectedAppointmentForEdit.id, medicalData);
                 
                 //refetch appointment details
                 await fetchAppointmentDetails();
@@ -228,31 +236,6 @@ const AppointmentDetailsPage = () => {
             setIsUpdating(false);
         }
     };
-
-    if (loading) {
-        return (
-        <div className={styles.loadingContainer}>
-            <div className={styles.spinner}></div>
-            <p>Loading appointment details...</p>
-        </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className={styles.errorContainer}>
-                <p className={styles.errorMessage}>{error}</p>
-                <button
-                    type='button'
-                    className={styles.btnPrimary}
-                    onClick={() => window.history.back()}
-                    title="Go Back"
-                >
-                    <FontAwesomeIcon icon={faArrowLeft} /> Go Back
-                </button>
-            </div>
-        );
-    }
 
     if (!appointment) {
         return (
@@ -341,14 +324,16 @@ const AppointmentDetailsPage = () => {
                                 {new Date(appointment.createdAt).toLocaleString()}
                             </span>
                         </div>
-                        {appointment.updatedAt !== appointment.createdAt && (
-                            <div className={styles.tableRow}>
-                                <span className={styles.tableLabel}>Last Updated:</span>
-                                <span className={styles.tableValue}>
-                                    {new Date(appointment.updatedAt).toLocaleString()}
-                                </span>
-                            </div>
-                        )}
+                        {
+                            appointment.updatedAt !== appointment.createdAt && (
+                                <div className={styles.tableRow}>
+                                    <span className={styles.tableLabel}>Last Updated:</span>
+                                    <span className={styles.tableValue}>
+                                        {new Date(appointment.updatedAt).toLocaleString()}
+                                    </span>
+                                </div>
+                            )
+                        }
                     </div>
 
                     {/* patient details information */}
@@ -391,7 +376,7 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faMapMarkerAlt} /> Address:
                             </span>
-                            <span className={styles.tableValue}>{appointment.patientId.address}</span>
+                            <span className={styles.tableValue}>{appointment.address}</span>
                         </div>
                     </div>
 
