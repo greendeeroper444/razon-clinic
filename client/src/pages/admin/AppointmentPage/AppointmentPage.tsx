@@ -1,198 +1,74 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import styles from './AppointmentPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { OpenModalProps } from '../../../hooks/hook'
 import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass } from '../../../utils'
-import { AppointmentFormData, AppointmentResponse, FormDataType, Patient } from '../../../types'
-import { getAppointments, updateAppointment, deleteAppointment } from '../../../services'
+import { AppointmentFormData, AppointmentResponse, FormDataType } from '../../../types'
 import { Main, Header, Modal } from '../../../components'
-import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
+import { useAppointmentStore } from '../../../stores'
 
 const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
-    const navigate = useNavigate();
-    const [appointments, setAppointments] = useState<AppointmentResponse[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-    const [selectedAppointment, setSelectedAppointment] = useState<AppointmentFormData & { id?: string } | null>(null);
-    const [deleteAppointmentData, setDeleteAppointmentData] = useState<{id: string, itemName: string, itemType: string} | null>(null);
-    const [patients, setPatients] = useState<Patient[]>([]);
-    const [isProcessing, setIsProcessing] = useState<boolean>(false);
+    const navigate = useNavigate()
+    
+    //zustand store selectors
+    const {
+        appointments,
+        patients,
+        loading,
+        error,
+        isProcessing,
+        selectedAppointment,
+        isModalOpen,
+        isDeleteModalOpen,
+        deleteAppointmentData,
+        fetchAppointments,
+        updateAppointmentData,
+        deleteAppointment,
+        openUpdateModal,
+        openDeleteModal,
+        closeUpdateModal,
+        closeDeleteModal
+    } = useAppointmentStore()
 
-    //create a memoized fetchAppointments function using useCallback
-    const fetchAppointments = useCallback(async () => {
-        try {
-            setLoading(true);
-            const response = await getAppointments();
-            if (response.data.success) {
-                setAppointments(response.data.data);
-                
-                //extract unique patients from appointments for the modal dropdown
-                //filter out appointments without patientId
-                const uniquePatients = Array.from(
-                    new Map(
-                        response.data.data
-                            .filter(appointment => appointment?.id) 
-                            .map(appointment => [
-                                appointment.id,
-                                {
-                                    id: appointment.id,
-                                    firstName: appointment.firstName || appointment.firstName || 'N/A',
-                                    patientNumber: appointment.appointmentNumber || 'N/A'
-                                }
-                            ])
-                    ).values()
-                );
-                setPatients(uniquePatients as Patient[]);
-            } else {
-                setError('Failed to fetch appointments');
-            }
-        } catch (err) {
-            setError('An error occurred while fetching appointments');
-            console.error('Error fetching appointments:', err);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
 
     useEffect(() => {
-        fetchAppointments();
-    }, [fetchAppointments]);
+        fetchAppointments()
+    }, [fetchAppointments])
 
     const handleOpenModal = () => {
         openModalWithRefresh({
             modalType: 'appointment',
             openModal,
             onRefresh: fetchAppointments,
-        });
-    };
+        })
+    }
 
     const handleViewClick = (appointment: AppointmentResponse) => {
-        navigate(`/admin/appointments/details/${appointment.id}`);
-    };
-
-    const handleUpdateClick = (appointment: AppointmentResponse) => {
-        //convert the appointment response to form data format
-        const formData: AppointmentFormData & { id?: string } = {
-            id: appointment.id,
-            firstName: appointment.firstName,
-            lastName: appointment.lastName,
-            middleName: appointment.middleName || null,
-            preferredDate: appointment.preferredDate.split('T')[0],
-            preferredTime: appointment.preferredTime,
-            reasonForVisit: appointment.reasonForVisit,
-            status: appointment.status,
-            
-            //patient information fields
-            birthdate: appointment.birthdate,
-            sex: appointment.sex,
-            height: appointment.height,
-            weight: appointment.weight,
-            religion: appointment.religion,
-            
-            //map nested mother info to flat field names
-            motherName: appointment.motherInfo?.name || '',
-            motherAge: appointment.motherInfo?.age || '',
-            motherOccupation: appointment.motherInfo?.occupation || '',
-            
-            //map nested father info to flat field names
-            fatherName: appointment.fatherInfo?.name || '',
-            fatherAge: appointment.fatherInfo?.age || '',
-            fatherOccupation: appointment.fatherInfo?.occupation || '',
-            
-            //keep nested structure for backward compatibility if needed
-            motherInfo: appointment.motherInfo ? {
-                name: appointment.motherInfo.name,
-                age: appointment.motherInfo.age,
-                occupation: appointment.motherInfo.occupation,
-            } : undefined,
-            fatherInfo: appointment.fatherInfo ? {
-                name: appointment.fatherInfo.name,
-                age: appointment.fatherInfo.age,
-                occupation: appointment.fatherInfo.occupation,
-            } : undefined,
-            contactNumber: appointment.contactNumber,
-            address: appointment.address
-        };
-    
-        setSelectedAppointment(formData);
-        setIsModalOpen(true);
-    };
-
-    const handleDeleteClick = (appointment: AppointmentResponse) => {
-        const patientName = appointment.firstName || 'Unknown Patient';
-        const appointmentDate = appointment.birthdate || appointment.preferredDate;
-        
-        setDeleteAppointmentData({
-            id: appointment.id,
-            itemName: `${patientName}'s appointment on ${formatDate(appointmentDate)}`,
-            itemType: 'Appointment'
-        });
-        setIsDeleteModalOpen(true);
-    };
-
-    const handleModalClose = () => {
-        setIsModalOpen(false);
-        setSelectedAppointment(null);
-    };
-
-    const handleDeleteModalClose = () => {
-        setIsDeleteModalOpen(false);
-        setDeleteAppointmentData(null);
-    };
+        navigate(`/admin/appointments/details/${appointment.id}`)
+    }
 
     const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
-        if (typeof data === 'string') {
-            console.error('Invalid data or missing medical ID');
-            return;
+        if (typeof data === 'string' || !selectedAppointment?.id) {
+            console.error('Invalid data or missing appointment ID')
+            return
         }
 
-        //asertion simce we know it's MedicalRecordFormData in this context
-        const medicalData = data as AppointmentFormData;
-        try {
-            setLoading(true);
-            
-            if (selectedAppointment?.id) {
+        //asertion simce we know it's AppointmentFormData in this context
+        const appointmentData = data as AppointmentFormData;
 
-                await updateAppointment(selectedAppointment.id, medicalData);
-                await fetchAppointments();
-                
-                toast.success('Updated appointment successfully!')
-            }
-        } catch (error) {
-            console.error('Error updating appointment:', error);
-            toast.error('Failed to update appointment');
-        } finally {
-            setLoading(false);
-            setIsModalOpen(false);
-        }
-    };
+        await updateAppointmentData(selectedAppointment.id, appointmentData)
+    }
 
     const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {
-            console.error('Invalid patient ID');
-            return;
+            console.error('Invalid appointment ID')
+            return
         }
 
-        try {
-            setIsProcessing(true);
-            
-            await deleteAppointment(data);
-            await fetchAppointments();
-            
-            toast.success('Appointment deleted successfully!');
-        } catch (error) {
-            console.error('Error deleting appointment:', error);
-            toast.error('Failed to delete appointment');
-        } finally {
-            setIsProcessing(false);
-            setIsDeleteModalOpen(false);
-        }
-    };
-   
+        await deleteAppointment(data)
+    }
 
     const headerActions = [
         {
@@ -202,7 +78,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             onClick: handleOpenModal,
             type: 'primary' as const
         }
-    ];
+    ]
 
   return (
     <Main loading={loading} error={error} loadingMessage='Loading appointments...'>
@@ -210,7 +86,6 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             title='Appointments'
             actions={headerActions}
         />
-
 
         {/* appointments */}
         <div className={styles.appointmentsSection}>
@@ -242,7 +117,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                             appointments.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} className={styles.noData}>
-                                        No appointments found. Create your first appointment using the "New Appointment" button.
+                                    No appointments found. Create your first appointment using the "New Appointment" button.
                                     </td>
                                 </tr>
                             ) : (
@@ -253,10 +128,10 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                 <div className={styles.patientAvatar}>
                                                     {
                                                         (() => {
-                                                            const firstName = appointment.firstName || appointment.firstName;
+                                                            const firstName = appointment.firstName
                                                             return firstName 
-                                                                ? getFirstLetterOfFirstAndLastName(firstName)
-                                                                : 'N/A';
+                                                            ? getFirstLetterOfFirstAndLastName(firstName)
+                                                            : 'N/A'
                                                         })()
                                                     }
                                                 </div>
@@ -296,14 +171,14 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                             <button 
                                                 type='button' 
                                                 className={`${styles.actionBtn} ${styles.update}`}
-                                                onClick={() => handleUpdateClick(appointment)}
+                                                onClick={() => openUpdateModal(appointment)}
                                             >
                                                 Update
                                             </button>
                                             <button 
                                                 type='button' 
                                                 className={`${styles.actionBtn} ${styles.delete}`}
-                                                onClick={() => handleDeleteClick(appointment)}
+                                                onClick={() => openDeleteModal(appointment)}
                                             >
                                                 Delete
                                             </button>
@@ -322,7 +197,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             isModalOpen && (
                 <Modal
                     isOpen={isModalOpen}
-                    onClose={handleModalClose}
+                    onClose={closeUpdateModal}
                     modalType="appointment"
                     onSubmit={handleSubmitUpdate}
                     patients={patients}
@@ -336,7 +211,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             isDeleteModalOpen && deleteAppointmentData && (
                 <Modal
                     isOpen={isDeleteModalOpen}
-                    onClose={handleDeleteModalClose}
+                    onClose={closeDeleteModal}
                     modalType="delete"
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteAppointmentData}

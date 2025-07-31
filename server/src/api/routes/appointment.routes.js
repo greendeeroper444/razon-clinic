@@ -26,13 +26,6 @@ router.get(
 );
 
 
-router.get(
-    '/getAppointmentDetails/:appointmentId', 
-    authenticate, 
-    AppointmentController.getAppointmentDetails 
-);
-
-
 //get a specific appointment by ID
 router.get(
     '/getAppointmentById/:appointmentId', 

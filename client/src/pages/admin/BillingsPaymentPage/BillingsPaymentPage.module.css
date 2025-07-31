@@ -106,7 +106,6 @@
   align-items: center;
   gap: 8px;
   transition: var(--transition);
-  font-family: 'Poppins', sans-serif;
 }
 
 .btnSecondary:hover {
@@ -238,7 +237,6 @@
   border: 2px solid var(--gray-light);
   border-radius: var(--border-radius);
   font-size: 14px;
-  font-family: 'Poppins', sans-serif;
   background-color: white;
   transition: var(--transition);
 }
@@ -260,7 +258,6 @@
   border: 2px solid var(--gray-light);
   border-radius: var(--border-radius);
   font-size: 14px;
-  font-family: 'Poppins', sans-serif;
   background-color: white;
   cursor: pointer;
   min-width: 150px;
@@ -287,7 +284,6 @@
   width: 100%;
   min-width: 1200px;
   border-collapse: collapse;
-  font-family: 'Poppins', sans-serif;
   table-layout: auto;
 }
 
@@ -344,7 +340,6 @@
 .billId {
   font-weight: 600;
   color: var(--primary);
-  font-family: 'Courier New', monospace;
   font-size: 13px;
   background: var(--primary-light);
   padding: 4px 8px;

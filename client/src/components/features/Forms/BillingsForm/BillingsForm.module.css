@@ -30,7 +30,6 @@
     background-color: var(--light);
     color: var(--dark);
     transition: var(--transition);
-    font-family: 'Poppins', sans-serif;
 }
 
 .formControl:focus {

@@ -116,7 +116,6 @@
   border: 2px solid var(--gray-light);
   border-radius: 8px;
   font-size: 14px;
-  font-family: 'Poppins', sans-serif;
   transition: all 0.3s ease;
 }
 
@@ -147,7 +146,6 @@
   border: 2px solid var(--gray-light);
   border-radius: 8px;
   font-size: 14px;
-  font-family: 'Poppins', sans-serif;
   background: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -174,7 +172,6 @@
   width: 100%;
   min-width: 1200px;
   border-collapse: collapse;
-  font-family: 'Poppins', sans-serif;
   table-layout: auto;
 }
 
@@ -505,7 +502,6 @@
   border: 2px solid var(--gray-light);
   border-radius: 8px;
   font-size: 14px;
-  font-family: 'Poppins', sans-serif;
   transition: all 0.3s ease;
   background: white;
 }

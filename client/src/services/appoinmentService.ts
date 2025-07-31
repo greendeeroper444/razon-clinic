@@ -9,7 +9,7 @@ export const addAppointment = async (appointmentData: AppointmentFormData) => {
     
     const processedData = cleanObject({
         ...otherData,
-        preferredTime: convertTo24Hour(appointmentData.preferredTime || ''),
+        preferredTime: convertTo24Hour(String(appointmentData.preferredTime)),
         motherAge: appointmentData.motherAge ? Number(appointmentData.motherAge) : undefined,
         fatherAge: appointmentData.fatherAge ? Number(appointmentData.fatherAge) : undefined,
         motherName: appointmentData.motherName?.trim(),
@@ -136,10 +136,10 @@ export const getAvailableTimeSlots = async (date: string) => {
 
 
 
-export const getAppointmentDetails = async (appointmentId: string) => {
+export const getAppointmentById = async (appointmentId: string) => {
     try {
         return await axios.get(
-            `${API_BASE_URL}/api/appointments/getAppointmentDetails/${appointmentId}`,
+            `${API_BASE_URL}/api/appointments/getAppointmentById/${appointmentId}`,
             {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -150,19 +150,6 @@ export const getAppointmentDetails = async (appointmentId: string) => {
         console.error("Error fetching appointment details:", error);
         throw error;
     }
-};
-
-
-
-export const getAppointmentById = async (appointmentId: string) => {
-    return await axios.get<{success: boolean, data: AppointmentResponse}>(
-        `${API_BASE_URL}/api/appointments/getAppointmentById/${appointmentId}`,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        }
-    );
 };
 
 
@@ -196,6 +183,7 @@ export const updateAppointment = async (appointmentId: string, appointmentData: 
     
     const processedData = cleanObject({
         ...otherData,
+        preferredTime: appointmentData.preferredTime ? convertTo24Hour(String(appointmentData.preferredTime)) : undefined,
         motherInfo: createParentInfo(motherName, motherAge, motherOccupation),
         fatherInfo: createParentInfo(fatherName, fatherAge, fatherOccupation)
     });

@@ -108,7 +108,7 @@ export interface AppointmentStatusUpdate {
     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
 }
 
-export type AppointmentStatus = "Pending" | "Scheduled" | "Completed" | "Cancelled" | "Rebooked";
+export type AppointmentStatus = 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
 
 export interface ParentInfo {
     name: string;

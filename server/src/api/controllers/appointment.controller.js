@@ -302,7 +302,7 @@ class AppointmentController {
         }
     }
 
-    async getAppointmentDetails(req, res, next) {
+    async getAppointmentById(req, res, next) {
         try {
             const { appointmentId } = req.params;
             
@@ -393,27 +393,6 @@ class AppointmentController {
             next(error);
         }
     }
-
-
-    async getAppointmentById(req, res, next) {
-        try {
-            const { appointmentId } = req.params;
-            
-            const appointment = await Appointment.findById(appointmentId)
-                .populate('patientId', 'firstName lastName middleName emailOrContactNumber');
-            
-            if (!appointment) {
-                throw new ApiError('Appointment not found', 404);
-            }
-            
-            return res.status(200).json({
-                success: true,
-                data: appointment
-            });
-        } catch (error) {
-            next(error);
-        }
-    };
 
 
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,248 +19,96 @@ import {
     faUsers,
     faPray
 } from '@fortawesome/free-solid-svg-icons';
-import { toast } from 'sonner';
-import { getAppointmentDetails, updateAppointmentStatus, updateAppointment, getMyAppointment } from '../../../services';
 import { calculateAge, formatBirthdate, formatDate, getAppointmentStatusClass, getMiddleNameInitial } from '../../../utils';
 import { Main, Header, Modal } from '../../../components';
-import { Appointment, AppointmentFormData, AppointmentStatus, FormDataType } from '../../../types';
+import { AppointmentFormData, FormDataType } from '../../../types';
+import { useAppointmentStore } from '../../../stores';
 
 const AppointmentDetailsPage = () => {
-    const { appointmentId } = useParams();
-    const [appointment, setAppointment] = useState<Appointment | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
-    const [selectedAppointmentForEdit, setSelectedAppointmentForEdit] = useState<AppointmentFormData & { id?: string } | null>(null);
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [patients, setPatients] = useState<Array<{ id: string; firstName: string }>>([]);
-
-    //extract appointment details fetching into a separate function
-    const fetchAppointmentDetails = useCallback(async () => {
-        if (!appointmentId) {
-            setError('No appointment ID provided');
-            setLoading(false);
-            return;
-        }
-
-        try {
-            setLoading(true);
-            const response = await getAppointmentDetails(appointmentId as string);
-            
-            if (response.data && response.data.success) {
-                setAppointment(response.data.data);
-                setError(null);
-            } else {
-                setError('Failed to load appointment details: ' + (response.data?.message || 'Unknown error'));
-            }
-        } catch (err) {
-            console.error('Error fetching appointment details:', err);
-            if (err && typeof err === 'object' && 'response' in err) {
-                const errorObj = err as { response?: { data?: { message?: string } }, message?: string };
-                setError(`Failed to load appointment details: ${errorObj.response?.data?.message || errorObj.message}`);
-            } else if (err instanceof Error) {
-                setError(`Failed to load appointment details: ${err.message}`);
-            } else {
-                setError('Failed to load appointment details: Unknown error');
-            }
-        } finally {
-            setLoading(false);
-        }
-    }, [appointmentId]);
-
-    const fetchPatients = useCallback(async () => {
-        try {
-            //for admin, we might need a different endpoint to get all patients
-            //for now, using the same endpoint but this should be updated based on your API
-            const response = await getMyAppointment();
-            if (response.data.success) {
-                //extract unique patients from appointments for the modal dropdown
-               const uniquePatients = Array.from(
-                    new Map(
-                        response.data.data.map(appointment => [
-                            appointment.patientId.id,
-                            {
-                                id: appointment.patientId.id,
-                                firstName: appointment.patientId.firstName
-                            }
-                        ])
-                    ).values()
-                );
-                setPatients(uniquePatients);
-            } else {
-                console.error('Failed to fetch patients list');
-            }
-        } catch (err) {
-            console.error('Error fetching patients list:', err);
-        }
-    }, []);
+    const { appointmentId } = useParams()
+    
+    //zustand store selectors
+    const {
+        currentAppointment,
+        patients,
+        loading,
+        error,
+        selectedAppointment,
+        isModalOpen,
+        isStatusModalOpen,
+        fetchAppointmentById,
+        fetchMyAppointments,
+        updateAppointmentData,
+        updateAppointmentStatus,
+        openUpdateModal,
+        closeUpdateModal,
+        openStatusModal,
+        closeStatusModal,
+        clearCurrentAppointment
+    } = useAppointmentStore()
 
     useEffect(() => {
-        fetchAppointmentDetails();
-        fetchPatients();
-    }, [fetchAppointmentDetails, fetchPatients]);
+        if (appointmentId) {
+            fetchAppointmentById(appointmentId)
+            fetchMyAppointments() //for patient dropdown in modal
+        }
 
-    //function to create a custom event for appointment refresh
-    const createRefreshEvent = () => {
-        //create a custom event to trigger refresh
-        const refreshEvent = new CustomEvent('appointment-refresh');
-        window.dispatchEvent(refreshEvent);
-    };
+        //cleanup when component unmounts
+        // return () => {
+        //     clearCurrentAppointment()
+        // }
+    }, [appointmentId, fetchAppointmentById, fetchMyAppointments, clearCurrentAppointment])
 
-    const handleStatusClick = () => {
-        if (appointment) {
-            setSelectedAppointment(appointment);
-            setIsStatusModalOpen(true);
+    const handleUpdateStatusClick = () => {
+        if (currentAppointment) {
+            openStatusModal(currentAppointment);
         }
     };
 
-    const handleEditClick = () => {
-        if (appointment) {
-            //convert the appointment response to form data format
-            const formData: AppointmentFormData & { id?: string } = {
-                id: appointment.id,
-                firstName: appointment.firstName,
-                lastName: appointment.lastName,
-                middleName: appointment.middleName || null,
-                preferredDate: appointment.preferredDate.split('T')[0],
-                preferredTime: appointment.preferredTime,
-                reasonForVisit: appointment.reasonForVisit,
-                status: appointment.status,
-                
-                //patient information fields
-                birthdate: appointment.birthdate,
-                sex: appointment.sex,
-                height: appointment.height,
-                weight: appointment.weight,
-                religion: appointment.religion,
-                
-                //map nested mother info to flat field names
-                motherName: appointment.motherInfo?.name || '',
-                motherAge: appointment.motherInfo?.age || '',
-                motherOccupation: appointment.motherInfo?.occupation || '',
-                
-                //map nested father info to flat field names
-                fatherName: appointment.fatherInfo?.name || '',
-                fatherAge: appointment.fatherInfo?.age || '',
-                fatherOccupation: appointment.fatherInfo?.occupation || '',
-                
-                //keep nested structure for backward compatibility if needed
-                motherInfo: appointment.motherInfo ? {
-                    name: appointment.motherInfo.name,
-                    age: appointment.motherInfo.age,
-                    occupation: appointment.motherInfo.occupation,
-                } : undefined,
-                fatherInfo: appointment.fatherInfo ? {
-                    name: appointment.fatherInfo.name,
-                    age: appointment.fatherInfo.age,
-                    occupation: appointment.fatherInfo.occupation,
-                } : undefined,
-                contactNumber: appointment.contactNumber,
-                address: appointment.address
-            };
-        
-            setSelectedAppointmentForEdit(formData);
-            setIsEditModalOpen(true);
+    const handleAppointmentUpdateClick = () => {
+        if (currentAppointment) {
+            openUpdateModal(currentAppointment)
         }
     };
 
-    const handleStatusModalClose = () => {
-        setIsStatusModalOpen(false);
-        setSelectedAppointment(null);
-    };
-
-    const handleEditModalClose = () => {
-        setIsEditModalOpen(false);
-        setSelectedAppointmentForEdit(null);
-    };
-
-    const handleSubmitStatusUpdate = async (data: { status: string }) => {
-        try {
-            setIsUpdating(true);
-            
-            const response = await updateAppointmentStatus(appointmentId as string, data.status);
-            
-            if (response.data && response.data.success) {
-                //update the local state to reflect the change
-                if (appointment) {
-                    setAppointment({
-                        ...appointment,
-                        status: data.status as AppointmentStatus,
-                        updatedAt: new Date().toISOString()
-                    });
-                }
-                toast.success('Status updated successfully');
-                setIsStatusModalOpen(false);
-            } else {
-                throw new Error(response.data?.message || 'Failed to update status');
-            }
-        } catch (error) {
-            console.error('Error updating appointment status:', error);
-            setError('Failed to update appointment status');
-            toast.error('Failed to update appointment status');
-        } finally {
-            setIsUpdating(false);
-        }
-    };
-
-    const handleSubmitAppointmentUpdate = async (data: FormDataType | string): Promise<void> => {
-        if (typeof data === 'string') {
-            console.error('Invalid data or missing medical ID');
-            return;
+    const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string' || !selectedAppointment?.id) {
+            console.error('Invalid data or missing appointment ID')
+            return
         }
 
-        //asertion simce we know it's MedicalRecordFormData in this context
-        const medicalData = data as AppointmentFormData;
+        //assertion since we know it's AppointmentFormData in this context
+        const appointmentData = data as AppointmentFormData
 
-        try {
-            setIsUpdating(true);
-            
-            if (selectedAppointmentForEdit?.id) {
-                await updateAppointment(selectedAppointmentForEdit.id, medicalData);
-                
-                //refetch appointment details
-                await fetchAppointmentDetails();
-                
-                //create refresh event for other components
-                createRefreshEvent();
-                
-                toast.success('Updated appointment successfully!');
-                setIsEditModalOpen(false);
-            }
-        } catch (error) {
-            console.error('Error updating appointment:', error);
-            toast.error('Failed to update appointment');
-        } finally {
-            setIsUpdating(false);
+        await updateAppointmentData(selectedAppointment.id, appointmentData)
+    }
+    
+
+    const handleSubmitStatusUpdate = async (data: { status: string }): Promise<void> => {
+        if (!appointmentId) {
+            console.error('Missing appointment ID')
+            return
         }
+
+        await updateAppointmentStatus(appointmentId, data.status);
     };
 
-    if (!appointment) {
-        return (
-            <div className={styles.errorContainer}>
-                <p className={styles.errorMessage}>Appointment not found</p>
-                <button type='button' className={styles.btnPrimary} onClick={() => window.history.back()}>
-                    <FontAwesomeIcon icon={faArrowLeft} /> Go Back
-                </button>
-            </div>
-        );
+    //don't render if appointment is still loading
+    if (!currentAppointment) {
+        return null
     }
 
     const headerActions = [
         {
-            label: isUpdating ? 'Updating...' : 'Edit',
+            label: 'Edit',
             icon: faEdit,
-            onClick: handleEditClick,
-            disabled: isUpdating,
+            onClick: handleAppointmentUpdateClick,
             type: 'primary' as const
         },
         {
-            label: isUpdating ? 'Updating...' : 'Status',
+            label: 'Status',
             icon: faCheckCircle,
-            onClick: handleStatusClick,
-            disabled: isUpdating,
+            onClick: handleUpdateStatusClick,
             type: 'outline' as const
         }
     ];
@@ -271,7 +119,7 @@ const AppointmentDetailsPage = () => {
     };
 
   return (
-    <Main loading={loading} error={error} loadingMessage='Loading appointment details...'>
+    <Main loading={loading} loadingType='spinner' error={error} loadingMessage='Loading appointment details...'>
         <Header
             title='Appointment Details'
             backButton={backButton}
@@ -280,10 +128,10 @@ const AppointmentDetailsPage = () => {
 
         <div className={styles.appStatusBanner}>
             <div className={styles.appointmentNumber}>
-                Appointment #{appointment.appointmentNumber}
+                Appointment #{currentAppointment.appointmentNumber}
             </div>
-            <div className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
-                {appointment.status}
+            <div className={`${styles.statusBadge} ${getAppointmentStatusClass(currentAppointment.status, styles)}`}>
+                {currentAppointment.status}
             </div>
         </div>
 
@@ -304,32 +152,32 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faCalendarAlt} /> Preferred Date:
                             </span>
-                            <span className={styles.tableValue}>{formatDate(appointment.preferredDate)}</span>
+                            <span className={styles.tableValue}>{formatDate(currentAppointment.preferredDate)}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faClock} /> Preferred Time:
                             </span>
-                            <span className={styles.tableValue}>{appointment.preferredTime}</span>
+                            <span className={styles.tableValue}>{currentAppointment.preferredTime}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faNotesMedical} /> Reason for Visit:
                             </span>
-                            <span className={styles.tableValue}>{appointment.reasonForVisit}</span>
+                            <span className={styles.tableValue}>{currentAppointment.reasonForVisit}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>Created On:</span>
                             <span className={styles.tableValue}>
-                                {new Date(appointment.createdAt).toLocaleString()}
+                                {new Date(currentAppointment.createdAt).toLocaleString()}
                             </span>
                         </div>
                         {
-                            appointment.updatedAt !== appointment.createdAt && (
+                            currentAppointment.updatedAt !== currentAppointment.createdAt && (
                                 <div className={styles.tableRow}>
                                     <span className={styles.tableLabel}>Last Updated:</span>
                                     <span className={styles.tableValue}>
-                                        {new Date(appointment.updatedAt).toLocaleString()}
+                                        {new Date(currentAppointment.updatedAt).toLocaleString()}
                                     </span>
                                 </div>
                             )
@@ -346,8 +194,8 @@ const AppointmentDetailsPage = () => {
                                 <FontAwesomeIcon icon={faUser} /> Full Name:
                             </span>
                             <span className={styles.tableValue}>
-                                {appointment.firstName}, {appointment.lastName}
-                                {appointment.middleName ? `, ${getMiddleNameInitial(appointment.middleName)}` : ''}
+                                {currentAppointment.firstName}, {currentAppointment.lastName}
+                                {currentAppointment.middleName ? `, ${getMiddleNameInitial(currentAppointment.middleName)}` : ''}
                             </span>
                         </div>
                         <div className={styles.tableRow}>
@@ -355,28 +203,28 @@ const AppointmentDetailsPage = () => {
                                 <FontAwesomeIcon icon={faBirthdayCake} /> Birthdate:
                             </span>
                             <span className={styles.tableValue}>
-                                {formatBirthdate(appointment.birthdate)} 
-                                <span className={styles.ageLabel}>({calculateAge(appointment.birthdate)} years)</span>
+                                {formatBirthdate(String(currentAppointment.birthdate))} 
+                                <span className={styles.ageLabel}>({calculateAge(String(currentAppointment.birthdate))} years)</span>
                             </span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faVenusMars} /> Sex:
                             </span>
-                            <span className={styles.tableValue}>{appointment.sex}</span>
+                            <span className={styles.tableValue}>{currentAppointment.sex}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faPhone} /> Contact Number:
                             </span>
-                            <span className={styles.tableValue}>{appointment.contactNumber}</span>
+                            <span className={styles.tableValue}>{currentAppointment.contactNumber}</span>
                         </div>
                         
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faMapMarkerAlt} /> Address:
                             </span>
-                            <span className={styles.tableValue}>{appointment.address}</span>
+                            <span className={styles.tableValue}>{currentAppointment.address}</span>
                         </div>
                     </div>
 
@@ -389,19 +237,19 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faRulerVertical} /> Height:
                             </span>
-                            <span className={styles.tableValue}>{appointment.height} cm</span>
+                            <span className={styles.tableValue}>{currentAppointment.height} cm</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faWeight} /> Weight:
                             </span>
-                            <span className={styles.tableValue}>{appointment.weight} kg</span>
+                            <span className={styles.tableValue}>{currentAppointment.weight} kg</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faPray} /> Religion:
                             </span>
-                            <span className={styles.tableValue}>{appointment.religion}</span>
+                            <span className={styles.tableValue}>{currentAppointment.religion}</span>
                         </div>
                     </div>
 
@@ -418,16 +266,16 @@ const AppointmentDetailsPage = () => {
                                 <span className={styles.tableLabel}>
                                     <FontAwesomeIcon icon={faUser} /> Name:
                                 </span>
-                                <span className={styles.tableValue}>{appointment.motherInfo?.name}</span>
+                                <span className={styles.tableValue}>{currentAppointment.motherInfo?.name}</span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                <span className={styles.tableValue}>{appointment.motherInfo?.age} years</span>
+                                <span className={styles.tableValue}>{currentAppointment.motherInfo?.age} years</span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
                                 <span className={styles.tableValue}>
-                                    {appointment.motherInfo?.occupation === 'n/a' ? 'Not specified' : appointment.motherInfo?.occupation}
+                                    {currentAppointment.motherInfo?.occupation === 'n/a' ? 'Not specified' : currentAppointment.motherInfo?.occupation}
                                 </span>
                             </div>
                         </div>
@@ -439,15 +287,15 @@ const AppointmentDetailsPage = () => {
                                 <span className={styles.tableLabel}>
                                     <FontAwesomeIcon icon={faUser} /> Name:
                                 </span>
-                                <span className={styles.tableValue}>{appointment.fatherInfo?.name}</span>
+                                <span className={styles.tableValue}>{currentAppointment.fatherInfo?.name}</span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                <span className={styles.tableValue}>{appointment.fatherInfo?.age} years</span>
+                                <span className={styles.tableValue}>{currentAppointment.fatherInfo?.age} years</span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                <span className={styles.tableValue}>{appointment.fatherInfo?.occupation}</span>
+                                <span className={styles.tableValue}>{currentAppointment.fatherInfo?.occupation}</span>
                             </div>
                         </div>
                     </div>
@@ -460,26 +308,26 @@ const AppointmentDetailsPage = () => {
             isStatusModalOpen && (
                 <Modal
                     isOpen={isStatusModalOpen}
-                    onClose={handleStatusModalClose}
+                    onClose={closeStatusModal}
                     modalType='status'
                     onSubmit={handleSubmitStatusUpdate}
                     editData={selectedAppointment}
-                    isProcessing={isUpdating}
+                    isProcessing={loading}
                 />
             )
         }
 
+
         {/* update appointment modal */}
         {
-            isEditModalOpen && (
+            isModalOpen && (
                 <Modal
-                    isOpen={isEditModalOpen}
-                    onClose={handleEditModalClose}
+                    isOpen={isModalOpen}
+                    onClose={closeUpdateModal}
                     modalType="appointment"
-                    onSubmit={handleSubmitAppointmentUpdate}
+                    onSubmit={handleSubmitUpdate}
                     patients={patients}
-                    editData={selectedAppointmentForEdit}
-                    isProcessing={isUpdating}
+                    editData={selectedAppointment}
                 />
             )
         }

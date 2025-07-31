@@ -48,11 +48,13 @@ export interface HeaderProps {
     className?: string;
 }
 
+
 export interface MainProps {
     children: ReactNode;
     className?: string;
     loading?: boolean;
     error?: string | null;
     loadingMessage?: string;
+    loadingType? : string;
     onErrorRetry?: () => void;
 }

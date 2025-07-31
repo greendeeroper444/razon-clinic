@@ -111,28 +111,22 @@ const Navigation = () => {
                         onClick={toggleMenu}>
                         Home
                     </Link>
-                    {/* <Link to='/about' 
-                        className={`${styles.navLink} ${isActive('/about') ? styles.active : ''}`}
-                        onClick={toggleMenu}>
-                        About
-                    </Link>
-                    <Link to='/services' 
-                        className={`${styles.navLink} ${isActive('/services') ? styles.active : ''}`}
-                        onClick={toggleMenu}>
-                        Services
-                    </Link>
-                    <Link to='/contact' 
-                        className={`${styles.navLink} ${isActive('/contact') ? styles.active : ''}`}
-                        onClick={toggleMenu}>
-                        Contact
-                    </Link> */}
                     {
                         isAuthenticated && (
-                            <Link to='/user/appointments' 
-                                className={`${styles.navLink} ${isActive('/user/appointments') ? styles.active : ''}`}
-                                onClick={toggleMenu}>
-                                Appointment
-                            </Link>
+                            <>
+                                <Link to='/user/appointments' 
+                                    className={`${styles.navLink} ${isActive('/user/appointments') ? styles.active : ''}`}
+                                    onClick={toggleMenu}
+                                >
+                                    Appointment
+                                </Link>
+                                <Link to='/user/medical-records' 
+                                    className={`${styles.navLink} ${isActive('/user/medical-records') ? styles.active : ''}`}
+                                    onClick={toggleMenu}
+                                >
+                                    Medical Records
+                                </Link>
+                            </>
                         )
                     }
                 </div>
