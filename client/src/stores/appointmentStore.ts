@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { getAppointments, getMyAppointment, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus } from '../services'
-import { AppointmentResponse, AppointmentFormData, Patient, AppointmentState, AppointmentStatus } from '../types'
+import { AppointmentFormData, Patient, AppointmentState, AppointmentStatus } from '../types'
 import { toast } from 'sonner'
 
 
@@ -23,12 +23,12 @@ export const useAppointmentStore = create<AppointmentState>()(
             //fetch all appointments with patient extraction (admin view)
             fetchAppointments: async () => {
                 try {
-                    set({ loading: true, error: null })
+                    set({ loading: true, error: null });
                     
-                    const response = await getAppointments()
+                    const response = await getAppointments();
                     
                     if (response.data.success) {
-                        const appointments = response.data.data
+                        const appointments = response.data.data;
                         
                         //extract unique patients from appointments
                         const uniquePatients = Array.from(
@@ -66,12 +66,12 @@ export const useAppointmentStore = create<AppointmentState>()(
             //fetch only current user's appointments
             fetchMyAppointments: async () => {
                 try {
-                    set({ loading: true, error: null })
+                    set({ loading: true, error: null });
                     
-                    const response = await getMyAppointment()
+                    const response = await getMyAppointment();
                     
                     if (response.data.success) {
-                        const appointments = response.data.data
+                        const appointments = response.data.data;
                         
                         //extract unique patients from appointments (usually just the current user)
                         const uniquePatients = Array.from(
@@ -110,9 +110,9 @@ export const useAppointmentStore = create<AppointmentState>()(
              //fetch appointment by ID for details page
             fetchAppointmentById: async (appointmentId: string) => {
                 try {
-                    set({ loading: true, error: null })
+                    set({ loading: true, error: null });
                     
-                    const response = await getAppointmentById(appointmentId)
+                    const response = await getAppointmentById(appointmentId);
                     
                     if (response.data.success) {
                         set({ 
@@ -138,13 +138,15 @@ export const useAppointmentStore = create<AppointmentState>()(
             //update appointment
             updateAppointmentData: async (id: string, data: AppointmentFormData) => {
                 try {
-                    set({ loading: true })
+                    set({ loading: true });
                     
-                    await updateAppointment(id, data)
+                    await updateAppointment(id, data);
 
                     //refresh data - fetch all appointments and user appointments
-                    await get().fetchAppointments()
-                    await get().fetchMyAppointments() 
+                    await Promise.all([
+                        get().fetchAppointments(),
+                        get().fetchMyAppointments()
+                    ]);
                     
                     //only fetch appointment by id if we have a current appointment loaded
                     const currentState = get()
@@ -165,9 +167,9 @@ export const useAppointmentStore = create<AppointmentState>()(
             //update appointment status
             updateAppointmentStatus: async (id: string, status: string) => {
                 try {
-                    set({ loading: true })
+                    set({ loading: true });
                     
-                    const response = await updateAppointmentStatus(id, status)
+                    const response = await updateAppointmentStatus(id, status);
                     
                     if (response.data.success) {
                         //update current appointment if it exists
@@ -210,11 +212,16 @@ export const useAppointmentStore = create<AppointmentState>()(
             //delete appointment
             deleteAppointment: async (id: string) => {
                 try {
-                    set({ isProcessing: true })
+                    set({ isProcessing: true });
                     
-                    await deleteAppointment(id)
-                    await get().fetchAppointments() //refresh data
-                    await get().fetchMyAppointments()
+                    //delete the appointment first
+                    await deleteAppointment(id);
+
+                    //refresh data - fetch all appointments and user appointments
+                    await Promise.all([
+                        get().fetchAppointments(),
+                        get().fetchMyAppointments()
+                    ]);
                     
                     toast.success('Appointment deleted successfully!')
                     set({ 
@@ -229,8 +236,10 @@ export const useAppointmentStore = create<AppointmentState>()(
                 }
             },
 
+
+
             //modal actions
-            openUpdateModal: (appointment: AppointmentResponse) => {
+            openUpdateModal: (appointment: AppointmentFormData) => {
                 const formData: AppointmentFormData & { id?: string } = {
                     id: appointment.id,
                     firstName: appointment.firstName,
@@ -263,14 +272,14 @@ export const useAppointmentStore = create<AppointmentState>()(
                 })
             },
 
-            openStatusModal: (appointment: AppointmentResponse) => {
+            openStatusModal: (appointment: AppointmentFormData) => {
                 set({
                     selectedAppointment: appointment,
                     isStatusModalOpen: true
                 })
             },
 
-            openDeleteModal: (appointment: AppointmentResponse) => {
+            openDeleteModal: (appointment: AppointmentFormData) => {
                 const patientName = appointment.firstName || 'Unknown Patient'
                 const appointmentDate = appointment.birthdate || appointment.preferredDate
                 

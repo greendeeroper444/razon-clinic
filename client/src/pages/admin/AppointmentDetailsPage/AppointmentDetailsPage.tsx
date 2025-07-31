@@ -19,7 +19,7 @@ import {
     faUsers,
     faPray
 } from '@fortawesome/free-solid-svg-icons';
-import { calculateAge, formatBirthdate, formatDate, getAppointmentStatusClass, getMiddleNameInitial } from '../../../utils';
+import { calculateAge, formatBirthdate, formatDate, formatTime, getAppointmentStatusClass, getMiddleNameInitial } from '../../../utils';
 import { Main, Header, Modal } from '../../../components';
 import { AppointmentFormData, FormDataType } from '../../../types';
 import { useAppointmentStore } from '../../../stores';
@@ -158,7 +158,7 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <FontAwesomeIcon icon={faClock} /> Preferred Time:
                             </span>
-                            <span className={styles.tableValue}>{currentAppointment.preferredTime}</span>
+                            <span className={styles.tableValue}>{formatTime(currentAppointment.preferredTime)}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
@@ -169,7 +169,7 @@ const AppointmentDetailsPage = () => {
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>Created On:</span>
                             <span className={styles.tableValue}>
-                                {new Date(currentAppointment.createdAt).toLocaleString()}
+                                {new Date(String(currentAppointment.createdAt)).toLocaleString()}
                             </span>
                         </div>
                         {
@@ -177,7 +177,7 @@ const AppointmentDetailsPage = () => {
                                 <div className={styles.tableRow}>
                                     <span className={styles.tableLabel}>Last Updated:</span>
                                     <span className={styles.tableValue}>
-                                        {new Date(currentAppointment.updatedAt).toLocaleString()}
+                                        {new Date(String(currentAppointment.updatedAt)).toLocaleString()}
                                     </span>
                                 </div>
                             )

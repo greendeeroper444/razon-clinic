@@ -12,3 +12,11 @@ export interface DeleteData {
     itemName: string;
     itemType: string;
 }
+
+export interface DeleteFormProps {
+    itemName: string;
+    itemType: string;
+    onCancel: () => void;
+    onConfirm: () => void;
+    isDeleting?: boolean;
+}

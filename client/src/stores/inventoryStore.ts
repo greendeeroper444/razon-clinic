@@ -1,0 +1,218 @@
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
+import { InventoryItemFormData, InventoryState } from '../types'
+import { deleteInventoryItem, getInventoryItems, updateInventoryItem, addInventoryItem, getLowStockItems, getExpiringItems } from '../services';
+import { toast } from 'sonner';
+
+export const useInventoryStore = create<InventoryState>()(
+    devtools(
+        (set, get) => ({
+            inventoryItems: [],
+            loading: false,
+            error: null,
+            isProcessing: false,
+            selectedInventoryItem: null,
+            isModalOpen: false,
+            isDeleteModalOpen: false,
+            deleteInventoryItemData: null,
+            summaryStats: {
+                total: 0,
+                lowStock: 0,
+                expiring: 0,
+                recentlyAdded: 0
+            },
+            isRestockMode: false,
+            isAddQuantityMode: false,
+
+
+            //fetch inventory items
+            fetchInventoryItems: async () => {
+                try {
+                    set({ loading: true, error: null });
+
+                    const response = await getInventoryItems();
+                    const inventoryItems = response.data.inventoryItems || [];
+
+                    set({ 
+                        inventoryItems,
+                        loading: false 
+                    });
+
+                    await get().fetchSummaryStats();
+                    
+                } catch (error) {
+                    console.error('Error fetching inventory items:', error);
+                    set({ 
+                        error: 'An error occurred while fetching items', 
+                        loading: false 
+                    });
+                }
+            },
+
+            //fetch summary stats
+            fetchSummaryStats: async () => {
+                try {
+                    const { inventoryItems } = get();
+                    
+                    const [lowStockResponse, expiringResponse] = await Promise.all([
+                        getLowStockItems(10),
+                        getExpiringItems(30)
+                    ]);
+
+                    //calculate recently added (items added in the last 30 days)
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                    
+                    const recentlyAdded = inventoryItems.filter(item => 
+                        new Date(String(item.createdAt)) > thirtyDaysAgo
+                    ).length;
+
+                    set({
+                        summaryStats: {
+                            total: inventoryItems.length,
+                            lowStock: lowStockResponse.data.lowStockItems?.length || 0,
+                            expiring: expiringResponse.data.expiringItems?.length || 0,
+                            recentlyAdded: recentlyAdded
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error fetching summary stats:', error);
+                    set({ error: 'An error occurred while fetching summary stats' });
+                }
+            },
+
+            //add inventory item
+            addInventoryItem: async (data: InventoryItemFormData) => {
+                try {
+                    set({ isProcessing: true });
+                    
+                    await addInventoryItem(data);
+                    await get().fetchInventoryItems();
+                    
+                    toast.success('Item added successfully!');
+                    set({ isModalOpen: false, selectedInventoryItem: null });
+                } catch (error) {
+                    console.error('Error adding inventory item:', error);
+                    toast.error('Failed to add inventory item');
+                } finally {
+                    set({ isProcessing: false });
+                }
+            },
+
+            //update inventory item
+            updateInventoryItemData: async (id: string, data: InventoryItemFormData) => {
+                try {
+                    set({ isProcessing: true });
+                    
+                    await updateInventoryItem(id, data);
+                    await get().fetchInventoryItems();
+
+                    toast.success('Item updated successfully!');
+                    set({ 
+                        isModalOpen: false, 
+                        selectedInventoryItem: null,
+                        isRestockMode: false,
+                        isAddQuantityMode: false
+                    });
+                } catch (error) {
+                    console.error('Error updating inventory item:', error);
+                    toast.error('Failed to update inventory item');
+                } finally {
+                    set({ isProcessing: false });
+                }
+            },
+
+            //delete inventory item
+            deleteInventoryItem: async (id: string) => {
+                try {
+                    set({ isProcessing: true });
+                    
+                    await deleteInventoryItem(id);
+                    await get().fetchInventoryItems();
+                    
+                    toast.success('Item deleted successfully!');
+                    set({ 
+                        isDeleteModalOpen: false, 
+                        deleteInventoryItemData: null 
+                    });
+                } catch (error) {
+                    console.error('Error deleting inventory item:', error);
+                    toast.error('Failed to delete inventory item');
+                } finally {
+                    set({ isProcessing: false });
+                }
+            },
+
+
+            
+            //modal actions
+            openAddModal: () => {
+                set({ 
+                    selectedInventoryItem: null,
+                    isModalOpen: true,
+                    isRestockMode: false,
+                    isAddQuantityMode: false
+                });
+            },
+
+            openUpdateModal: (item: InventoryItemFormData, restockMode: boolean = false, addQuantityMode: boolean = false) => {
+                const formData: InventoryItemFormData & { id?: string } = {
+                    id: item.id,
+                    itemName: item.itemName,
+                    category: item.category,
+                    price: item.price,
+                    quantityInStock: item.quantityInStock,
+                    quantityUsed: item.quantityUsed,
+                    expiryDate: item.expiryDate.split('T')[0],
+                };
+
+                set({ 
+                    selectedInventoryItem: formData, 
+                    isModalOpen: true,
+                    isRestockMode: restockMode,
+                    isAddQuantityMode: addQuantityMode
+                });
+            },
+
+            openDeleteModal: (item: InventoryItemFormData) => {
+                if (!item.id) {
+                    console.error('Item ID is missing:', item);
+                    return;
+                }
+                
+                set({
+                    deleteInventoryItemData: {
+                        id: item.id,
+                        itemName: String(item.itemName),
+                        itemType: 'Inventory Item'
+                    },
+                    isDeleteModalOpen: true
+                });
+            },
+
+            closeUpdateModal: () => {
+                set({ 
+                    isModalOpen: false, 
+                    selectedInventoryItem: null,
+                    isRestockMode: false,
+                    isAddQuantityMode: false
+                });
+            },
+
+            closeDeleteModal: () => {
+                set({ 
+                    isDeleteModalOpen: false, 
+                    deleteInventoryItemData: null 
+                });
+            },
+
+            //utility actions
+            setLoading: (loading: boolean) => set({ loading }),
+            setError: (error: string | null) => set({ error }),
+        }),
+        {
+            name: 'inventory-store' //for Redux DevTools
+        }
+    )
+
+)

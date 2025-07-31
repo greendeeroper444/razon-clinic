@@ -1,4 +1,5 @@
 import { AppointmentFormData, AppointmentResponse } from "./appointment"
+import { InventoryItemFormData } from "./invetory";
 import { Patient } from "./patient"
 
 
@@ -16,7 +17,7 @@ export interface AppointmentState {
     isModalOpen: boolean;
     isStatusModalOpen: boolean;
     isDeleteModalOpen: boolean;
-    deleteAppointmentData: {id: string, itemName: string, itemType: string} | null;
+    deleteAppointmentData: { id: string, itemName: string, itemType: string } | null;
 
     //state for appointment details
     currentAppointment: AppointmentResponse | null;
@@ -41,6 +42,53 @@ export interface AppointmentState {
     closeDeleteModal: () => void;
 
     
+    //utility actions
+    setLoading: (loading: boolean) => void;
+    setError: (error: string | null) => void;
+
+}
+
+
+
+//inventory item state
+export interface InventoryState {
+    //state
+    inventoryItems: InventoryItemFormData[];
+    loading: boolean;
+    error: string | null;
+    isProcessing: boolean;
+
+    //modal state
+    selectedInventoryItem: (InventoryItemFormData & { id?: string }) | null;
+    isModalOpen: boolean;
+    isDeleteModalOpen: boolean;
+    deleteInventoryItemData: { id: string, itemName: string, itemType: string } | null;
+
+    //summary stats state
+    summaryStats: {
+        total: number;
+        lowStock: number;
+        expiring: number;
+        recentlyAdded: number;
+    };
+    //modal modes
+    isRestockMode: boolean;
+    isAddQuantityMode: boolean;
+
+    //actions
+    fetchInventoryItems: () => Promise<void>;
+    fetchSummaryStats: () => Promise<void>;
+    addInventoryItem: (data: InventoryItemFormData) => Promise<void>;
+    updateInventoryItemData: (id: string, data: InventoryItemFormData) => Promise<void>;
+    deleteInventoryItem: (id: string) => Promise<void>;
+
+    //modal actions
+    openAddModal: () => void;
+    openUpdateModal: (item: InventoryItemFormData, restockMode?: boolean, addQuantityMode?: boolean) => void;
+    openDeleteModal: (item: InventoryItemFormData) => void;
+    closeUpdateModal: () => void;
+    closeDeleteModal: () => void;
+
     //utility actions
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;

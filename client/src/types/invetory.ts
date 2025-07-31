@@ -21,21 +21,22 @@ export interface InventoryItem {
 
 
 export interface InventoryItemFormData {
-    id: string;
+    id?: string;
     itemName?: string;
-    category?: 'Vaccine' | 'Medical Supply' | string;
+    category: 'Vaccine' | 'Medical Supply' | string;
     price: number;
-    quantityInStock?: number;
+    quantityInStock: number;
     quantityUsed?: number;
-    expiryDate?: string;
+    expiryDate: string;
     medicine?: string;
     minLevel?: number;
     expirationDate?: string;
     location?: string;
+    createdAt?: string;
 }
 
 
-export interface InventoryItemResponse {
+export interface InventoryItemResponse extends InventoryItemFormData {
     success: boolean;
     message: string;
     data: InventoryItem;

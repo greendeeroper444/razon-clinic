@@ -9,6 +9,7 @@ export interface AppointmentFormProps {
 
 export interface AppointmentFormData {
     id: string;
+    appointmentNumber?: number;
     firstName?: string;
     lastName?: string;
     middleName?: string | null;
@@ -41,7 +42,7 @@ export interface AppointmentFormData {
     address?: string;
     religion?: string;
     preferredDate: string;
-    preferredTime?: string | undefined | number;
+    preferredTime: string;
     reasonForVisit: string;
     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
     patients?: {
@@ -53,6 +54,8 @@ export interface AppointmentFormData {
         height?: number | string;
         weight?: number | string;
     }[];
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface PatientId {
@@ -118,40 +121,10 @@ export interface ParentInfo {
 
 
 
-export interface AppointmentResponse {
-    id: string; 
-    patientId: PatientId; 
-    firstName: string;
-    lastName: string;
+export interface AppointmentResponse extends AppointmentFormData {
+    success: boolean;
+    message: string;
     middleName: string | null;
-    preferredDate: string;
-    preferredTime: string;
-    reasonForVisit: string;
-    status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
-    
-    //patient information fields
-    birthdate?: string;
-    sex?: 'Male' | 'Female';
-    height?: number | string;
-    weight?: number | string;
-    religion?: string;
-    
-    //flattened parent information (if using this approach)
-    motherName?: string;
-    motherAge?: number | string;
-    motherOccupation?: string;
-    fatherName?: string;
-    fatherAge?: number | string;
-    fatherOccupation?: string;
-    
-    //nested parent information structures (what function expects)
-    motherInfo?: ParentInfo;
-    fatherInfo?: ParentInfo;
-    contactNumber: number | string;
-    address?: string;
-    appointmentNumber: string;
-    createdAt: string;
-    updatedAt: string;
     data: {
         success: boolean;
         data: Appointment[];
@@ -163,14 +136,6 @@ export interface AppointmentFilters {
     status?: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
     fromDate?: string;
     toDate?: string;
-}
-
-export interface DeleteFormProps {
-    itemName: string;
-    itemType: string;
-    onCancel: () => void;
-    onConfirm: () => void;
-    isDeleting?: boolean;
 }
 
 

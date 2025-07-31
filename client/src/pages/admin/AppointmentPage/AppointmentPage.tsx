@@ -81,7 +81,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     ]
 
   return (
-    <Main loading={loading} error={error} loadingMessage='Loading appointments...'>
+    <Main loading={loading} loadingType='spinner' error={error} loadingMessage='Loading appointments...'>
         <Header
             title='Appointments'
             actions={headerActions}

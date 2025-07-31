@@ -1,90 +1,43 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import styles from './InventoryPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Header, Main, Modal } from '../../../components';
-import { getInventoryItems, addInventoryItem, updateInventoryItem, deleteInventoryItem, getLowStockItems, getExpiringItems } from '../../../services';
-import { FormDataType, InventoryItem, InventoryItemFormData } from '../../../types';
-import { toast } from 'sonner';
+import { FormDataType, InventoryItemFormData } from '../../../types';
 import { formatDate, getExpiryStatus, getItemIcon, getStockStatus, openModalWithRefresh } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
-
+import { useInventoryStore } from '../../../stores/inventoryStore';
 
 const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
-    const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [editData, setEditData] = useState<InventoryItemFormData | null>(null);
-    const [deleteInventoryItemData, setDeleteInventoryItemData] = useState<{id: string, itemName: string, itemType: string} | null>(null);
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [summaryStats, setSummaryStats] = useState({
-        total: 0,
-        lowStock: 0,
-        expiring: 0,
-        recentlyAdded: 0
-    });
-    const [isRestockMode, setIsRestockMode] = useState(false);
-    const [isAddQuantityMode, setIsAddQuantityMode] = useState(false);
-    
-    //fetch inventory items on component mount
+
+    //zustand store selectors
+    const {
+        inventoryItems,
+        loading,
+        error,
+        isProcessing,
+        summaryStats,
+        selectedInventoryItem,
+        isModalOpen,
+        isDeleteModalOpen,
+        deleteInventoryItemData,
+        isRestockMode,
+        isAddQuantityMode,
+        fetchInventoryItems,
+        addInventoryItem,
+        updateInventoryItemData,
+        deleteInventoryItem,
+        openUpdateModal,
+        openDeleteModal,
+        closeUpdateModal,
+        closeDeleteModal,
+    } = useInventoryStore();
+
+
     useEffect(() => {
         fetchInventoryItems();
-        fetchSummaryStats();
-    }, []);
-
-    //listen for modal close event to refresh data
-    useEffect(() => {
-        const handleModalClosed = () => {
-            fetchInventoryItems();
-            fetchSummaryStats();
-        };
-
-        window.addEventListener('modal-closed', handleModalClosed);
-        return () => window.removeEventListener('modal-closed', handleModalClosed);
-    }, []);
-
-    const fetchInventoryItems = async () => {
-        try {
-            setLoading(true);
-            const response = await getInventoryItems();
-            setInventoryItems(response.data.inventoryItems || []);
-        } catch (error) {
-            setError('An error occurred while fetching items');
-            console.error('Error fetching inventory items:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const fetchSummaryStats = async () => {
-        try {
-            const [lowStockResponse, expiringResponse] = await Promise.all([
-                getLowStockItems(10),
-                getExpiringItems(30)
-            ]);
-
-            //calculate recently added (items added in the last 30 days)
-            const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            
-            const recentlyAdded = inventoryItems.filter(item => 
-                new Date(item.createdAt) > thirtyDaysAgo
-            ).length;
-
-            setSummaryStats({
-                total: inventoryItems.length,
-                lowStock: lowStockResponse.data.lowStockItems?.length || 0,
-                expiring: expiringResponse.data.expiringItems?.length || 0,
-                recentlyAdded: recentlyAdded
-            });
-        } catch (error) {
-            setError('An error occurred while fetching sumamary stats');
-            console.error('Error fetching summary stats:', error);
-        }
-    };
+    }, [fetchInventoryItems]);
 
     const handleOpenModal = () => {
         openModalWithRefresh({
@@ -94,104 +47,45 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         });
     };
 
-    const handleUpdateClick = (item: InventoryItem, restockMode: boolean = false, addQuantityMode: boolean = false) => {
-        const itemId = item.id;
-        if (!itemId) {
-            console.error('Item ID is missing:', item);
-            return;
-        }
-        
-        const formData: InventoryItemFormData = {
-            itemName: item.itemName,
-            category: item.category,
-            price: item.price,
-            quantityInStock: item.quantityInStock,
-            quantityUsed: item.quantityUsed,
-            expiryDate: item.expiryDate.split('T')[0],
-            id: itemId
-        };
-        setEditData(formData);
-        setIsModalOpen(true);
-        setIsRestockMode(restockMode);
-        setIsAddQuantityMode(addQuantityMode);
+    const handleUpdateClick = (item: InventoryItemFormData, restockMode: boolean = false, addQuantityMode: boolean = false) => {
+        openUpdateModal(item, restockMode, addQuantityMode);
     };
 
-    
-
-    const handleDeleteClick = (item: InventoryItem) => {
-        const itemId = item.id;
-        
-        if (!itemId) {
-            console.error('Item ID is missing:', item);
-            return;
-        }
-        
-        const deleteData = {
-            id: itemId,
-            itemName: item.itemName,
-            itemType: 'Inventory Item'
-        };
-        
-        setDeleteInventoryItemData(deleteData);
-        setIsDeleteModalOpen(true);
-    };
-
-    const handleModalClose = () => {
-        setIsModalOpen(false);
-        setEditData(null);
-        setIsRestockMode(false);
-    };
-
-    const handleDeleteModalClose = () => {
-        setIsDeleteModalOpen(false);
-        setDeleteInventoryItemData(null);
+    const handleDeleteClick = (item: InventoryItemFormData) => {
+        openDeleteModal(item);
     };
 
     const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
-            console.error('Invalid data or missing medical ID');
+            console.error('Invalid data or missing inventory ID');
             return;
         }
 
-        //asertion simce we know it's MedicalRecordFormData in this context
-        const medicalData = data as InventoryItemFormData;
+        const inventoryData = data as InventoryItemFormData;
 
         try {
-            setIsProcessing(true);
-            if (editData && editData.id) {
+            if (selectedInventoryItem && selectedInventoryItem.id) {
                 //update existing item
-                await updateInventoryItem(editData.id, medicalData);
+                await updateInventoryItemData(selectedInventoryItem.id, inventoryData);
             } else {
                 //add new item
-                await addInventoryItem(medicalData);
+                await addInventoryItem(inventoryData);
             }
-            fetchInventoryItems();
-            fetchSummaryStats();
         } catch (error) {
             console.error('Error saving inventory item:', error);
-        } finally {
-            setIsProcessing(false);
         }
     };
 
     const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {
-            console.error('Invalid patient ID');
+            console.error('Invalid inventory ID');
             return;
         }
         
         try {
-            setIsProcessing(true);
             await deleteInventoryItem(data);
-            fetchInventoryItems();
-            fetchSummaryStats();
-            setIsDeleteModalOpen(false);
-            setDeleteInventoryItemData(null);
-            toast.success('Inventory deleted successfully!')
         } catch (error) {
             console.error('Error deleting inventory item:', error);
-        } finally {
-            setIsProcessing(false);
         }
     };
 
@@ -206,6 +100,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             type: 'primary' as const
         }
     ];
+    
     
   return (
     <Main loading={loading} error={error} loadingMessage='Loading items...'>
@@ -234,7 +129,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             }
         </div>
 
-        {/* inventory table */}
+        {/* Inventory table */}
         <div className={styles.inventoryTableContainer}>
             <div className={styles.inventoryTableHeader}>
                 <div className={styles.inventoryTableTitle}>Medicine Inventory</div>
@@ -261,8 +156,8 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 {
                                     inventoryItems.length === 0 ? (
                                         <tr>
-                                            <td colSpan={6} className={styles.emptyState}>
-                                                No inventory items found. Click "Add Item" to get started.
+                                            <td colSpan={7} className={styles.emptyState}>
+                                                No inventory items found. Click "New Item" to get started.
                                             </td>
                                         </tr>
                                     ) : (
@@ -280,9 +175,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                     </div>
                                                 </td>
                                                 <td>{item.category}</td>
-                                                <td>
-                                                    ₱{item.price}.00
-                                                </td>
+                                                <td>₱{item.price}.00</td>
                                                 <td className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
                                                     {item.quantityInStock}
                                                 </td>
@@ -329,28 +222,28 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             </div>
         </div>
 
-        {/* update inventory item modal */}
+        {/* update/add inventory item modal */}
         {
-                isModalOpen && (
-                    <Modal
-                        isOpen={isModalOpen}
-                        onClose={handleModalClose}
-                        modalType='item'
-                        onSubmit={handleSubmitUpdate}
-                        editData={editData}
-                        isProcessing={isProcessing}
-                        isRestockMode={isRestockMode}
-                        isAddQuantityMode={isAddQuantityMode}
-                    />
-                )
-            }
+            isModalOpen && (
+                <Modal
+                    isOpen={isModalOpen}
+                    onClose={closeUpdateModal}
+                    modalType='item'
+                    onSubmit={handleSubmitUpdate}
+                    editData={selectedInventoryItem}
+                    isProcessing={isProcessing}
+                    isRestockMode={isRestockMode}
+                    isAddQuantityMode={isAddQuantityMode}
+                />
+            )
+        }
 
         {/* delete inventory item modal */}
         {
             isDeleteModalOpen && deleteInventoryItemData && (
                 <Modal
                     isOpen={isDeleteModalOpen}
-                    onClose={handleDeleteModalClose}
+                    onClose={closeDeleteModal}
                     modalType='delete'
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteInventoryItemData}
