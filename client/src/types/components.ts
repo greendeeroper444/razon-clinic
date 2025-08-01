@@ -58,3 +58,11 @@ export interface MainProps {
     loadingType? : string;
     onErrorRetry?: () => void;
 }
+
+export interface SubmitLoadingProps {
+    isLoading: boolean
+    loadingText?: string
+    size?: 'small' | 'medium' | 'large'
+    variant?: 'overlay' | 'inline' | 'button'
+    className?: string
+}

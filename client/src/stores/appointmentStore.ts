@@ -1,16 +1,19 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { getAppointments, getMyAppointment, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus } from '../services'
-import { AppointmentFormData, Patient, AppointmentState, AppointmentStatus } from '../types'
+import { AppointmentFormData, Patient, AppointmentStatus, ExtendedAppointmentState, OperationType } from '../types'
 import { toast } from 'sonner'
 
 
-export const useAppointmentStore = create<AppointmentState>()(
+export const useAppointmentStore = create<ExtendedAppointmentState>()(
     devtools(
         (set, get) => ({
             appointments: [],
             patients: [],
             loading: false,
+            fetchLoading: false,
+            submitLoading: false,
+            statusLoading: false, 
             error: null,
             isProcessing: false,
             selectedAppointment: null,
@@ -19,11 +22,14 @@ export const useAppointmentStore = create<AppointmentState>()(
             isDeleteModalOpen: false,
             deleteAppointmentData: null,
             currentAppointment: null,
+            viewMode: 'user' as 'admin' | 'user',
+            currentOperation: null as OperationType,
 
             //fetch all appointments with patient extraction (admin view)
             fetchAppointments: async () => {
                 try {
-                    set({ loading: true, error: null });
+                    // set({ loading: true, error: null });
+                    set({ fetchLoading: true, loading: true, error: null, viewMode: 'admin' });
                     
                     const response = await getAppointments();
                     
@@ -57,6 +63,7 @@ export const useAppointmentStore = create<AppointmentState>()(
                 } catch (error) {
                     console.error('Error fetching appointments:', error)
                     set({ 
+                        fetchLoading: false,
                         error: 'An error occurred while fetching appointments', 
                         loading: false 
                     })
@@ -66,7 +73,8 @@ export const useAppointmentStore = create<AppointmentState>()(
             //fetch only current user's appointments
             fetchMyAppointments: async () => {
                 try {
-                    set({ loading: true, error: null });
+                    // set({ loading: true, error: null });
+                    set({ fetchLoading: true, loading: true, error: null, viewMode: 'user' });
                     
                     const response = await getMyAppointment();
                     
@@ -100,6 +108,7 @@ export const useAppointmentStore = create<AppointmentState>()(
                 } catch (error) {
                     console.error('Error fetching my appointments:', error)
                     set({ 
+                        fetchLoading: false,
                         error: 'An error occurred while fetching your appointments', 
                         loading: false 
                     })
@@ -110,7 +119,8 @@ export const useAppointmentStore = create<AppointmentState>()(
              //fetch appointment by ID for details page
             fetchAppointmentById: async (appointmentId: string) => {
                 try {
-                    set({ loading: true, error: null });
+                    // set({ loading: true, error: null });
+                    set({ fetchLoading: true, loading: true, error: null });
                     
                     const response = await getAppointmentById(appointmentId);
                     
@@ -128,6 +138,7 @@ export const useAppointmentStore = create<AppointmentState>()(
                 } catch (error) {
                    console.error('Error fetching appointments:', error)
                     set({ 
+                        fetchLoading: false,
                         error: 'An error occurred while fetching appointments', 
                         loading: false 
                     })
@@ -138,36 +149,60 @@ export const useAppointmentStore = create<AppointmentState>()(
             //update appointment
             updateAppointmentData: async (id: string, data: AppointmentFormData) => {
                 try {
-                    set({ loading: true });
+                    // set({ loading: true });
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'update' });
                     
                     await updateAppointment(id, data);
 
-                    //refresh data - fetch all appointments and user appointments
-                    await Promise.all([
-                        get().fetchAppointments(),
-                        get().fetchMyAppointments()
-                    ]);
+                    // //refresh data - fetch all appointments and user appointments
+                    // await Promise.all([
+                    //     get().fetchAppointments(),
+                    //     get().fetchMyAppointments()
+                    // ]);
                     
                     //only fetch appointment by id if we have a current appointment loaded
-                    const currentState = get()
+                    const currentState = get();
+                    if (currentState.viewMode === 'admin') {
+                        await get().fetchAppointments();
+                    } else {
+                        await get().fetchMyAppointments();
+                    }
+
                     if (currentState.currentAppointment) {
                         await get().fetchAppointmentById(id)
                     }
                     
                     toast.success('Updated appointment successfully!')
                     set({ isModalOpen: false, selectedAppointment: null })
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false, 
+                            isProcessing: false,
+                            currentOperation: null
+                        })
+                    }, 500)
+
                 } catch (error) {
                     console.error('Error updating appointment:', error)
-                    toast.error('Failed to update appointment')
-                } finally {
-                    set({ loading: false })
-                }
+                    toast.error('Failed to update appointment');
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        isModalOpen: false, 
+                        selectedAppointment: null,
+                        currentOperation: null
+                    })
+                } 
+                // finally {
+                //     set({ submitLoading: false, isProcessing: false })
+                // }
             },
 
             //update appointment status
             updateAppointmentStatus: async (id: string, status: string) => {
                 try {
-                    set({ loading: true });
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'status' });
                     
                     const response = await updateAppointmentStatus(id, status);
                     
@@ -191,49 +226,93 @@ export const useAppointmentStore = create<AppointmentState>()(
                                 : appointment
                         )
                         
+
+                        toast.success('Status updated successfully!');
+
                         set({ 
                             appointments: updatedAppointments,
                             isStatusModalOpen: false,
-                            selectedAppointment: null
+                            selectedAppointment: null,
                         })
-                        
-                        toast.success('Status updated successfully!')
+
+                        setTimeout(() => {
+                            set({ 
+                                submitLoading: false,
+                                isProcessing: false,
+                                currentOperation: null
+                            })
+                        }, 500)
                     } else {
                         throw new Error(response.data.message || 'Failed to update status')
                     }
                 } catch (error) {
                     console.error('Error updating appointment status:', error)
-                    toast.error('Failed to update appointment status')
-                } finally {
-                    set({ loading: false })
-                }
+                    toast.error('Failed to update appointment status');
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        isStatusModalOpen: false,
+                        selectedAppointment: null,
+                        currentOperation: null
+                    })
+                } 
+                // finally {
+                //     set({ submitLoading: false, isProcessing: false })
+                // }
             },
 
             //delete appointment
             deleteAppointment: async (id: string) => {
                 try {
-                    set({ isProcessing: true });
+                    // set({ isProcessing: true });
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
                     
                     //delete the appointment first
                     await deleteAppointment(id);
 
                     //refresh data - fetch all appointments and user appointments
-                    await Promise.all([
-                        get().fetchAppointments(),
-                        get().fetchMyAppointments()
-                    ]);
+                    // await Promise.all([
+                    //     get().fetchAppointments(),
+                    //     get().fetchMyAppointments()
+                    // ]);
+                    const currentState = get();
+                    
+                    if (currentState.viewMode === 'admin') {
+                        await get().fetchAppointments();
+                    } else {
+                        await get().fetchMyAppointments();
+                    }
+
                     
                     toast.success('Appointment deleted successfully!')
+
                     set({ 
                         isDeleteModalOpen: false, 
                         deleteAppointmentData: null 
                     })
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false,
+                            isProcessing: false,
+                            currentOperation: null
+                        })
+                    }, 500)
+
                 } catch (error) {
                     console.error('Error deleting appointment:', error)
-                    toast.error('Failed to delete appointment')
-                } finally {
-                    set({ isProcessing: false })
-                }
+                    toast.error('Failed to delete appointment');
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        isStatusModalOpen: false,
+                        selectedAppointment: null,
+                        currentOperation: null
+                    })
+                } 
+                // finally {
+                //     set({ submitLoading: false, isProcessing: false })
+                // }
             },
 
 

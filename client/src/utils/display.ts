@@ -1,5 +1,5 @@
 import { faPills, faSyringe, faTablets, faCapsules, faPrescriptionBottle, faCheck, faClock, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { Appointment } from '../types';
+import { Appointment, OperationType } from '../types';
 
 export const getItemIcon = (category: string) => {
     switch (category.toLowerCase()) {
@@ -96,3 +96,21 @@ export const getPaymentStatusClass = (status: string, styles: any) => {
             return styles.statusPending;
     }
 };
+
+
+export const getLoadingText = (operation: OperationType): string => {
+    switch (operation) {
+        case 'update':
+            return 'Updating appointment...';
+        case 'delete':
+            return 'Deleting appointment...';
+        case 'status':
+            return 'Updating status...';
+        case 'create':
+            return 'Creating appointment...';
+        case 'fetch':
+            return 'Loading appointments...';
+        default:
+            return 'Processing...';
+    }
+}

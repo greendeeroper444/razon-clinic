@@ -18,9 +18,9 @@ import {
     faUsers,
     faPray
 } from '@fortawesome/free-solid-svg-icons'
-import { calculateAge, formatBirthdate, formatDate, formatTime, getAppointmentStatusClass, getMiddleNameInitial } from '../../../utils'
+import { calculateAge, formatBirthdate, formatDate, formatTime, getAppointmentStatusClass, getLoadingText, getMiddleNameInitial } from '../../../utils'
 import { AppointmentFormData, FormDataType } from '../../../types'
-import { Header, Main, Modal } from '../../../components'
+import { Header, Main, Modal, SubmitLoading } from '../../../components'
 import { useAppointmentStore } from '../../../stores'
 
 const AppointmentDetailsPage = () => {
@@ -30,6 +30,7 @@ const AppointmentDetailsPage = () => {
     const {
         currentAppointment,
         patients,
+        submitLoading,
         loading,
         error,
         selectedAppointment,
@@ -39,7 +40,8 @@ const AppointmentDetailsPage = () => {
         updateAppointmentData,
         openUpdateModal,
         closeUpdateModal,
-        clearCurrentAppointment
+        clearCurrentAppointment,
+        currentOperation
     } = useAppointmentStore()
 
     useEffect(() => {
@@ -286,9 +288,17 @@ const AppointmentDetailsPage = () => {
                     onSubmit={handleSubmitUpdate}
                     patients={patients}
                     editData={selectedAppointment}
+                    isProcessing={submitLoading}
                 />
             )
         }
+
+        <SubmitLoading
+            isLoading={submitLoading}
+            loadingText={getLoadingText(currentOperation)}
+            size='medium'
+            variant='overlay'
+        />
     </Main>
   )
 }

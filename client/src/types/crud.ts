@@ -7,6 +7,8 @@ import { PersonalPatientFormData } from "./personalPatient";
 
 export type FormDataType = AppointmentFormData | PersonalPatientFormData | InventoryItemFormData | MedicalRecordFormData | BillingFormData;
 
+export type OperationType = 'update' | 'delete' | 'status' | 'create' | 'fetch' | null;
+
 export interface DeleteData {
     id: string;
     itemName: string;

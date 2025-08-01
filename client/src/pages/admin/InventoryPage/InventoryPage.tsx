@@ -3,9 +3,9 @@ import styles from './InventoryPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { Header, Main, Modal } from '../../../components';
+import { Header, Main, Modal, SubmitLoading } from '../../../components';
 import { FormDataType, InventoryItemFormData } from '../../../types';
-import { formatDate, getExpiryStatus, getItemIcon, getStockStatus, openModalWithRefresh } from '../../../utils';
+import { formatDate, getExpiryStatus, getItemIcon, getLoadingText, getStockStatus, openModalWithRefresh } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
 import { useInventoryStore } from '../../../stores/inventoryStore';
 
@@ -14,6 +14,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
     //zustand store selectors
     const {
         inventoryItems,
+        submitLoading,
         loading,
         error,
         isProcessing,
@@ -32,6 +33,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         openDeleteModal,
         closeUpdateModal,
         closeDeleteModal,
+        currentOperation
     } = useInventoryStore();
 
 
@@ -231,7 +233,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                     modalType='item'
                     onSubmit={handleSubmitUpdate}
                     editData={selectedInventoryItem}
-                    isProcessing={isProcessing}
+                    isProcessing={submitLoading}
                     isRestockMode={isRestockMode}
                     isAddQuantityMode={isAddQuantityMode}
                 />
@@ -247,10 +249,17 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                     modalType='delete'
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteInventoryItemData}
-                    isProcessing={isProcessing}
+                    isProcessing={submitLoading}
                 />
             )
         }
+
+        <SubmitLoading
+            isLoading={submitLoading}
+            loadingText={getLoadingText(currentOperation)}
+            size='medium'
+            variant='overlay'
+        />
     </Main>
   )
 }

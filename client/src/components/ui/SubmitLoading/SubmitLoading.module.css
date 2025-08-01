@@ -1,0 +1,258 @@
+.submitLoading {
+  z-index: 9999;
+}
+
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 40px 50px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    animation: slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    min-width: 280px;
+}
+
+
+
+.inline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.inline .content {
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    gap: 12px;
+    min-width: auto;
+}
+
+
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button .content {
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    gap: 8px;
+    flex-direction: row;
+    min-width: auto;
+}
+
+
+
+.spinner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinnerRing {
+    border: 3px solid rgba(59, 130, 246, 0.1);
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    position: relative;
+    z-index: 2;
+}
+
+.spinnerGlow {
+    position: absolute;
+    border: 2px solid transparent;
+    border-top: 2px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 2s linear infinite reverse, glow 2s ease-in-out infinite alternate;
+    opacity: 0.6;
+    filter: blur(2px);
+}
+
+
+
+.spinnerSmall .spinnerRing {
+    width: 24px;
+    height: 24px;
+}
+
+.spinnerSmall .spinnerGlow {
+    width: 28px;
+    height: 28px;
+}
+
+.spinnerMedium .spinnerRing {
+    width: 40px;
+    height: 40px;
+}
+
+.spinnerMedium .spinnerGlow {
+    width: 48px;
+    height: 48px;
+}
+
+.spinnerLarge .spinnerRing {
+    width: 56px;
+    height: 56px;
+    border-width: 4px;
+}
+
+.spinnerLarge .spinnerGlow {
+    width: 68px;
+    height: 68px;
+    border-width: 3px;
+}
+
+
+.loadingText {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--dark);
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.inline .loadingText,
+.button .loadingText {
+    font-size: 14px;
+    color: var(--gray);
+}
+
+/* animated dots */
+.dots {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+}
+
+.dots span {
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: bounce 1.4s ease-in-out infinite both;
+    opacity: 0.7;
+}
+
+.dots span:nth-child(1) { animation-delay: -0.32s; }
+.dots span:nth-child(2) { animation-delay: -0.16s; }
+.dots span:nth-child(3) { animation-delay: 0; }
+
+.inline .dots span,
+.button .dots span {
+    width: 4px;
+    height: 4px;
+}
+
+/* animations */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes glow {
+    0% { opacity: 0.4; transform: scale(0.95); }
+    100% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+
+@media (prefers-color-scheme: dark) {
+    .content {
+        background: rgba(30, 41, 59, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .loadingText {
+        color: var(--light);
+    }
+    
+    .inline .loadingText,
+    .button .loadingText {
+        color: var(--gray-light);
+    }
+}
+
+
+
+@media (max-width: 640px) {
+    .content {
+        padding: 30px 40px;
+        min-width: 240px;
+    }
+    
+    .loadingText {
+        font-size: 15px;
+    }
+}

@@ -1,14 +1,17 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { InventoryItemFormData, InventoryState } from '../types'
+import { InventoryItemFormData, ExtendedInventoryState, OperationType } from '../types'
 import { deleteInventoryItem, getInventoryItems, updateInventoryItem, addInventoryItem, getLowStockItems, getExpiringItems } from '../services';
 import { toast } from 'sonner';
 
-export const useInventoryStore = create<InventoryState>()(
+export const useInventoryStore = create<ExtendedInventoryState>()(
     devtools(
         (set, get) => ({
             inventoryItems: [],
             loading: false,
+            fetchLoading: false,
+            submitLoading: false,
+            statusLoading: false, 
             error: null,
             isProcessing: false,
             selectedInventoryItem: null,
@@ -23,12 +26,12 @@ export const useInventoryStore = create<InventoryState>()(
             },
             isRestockMode: false,
             isAddQuantityMode: false,
-
+            currentOperation: null as OperationType,
 
             //fetch inventory items
             fetchInventoryItems: async () => {
                 try {
-                    set({ loading: true, error: null });
+                    set({ fetchLoading: true, loading: true, error: null });
 
                     const response = await getInventoryItems();
                     const inventoryItems = response.data.inventoryItems || [];
@@ -84,25 +87,38 @@ export const useInventoryStore = create<InventoryState>()(
             //add inventory item
             addInventoryItem: async (data: InventoryItemFormData) => {
                 try {
-                    set({ isProcessing: true });
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
                     
                     await addInventoryItem(data);
                     await get().fetchInventoryItems();
                     
                     toast.success('Item added successfully!');
                     set({ isModalOpen: false, selectedInventoryItem: null });
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false, 
+                            isProcessing: false,
+                            currentOperation: null
+                        })
+                    }, 500)
+
                 } catch (error) {
                     console.error('Error adding inventory item:', error);
                     toast.error('Failed to add inventory item');
-                } finally {
-                    set({ isProcessing: false });
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        isModalOpen: false,
+                        currentOperation: null
+                    })
                 }
             },
 
             //update inventory item
             updateInventoryItemData: async (id: string, data: InventoryItemFormData) => {
                 try {
-                    set({ isProcessing: true });
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'update' });
                     
                     await updateInventoryItem(id, data);
                     await get().fetchInventoryItems();
@@ -114,18 +130,31 @@ export const useInventoryStore = create<InventoryState>()(
                         isRestockMode: false,
                         isAddQuantityMode: false
                     });
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false, 
+                            isProcessing: false,
+                            currentOperation: null
+                        })
+                    }, 500);
+
                 } catch (error) {
                     console.error('Error updating inventory item:', error);
                     toast.error('Failed to update inventory item');
-                } finally {
-                    set({ isProcessing: false });
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        isModalOpen: false,
+                        currentOperation: null
+                    })
                 }
             },
 
             //delete inventory item
             deleteInventoryItem: async (id: string) => {
                 try {
-                    set({ isProcessing: true });
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
                     
                     await deleteInventoryItem(id);
                     await get().fetchInventoryItems();
@@ -135,11 +164,23 @@ export const useInventoryStore = create<InventoryState>()(
                         isDeleteModalOpen: false, 
                         deleteInventoryItemData: null 
                     });
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false,
+                            isProcessing: false,
+                            currentOperation: null
+                        })
+                    }, 500)
+                    
                 } catch (error) {
                     console.error('Error deleting inventory item:', error);
                     toast.error('Failed to delete inventory item');
-                } finally {
-                    set({ isProcessing: false });
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        currentOperation: null
+                    })
                 }
             },
 

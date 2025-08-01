@@ -3,9 +3,9 @@ import styles from './AppointmentPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { OpenModalProps } from '../../../hooks/hook'
-import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass } from '../../../utils'
+import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass, getLoadingText } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType } from '../../../types'
-import { Header, Main, Modal } from '../../../components'
+import { Header, Main, Modal, SubmitLoading } from '../../../components'
 import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore } from '../../../stores'
 
@@ -16,9 +16,9 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const {
         appointments,
         patients,
+        submitLoading,
         loading,
         error,
-        isProcessing,
         selectedAppointment,
         isModalOpen,
         isDeleteModalOpen,
@@ -29,7 +29,8 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         openUpdateModal,
         openDeleteModal,
         closeUpdateModal,
-        closeDeleteModal
+        closeDeleteModal,
+        currentOperation
     } = useAppointmentStore()
 
 
@@ -69,6 +70,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         await deleteAppointment(data)
     }
+
 
     const headerActions = [
         {
@@ -195,6 +197,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                     onSubmit={handleSubmitUpdate}
                     patients={patients}
                     editData={selectedAppointment}
+                    isProcessing={submitLoading}
                 />
             )
         }
@@ -208,10 +211,17 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                     modalType="delete"
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteAppointmentData}
-                    isProcessing={isProcessing}
+                    isProcessing={submitLoading}
                 />
             )
         }
+
+        <SubmitLoading
+            isLoading={submitLoading}
+            loadingText={getLoadingText(currentOperation)}
+            size='medium'
+            variant='overlay'
+        />
     </Main>
   )
 }

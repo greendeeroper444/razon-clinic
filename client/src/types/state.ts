@@ -1,6 +1,9 @@
 import { AppointmentFormData, AppointmentResponse } from "./appointment"
+import { BillingResponse } from "./billing";
+import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
-import { Patient } from "./patient"
+import { MedicalRecordResponse } from "./medical";
+import { Patient, PatientsResponse } from "./patient"
 
 
 //appointment state
@@ -11,6 +14,7 @@ export interface AppointmentState {
     loading: boolean;
     error: string | null;
     isProcessing: boolean;
+    currentOperation: OperationType;
     
     //modal state
     selectedAppointment: (AppointmentFormData & { id?: string }) | null;
@@ -48,6 +52,13 @@ export interface AppointmentState {
 
 }
 
+export interface ExtendedAppointmentState extends AppointmentState {
+    fetchLoading: boolean;
+    submitLoading: boolean;
+    statusLoading: boolean;
+    viewMode: 'admin' | 'user';
+}
+
 
 
 //inventory item state
@@ -57,6 +68,7 @@ export interface InventoryState {
     loading: boolean;
     error: string | null;
     isProcessing: boolean;
+    currentOperation: OperationType;
 
     //modal state
     selectedInventoryItem: (InventoryItemFormData & { id?: string }) | null;
@@ -93,4 +105,25 @@ export interface InventoryState {
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
 
+}
+
+export interface ExtendedInventoryState extends InventoryState {
+    fetchLoading: boolean;
+    submitLoading: boolean;
+    statusLoading: boolean;
+}
+
+//meidcal record state
+export interface MedicalRecordState {
+    medicalRecords: MedicalRecordResponse[];
+}
+
+//billing state
+export interface BillingState {
+    billings: BillingResponse[];
+}
+
+//patient state
+export interface PatientState {
+    patients: PatientsResponse[]
 }
