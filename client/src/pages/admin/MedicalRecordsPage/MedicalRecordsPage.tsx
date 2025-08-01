@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import styles from './MedicalRecordsPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -8,196 +8,87 @@ import {
     faRuler,
     faStethoscope, 
     faDiagnoses,
-    faSearch,
     faTimes,
     faFileAlt,
     faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { getMedicalRecords, getMedicalRecordById, deleteMedicalRecord, addMedicalRecord } from '../../../services';
-import { FormDataType, MedicalRecord, MedicalRecordFormData, PaginationInfo } from '../../../types';
-import { Header, Main, Modal } from '../../../components';
+import { FormDataType, MedicalRecordFormData, MedicalRecordResponse } from '../../../types';
+import { Header, Main, Modal, SubmitLoading } from '../../../components';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
-import { calculateAge2, openModalWithRefresh } from '../../../utils';
+import { calculateAge2, getLoadingText, openModalWithRefresh } from '../../../utils';
+import { useMedicalRecordStore } from '../../../stores/medicalRecordStore';
 
 const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
-    const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [showDetails, setShowDetails] = useState<boolean>(false);
-    const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null);
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [pagination, setPagination] = useState<PaginationInfo | null>(null);
-    const [recordsPerPage] = useState<number>(10);
+    
+    //zustand store selectors
+    const {
+        medicalRecords,
+        submitLoading,
+        loading,
+        error,
+        searchTerm,
+        currentPage,
+        pagination,
+        showDetails,
+        selectedRecord,
+        isModalOpen,
+        isDeleteModalOpen,
+        selectedMedicalRecord,
+        deleteMedicalRecordData,
+        fetchMedicalRecords,
+        viewMedicalRecord,
+        openUpdateModal,
+        openDeleteModal,
+        closeUpdateModal,
+        closeDeleteModal,
+        closeDetailsModal,
+        handlePageChange,
+        updateMedicalRecordData,
+        addMedicalRecord,
+        deleteMedicalRecord,
+        getStatusFromRecord,
+        currentOperation
+    } = useMedicalRecordStore();
 
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-    const [selectedMedicalRecord, setSelectedMedicalRecord] = useState<MedicalRecordFormData & { id?: string } | null>(null);
-    const [deleteMedicalRecordData, setDeleteMedicalRecordData] = useState<{id: string, itemName: string, itemType: string} | null>(null);
-    const [patients, setPatients] = useState<Array<{ id: string; firstName: string }>>([]);
-    const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-    //fetch medical records
-    const fetchMedicalRecords = async (page = 1, search = '') => {
-        try {
-            setLoading(true);
-            const response = await getMedicalRecords(page, recordsPerPage, search);
-            
-            if (response.success) {
-                setMedicalRecords(response.data);
-                setPagination(response.pagination);
-
-                //extract unique patients from medical records for the modal dropdown
-                const uniquePatients = Array.from(
-                    new Map(
-                        response.data
-                            .filter((record: MedicalRecord) => record?.id) 
-                            .map((record: MedicalRecord) => [
-                                record.id,
-                                {
-                                    id: record.id,
-                                    firstName: record.personalDetails?.fullName || 'N/A'
-                                }
-                            ])
-                    ).values()
-                );
-                setPatients(uniquePatients as Array<{ id: string; firstName: string }>);
-            } else {
-                setError('Failed to fetch medical records');
-            }
-        } catch (err) {
-            console.error('Error fetching medical records:', err);
-            setError('Failed to fetch medical records');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    //initial load
     useEffect(() => {
-        fetchMedicalRecords(currentPage, searchTerm);
-    }, [currentPage]);
+        fetchMedicalRecords();
+    }, []);
 
-    //search with debounce
+    //handle search with debounce
     useEffect(() => {
         // const delayedSearch = setTimeout(() => {
-        //     if (currentPage === 1) {
-        //         fetchMedicalRecords(1, searchTerm);
-        //     } else {
-        //         setCurrentPage(1); //trigger the fetch via useEffect
-        //     }
+        //     fetchMedicalRecords(1, searchTerm);
         // }, 500);
 
         // return () => clearTimeout(delayedSearch);
-        fetchMedicalRecords();
+        fetchMedicalRecords(1, searchTerm);
     }, [searchTerm]);
 
     const handleOpenModal = () => {
         openModalWithRefresh({
             modalType: 'medical',
             openModal,
-            onRefresh: () => fetchMedicalRecords(currentPage, searchTerm),
+            onRefresh: () => fetchMedicalRecords(),
         });
     };
 
     const handleReport = () => {
-        
-    }
-
-
-    const handleCloseDetails = () => {
-        setShowDetails(false);
-        setSelectedRecord(null);
+        console.log('Generate report');
     };
 
-    const handleViewRecord = async (record: MedicalRecord) => {
-        try {
-        //fetch full record details
-        const response = await getMedicalRecordById(record.id);
-            if (response.success) {
-                setSelectedRecord(response.data);
-                setShowDetails(true);
-            }
-        } catch (err) {
-        console.error('Error fetching record details:', err);
-        //fallback to basic record data
-        setSelectedRecord(record);
-        setShowDetails(true);
-        }
+    const handleUpdateClick = (record: MedicalRecordResponse) => {
+        openUpdateModal(record);
     };
 
-    const handlePageChange = (newPage: number) => {
-        setCurrentPage(newPage);
+    const handleDeleteClick = (record: MedicalRecordResponse) => {
+        openDeleteModal(record);
     };
 
-    const handleUpdateClick = (record: MedicalRecord) => {
-        //convert the medical record to form data format
-        const formData: MedicalRecordFormData & { id?: string } = {
-            id: record.id,
-            
-            //personal Details
-            fullName: record.personalDetails.fullName,
-            dateOfBirth: record.personalDetails.dateOfBirth.split('T')[0],
-            gender: record.personalDetails.gender,
-            bloodType: record.personalDetails.bloodType || '',
-            phone: record.personalDetails.phone,
-            email: record.personalDetails.email || '',
-            address: record.personalDetails.address || '',
-            emergencyContact: record.personalDetails.emergencyContact || '',
-
-            //current Symptoms
-            chiefComplaint: record.currentSymptoms.chiefComplaint,
-            symptomsDescription: record.currentSymptoms.symptomsDescription,
-            symptomsDuration: record.currentSymptoms.symptomsDuration || '',
-            painScale: record.currentSymptoms.painScale || 0,
-
-            //medical History
-            allergies: record.medicalHistory.allergies || '',
-            chronicConditions: record.medicalHistory.chronicConditions || '',
-            previousSurgeries: record.medicalHistory.previousSurgeries || '',
-            familyHistory: record.medicalHistory.familyHistory || '',
-
-            //growth Milestones
-            height: record.growthMilestones.height || 0,
-            weight: record.growthMilestones.weight || 0,
-            bmi: record.growthMilestones.bmi || '',
-            growthNotes: record.growthMilestones.growthNotes || '',
-
-            //clinical Information
-            diagnosis: record.diagnosis || '',
-            treatmentPlan: record.treatmentPlan || '',
-            prescribedMedications: record.prescribedMedications || '',
-            consultationNotes: record.consultationNotes || '',
-            vaccinationHistory: record.vaccinationHistory || '',
-            followUpDate: record.followUpDate ? record.followUpDate.split('T')[0] : undefined
-        };
-        
-        setSelectedMedicalRecord(formData);
-        setIsModalOpen(true);
-    };
-
-    const handleDeleteClick = (record: MedicalRecord) => {
-        const patientName = record.personalDetails.fullName || 'Unknown Patient';
-        const recordDate = record.dateRecorded;
-        
-        setDeleteMedicalRecordData({
-            id: record.id,
-            itemName: `${patientName}'s medical record from ${new Date(recordDate).toLocaleDateString()}`,
-            itemType: 'Medical Record'
-        });
-        setIsDeleteModalOpen(true);
-    };
-
-    const handleModalClose = () => {
-        setIsModalOpen(false);
-        setSelectedMedicalRecord(null);
-    };
-
-    const handleDeleteModalClose = () => {
-        setIsDeleteModalOpen(false);
-        setDeleteMedicalRecordData(null);
+    const handleViewRecord = (record: MedicalRecordResponse) => {
+        viewMedicalRecord(record);
     };
 
     const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
@@ -206,25 +97,16 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             return;
         }
 
-        //asertion simce we know it's MedicalRecordFormData in this context
         const medicalData = data as MedicalRecordFormData;
 
         try {
-            setLoading(true);
-            
             if (selectedMedicalRecord?.id) {
-                // await updateMedicalRecord(selectedMedicalRecord.id, formData);
+                await updateMedicalRecordData(selectedMedicalRecord.id, medicalData);
+            } else {
                 await addMedicalRecord(medicalData);
-                await fetchMedicalRecords(currentPage, searchTerm);
-                
-                toast.success('Updated medical record successfully!')
             }
         } catch (error) {
-            console.error('Error updating medical record:', error);
-            toast.error('Failed to update medical record');
-        } finally {
-            setLoading(false);
-            setIsModalOpen(false);
+            console.error('Error processing medical record:', error);
         }
     };
 
@@ -235,18 +117,9 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
 
         try {
-            setIsProcessing(true);
-            
             await deleteMedicalRecord(data);
-            await fetchMedicalRecords(currentPage, searchTerm);
-            
-            toast.success('Medical record deleted successfully!');
         } catch (error) {
             console.error('Error deleting medical record:', error);
-            toast.error('Failed to delete medical record');
-        } finally {
-            setIsProcessing(false);
-            setIsDeleteModalOpen(false);
         }
     };
 
@@ -260,22 +133,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                 toast.error('Failed to generate receipt');
             }
         }
-    };
-
-    const getStatusFromRecord = (record: MedicalRecord): string => {
-        if (record.followUpDate) {
-            const followUpDate = new Date(record.followUpDate);
-            const today = new Date();
-            if (followUpDate > today) {
-                return 'Pending';
-            }
-        }
-        
-        if (record.diagnosis && record.treatmentPlan) {
-            return 'Completed';
-        }
-        
-        return 'Active';
     };
 
     const headerActions = [
@@ -302,18 +159,18 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         />
 
         {/* search section */}
-        <div className={styles.searchFilterSection}>
+        {/* <div className={styles.searchFilterSection}>
             <div className={styles.searchBox}>
                 <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
                 <input
-                    type="text"
-                    placeholder="Search by patient name, phone, or email..."
+                    type='text'
+                    placeholder='Search by patient name, phone, or email...'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className={styles.searchInput}
                 />
             </div>
-        </div>
+        </div> */}
 
         {/* medical records table */}
         <div className={styles.tableContainer}>
@@ -329,64 +186,63 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                         <th>Actions</th>
                     </tr>
                 </thead>
-            <tbody>
-                {
-                    medicalRecords.length === 0 ? (
-                        <tr>
-                            <td colSpan={7} className={styles.noRecords}>
-                            No medical records found
-                            </td>
-                        </tr>
-                    ) : (
-                    medicalRecords.map((record) => {
-                        // const status = getStatusFromRecord(record);
-                        getStatusFromRecord(record);
-                        return (
-                            <tr key={record.id} className={styles.tableRow}>
-                                <td className={styles.patientName}>
-                                    {record.personalDetails.fullName}
-                                </td>
-                                <td>
-                                    {new Date(record.personalDetails.dateOfBirth).toLocaleDateString()}
-                                </td>
-                                <td>{calculateAge2(record.personalDetails.dateOfBirth)}</td>
-                                <td>{record.personalDetails.gender}</td>
-                                <td>{record.personalDetails.phone}</td>
-                                <td>
-                                    {new Date(record.dateRecorded).toLocaleDateString()}
-                                </td>
-                                <td className={styles.actions}>
-                                    <button
-                                        type='button'
-                                        className={`${styles.actionBtn} ${styles.view}`}
-                                        onClick={() => handleViewRecord(record)}
-                                        title="View Details"
-                                    >
-                                        View
-                                    </button>
-                                    <button
-                                        type='button' 
-                                        className={`${styles.actionBtn} ${styles.update}`} 
-                                        onClick={() => handleUpdateClick(record)}
-                                        title="Update"
-                                    >
-                                        Update
-                                    </button>
-                                    <button
-                                        type='button' 
-                                        className={`${styles.actionBtn} ${styles.delete}`} 
-                                        onClick={() => handleDeleteClick(record)}
-                                        title="Delete"
-                                    >
-                                        Delete
-                                    </button>
+                <tbody>
+                    {
+                        medicalRecords.length === 0 ? (
+                            <tr>
+                                <td colSpan={7} className={styles.noRecords}>
+                                    No medical records found
                                 </td>
                             </tr>
-                        );
-                    })
-                    )
-                }
-            </tbody>
+                        ) : (
+                            medicalRecords.map((record) => {
+                                getStatusFromRecord(record);
+                                return (
+                                    <tr key={record.id} className={styles.tableRow}>
+                                        <td className={styles.patientName}>
+                                            {record.personalDetails.fullName}
+                                        </td>
+                                        <td>
+                                            {new Date(record.personalDetails.dateOfBirth).toLocaleDateString()}
+                                        </td>
+                                        <td>{calculateAge2(record.personalDetails.dateOfBirth)}</td>
+                                        <td>{record.personalDetails.gender}</td>
+                                        <td>{record.personalDetails.phone}</td>
+                                        <td>
+                                            {new Date(record.dateRecorded).toLocaleDateString()}
+                                        </td>
+                                        <td className={styles.actions}>
+                                            <button
+                                                type='button'
+                                                className={`${styles.actionBtn} ${styles.view}`}
+                                                onClick={() => handleViewRecord(record)}
+                                                title='View Details'
+                                            >
+                                                View
+                                            </button>
+                                            <button
+                                                type='button' 
+                                                className={`${styles.actionBtn} ${styles.update}`} 
+                                                onClick={() => handleUpdateClick(record)}
+                                                title='Update'
+                                            >
+                                                Update
+                                            </button>
+                                            <button
+                                                type='button' 
+                                                className={`${styles.actionBtn} ${styles.delete}`} 
+                                                onClick={() => handleDeleteClick(record)}
+                                                title='Delete'
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )
+                    }
+                </tbody>
             </table>
         </div>
 
@@ -432,22 +288,23 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                     type='button'
                                     onClick={handleDownloadReceipt} 
                                     className={styles.downloadBtn}
-                                    title="Download Receipt"
+                                    title='Download Receipt'
                                 >
                                     <FontAwesomeIcon icon={faDownload} /> Download Receipt
                                 </button>
                                 <button 
                                     type='button'
                                     title='Close'
-                                    onClick={handleCloseDetails} 
-                                    className={styles.closeBtn}>
+                                    onClick={closeDetailsModal} 
+                                    className={styles.closeBtn}
+                                >
                                     <FontAwesomeIcon icon={faTimes} />
                                 </button>
                             </div>
                         </div>
                         
                         <div className={styles.modalBody}>
-                            {/* personal details sec */}
+                            {/* personal details section */}
                             <div className={styles.detailSection}>
                                 <h3><FontAwesomeIcon icon={faUser} /> Personal Details</h3>
                                 <div className={styles.detailGrid}>
@@ -463,18 +320,18 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 </div>
                             </div>
 
-                            {/* current sympton sec */}
+                            {/* current symptoms section */}
                             <div className={styles.detailSection}>
                                 <h3><FontAwesomeIcon icon={faStethoscope} /> Current Symptoms</h3>
                                 <div className={styles.detailGrid}>
-                                <div><strong>Chief Complaint:</strong> {selectedRecord.currentSymptoms.chiefComplaint}</div>
-                                <div><strong>Symptoms Description:</strong> {selectedRecord.currentSymptoms.symptomsDescription}</div>
-                                <div><strong>Duration:</strong> {selectedRecord.currentSymptoms.symptomsDuration || 'Not specified'}</div>
-                                <div><strong>Pain Scale:</strong> {selectedRecord.currentSymptoms.painScale ? `${selectedRecord.currentSymptoms.painScale}/10` : 'Not specified'}</div>
+                                    <div><strong>Chief Complaint:</strong> {selectedRecord.currentSymptoms.chiefComplaint}</div>
+                                    <div><strong>Symptoms Description:</strong> {selectedRecord.currentSymptoms.symptomsDescription}</div>
+                                    <div><strong>Duration:</strong> {selectedRecord.currentSymptoms.symptomsDuration || 'Not specified'}</div>
+                                    <div><strong>Pain Scale:</strong> {selectedRecord.currentSymptoms.painScale ? `${selectedRecord.currentSymptoms.painScale}/10` : 'Not specified'}</div>
                                 </div>
                             </div>
 
-                            {/* meidcal history sec */}
+                            {/* medical history section */}
                             <div className={styles.detailSection}>
                                 <h3><FontAwesomeIcon icon={faHistory} /> Medical History</h3>
                                 <div className={styles.detailGrid}>
@@ -485,7 +342,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 </div>
                             </div>
 
-                            {/* growth milstone section */}
+                            {/* growth milestones section */}
                             <div className={styles.detailSection}>
                                 <h3><FontAwesomeIcon icon={faRuler} /> Growth Milestones</h3>
                                 <div className={styles.detailGrid}>
@@ -519,10 +376,11 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             isModalOpen && (
                 <Modal
                     isOpen={isModalOpen}
-                    onClose={handleModalClose}
+                    onClose={closeUpdateModal}
                     modalType='medical'
                     onSubmit={handleSubmitUpdate}
                     editData={selectedMedicalRecord}
+                    isProcessing={submitLoading}
                 />
             )
         }
@@ -532,14 +390,21 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             isDeleteModalOpen && deleteMedicalRecordData && (
                 <Modal
                     isOpen={isDeleteModalOpen}
-                    onClose={handleDeleteModalClose}
+                    onClose={closeDeleteModal}
                     modalType='delete'
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteMedicalRecordData}
-                    isProcessing={isProcessing}
+                    isProcessing={submitLoading}
                 />
             )
         }
+
+        <SubmitLoading
+            isLoading={submitLoading}
+            loadingText={getLoadingText(currentOperation, 'medical')}
+            size='medium'
+            variant='overlay'
+        />
     </Main>
   )
 }

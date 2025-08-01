@@ -44,27 +44,11 @@ export interface CurrentSymptoms {
     general?: string;
 }
 
-//complete medical record interface matching your Mongoose model
-// export interface MedicalRecord {
-//     id: string;
-//     personalDetails: PersonalDetails;
-//     medicalHistory: MedicalHistory;
-//     growthMilestones: GrowthMilestones;
-//     currentSymptoms: CurrentSymptoms;
-//     vaccinationHistory?: string;
-//     diagnosis?: string;
-//     treatmentPlan?: string;
-//     prescribedMedications?: string;
-//     consultationNotes?: string;
-//     followUpDate?: string;
-//     dateRecorded: string;
-//     createdAt: string;
-//     updatedAt: string;
-// }
 
 //form data interface for creating/updating records
 export interface MedicalRecordFormData {
     //personal details (flattened for form)
+    id: string;
     fullName: string;
     dateOfBirth: string;
     gender: 'Male' | 'Female' | 'Other' | '';
@@ -102,7 +86,7 @@ export interface MedicalRecordFormData {
 }
 
 //api response interfaces
-export interface MedicalRecordsResponse {
+export interface MedicalRecordResponse {
     success: boolean;
     data: MedicalRecord[];
     pagination: {
@@ -111,11 +95,6 @@ export interface MedicalRecordsResponse {
         count: number;
         totalRecords: number;
     };
-}
-
-export interface MedicalRecordResponse {
-    success: boolean;
-    data: MedicalRecord;
     message?: string;
 }
 

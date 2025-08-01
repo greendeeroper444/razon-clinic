@@ -338,7 +338,7 @@ const AppointmentDetailsPage = () => {
 
         <SubmitLoading
             isLoading={submitLoading}
-            loadingText={getLoadingText(currentOperation)}
+            loadingText={getLoadingText(currentOperation, 'appointment')}
             size='medium'
             variant='overlay'
         />

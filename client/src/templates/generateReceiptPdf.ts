@@ -48,7 +48,7 @@ export const generateMedicalReceiptPDF = (record: MedicalRecord): void => {
     const logoText = 'Razon Pediatric Clinic Receipt';
     doc.setFontSize(24);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(34, 139, 34);
+    doc.setTextColor(59, 130, 246);
     doc.text(logoText, 105, 25, { align: 'center' });
     
     //medical center information

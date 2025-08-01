@@ -224,7 +224,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         <SubmitLoading
             isLoading={submitLoading}
-            loadingText={getLoadingText(currentOperation)}
+            loadingText={getLoadingText(currentOperation, 'appointment')}
             size='medium'
             variant='overlay'
         />

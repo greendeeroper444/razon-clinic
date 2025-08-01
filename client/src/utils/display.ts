@@ -1,5 +1,5 @@
 import { faPills, faSyringe, faTablets, faCapsules, faPrescriptionBottle, faCheck, faClock, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { Appointment, OperationType } from '../types';
+import { Appointment, ModalType, OperationType } from '../types';
 
 export const getItemIcon = (category: string) => {
     switch (category.toLowerCase()) {
@@ -98,18 +98,18 @@ export const getPaymentStatusClass = (status: string, styles: any) => {
 };
 
 
-export const getLoadingText = (operation: OperationType): string => {
+export const getLoadingText = (operation: OperationType, modalType: ModalType): string => {
     switch (operation) {
         case 'update':
-            return 'Updating appointment...';
+            return `Updating ${modalType}...`;
         case 'delete':
-            return 'Deleting appointment...';
+            return `Deleting ${modalType}...`;
         case 'status':
             return 'Updating status...';
         case 'create':
-            return 'Creating appointment...';
+            return `Creating ${modalType}...`;
         case 'fetch':
-            return 'Loading appointments...';
+            return `Loading ${modalType}...`;
         default:
             return 'Processing...';
     }

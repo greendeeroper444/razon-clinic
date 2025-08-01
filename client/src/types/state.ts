@@ -1,8 +1,9 @@
+import { PaginationInfo } from "./action";
 import { AppointmentFormData, AppointmentResponse } from "./appointment"
 import { BillingResponse } from "./billing";
 import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
-import { MedicalRecordResponse } from "./medical";
+import { MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
 import { Patient, PatientsResponse } from "./patient"
 
 
@@ -115,7 +116,70 @@ export interface ExtendedInventoryState extends InventoryState {
 
 //meidcal record state
 export interface MedicalRecordState {
-    medicalRecords: MedicalRecordResponse[];
+    //state
+    medicalRecords: MedicalRecordResponse[] | any[];
+    patients: Patient[];
+    loading: boolean;
+    error: string | null;
+    isProcessing: boolean;
+    currentOperation: OperationType;
+    
+    //modal state
+    selectedMedicalRecord: (MedicalRecordFormData & { id?: string }) | null;
+    isModalOpen: boolean;
+    isStatusModalOpen: boolean;
+    isDeleteModalOpen: boolean;
+    deleteMedicalRecordData: { id: string, itemName: string, itemType: string } | null;
+
+    //state for medical record details
+    currentMedicalRecord: MedicalRecord | null;
+    
+    //search and pagination state
+    searchTerm: string;
+    currentPage: number;
+    recordsPerPage: number;
+    pagination: PaginationInfo | null;
+    
+    //view state
+    showDetails: boolean;
+    selectedRecord: (MedicalRecord & { id?: string }) | null | any;
+
+    //actions
+    fetchMedicalRecords: (page?: number, search?: string) => Promise<void>;
+    fetchMedicalRecordById: (medicalRecordId: string) => Promise<void>;
+    addMedicalRecord: (data: MedicalRecordFormData) => Promise<void>;
+    updateMedicalRecordData: (id: string, data: MedicalRecordFormData) => Promise<void>;
+    deleteMedicalRecord: (id: string) => Promise<void>;
+    viewMedicalRecord: (record: MedicalRecordResponse) => Promise<void>;
+    
+    //state for medical record details
+    clearCurrentMedicalRecord: () => void;
+    
+    //modal actions
+    openUpdateModal: (record: MedicalRecordResponse | MedicalRecordFormData) => void;
+    openStatusModal: (record: MedicalRecordFormData) => void;
+    openDeleteModal: (record: MedicalRecordResponse) => void;
+    closeUpdateModal: () => void;
+    closeStatusModal: () => void;
+    closeDeleteModal: () => void;
+    closeDetailsModal: () => void;
+
+    //search and pagination actions
+    setSearchTerm: (searchTerm: string) => void;
+    setCurrentPage: (page: number) => void;
+    handlePageChange: (newPage: number) => void;
+    
+    //utility actions
+    setLoading: (loading: boolean) => void;
+    setError: (error: string | null) => void;
+    getStatusFromRecord: (record: MedicalRecordResponse) => string;
+}
+
+export interface ExtendedMedicalRecordState extends MedicalRecordState {
+    fetchLoading: boolean;
+    submitLoading: boolean;
+    statusLoading: boolean;
+    viewMode: 'admin' | 'user';
 }
 
 //billing state
