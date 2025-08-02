@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faIdCard, faVenusMars, faBirthdayCake, faPhone, faMapMarkerAlt, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Main, Header, Modal } from '../../../components';
-import { FormDataType, PatientApiResponse, PersonalPatientDisplayData, PersonalPatientFormData } from '../../../types';
-import { getPersonalPatients, updatePersonalPatient, deletePersonalPatient } from '../../../services';
+import { FormDataType, PatientApiResponse, PatientDisplayData, PatientFormData } from '../../../types';
+import { getPatients, updatePatient, deletePatient } from '../../../services';
 import { toast } from 'sonner';
 import { calculateAge2, openModalWithRefresh } from '../../../utils';
 import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
@@ -15,14 +15,14 @@ import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
 const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [activeTab, setActiveTab] = useState('overview');
     const [showPatientDetail, setShowPatientDetail] = useState<boolean>(false);
-    const [patients, setPatients] = useState<PersonalPatientDisplayData[]>([]);
-    const [selectedPatient, setSelectedPatient] = useState<PersonalPatientDisplayData | null>(null);
+    const [patients, setPatients] = useState<PatientDisplayData[]>([]);
+    const [selectedPatient, setSelectedPatient] = useState<PatientDisplayData | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-    const [editData, setEditData] = useState<PersonalPatientFormData | null>(null);
-    const [deletePersonalPatientData, setDeletePersonalPatientData] = useState<{
+    const [editData, setEditData] = useState<PatientFormData | null>(null);
+    const [deletePatientData, setDeletePatientData] = useState<{
         id: string;
         itemName: string;
         itemType: string;
@@ -68,7 +68,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     };
 
     //transform API data to display format
-    const transformPatientData = (apiData: PatientApiResponse[]): PersonalPatientDisplayData[] => {
+    const transformPatientData = (apiData: PatientApiResponse[]): PatientDisplayData[] => {
         return apiData.map(patient => ({
             ...patient,
             age: calculateAge2(patient.birthdate),
@@ -80,8 +80,8 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const fetchPatients = async () => {
         try {
             setLoading(true);
-            const response = await getPersonalPatients();
-            const transformedData = transformPatientData(response.data.personalPatients || []);
+            const response = await getPatients();
+            const transformedData = transformPatientData(response.data.patients || []);
             setPatients(transformedData);
         } catch (error) {
             setError('An error occurred while fetching patients');
@@ -105,7 +105,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     };
 
     //handle view patient details
-    const handleViewPatient = (patient: PersonalPatientDisplayData) => {
+    const handleViewPatient = (patient: PatientDisplayData) => {
         setSelectedPatient(patient);
         setShowPatientDetail(true);
     };
@@ -119,11 +119,11 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
     const handleDeleteModalClose = () => {
         setIsDeleteModalOpen(false);
-        setDeletePersonalPatientData(null);
+        setDeletePatientData(null);
     };
 
-    const handleEditPatient = (patient: PersonalPatientFormData) => {
-        const editFormData: PersonalPatientFormData & { patientId?: string } = {
+    const handleEditPatient = (patient: PatientFormData) => {
+        const editFormData: PatientFormData & { patientId?: string } = {
             id: patient.id,
             firstName: patient.firstName,
             lastName: patient.lastName,
@@ -157,13 +157,13 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
             return;
         }
 
-        //assertion since we know it's PersonalPatientFormData in this context
-        const patientData = data as PersonalPatientFormData;
+        //assertion since we know it's PatientFormData in this context
+        const patientData = data as PatientFormData;
 
         try {
             setIsProcessing(true);
             
-            await updatePersonalPatient(editData.id, patientData);
+            await updatePatient(editData.id, patientData);
             
             //refresh the patients list after successful update/add
             await fetchPatients();
@@ -184,13 +184,13 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
 
     //handle archive/delete patient
-    const handleDeletePatient = (patient: PersonalPatientFormData) => {
+    const handleDeletePatient = (patient: PatientFormData) => {
         if (!patient.id) {
             console.error('Patient ID is missing');
             return;
         }
         
-        setDeletePersonalPatientData({
+        setDeletePatientData({
             id: patient.id,
             itemName: patient.firstName || 'Unknown Patient',
             itemType: 'Patient'
@@ -207,10 +207,10 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         try {
             setIsProcessing(true);
-            await deletePersonalPatient(data);
+            await deletePatient(data);
             await fetchPatients();
             setIsDeleteModalOpen(false);
-            setDeletePersonalPatientData(null);
+            setDeletePatientData(null);
 
             toast.success('Patient deleted successfully!')
         } catch (error) {
@@ -512,13 +512,13 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         {/* delete patient modal */}
         {
-            isDeleteModalOpen && deletePersonalPatientData && (
+            isDeleteModalOpen && deletePatientData && (
                 <Modal
                     isOpen={isDeleteModalOpen}
                     onClose={handleDeleteModalClose}
                     modalType='delete'
                     onSubmit={handleConfirmDelete}
-                    deleteData={deletePersonalPatientData}
+                    deleteData={deletePatientData}
                     isProcessing={isProcessing}
                 />
             )

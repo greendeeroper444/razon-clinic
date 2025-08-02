@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const OnlinePatientSchema = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
     {
-        patientNumber: {
+        userNumber: {
             type: String,
             unique: true
         },
@@ -103,28 +103,28 @@ const OnlinePatientSchema = new mongoose.Schema(
 );
 
 //static method to get the next patient number
-OnlinePatientSchema.statics.getNextPatientNumber = async function() {
+UserSchema.statics.getNextUserNumber = async function() {
     //find the patient with the highest number
-    const highestOnlinePatient = await this.findOne().sort('-patientNumber');
+    const highestUser = await this.findOne().sort('-userNumber');
     
     //if no patients exist, start with 0001
-    if (!highestOnlinePatient || !highestOnlinePatient.patientNumber) {
+    if (!highestUser || !highestUser.userNumber) {
         return '0001';
     }
     
     //get the numeric value and increment
-    const currentNumber = parseInt(highestOnlinePatient.patientNumber, 10);
+    const currentNumber = parseInt(highestUser.userNumber, 10);
     const nextNumber = currentNumber + 1;
     
     //format with leading zeros
     return String(nextNumber).padStart(4, '0');
 };
 
-//pre-validate middleware to ensure patientNumber is set before validation
-OnlinePatientSchema.pre('validate', async function(next) {
+//pre-validate middleware to ensure userNumber is set before validation
+UserSchema.pre('validate', async function(next) {
     try {
-        if (!this.patientNumber) {
-            this.patientNumber = await this.constructor.getNextPatientNumber();
+        if (!this.userNumber) {
+            this.userNumber = await this.constructor.getNextUserNumber();
         }
         next();
     } catch (error) {
@@ -133,7 +133,7 @@ OnlinePatientSchema.pre('validate', async function(next) {
 });
 
 //pre-save middleware to ensure either email or contactNumber is provided
-OnlinePatientSchema.pre('save', function(next) {
+UserSchema.pre('save', function(next) {
     if (!this.email && !this.contactNumber) {
         return next(new Error('Either email or contact number is required'));
     }
@@ -141,6 +141,6 @@ OnlinePatientSchema.pre('save', function(next) {
 });
 
 //create model from schema
-const OnlinePatient = mongoose.model('OnlinePatient', OnlinePatientSchema);
+const User = mongoose.model('User', UserSchema);
 
-module.exports = OnlinePatient;
+module.exports = User;

@@ -2,10 +2,10 @@ import { AppointmentFormData } from "./appointment";
 import { BillingFormData } from "./billing";
 import { InventoryItemFormData } from "./invetory";
 import { MedicalRecordFormData } from "./medical";
-import { PersonalPatientFormData } from "./personalPatient";
+import { PatientFormData } from "./patient";
 // import { PatientFormData } from "./patient";
 
-export type FormDataType = AppointmentFormData | PersonalPatientFormData | InventoryItemFormData | MedicalRecordFormData | BillingFormData;
+export type FormDataType = AppointmentFormData | PatientFormData | InventoryItemFormData | MedicalRecordFormData | BillingFormData;
 
 export type OperationType = 'update' | 'delete' | 'status' | 'create' | 'fetch' | null;
 

@@ -1,192 +1,106 @@
-import axios from "axios";
-import { PatientResponse, PatientsResponse, PatientDetailed } from "../types";
-import API_BASE_URL from "../ApiBaseUrl";
+import axios from 'axios';
+import API_BASE_URL from '../ApiBaseUrl';
+import { PatientFormData } from '../types';
 
-
-
-//get all patients (for dropdown) - matches the endpoint used in modal
-export const getPatients = async () => {
+export const addPatient = async (patientData: PatientFormData) => {
     try {
-        const token = localStorage.getItem('token');
-        
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`
+        const response = await axios.post(
+            `${API_BASE_URL}/api/patients/addPatient`,
+            patientData,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             }
-        };
-        
-        const response = await axios.get<PatientsResponse>(
-            `${API_BASE_URL}/api/onlinePatients/getPatients`,
-            config
         );
-        
         return response.data;
     } catch (error) {
+        console.error('Error adding personal patient item:', error);
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Failed to fetch patients');
+            throw error.response?.data || error.message;
         }
-        throw new Error('An error occurred while fetching patients');
+
+        throw error;
     }
 };
 
+export const getPatients = async (params = {}) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/api/patients/getPatients`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                params
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching personal patient items:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
 
+        throw error;
+    }
+};
 
-//get patient by ID
 export const getPatientById = async (patientId: string) => {
     try {
-        const token = localStorage.getItem('token');
-        
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`
+        const response = await axios.get(
+            `${API_BASE_URL}/api/patients/getPatientById/${patientId}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             }
-        };
-        
-        const response = await axios.get<PatientResponse>(
-            `${API_BASE_URL}/api/onlinePatients/patients/${patientId}`,
-            config
         );
-        
         return response.data;
     } catch (error) {
+        console.error('Error fetching personal patient item:', error);
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Failed to fetch patient details');
+            throw error.response?.data || error.message;
         }
-        throw new Error('An error occurred while fetching patient details');
+
+        throw error;
     }
 };
 
-
-
-
-//create new patient
-export const createPatient = async (patientData: Partial<PatientDetailed>) => {
+export const updatePatient = async (patientId: string, updateData: Partial<PatientFormData>) => {
     try {
-        const token = localStorage.getItem('token');
-        
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
+        const response = await axios.put(
+            `${API_BASE_URL}/api/patients/updatePatient/${patientId}`,
+            updateData,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             }
-        };
-        
-        const response = await axios.post<PatientResponse>(
-            `${API_BASE_URL}/api/onlinePatients/patients`,
-            patientData,
-            config
         );
-        
         return response.data;
     } catch (error) {
+        console.error('Error updating personal patient:', error);
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Failed to create patient');
+            throw error.response?.data || error.message;
         }
-        throw new Error('An error occurred while creating patient');
+
+        throw error;
     }
 };
 
-
-
-
-//update patient
-export const updatePatient = async (patientId: string, patientData: Partial<PatientDetailed>) => {
-    try {
-        const token = localStorage.getItem('token');
-        
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        };
-        
-        const response = await axios.put<PatientResponse>(
-            `${API_BASE_URL}/api/onlinePatients/patients/${patientId}`,
-            patientData,
-            config
-        );
-        
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Failed to update patient');
-        }
-        throw new Error('An error occurred while updating patient');
-    }
-};
-
-//delete patient
 export const deletePatient = async (patientId: string) => {
-    try {
-        const token = localStorage.getItem('token');
-        
-        const config = {
+    return await axios.delete<{success: boolean, message: string}>(
+        `${API_BASE_URL}/api/patients/deletePatient/${patientId}`,
+        {
             headers: {
-                Authorization: `Bearer ${token}`
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
-        };
-        
-        const response = await axios.delete(
-            `${API_BASE_URL}/api/onlinePatients/patients/${patientId}`,
-            config
-        );
-        
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Failed to delete patient');
         }
-        throw new Error('An error occurred while deleting patient');
-    }
-};
-
-//get all onlinePatients (includes doctors, staff, and patients)
-export const getAllonlinePatients = async () => {
-    try {
-        const token = localStorage.getItem('token');
-        
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        };
-        
-        const response = await axios.get(
-            `${API_BASE_URL}/api/onlinePatients/`,
-            config
-        );
-        
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Failed to fetch onlinePatients');
-        }
-        throw new Error('An error occurred while fetching onlinePatients');
-    }
-};
-
-//get user profile (current authenticated user)
-export const getUserProfile = async () => {
-    try {
-        const token = localStorage.getItem('token');
-        
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        };
-        
-        const response = await axios.get(
-            `${API_BASE_URL}/api/onlinePatients/profile`,
-            config
-        );
-        
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Failed to fetch user profile');
-        }
-        throw new Error('An error occurred while fetching user profile');
-    }
+    );
 };

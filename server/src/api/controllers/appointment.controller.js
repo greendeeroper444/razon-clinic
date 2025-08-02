@@ -1,5 +1,5 @@
 const Admin = require('../../models/admin.model');
-const OnlinePatient = require('../../models/onlinePatient.model');
+const User = require('../../models/user.model');
 const Notification = require('../../models/notification.model');
 const Appointment = require('../../models/appointment.model');
 const { ApiError } = require('../../utils/errors');
@@ -9,7 +9,7 @@ class AppointmentController {
 
     async addAppointment(req, res, next) {
         try {
-            const createNotifications = !req.user || req.user.role === 'Patient';
+            const createNotifications = !req.user || req.user.role === 'User';
             
             //check specifically for reasonForVisit
             if (!req.body.reasonForVisit || req.body.reasonForVisit.trim().length < 5 || 
@@ -167,7 +167,7 @@ class AppointmentController {
                 const patient = patientsToProcess[i];
                 
                 const appointmentData = {
-                    patientId: req.body.patientId,
+                    userId: req.body.userId,
                     firstName: patient.firstName,
                     lastName: patient.lastName,
                     middleName: patient.middleName || null,
@@ -217,20 +217,20 @@ class AppointmentController {
                     if (i === 0 && createNotifications) {
                         try {
                             const existingNotification = await Notification.findOne({
-                                sourceId: appointmentData.patientId,
+                                sourceId: appointmentData.userId,
                                 entityId: appointment._id,
                                 type: 'AppointmentCreated',
                                 entityType: 'Appointment',
                             });
                             
                             if (!existingNotification) {
-                                const patient = await OnlinePatient.findById(appointmentData.patientId);
+                                const patient = await User.findById(appointmentData.userId);
                                 const patientCountMsg = patientsToProcess.length > 1 ? ` for ${patientsToProcess.length} patients` : '';
                                 const message = `New appointment request from ${patient?.fullName || 'a patient'}${patientCountMsg} for ${new Date(req.body.preferredDate).toLocaleDateString()} at ${preferredTime}.`;
                                 
                                 const notification = new Notification({
-                                    sourceId: appointmentData.patientId,
-                                    sourceType: 'Patient',
+                                    sourceId: appointmentData.userId,
+                                    sourceType: 'User',
                                     type: 'AppointmentCreated',
                                     entityId: appointment._id,
                                     entityType: 'Appointment',
@@ -272,12 +272,12 @@ class AppointmentController {
     
     async getAppointment(req, res, next) {
         try {
-            const { patientId, status, fromDate, toDate } = req.query;
+            const { userId, status, fromDate, toDate } = req.query;
             
             //build filter object
             const filter = {};
             
-            if (patientId) filter.patientId = patientId;
+            if (userId) filter.userId = userId;
             if (status) filter.status = status;
             
             //date range filter
@@ -290,7 +290,7 @@ class AppointmentController {
             const appointments = await Appointment.find(filter)
                 // .sort({ preferredDate: 1, preferredTime: 1 })
                 .sort({ createdAt: -1 })
-                .populate('patientId', 'firstName lastName middleName emailOrContactNumber patientNumber');
+                .populate('userId', 'firstName lastName middleName emailOrContactNumber patientNumber');
             
             return res.status(200).json({
                 success: true,
@@ -315,7 +315,7 @@ class AppointmentController {
             
             //find the appointment by ID and populate patient information
             const appointment = await Appointment.findById(appointmentId)
-                .populate('patientId', 'firstName lastName middleName email contactNumber birthdate sex address dateRegistered');
+                .populate('userId', 'firstName lastName middleName email contactNumber birthdate sex address dateRegistered');
             
             if (!appointment) {
                 return res.status(404).json({
@@ -364,7 +364,7 @@ class AppointmentController {
             //find all appointments for the specified date
             const appointments = await Appointment.find(filter)
                 .sort({ preferredTime: 1 })
-                .populate('patientId', 'firstName lastName middleName emailOrContactNumber patientNumber');
+                .populate('userId', 'firstName lastName middleName emailOrContactNumber patientNumber');
             
             //group appointments by time slots
             const timeSlots = appointments.reduce((acc, appointment) => {
@@ -402,7 +402,7 @@ class AppointmentController {
             const { status, fromDate, toDate } = req.query;
             
             //filter object
-            const filter = { patientId: userId };
+            const filter = { userId };
             
             //filters
             if (status) filter.status = status;
@@ -417,7 +417,7 @@ class AppointmentController {
             const appointments = await Appointment.find(filter)
                 // .sort({ preferredDate: 1, preferredTime: 1 })
                 .sort({ createdAt: -1 })
-                .populate('patientId', 'firstName emailOrContactNumber patientNumber');
+                .populate('userId', 'firstName emailOrContactNumber patientNumber');
             
             return res.status(200).json({
                 success: true,
@@ -459,7 +459,7 @@ class AppointmentController {
             const isStatusUpdate = path.includes('/status');
             
             //get the appointment with populated patient data
-            const appointment = await Appointment.findById(appointmentId).populate('patientId');
+            const appointment = await Appointment.findById(appointmentId).populate('userId');
             if (!appointment) {
                 throw new ApiError('Appointment not found', 404);
             }
@@ -473,7 +473,7 @@ class AppointmentController {
                 appointment.status = req.body.status;
             } else {
                 //for full update - basic appointment fields
-                appointment.patientId = req.body.patientId || appointment.patientId;
+                appointment.userId = req.body.userId || appointment.userId;
                 appointment.firstName = req.body.firstName || appointment.firstName;
                 appointment.lastName = req.body.lastName || appointment.lastName;
                 appointment.middleName = req.body.middleName || appointment.middleName;
@@ -532,7 +532,7 @@ class AppointmentController {
             //dend SMS notification if status changed
             if (oldStatus !== appointment.status) {
                 //get contact number from either appointment or populated patient
-                const contactNumber = appointment.contactNumber || appointment.patientId?.contactNumber;
+                const contactNumber = appointment.contactNumber || appointment.userId?.contactNumber;
                 
                 if (contactNumber) {
                     //only send SMS in production or when SMS_ENABLED is true
@@ -606,8 +606,8 @@ async function sendStatusUpdateSMS(appointment, contactNumber) {
         }
 
         //get patient name - either from populated patient or appointment fields
-        const patientName = appointment.patientId?.firstName 
-            ? `${appointment.patientId.firstName} ${appointment.patientId.lastName}`
+        const patientName = appointment.userId?.firstName 
+            ? `${appointment.userId.firstName} ${appointment.userId.lastName}`
             : `${appointment.firstName} ${appointment.lastName}`;
 
         //prepare replacement data for the SMS template

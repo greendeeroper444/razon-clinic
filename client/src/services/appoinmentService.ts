@@ -43,7 +43,7 @@ export const addAppointment = async (appointmentData: AppointmentFormData) => {
 export const getAppointments = async (filters?: AppointmentFilters) => {
     const params = new URLSearchParams();
     
-    if (filters?.patientId) params.append('patientId', filters.patientId);
+    if (filters?.userId) params.append('userId', filters.userId);
     if (filters?.status) params.append('status', filters.status);
     if (filters?.fromDate) params.append('fromDate', filters.fromDate);
     if (filters?.toDate) params.append('toDate', filters.toDate);
@@ -154,7 +154,7 @@ export const getAppointmentById = async (appointmentId: string) => {
 
 
 
-export const getMyAppointment = async (filters?: Omit<AppointmentFilters, 'patientId'>) => {
+export const getMyAppointment = async (filters?: Omit<AppointmentFilters, 'userId'>) => {
     const params = new URLSearchParams();
     
     if (filters?.status) params.append('status', filters.status);

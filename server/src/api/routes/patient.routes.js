@@ -1,51 +1,51 @@
 const express = require('express');
 const router = express.Router();
-const PersonalPatientController = require('../controllers/personalPatient.controller');
+const PatientController = require('../controllers/patient.controller');
 // const validator = require('../validators/InventoryItem.validator');
 const { authenticate } = require('../middlewares/auth.middleware');
 
 
 router.post(
-    '/addPersonalPatient', 
+    '/addPatient', 
     authenticate, 
     // validator.validateInventoryItem, 
-    PersonalPatientController.addPersonalPatient
+    PatientController.addPatient
 );
 
 
 
 
 router.get(
-    '/getPersonalPatients', 
+    '/getPatients', 
     authenticate, 
-    PersonalPatientController.getPersonalPatient
+    PatientController.getPatients
 );
 
 
 
 router.get(
-    '/getPersonalPatient/:patientId', 
+    '/getPatientById/:patientId', 
     authenticate, 
     // validator.validatepatientId,
-    PersonalPatientController.getPersonalPatientById
+    PatientController.getPatientById
 );
 
 
 
 router.put(
-    '/updatePersonalPatient/:patientId', 
+    '/updatePatient/:patientId', 
     authenticate, 
     // validator.validateInventoryItem, 
-    PersonalPatientController.updatePersonalPatient
+    PatientController.updatePatient
 );
 
 
 
 router.delete(
-    '/deletePersonalPatient/:patientId', 
+    '/deletePatient/:patientId', 
     authenticate, 
     // validator.validatepatientId,
-    PersonalPatientController.deletePersonalPatient
+    PatientController.deletePatient
 );
 
 module.exports = router;

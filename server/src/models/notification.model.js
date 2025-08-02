@@ -11,7 +11,7 @@ const notificationSchema = new mongoose.Schema(
         },
         sourceType: {
             type: String,
-            enum: ['Patient', 'Doctor', 'Secretary', 'System'],
+            enum: ['User', 'Doctor', 'Secretary', 'System'],
             default: 'System'
         },
         //type of notification

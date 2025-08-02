@@ -1,7 +1,5 @@
 import { ParentInfo } from "./appointment";
 
-
-
 export interface SignupFormData {
     firstName: string;
     lastName: string;
@@ -71,23 +69,4 @@ export interface LoginResponse {
             role: string;
         }
     };
-}
-
-
-
-//user
-export interface User {
-    id: string;
-    firstName: string;
-    lastName: string;
-    middleName: string;
-    email?: string;
-    contactNumber?: string;
-    birthdate: Date;
-    sex: string;
-    address: string;
-    motherInfo?: ParentInfo;
-    fatherInfo?: ParentInfo;
-    religion?: string;
-    role: string;
 }

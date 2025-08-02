@@ -5,7 +5,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { getPatients } from '../../../services'
 import { AppointmentForm, BillingsForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../../features/Forms'
 import { formatDateForDisplay, formatDateForInput, transformPatientForAppointment } from '../../../utils'
-import { AppointmentFormData, AppointmentStatus, BillingFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalProps, Patient, PersonalPatientFormData } from '../../../types'
+import { AppointmentFormData, AppointmentStatus, BillingFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalProps, Patient, PatientFormData } from '../../../types'
 import Button from '../Button/Button'
 
 
@@ -103,7 +103,7 @@ const Modal: React.FC<ModalProps> = ({
                         age: undefined,
                         occupation: ''
                     }
-                } as PersonalPatientFormData);
+                } as PatientFormData);
             } else if (modalType === 'item') {
                 setFormData({
                     itemName: '',
@@ -303,14 +303,14 @@ const Modal: React.FC<ModalProps> = ({
                     <>
                         {/* display birthdate if editing and birthdate exists */}
                         {
-                            editData && (editData as PersonalPatientFormData).birthdate && (
+                            editData && (editData as PatientFormData).birthdate && (
                                 <div className={styles.birthdateDisplay}>
-                                    <p><strong>Current Birthdate:</strong> {formatDateForDisplay((editData as PersonalPatientFormData).birthdate as string)}</p>
+                                    <p><strong>Current Birthdate:</strong> {formatDateForDisplay((editData as PatientFormData).birthdate as string)}</p>
                                 </div>
                             )
                         }
                         <PatientForm
-                            formData={formData as PersonalPatientFormData}
+                            formData={formData as PatientFormData}
                             onChange={handleChange}
                         />
                     </>

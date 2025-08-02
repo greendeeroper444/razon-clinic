@@ -1,6 +1,7 @@
+import { PatientProcessingData } from "../types";
 import { cleanObject } from "./clean";
 
-export const processPatient = (patient: any) => cleanObject({
+export const processPatient = (patient: PatientProcessingData) => cleanObject({
     firstName: patient.firstName?.trim(),
     lastName: patient.lastName?.trim(),
     middleName: patient.middleName?.trim(),

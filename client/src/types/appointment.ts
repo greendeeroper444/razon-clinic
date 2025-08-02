@@ -4,11 +4,12 @@ export interface AppointmentFormProps {
     formData: AppointmentFormData;
     onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
     isLoading: boolean;
-    patients: Array<{ id: string; firstName: string; lastName: string; middleName: string | null; patientNumber: string; }>;
+    patients: Array<{ id: string; firstName: string; lastName: string; middleName: string | null; userNumber: string; }>;
 }
 
 export interface AppointmentFormData {
     id: string;
+    userId? : string;
     appointmentNumber?: number;
     firstName?: string;
     lastName?: string;
@@ -48,7 +49,7 @@ export interface AppointmentFormData {
     patients?: {
         firstName?: string;
         lastName?: string;
-        middleName?: string;
+        middleName?: string | null;
         birthdate?: string;
         sex?: string;
         height?: number | string;
@@ -58,18 +59,18 @@ export interface AppointmentFormData {
     updatedAt?: string;
 }
 
-export interface PatientId {
+export interface UserId {
     id: string;
     firstName: string;
-    patientNumber: string;
+    userNumber: string;
     address: string;
 }
 export interface Appointment {
     id: string;
-    patientId: PatientId;
+    userId: UserId;
     fullName: string;
     firstName?: string;
-    middleName?: string;
+    middleName?: string | null;
     lastName?: string;
     dateOfBirth?: string;
     birthdate: string;
@@ -132,7 +133,7 @@ export interface AppointmentResponse extends AppointmentFormData {
 }
 
 export interface AppointmentFilters {
-    patientId?: string;
+    userId?: string;
     status?: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
     fromDate?: string;
     toDate?: string;
@@ -149,7 +150,7 @@ export interface AppointmentFilters {
 //     contactNumber: string;
 //     address: string;
 //     status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
-//     patientId?: PatientId;
+//     UserId?: UserId;
 // }
 
 export interface AppointmentDataCalendar {

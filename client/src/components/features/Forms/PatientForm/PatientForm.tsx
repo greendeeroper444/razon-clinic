@@ -20,6 +20,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 required
                 minLength={3}
                 maxLength={50}
+                placeholder="Patient's first name"
             />
         </div>
 
@@ -35,11 +36,12 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 required
                 minLength={3}
                 maxLength={50}
+                placeholder="Patient's last name"
             />
         </div>
 
         <div className={styles.formGroup}>
-            <label htmlFor="middleName">Middle Name</label>
+            <label htmlFor="middleName">Middle Name (Optional)</label>
             <input
             type="text"
                 id="middleName"
@@ -50,6 +52,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 required
                 minLength={3}
                 maxLength={50}
+                placeholder="Patient's middle name (optional)"
             />
         </div>
 
@@ -110,7 +113,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     <option value="">Select Sex</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
-                    <option value="Other">Other</option>
+                    {/* <option value="Other">Other</option> */}
                 </select>
             </div>
         </div>

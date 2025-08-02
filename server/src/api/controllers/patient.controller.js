@@ -1,10 +1,10 @@
-const PersonalPatient = require("../../models/PersonalPatient.model");
+const Patient = require("../../models/patient.model");
 const mongoose = require('mongoose')
 
 
-class PersonalPatientController {
+class PatientController {
 
-    async addPersonalPatient(req, res, next) {
+    async addPatient(req, res, next) {
         try {
             const { 
                 firstName, 
@@ -20,7 +20,7 @@ class PersonalPatientController {
                 religion
             } = req.body;
 
-            const personalPatientData = {
+            const patientData = {
                 firstName,
                 lastName,
                 middleName,
@@ -42,14 +42,14 @@ class PersonalPatientController {
                 religion: religion || ''
             };
 
-            const personalPatient = new PersonalPatient(personalPatientData);
+            const patient = new Patient(patientData);
 
-            await personalPatient.save();
+            await patient.save();
 
             return res.status(201).json({
                 success: true,
-                message: 'Personal patient created successfully',
-                data: personalPatient
+                message: 'Patient created successfully',
+                data: patient
             });
         } catch (error) {
             next(error);
@@ -58,7 +58,7 @@ class PersonalPatientController {
 
 
     
-    async getPersonalPatient(req, res, next) {
+    async getPatients(req, res, next) {
         try {
             const { 
                 page = 1, 
@@ -90,20 +90,20 @@ class PersonalPatientController {
             sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
             // execute query with pagination and sorting
-            const personalPatients = await PersonalPatient.find(filter)
+            const patients = await Patient.find(filter)
                 .sort(sort)
                 .skip(skip)
                 .limit(parseInt(limit));
 
             //get total count for pagination
-            const totalItems = await PersonalPatient.countDocuments(filter);
+            const totalItems = await Patient.countDocuments(filter);
             const totalPages = Math.ceil(totalItems / parseInt(limit));
 
             return res.status(200).json({
                 success: true,
-                message: 'Personal patients retrieved successfully',
+                message: 'Patients retrieved successfully',
                 data: {
-                    personalPatients,
+                    patients,
                     pagination: {
                         currentPage: parseInt(page),
                         totalPages,
@@ -119,30 +119,30 @@ class PersonalPatientController {
         }
     }
 
-    async getPersonalPatientById(req, res, next) {
+    async getPatientById(req, res, next) {
         try {
             const { patientId } = req.params;
 
-            const personalPatient = await PersonalPatient.findById(patientId);
+            const patient = await Patient.findById(patientId);
 
-            if (!personalPatient) {
+            if (!patient) {
                 return res.status(404).json({
                     success: false,
-                    message: 'Personal patient not found'
+                    message: 'Patient not found'
                 });
             }
 
             return res.status(200).json({
                 success: true,
-                message: 'Personal patient retrieved successfully',
-                data: personalPatient
+                message: 'Patient retrieved successfully',
+                data: patient
             });
         } catch (error) {
             next(error);
         }
     }
 
-    async updatePersonalPatient(req, res, next) {
+    async updatePatient(req, res, next) {
         try {
             const { patientId } = req.params;
             const updateData = req.body;
@@ -153,7 +153,7 @@ class PersonalPatientController {
             delete updateData.createdAt;
             delete updateData.updatedAt;
 
-            const personalPatient = await PersonalPatient.findByIdAndUpdate(
+            const patient = await Patient.findByIdAndUpdate(
                 patientId,
                 updateData,
                 { 
@@ -162,24 +162,24 @@ class PersonalPatientController {
                 }
             );
 
-            if (!personalPatient) {
+            if (!this.getPatient) {
                 return res.status(404).json({
                     success: false,
-                    message: 'Personal patient not found'
+                    message: 'Patient not found'
                 });
             }
 
             return res.status(200).json({
                 success: true,
-                message: 'Personal patient updated successfully',
-                data: personalPatient
+                message: 'Patient updated successfully',
+                data: patient
             });
         } catch (error) {
             next(error);
         }
     }
 
-    async deletePersonalPatient(req, res, next) {
+    async deletePatient(req, res, next) {
         try {
             const { patientId } = req.params;
             
@@ -187,7 +187,7 @@ class PersonalPatientController {
             if (!patientId || patientId === 'undefined') {
                 return res.status(400).json({
                     success: false,
-                    message: 'Invalid Personal patient ID'
+                    message: 'Invalid patient ID'
                 });
             }
             
@@ -195,23 +195,23 @@ class PersonalPatientController {
             if (!mongoose.Types.ObjectId.isValid(patientId)) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Invalid Personal patient ID format'
+                    message: 'Invalid patient ID format'
                 });
             }
             
-            const personalPatient = await PersonalPatient.findByIdAndDelete(patientId);
+            const patient = await Patient.findByIdAndDelete(patientId);
             
-            if (!personalPatient) {
+            if (!patient) {
                 return res.status(404).json({
                     success: false,
-                    message: 'Personal patient not found'
+                    message: 'Patient not found'
                 });
             }
 
             return res.status(200).json({
                 success: true,
-                message: 'Personal patient deleted successfully',
-                data: personalPatient
+                message: 'Patient deleted successfully',
+                data: patient
             });
         } catch (error) {
             next(error);
@@ -220,4 +220,4 @@ class PersonalPatientController {
    
 }
 
-module.exports = new PersonalPatientController();
+module.exports = new PatientController();

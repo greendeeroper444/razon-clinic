@@ -24,9 +24,9 @@ import {
 } from './pages'
 import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
-import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, RouteType, PersonalPatientFormData, FormDataType, ModalType, BillingFormData } from './types'
+import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, RouteType, PatientFormData, FormDataType, ModalType, BillingFormData } from './types'
 import { Layout, Modal, PageTitle } from './components'
-import { addAppointment, addBilling, addInventoryItem, addMedicalRecord, addPersonalPatient } from './services'
+import { addAppointment, addBilling, addInventoryItem, addMedicalRecord, addPatient } from './services'
 
 
 
@@ -113,7 +113,7 @@ function App() {
         }
         break;
       case 'patient':
-        await addPersonalPatient(formData as PersonalPatientFormData);
+        await addPatient(formData as PatientFormData);
           
         toast.success('Personal patient added successfully');
         // window.dispatchEvent(new CustomEvent('patient-refresh'));

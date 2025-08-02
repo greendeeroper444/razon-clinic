@@ -5,13 +5,13 @@ const mongoose = require('mongoose');
 //validator for creating and updating appointments
 const validateAppointment = [
     (req, res, next) => {
-        // if no patientId provided and user is a patient, use their ID
-        if (!req.body.patientId && req.user && req.user.role === 'Patient') {
-            req.body.patientId = req.user.id;
+        // if no userId provided and user is a patient, use their ID
+        if (!req.body.userId && req.user && req.user.role === 'User') {
+            req.body.userId = req.user.id;
         }
         next();
     },
-    // body('patientId')
+    // body('userId')
     //     .notEmpty().withMessage('Patient ID is required')
     //     .custom((value) => {
     //         if (!mongoose.Types.ObjectId.isValid(value)) {

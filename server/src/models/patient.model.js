@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const PersonalPatientSchema = new mongoose.Schema(
+const PatientSchema = new mongoose.Schema(
     {
         patientNumber: {
             type: String,
@@ -112,7 +112,7 @@ const PersonalPatientSchema = new mongoose.Schema(
 
 
 //static method to get the next patient number
-PersonalPatientSchema.statics.getNextPatientNumber = async function() {
+PatientSchema.statics.getNextPatientNumber = async function() {
     //find the patient with the highest number
     const highestPatient = await this.findOne().sort('-patientNumber');
     
@@ -130,7 +130,7 @@ PersonalPatientSchema.statics.getNextPatientNumber = async function() {
 };
 
 //pre-validate middleware to ensure patientNumber is set before validation
-PersonalPatientSchema.pre('validate', async function(next) {
+PatientSchema.pre('validate', async function(next) {
     try {
         if (!this.patientNumber) {
             this.patientNumber = await this.constructor.getNextPatientNumber();
@@ -141,6 +141,6 @@ PersonalPatientSchema.pre('validate', async function(next) {
     }
 });
 
-const PersonalPatient = mongoose.model('PersonalPatient', PersonalPatientSchema);
+const Patient = mongoose.model('Patient', PatientSchema);
 
-module.exports = PersonalPatient;
+module.exports = Patient;
