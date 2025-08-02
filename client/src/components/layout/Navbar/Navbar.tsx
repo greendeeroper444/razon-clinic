@@ -4,16 +4,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faBell, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { getFirstAndLastName, getFirstLetterOfFirstAndLastName } from '../../../utils'
 import { getNotifications } from '../../../services'
-import { useAuth } from '../../../hooks/usesAuth'
 import { NavbarProps } from '../../../types'
 import Notification from '../../ui/Notification/Notification'
+import { useAuthenticationStore } from '../../../stores/authenticationStore'
 
 const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     const [showNotifications, setShowNotifications] = useState<boolean>(false);
     const [showMobileSearch, setShowMobileSearch] = useState<boolean>(false);
     const [unreadCount, setUnreadCount] = useState<number>(0);
     const searchInputRef = useRef<HTMLInputElement>(null);
-    const { isAuthenticated, currentUser } = useAuth();
+    const {
+        user,
+        isAuthenticated,
+    } = useAuthenticationStore()
 
 
     //fetch unread count independently
@@ -30,17 +33,17 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
 
     //auto-refetch unread count every 10 seconds
     useEffect(() => {
-        // if (isAuthenticated && currentUser?.role !== 'Doctor') {
+        // if (isAuthenticated && user?.role !== 'Doctor') {
         //     const interval = setInterval(() => {
         //         fetchUnreadCount();
         //     }, 1000);
 
         //     return () => clearInterval(interval);
         // }
-        if (isAuthenticated && currentUser?.role !== 'Doctor') {
+        if (isAuthenticated && user?.role !== 'Doctor') {
             fetchUnreadCount();
         }
-    }, [isAuthenticated, currentUser?.role]);
+    }, [isAuthenticated, user?.role]);
 
     //handle unread count updates from notification component
     const handleUnreadCountChange = (count: number) => {
@@ -138,7 +141,7 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                 </div>
             </div>
             {
-                currentUser && (currentUser.role === 'Staff') && (
+                user && (user.role === 'Staff') && (
                     <div className={styles.notificationIcon} onClick={toggleNotifications}>
                         <FontAwesomeIcon icon={faBell} />
                         
@@ -158,8 +161,8 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                 )
             }
             <div className={styles.userProfile}>
-                <div className={styles.userAvatar}>{getFirstLetterOfFirstAndLastName(currentUser?.firstName)}</div>
-                <div className={styles.userName}>{getFirstAndLastName(currentUser?.firstName)}</div>
+                <div className={styles.userAvatar}>{getFirstLetterOfFirstAndLastName(user?.firstName)}</div>
+                <div className={styles.userName}>{getFirstAndLastName(user?.firstName)}</div>
                 <FontAwesomeIcon icon={faChevronDown} style={{ fontSize: '0.8rem' }} />
             </div>
         </div>

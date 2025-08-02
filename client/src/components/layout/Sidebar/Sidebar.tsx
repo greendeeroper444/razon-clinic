@@ -16,16 +16,18 @@ import {
     faCreditCard
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'sonner';
-import { logoutUser } from '../../../services';
-import { useAuth } from '../../../hooks/usesAuth';
 import { SidebarProps } from '../../../types';
+import { useAuthenticationStore } from '../../../stores/authenticationStore';
 
 
 const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState<boolean>(false);
-    const { currentUser, clearAuth } = useAuth();
+    const {
+        logout,
+        user,
+    } = useAuthenticationStore()
 
     
     //check if screen size is mobile
@@ -46,15 +48,11 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     
     const isActive = (path: string): boolean => location.pathname === path;
 
-    const handleLogout = async () => {
+    const handleLogout = () => {
         try {
-            await logoutUser();
-            
-            clearAuth();
-            
-            //show success toast
-            toast.success('Successfully logged out');
-            
+
+            logout();
+
             //redirect to login page
             navigate('/');
         } catch (error) {
@@ -90,7 +88,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                 <h2>
                     <FontAwesomeIcon icon={faClinicMedical} color='#4169ff' size='1x' />
                     {
-                        currentUser && (currentUser.role === 'Doctor') ? (
+                        user && (user.role === 'Doctor') ? (
                             <span className={styles.logoText}>Doctor Panel</span>
                         ) : (
                             <span className={styles.logoText}>Staff Panel</span>
@@ -123,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                 </Link>
 
                 {
-                    currentUser && (currentUser.role === 'Staff') && (
+                    user && (user.role === 'Staff') && (
                         <>
                             <Link
                                 to='/admin/appointments'
@@ -147,7 +145,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                 }
 
                 {
-                    currentUser && (currentUser.role === 'Doctor') ? (
+                    user && (user.role === 'Doctor') ? (
                         <>
                             <Link
                                 to='/admin/medical-records'

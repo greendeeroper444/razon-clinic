@@ -1,10 +1,12 @@
 import { PaginationInfo } from "./action";
 import { AppointmentFormData, AppointmentResponse } from "./appointment"
+import { LoginFormData, SignupFormData, ValidationErrors } from "./auth";
 import { BillingResponse } from "./billing";
 import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
 import { MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
 import { Patient, PatientsResponse } from "./patient"
+import { User } from "./user";
 
 
 //appointment state
@@ -190,4 +192,59 @@ export interface BillingState {
 //patient state
 export interface PatientState {
     patients: PatientsResponse[]
+}
+
+
+export interface AuthenticationState {
+    //auth state
+    user: User | null
+    token: string | null
+    isAuthenticated: boolean
+    isLoading: boolean
+    
+    //form state
+    loginForm: LoginFormData
+    signupForm: SignupFormData
+    signupStep: number
+    completedSteps: Set<number>
+    
+    //ui state
+    showPassword: boolean
+    showConfirmPassword: boolean
+    validationErrors: ValidationErrors
+    
+    //actions
+    login: (credentials: Omit<LoginFormData, 'rememberMe'>) => Promise<void>
+    logout: () => void
+    register: (userData: Omit<SignupFormData, 'confirmPassword' | 'agreeToTerms'>) => Promise<void>
+    
+    //form actions
+    updateLoginForm: (field: keyof LoginFormData, value: string | boolean) => void
+    updateSignupForm: (field: keyof SignupFormData, value: string | boolean) => void
+    clearLoginForm: () => void
+    clearSignupForm: () => void
+    
+    //step navigation
+    setSignupStep: (step: number) => void
+    nextSignupStep: () => void
+    prevSignupStep: () => void
+    completeStep: (step: number) => void
+    
+    //password visibility
+    togglePasswordVisibility: () => void
+    toggleConfirmPasswordVisibility: () => void
+    
+    //validation
+    setValidationErrors: (errors: ValidationErrors) => void
+    clearValidationError: (field: string) => void
+    clearAllValidationErrors: () => void
+    
+    //local storage
+    saveFormData: () => void
+    loadFormData: () => void
+    clearSavedFormData: () => void
+    
+    //auth helpers
+    initializeAuth: () => void
+    checkTokenExpiration: () => boolean
 }

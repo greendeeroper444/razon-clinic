@@ -1,4 +1,4 @@
-import { FormEvent, useState, useEffect } from 'react'
+import { FormEvent, useEffect } from 'react'
 import styles from './SignupPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -18,8 +18,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { SectionFeatures, Footer } from '../../../components'
-import { registerUser } from '../../../services'
-import { SignupFormData, ValidationErrors } from '../../../types'
+import { useAuthenticationStore } from '../../../stores/authenticationStore'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
 
 const STEPS = [
@@ -27,316 +26,181 @@ const STEPS = [
     { id: 2, title: 'Account Security', description: 'Password and verification' },
     { id: 3, title: 'Personal Details', description: 'Additional information' },
     { id: 4, title: 'Review', description: 'Confirm your information' }
-];
-
-const STORAGE_KEY = 'signup_form_data';
-const STORAGE_TIMESTAMP_KEY = 'signup_form_timestamp';
-const ONE_HOUR_MS = 60 * 60 * 1000; // 1 hour in milliseconds
-
-//storage utility functions (replace with localStorage in my)
-const storage = {
-    set: (key: string, value: string | number) => {
-        try {
-            // in my, replace sessionStorage with localStorage
-            sessionStorage.setItem(key, JSON.stringify(value));
-        } catch (error) {
-            console.warn('Failed to save to storage:', error);
-        }
-    },
-    get: (key: string) => {
-        try {
-            // in my, replace sessionStorage with localStorage
-            const item = sessionStorage.getItem(key);
-            return item ? JSON.parse(item) : null;
-        } catch (error) {
-            console.warn('Failed to read from storage:', error);
-            return null;
-        }
-    },
-    remove: (key: string) => {
-        try {
-            //in my environment, replace sessionStorage with localStorage
-            sessionStorage.removeItem(key);
-        } catch (error) {
-            console.warn('Failed to remove from storage:', error);
-        }
-    }
-};
+]
 
 const SignupPage = () => {
-    const navigate = useNavigate();
-    const [currentStep, setCurrentStep] = useState<number>(1);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-    const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+    const navigate = useNavigate()
     
-    const [formData, setFormData] = useState<SignupFormData>({
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        emailOrContactNumber: '',
-        password: '',
-        confirmPassword: '',
-        birthdate: '',
-        sex: '',
-        address: '',
-        religion: '',
-        agreeToTerms: false
-    });
-    const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+    //zustand store 
+    const {
+        signupForm,
+        signupStep,
+        completedSteps,
+        isLoading,
+        showPassword,
+        showConfirmPassword,
+        validationErrors,
+        user,
+        updateSignupForm,
+        setSignupStep,
+        nextSignupStep,
+        prevSignupStep,
+        completeStep,
+        togglePasswordVisibility,
+        toggleConfirmPasswordVisibility,
+        setValidationErrors,
+        register,
+        loadFormData,
+        clearSavedFormData,
+        initializeAuth
+    } = useAuthenticationStore()
 
-    //load saved data on component mount
+    //initialize auth and load saved form data on component mount
     useEffect(() => {
-        const savedData = storage.get(STORAGE_KEY);
-        const savedTimestamp = storage.get(STORAGE_TIMESTAMP_KEY);
-        
-        if (savedData && savedTimestamp) {
-            const now = new Date().getTime();
-            const timeDiff = now - savedTimestamp;
-            
-            //check if saved data is less than 1 hour old
-            if (timeDiff < ONE_HOUR_MS) {
-                setFormData(savedData.formData);
-                setCurrentStep(savedData.currentStep);
-                setCompletedSteps(new Set(savedData.completedSteps));
-                toast.success('Form data restored from previous session');
+        initializeAuth()
+        loadFormData()
+    }, [initializeAuth, loadFormData])
+
+    //redirect if already authenticated
+    useEffect(() => {
+        if (user) {
+            const userRole = user.role
+            if (userRole === 'Patient') {
+                navigate('/user/appointments')
+            } else if (userRole === 'Doctor' || userRole === 'Staff') {
+                navigate('/admin/dashboard')
             } else {
-                //data is older than 1 hour, remove it
-                storage.remove(STORAGE_KEY);
-                storage.remove(STORAGE_TIMESTAMP_KEY);
-                toast.info('Previous form data expired');
+                navigate('/')
             }
         }
-    }, []);
-
-    // Auto-save function
-    const saveFormData = () => {
-        const dataToSave = {
-            formData,
-            currentStep,
-            completedSteps: Array.from(completedSteps)
-        };
-        
-        storage.set(STORAGE_KEY, dataToSave);
-        storage.set(STORAGE_TIMESTAMP_KEY, new Date().getTime());
-    };
-
-    //auto-save when form data changes
-    useEffect(() => {
-        //fon't save if form is completely empty
-        const hasData = formData.firstName || 
-            formData.lastName ||
-            formData.middleName ||
-            formData.emailOrContactNumber || 
-            formData.password || 
-            formData.birthdate || 
-            formData.sex || 
-            formData.address ||
-            formData.religion;
-        
-        if (hasData) {
-            const timeoutId = setTimeout(saveFormData, 500); //debounce saves
-            return () => clearTimeout(timeoutId);
-        }
-    }, [formData, currentStep, completedSteps]);
-
-    //clear saved data when form is successfully submitted
-    const clearSavedData = () => {
-        storage.remove(STORAGE_KEY);
-        storage.remove(STORAGE_TIMESTAMP_KEY);
-    };
+    }, [user, navigate])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value, type } = e.target as HTMLInputElement;
-        const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
-        
-        if (name.includes('.')) {
-            const [parent, field] = name.split('.');
-            setFormData({
-                ...formData,
-                [parent]: {
-                    ...formData[parent as keyof SignupFormData],
-                    [field]: field === 'age' ? (value ? parseInt(value) : undefined) : value
-                }
-            });
-        } else {
-            setFormData({
-                ...formData,
-                [name]: newValue
-            });
-        }
-        
-        if (validationErrors[name as keyof ValidationErrors]) {
-            setValidationErrors({
-                ...validationErrors,
-                [name]: undefined
-            });
-        }
-    };
+        const { name, value, type } = e.target as HTMLInputElement
+        const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+        updateSignupForm(name as keyof typeof signupForm, newValue)
+    }
 
     const validateCurrentStep = (): boolean => {
-        let stepErrors: ValidationErrors = {};
+        const stepErrors: Record<string, string> = {}
         
-        switch (currentStep) {
-            case 1: //basic info
-                if (!formData.firstName.trim()) {
-                    stepErrors.firstName = 'Full name is required';
+        switch (signupStep) {
+            case 1:
+                if (!signupForm.firstName.trim()) {
+                    stepErrors.firstName = 'First name is required'
                 }
-                if (!formData.lastName.trim()) {
-                    stepErrors.lastName = 'Full name is required';
+                if (!signupForm.lastName.trim()) {
+                    stepErrors.lastName = 'Last name is required'
                 }
-                if (!formData.emailOrContactNumber.trim()) {
-                    stepErrors.emailOrContactNumber = 'Email or contact number is required';
+                if (!signupForm.emailOrContactNumber.trim()) {
+                    stepErrors.emailOrContactNumber = 'Email or contact number is required'
                 }
-                break;
+                break
                 
-            case 2: //account security
-                if (!formData.password) {
-                    stepErrors.password = 'Password is required';
-                } else if (formData.password.length < 8) {
-                    stepErrors.password = 'Password must be at least 8 characters';
+            case 2:
+                if (!signupForm.password) {
+                    stepErrors.password = 'Password is required'
+                } else if (signupForm.password.length < 8) {
+                    stepErrors.password = 'Password must be at least 8 characters'
                 }
-                if (!formData.confirmPassword) {
-                    stepErrors.confirmPassword = 'Please confirm your password';
-                } else if (formData.password !== formData.confirmPassword) {
-                    stepErrors.confirmPassword = 'Passwords do not match';
+                if (!signupForm.confirmPassword) {
+                    stepErrors.confirmPassword = 'Please confirm your password'
+                } else if (signupForm.password !== signupForm.confirmPassword) {
+                    stepErrors.confirmPassword = 'Passwords do not match'
                 }
-                break;
+                break
                 
-            case 3: //personal details
-                if (!formData.birthdate) {
-                    stepErrors.birthdate = 'Birthdate is required';
+            case 3:
+                if (!signupForm.birthdate) {
+                    stepErrors.birthdate = 'Birthdate is required'
                 }
-                if (!formData.sex) {
-                    stepErrors.sex = 'Gender selection is required';
+                if (!signupForm.sex) {
+                    stepErrors.sex = 'Gender selection is required'
                 }
-                if (!formData.address.trim()) {
-                    stepErrors.address = 'Address is required';
+                if (!signupForm.address.trim()) {
+                    stepErrors.address = 'Address is required'
                 }
-                break;
+                break
                 
-            case 4: //review
-                if (!formData.agreeToTerms) {
-                    stepErrors.agreeToTerms = 'You must agree to the terms and conditions';
+            case 4:
+                if (!signupForm.agreeToTerms) {
+                    stepErrors.agreeToTerms = 'You must agree to the terms and conditions'
                 }
-                break;
+                break
         }
         
-        setValidationErrors(stepErrors);
-        return Object.keys(stepErrors).length === 0;
-    };
+        setValidationErrors(stepErrors)
+        return Object.keys(stepErrors).length === 0
+    }
 
     const nextStep = () => {
         if (validateCurrentStep()) {
-            setCompletedSteps(prev => new Set([...prev, currentStep]));
-            if (currentStep < STEPS.length) {
-                setCurrentStep(currentStep + 1);
+            completeStep(signupStep)
+            if (signupStep < STEPS.length) {
+                nextSignupStep()
             }
         } else {
             //show validation errors as toasts
             Object.values(validationErrors).forEach(error => {
                 if (error) {
-                    toast.error(error);
+                    toast.error(error)
                 }
-            });
+            })
         }
-    };
+    }
 
     const prevStep = () => {
-        if (currentStep > 1) {
-            setCurrentStep(currentStep - 1);
+        if (signupStep > 1) {
+            prevSignupStep()
         }
-    };
+    }
 
     const goToStep = (stepNumber: number) => {
-        if (stepNumber <= currentStep || completedSteps.has(stepNumber - 1)) {
-            setCurrentStep(stepNumber);
+        if (stepNumber <= signupStep || completedSteps.has(stepNumber - 1)) {
+            setSignupStep(stepNumber)
         }
-    };
-
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-    
-    const toggleConfirmPasswordVisibility = () => {
-        setShowConfirmPassword(!showConfirmPassword);
-    };
-
-    const onSubmit = async (formData: SignupFormData) => {
-        setIsLoading(true);
-        
-        try {
-            const cleanedData = {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                middleName: formData.middleName,
-                emailOrContactNumber: formData.emailOrContactNumber,
-                password: formData.password,
-                birthdate: formData.birthdate,
-                sex: formData.sex,
-                address: formData.address,
-            };
-
-            const response = await registerUser(cleanedData);
-            toast.success('Registration successful! Redirecting to login...');
-            
-            //clear saved form data on successful submission
-            clearSavedData();
-            
-            localStorage.setItem('token', response.data.token);
-            
-            setTimeout(() => {
-                navigate('/login');
-            }, 2000);
-            
-        } catch (error) {
-            if (error instanceof Error) {
-                toast.error(error.message);
-            } else {
-                toast.error('An error occurred during registration');
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+        e.preventDefault()
         
-        if (currentStep === STEPS.length) {
+        if (signupStep === STEPS.length) {
             //final submission
             if (validateCurrentStep()) {
-                await onSubmit(formData);
+                try {
+                    const cleanedData = {
+                        firstName: signupForm.firstName,
+                        lastName: signupForm.lastName,
+                        middleName: signupForm.middleName,
+                        emailOrContactNumber: signupForm.emailOrContactNumber,
+                        password: signupForm.password,
+                        birthdate: signupForm.birthdate,
+                        sex: signupForm.sex,
+                        address: signupForm.address,
+                        religion: signupForm.religion
+                    }
+
+                    await register(cleanedData)
+                    
+                    setTimeout(() => {
+                        navigate('/login')
+                    }, 2000)
+                } catch (error) {
+                    console.log(error);
+                }
             }
         } else {
-            nextStep();
+            nextStep()
         }
-    };
+    }
 
-    //manual clear function for user control
     const handleClearSavedData = () => {
-        clearSavedData();
-        setFormData({
-            firstName: '',
-            lastName: '',
-            middleName: '',
-            emailOrContactNumber: '',
-            password: '',
-            confirmPassword: '',
-            birthdate: '',
-            sex: '',
-            address: '',
-            religion: '',
-            agreeToTerms: false
-        });
-        setCurrentStep(1);
-        setCompletedSteps(new Set());
-        toast.info('Form data cleared');
-    };
+        clearSavedFormData()
+        toast.info('Form data cleared')
+    }
 
     const renderStepContent = () => {
-        switch (currentStep) {
+        switch (signupStep) {
             case 1:
                 return (
                     <>
@@ -348,7 +212,7 @@ const SignupPage = () => {
                                     name='firstName'
                                     placeholder='First Name' 
                                     className={`${styles.formInput} ${validationErrors.firstName ? styles.inputError : ''}`}
-                                    value={formData.firstName}
+                                    value={signupForm.firstName}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -362,7 +226,7 @@ const SignupPage = () => {
                                     name='lastName'
                                     placeholder='Last Name' 
                                     className={`${styles.formInput} ${validationErrors.lastName ? styles.inputError : ''}`}
-                                    value={formData.lastName}
+                                    value={signupForm.lastName}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -376,7 +240,7 @@ const SignupPage = () => {
                                     name='middleName'
                                     placeholder='Middle Name (Optional)' 
                                     className={`${styles.formInput} ${validationErrors.middleName ? styles.inputError : ''}`}
-                                    value={formData.middleName}
+                                    value={signupForm.middleName}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -390,13 +254,13 @@ const SignupPage = () => {
                                     name='emailOrContactNumber'
                                     placeholder='Email Address / Contact Number' 
                                     className={`${styles.formInput} ${validationErrors.emailOrContactNumber ? styles.inputError : ''}`}
-                                    value={formData.emailOrContactNumber}
+                                    value={signupForm.emailOrContactNumber}
                                     onChange={handleChange}
                                 />
                             </div>
                         </div>
                     </>
-                );
+                )
 
             case 2:
                 return (
@@ -409,7 +273,7 @@ const SignupPage = () => {
                                     name='password'
                                     placeholder='Password' 
                                     className={`${styles.formInput} ${validationErrors.password ? styles.inputError : ''}`}
-                                    value={formData.password}
+                                    value={signupForm.password}
                                     onChange={handleChange}
                                 />
                                 <button 
@@ -431,7 +295,7 @@ const SignupPage = () => {
                                     name='confirmPassword'
                                     placeholder='Confirm Password' 
                                     className={`${styles.formInput} ${validationErrors.confirmPassword ? styles.inputError : ''}`}
-                                    value={formData.confirmPassword}
+                                    value={signupForm.confirmPassword}
                                     onChange={handleChange}
                                 />
                                 <button 
@@ -445,7 +309,7 @@ const SignupPage = () => {
                             </div>
                         </div>
                     </>
-                );
+                )
 
             case 3:
                 return (
@@ -454,11 +318,11 @@ const SignupPage = () => {
                             <div className={styles.inputWithIcon}>
                                 <FontAwesomeIcon icon={faCalendar} className={styles.inputIcon} />
                                 <input 
-                                    type={formData.birthdate ? 'date' : 'text'}
+                                    type={signupForm.birthdate ? 'date' : 'text'}
                                     name='birthdate'
-                                    placeholder={formData.birthdate ? undefined : 'Select your birthdate'} 
+                                    placeholder={signupForm.birthdate ? undefined : 'Select your birthdate'} 
                                     className={`${styles.formInput} ${validationErrors.birthdate ? styles.inputError : ''}`}
-                                    value={formData.birthdate}
+                                    value={signupForm.birthdate}
                                     onChange={handleChange}
                                     onFocus={(e) => e.target.type = 'date'}
                                 />
@@ -472,7 +336,7 @@ const SignupPage = () => {
                                     name='sex'
                                     title='Select Gender'
                                     className={`${styles.formInput} ${validationErrors.sex ? styles.inputError : ''}`}
-                                    value={formData.sex}
+                                    value={signupForm.sex}
                                     onChange={handleChange}
                                 >
                                     <option value=''>Select Gender</option>
@@ -490,7 +354,7 @@ const SignupPage = () => {
                                     name='address'
                                     placeholder='Full Address' 
                                     className={`${styles.formInput} ${styles.textareaInput} ${validationErrors.address ? styles.inputError : ''}`}
-                                    value={formData.address}
+                                    value={signupForm.address}
                                     onChange={handleChange}
                                     rows={3}
                                 />
@@ -505,13 +369,13 @@ const SignupPage = () => {
                                     name='religion'
                                     placeholder='Religion (Optional)' 
                                     className={styles.formInput}
-                                    value={formData.religion || ''}
+                                    value={signupForm.religion || ''}
                                     onChange={handleChange}
                                 />
                             </div>
                         </div>
                     </>
-                );
+                )
 
             case 4:
                 return (
@@ -520,19 +384,19 @@ const SignupPage = () => {
                         
                         <div className={styles.reviewSection}>
                             <h4>Basic Information</h4>
-                            <p><strong>First Name:</strong> {formData.firstName}</p>
-                            <p><strong>Last Name:</strong> {formData.lastName}</p>
-                            <p><strong>Middle Name:</strong> {formData.middleName || 'N/A'}</p>
-                            <p><strong>Email/Contact:</strong> {formData.emailOrContactNumber}</p>
+                            <p><strong>First Name:</strong> {signupForm.firstName}</p>
+                            <p><strong>Last Name:</strong> {signupForm.lastName}</p>
+                            <p><strong>Middle Name:</strong> {signupForm.middleName || 'N/A'}</p>
+                            <p><strong>Email/Contact:</strong> {signupForm.emailOrContactNumber}</p>
                         </div>
 
                         <div className={styles.reviewSection}>
                             <h4>Personal Details</h4>
-                            <p><strong>Birthdate:</strong> {formData.birthdate}</p>
-                            <p><strong>Gender:</strong> {formData.sex}</p>
-                            <p><strong>Address:</strong> {formData.address}</p>
+                            <p><strong>Birthdate:</strong> {signupForm.birthdate}</p>
+                            <p><strong>Gender:</strong> {signupForm.sex}</p>
+                            <p><strong>Address:</strong> {signupForm.address}</p>
+                            <p><strong>Religion:</strong> {signupForm.religion || 'N/A'}</p>
                         </div>
-
 
                         <div className={styles.formOptions}>
                             <div className={`${styles.rememberMe} ${validationErrors.agreeToTerms ? styles.checkboxError : ''}`}>
@@ -540,7 +404,7 @@ const SignupPage = () => {
                                     type='checkbox' 
                                     id='agreeToTerms'
                                     name='agreeToTerms' 
-                                    checked={formData.agreeToTerms}
+                                    checked={signupForm.agreeToTerms}
                                     onChange={handleChange}
                                 />
                                 <label htmlFor='agreeToTerms'>
@@ -549,12 +413,12 @@ const SignupPage = () => {
                             </div>
                         </div>
                     </div>
-                );
+                )
 
             default:
-                return null;
+                return null
         }
-    };
+    }
 
   return (
     <div>
@@ -575,14 +439,14 @@ const SignupPage = () => {
                             </button>
                         </div>
 
-                        {/* step progess indicator*/}
+                        {/* step progress indicator */}
                         <div className={styles.stepIndicator}>
                             {
                                 STEPS.map((step, index) => (
                                     <div 
                                         key={step.id}
                                         className={`${styles.stepItem} ${
-                                            currentStep === step.id ? styles.active : ''
+                                            signupStep === step.id ? styles.active : ''
                                         } ${
                                             completedSteps.has(step.id) ? styles.completed : ''
                                         }`}
@@ -608,19 +472,19 @@ const SignupPage = () => {
                         </div>
 
                         <h2 className={styles.formTitle}>
-                            {STEPS[currentStep - 1]?.title}
+                            {STEPS[signupStep - 1]?.title}
                         </h2>
                         <p className={styles.formSubtitle}>
-                            {STEPS[currentStep - 1]?.description}
+                            {STEPS[signupStep - 1]?.description}
                         </p>
                         
                         {/* step content */}
                         {renderStepContent()}
                         
-                        {/* navigatoion buttons */}
+                        {/* navigation buttons */}
                         <div className={styles.stepNavigation}>
                             {
-                                currentStep > 1 && (
+                                signupStep > 1 && (
                                     <button 
                                         type='button' 
                                         className={styles.prevButton}
@@ -636,32 +500,15 @@ const SignupPage = () => {
                                 className={styles.nextButton}
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Creating Account...' : 
-                                    currentStep === STEPS.length ? 'Create Account' : 
-                                    <>Next <FontAwesomeIcon icon={faArrowRight} /></>}
+                                {
+                                    isLoading ? 'Creating Account...' : 
+                                    signupStep === STEPS.length ? 'Create Account' : 
+                                    <>
+                                        Next <FontAwesomeIcon icon={faArrowRight} />
+                                    </>
+                                }
                             </button>
                         </div>
-
-                        {/* social login (only on first step) */}
-                        {/* {
-                            currentStep === 1 && (
-                                <>
-                                    <div className={styles.formDivider}>
-                                        <span>or</span>
-                                    </div>
-                                        
-                                    <div className={styles.socialLogin}>
-                                        <button 
-                                            type='button' 
-                                            className={`${styles.socialButton} ${styles.googleButton}`}
-                                            onClick={() => toast.info('Google authentication is not available yet')}
-                                        >
-                                            Continue with Google
-                                        </button>
-                                    </div>
-                                </>
-                            )
-                        } */}
                         
                         <p className={styles.signupPrompt}>
                             Already have an account? <Link to='/login' className={styles.signupLink}>Log in</Link>

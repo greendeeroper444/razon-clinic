@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect } from 'react'
 import styles from './LoginPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -10,106 +10,83 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { SectionFeatures, Footer } from '../../../components'
-import { loginUser } from '../../../services'
-import { LoginFormData, ValidationErrors } from '../../../types'
+import { useAuthenticationStore } from '../../../stores/authenticationStore'
 import { validateLoginForm } from '../../../utils'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
 
 const LoginPage = () => {
-    const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [formData, setFormData] = useState<LoginFormData>({
-        emailOrContactNumber: '',
-        password: '',
-        rememberMe: false,
-    });
-    const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+    const navigate = useNavigate()
+    
+    //zustand store selectors
+    const {
+        loginForm,
+        isLoading,
+        showPassword,
+        validationErrors,
+        user,
+        updateLoginForm,
+        togglePasswordVisibility,
+        setValidationErrors,
+        clearAllValidationErrors,
+        login,
+        initializeAuth
+    } = useAuthenticationStore()
+
+    
+    useEffect(() => {
+        initializeAuth()
+    }, [initializeAuth])
+
+    //redirect if already authenticated
+    useEffect(() => {
+        if (user) {
+            const userRole = user.role
+            if (userRole === 'User') {
+                navigate('/user/appointments')
+            } else if (userRole === 'Doctor' || userRole === 'Staff') {
+                navigate('/admin/dashboard')
+            } else {
+                navigate('/')
+            }
+        }
+    }, [user, navigate])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target;
-        const newValue = type === 'checkbox' ? checked : value;
-        
-        setFormData({
-            ...formData,
-            [name]: newValue
-        });
-        
-        //clear validation error when field is updated
-        if (validationErrors[name as keyof ValidationErrors]) {
-            setValidationErrors({
-                ...validationErrors,
-                [name]: undefined
-            });
-        }
-    };
-
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-
-    const onSubmit = async (formData: LoginFormData) => {
-        setIsLoading(true);
-        
-        try {
-            const response = await loginUser({
-                emailOrContactNumber: formData.emailOrContactNumber,
-                password: formData.password
-            });
-
-            toast.success('Login successful!');
-            
-            //store the token
-            localStorage.setItem('token', response.data.token);
-            
-            // Store user data including role
-            localStorage.setItem('userData', JSON.stringify(response.data.user));
-            
-            //if remember me is checked, store in persistent storage
-            if (formData.rememberMe) {
-                localStorage.setItem('rememberUser', 'true');
-            }
-            
-            //role-based redirection
-            const userRole = response.data.user.role;
-            if (userRole === 'Patient') {
-                navigate('/user/appointments');
-            } else if (userRole === 'Doctor' || userRole === 'Staff') {
-                navigate('/admin/dashboard');
-            } else {
-                //fallback in case role is undefined or not in expected values
-                navigate('/');
-            }
-            
-        } catch (error) {
-            if (error instanceof Error) {
-                toast.error(error.message);
-            } else {
-                toast.error('Invalid credentials or server error');
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        const { name, value, type, checked } = e.target
+        const newValue = type === 'checkbox' ? checked : value
+        updateLoginForm(name as keyof typeof loginForm, newValue)
+    }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+        e.preventDefault()
+        
+        //clear previous errors
+        clearAllValidationErrors()
         
         //validate form
-        const errors = validateLoginForm(formData);
-        setValidationErrors(errors);
+        const errors = validateLoginForm(loginForm)
+        setValidationErrors(errors)
         
         if (Object.keys(errors).length === 0) {
-            await onSubmit(formData);
+            try {
+                await login({
+                    emailOrContactNumber: loginForm.emailOrContactNumber,
+                    password: loginForm.password
+                })
+                
+                //navigation is handled in the useEffect above
+            } catch (error) {
+                console.log(error);
+            }
         } else {
-            // Show validation errors as toasts
+            //show validation errors as toasts
             Object.values(errors).forEach(error => {
                 if (error) {
-                    toast.error(error);
+                    toast.error(error)
                 }
-            });
+            })
         }
-    };
+    }
 
   return (
     <div>
@@ -128,7 +105,7 @@ const LoginPage = () => {
                                     name='emailOrContactNumber'
                                     placeholder='Email Address / Contact Number' 
                                     className={`${styles.formInput} ${validationErrors.emailOrContactNumber ? styles.inputError : ''}`}
-                                    value={formData.emailOrContactNumber}
+                                    value={loginForm.emailOrContactNumber}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -142,7 +119,7 @@ const LoginPage = () => {
                                     name='password'
                                     placeholder='Password' 
                                     className={`${styles.formInput} ${validationErrors.password ? styles.inputError : ''}`}
-                                    value={formData.password}
+                                    value={loginForm.password}
                                     onChange={handleChange}
                                 />
                                 <button 
@@ -162,7 +139,7 @@ const LoginPage = () => {
                                     type='checkbox' 
                                     id='rememberMe'
                                     name='rememberMe' 
-                                    checked={formData.rememberMe}
+                                    checked={loginForm.rememberMe}
                                     onChange={handleChange}
                                 />
                                 <label htmlFor='rememberMe'>Remember me</label>
@@ -206,7 +183,6 @@ const LoginPage = () => {
         </section>
 
         <SectionFeatures />
-
         <Footer />
     </div>
   )

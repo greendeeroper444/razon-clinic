@@ -9719,3 +9719,295 @@ Use mongoose.model(name, schema)
 2025-08-02 13:42:28 [INFO]: Server running on port 3000 
 2025-08-02 13:42:54 [INFO]: MongoDB Connected: 127.0.0.1 
 2025-08-02 13:42:54 [INFO]: Server running on port 3000 
+2025-08-02 17:05:42 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-08-02 17:05:42 [INFO]: Server running on port 3000 
+2025-08-02 17:07:09 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:139:23)
+2025-08-02 17:07:13 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at login (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\controllers\auth.controller.js:139:23)
+2025-08-02 17:13:34 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:13:34 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:13:40 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:13:40 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:14:05 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:14:05 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:14:10 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:14:10 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:15:44 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:15:44 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:16:05 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:16:05 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:17:53 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:17:53 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:18:00 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:18:00 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:18:03 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:18:03 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:18:16 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:18:16 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:20:42 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:20:42 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:20:47 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:20:47 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:20:49 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)
+2025-08-02 17:20:49 [ERROR]: Error: Invalid token ApiError: Invalid token
+    at authenticate (C:\Users\ASUS\Desktop\RazonPediatric\server\src\api\middlewares\auth.middleware.js:29:18)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\RazonPediatric\server\node_modules\router\index.js:186:3)

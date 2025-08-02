@@ -4,16 +4,19 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faSignOutAlt, faTimes, faUser } from '@fortawesome/free-solid-svg-icons';
 import rpcLogo from '../../../assets/icons/rpc-logo.png';
-import { logoutUser } from '../../../services';
 import { toast } from 'sonner';
-import { useAuth } from '../../../hooks/usesAuth';
+import { useAuthenticationStore } from '../../../stores/authenticationStore';
 
 
 const Navigation = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-    const { isAuthenticated, currentUser, clearAuth } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
+    const {
+        logout,
+        user,
+        isAuthenticated,
+    } = useAuthenticationStore()
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -23,16 +26,10 @@ const Navigation = () => {
         return location.pathname === path;
     };
 
-    const handleLogout = async () => {
+    const handleLogout = () => {
         try {
-            await logoutUser();
-            
-            //remove token and user data from local storage
-            clearAuth();
-            
-            //show success toast
-            toast.success('Successfully logged out');
-            
+            logout();
+        
             //redirect to login page
             navigate('/');
         } catch (error) {
@@ -54,9 +51,6 @@ const Navigation = () => {
             <div className={styles.desktopMenu}>
                 <div className={styles.navLinks}>
                     <Link to='/' className={`${styles.navLink} ${isActive('/') ? styles.active : ''}`}>Home</Link>
-                    {/* <Link to='/about' className={`${styles.navLink} ${isActive('/about') ? styles.active : ''}`}>About</Link>
-                    <Link to='/services' className={`${styles.navLink} ${isActive('/services') ? styles.active : ''}`}>Services</Link>
-                    <Link to='/contact' className={`${styles.navLink} ${isActive('/contact') ? styles.active : ''}`}>Contact</Link> */}
                     {
                         isAuthenticated && (
                            <>
@@ -73,7 +67,7 @@ const Navigation = () => {
                             //show logout when authenticated
                             <>
                                 <div>
-                                    <span>{currentUser?.firstName} {currentUser?.lastName}</span>
+                                    <span>{user?.firstName} {user?.lastName}</span>
                                 </div>
                                 |
                                 <button 
@@ -137,7 +131,7 @@ const Navigation = () => {
                             //show logout when authenticated
                               <>
                                 <div>
-                                    <span>{currentUser?.firstName}</span>
+                                    <span>{user?.firstName}</span>
                                 </div>
                                 <button 
                                     type='submit'
