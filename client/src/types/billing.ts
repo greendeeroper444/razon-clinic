@@ -36,6 +36,7 @@ export interface BillingResponse {
         diagnosis?: string;
         treatmentPlan?: string;
     };
+    items: any[];
 }
 
 export interface MedicalRecordOption {

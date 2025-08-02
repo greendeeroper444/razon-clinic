@@ -162,12 +162,13 @@ class PatientController {
                 }
             );
 
-            if (!this.getPatient) {
+            if (!patient) {
                 return res.status(404).json({
                     success: false,
                     message: 'Patient not found'
                 });
             }
+
 
             return res.status(200).json({
                 success: true,

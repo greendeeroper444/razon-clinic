@@ -1,11 +1,11 @@
 import { PaginationInfo } from "./action";
 import { AppointmentFormData, AppointmentResponse } from "./appointment"
 import { LoginFormData, SignupFormData, ValidationErrors } from "./auth";
-import { BillingResponse } from "./billing";
+import { BillingFormData, BillingResponse } from "./billing";
 import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
 import { MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
-import { Patient, PatientsResponse } from "./patient"
+import { Patient, PatientFormData, PatientsResponse } from "./patient"
 import { User } from "./user";
 
 
@@ -64,6 +64,8 @@ export interface ExtendedAppointmentState extends AppointmentState {
 
 
 
+
+
 //inventory item state
 export interface InventoryState {
     //state
@@ -115,6 +117,8 @@ export interface ExtendedInventoryState extends InventoryState {
     submitLoading: boolean;
     statusLoading: boolean;
 }
+
+
 
 //meidcal record state
 export interface MedicalRecordState {
@@ -184,17 +188,108 @@ export interface ExtendedMedicalRecordState extends MedicalRecordState {
     viewMode: 'admin' | 'user';
 }
 
+
+
+
 //billing state
 export interface BillingState {
+    //state
     billings: BillingResponse[];
+    loading: boolean;
+    fetchLoading: boolean;
+    submitLoading: boolean;
+    statusLoading: boolean;
+    error: string | null;
+    isProcessing: boolean;
+    currentOperation: OperationType | null;
+
+    //modal state
+    selectedBilling: (BillingFormData & { id?: string }) | null;
+    isModalOpen: boolean;
+    isDeleteModalOpen: boolean;
+    deleteBillingData: { id: string, itemName: string, itemType: string } | null;
+
+    //pagination state
+    currentPage: number;
+    totalPages: number;
+    totalRecords: number;
+    limit: number;
+
+    //filter state
+    searchTerm: string;
+    filterStatus: string;
+
+    //actions
+    fetchBillings: (page?: number, search?: string, status?: string) => Promise<void>;
+    addBilling: (data: BillingFormData) => Promise<void>;
+    updateBillingData: (id: string, data: BillingFormData) => Promise<void>;
+    deleteBilling: (id: string) => Promise<void>;
+
+    //pagination actions
+    setCurrentPage: (page: number) => void;
+
+    //filter actions
+    setSearchTerm: (term: string) => void;
+    setFilterStatus: (status: string) => void;
+    applyFilters: () => Promise<void>;
+
+    //modal actions
+    openAddModal: () => void;
+    openUpdateModal: (billing: BillingResponse) => void;
+    openDeleteModal: (billing: BillingResponse) => void;
+    closeUpdateModal: () => void;
+    closeDeleteModal: () => void;
+
+    //utility actions
+    setLoading: (loading: boolean) => void;
+    setError: (error: string | null) => void;
+
+    //business actions
+    processPayment: (billId: string) => Promise<void>;
+    exportBillings: () => Promise<void>;
 }
+
+
+
 
 //patient state
 export interface PatientState {
-    patients: PatientsResponse[]
+    //state
+    patients: PatientFormData[];
+    loading: boolean;
+    fetchLoading: boolean;
+    submitLoading: boolean;
+    statusLoading: boolean;
+    error: string | null;
+    isProcessing: boolean;
+    currentOperation: OperationType | null;
+
+    //modal state
+    selectedPatient: (PatientFormData & { id?: string }) | null;
+    isModalOpen: boolean;
+    isDeleteModalOpen: boolean;
+    deletePatientData: { id: string, itemName: string, itemType: string } | null;
+
+    //actions
+    fetchPatients: () => Promise<void>;
+    addPatient: (data: PatientFormData) => Promise<void>;
+    updatePatientData: (id: string, data: PatientFormData) => Promise<void>;
+    deletePatient: (id: string) => Promise<void>;
+
+    //modal actions
+    openAddModal: () => void;
+    openUpdateModal: (item: PatientFormData) => void;
+    openDeleteModal: (item: PatientFormData) => void;
+    closeUpdateModal: () => void;
+    closeDeleteModal: () => void;
+
+    //utility actions
+    setLoading: (loading: boolean) => void;
+    setError: (error: string | null) => void;
 }
 
 
+//authentication state
 export interface AuthenticationState {
     //auth state
     user: User | null

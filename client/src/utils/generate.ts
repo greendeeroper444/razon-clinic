@@ -38,3 +38,19 @@ export const generateTimeSlots = (): string[] => {
     
 //     return slots;
 // };
+
+
+
+//generate initials from full name
+export const generateInitials = (firstName: string): string => {
+    if (!firstName || typeof firstName !== 'string') {
+        return 'NA';
+    }
+    
+    return firstName
+        .trim() //remove leading/trailing whitespace
+        .split(' ')
+        .map(name => name.charAt(0).toUpperCase())
+        .join('')
+        .substring(0, 2);
+};

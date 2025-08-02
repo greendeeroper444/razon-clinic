@@ -256,7 +256,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         <SubmitLoading
             isLoading={submitLoading}
-            loadingText={getLoadingText(currentOperation)}
+            loadingText={getLoadingText(currentOperation, 'item')}
             size='medium'
             variant='overlay'
         />

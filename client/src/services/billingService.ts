@@ -118,3 +118,19 @@ export const getInventoryItemsForBilling = async () => {
         }
     );
 };
+
+
+
+export const deleteBilling = async (billingId: string) => {
+    return await axios.delete<{
+        success: boolean;
+        message: string;
+    }>(
+        `${API_BASE_URL}/api/billings/deleteBilling/${billingId}`,
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        }
+    );
+}
