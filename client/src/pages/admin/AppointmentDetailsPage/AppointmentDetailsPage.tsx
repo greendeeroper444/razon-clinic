@@ -25,7 +25,7 @@ import { AppointmentFormData, FormDataType } from '../../../types';
 import { useAppointmentStore } from '../../../stores';
 
 const AppointmentDetailsPage = () => {
-    const { appointmentId } = useParams()
+    const { appointmentId } = useParams();
     
     //zustand store selectors
     const {
@@ -47,13 +47,13 @@ const AppointmentDetailsPage = () => {
         closeStatusModal,
         clearCurrentAppointment,
         currentOperation
-    } = useAppointmentStore()
+    } = useAppointmentStore();
 
     
     useEffect(() => {
         if (appointmentId) {
-            fetchAppointmentById(appointmentId)
-            fetchMyAppointments() //for patient dropdown in modal
+            fetchAppointmentById(appointmentId);
+            fetchMyAppointments(); //for patient dropdown in modal
         }
 
         //cleanup when component unmounts

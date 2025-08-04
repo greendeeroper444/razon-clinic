@@ -20,7 +20,8 @@ import {
   CalendarDateDetailsPage,
   GrowthMilestonePage,
   UserMedicalRecordsPage,
-  UserMedicalRecordDetailsPage
+  UserMedicalRecordDetailsPage,
+  MedicalRecordDetailsPage
 } from './pages'
 import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
@@ -46,6 +47,7 @@ const routes: RouteType[] = [
   { path: '/admin/inventory', component: InventoryPage, layout: 'admin' },
   { path: '/admin/archives', component: ArchivePage, layout: 'admin' },
   { path: '/admin/medical-records', component: MedicalRecordsPage, layout: 'admin' },
+    { path: '/admin/medical-records/details/:medicalRecordId', component: MedicalRecordDetailsPage, layout: 'admin' },
   { path: '/admin/billings-payment', component: BillingsPaymentPage, layout: 'admin' },
   { path: '/admin/calendar-date-details', component: CalendarDateDetailsPage, layout: 'admin' },
   { path: '/admin/growth-milestone', component: GrowthMilestonePage, layout: 'admin' },
@@ -54,7 +56,7 @@ const routes: RouteType[] = [
   { path: '/user/appointments', component: UserAppointmentPage, layout: 'user' },
       { path: '/user/appointments/details/:appointmentId', component: UserAppointmentDetailsPage, layout: 'user' },
       { path: '/user/medical-records', component: UserMedicalRecordsPage, layout: 'user' },
-      { path: '/user/medical-records/details/:medicalId', component: UserMedicalRecordDetailsPage, layout: 'user' },
+      { path: '/user/medical-records/details/:medicalRecordId', component: UserMedicalRecordDetailsPage, layout: 'user' },
   
 ]
 

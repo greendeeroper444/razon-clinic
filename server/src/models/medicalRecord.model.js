@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const medicalRecordSchema = new mongoose.Schema(
     {
+        medicalRecordNumber: {
+            type: String,
+            unique: true
+        },
         //personal details (from form)
         personalDetails: {
             fullName: {
@@ -198,6 +202,36 @@ medicalRecordSchema.methods.calculateBMI = function() {
     }
     return null;
 };
+
+//static method to get the next medical record number
+medicalRecordSchema.statics.getNextMedicalRecordNumber = async function() {
+    //find the medical record with the highest number
+    const highestMedicalRecord = await this.findOne().sort('-medicalRecordNumber');
+    
+    //ff no medical records exist, start with 0001
+    if (!highestMedicalRecord || !highestMedicalRecord.medicalRecordNumber) {
+        return '0001';
+    }
+    
+    //get the numeric value and increment
+    const currentNumber = parseInt(highestMedicalRecord.medicalRecordNumber, 10);
+    const nextNumber = currentNumber + 1;
+    
+    //format with leading zeros
+    return String(nextNumber).padStart(4, '0');
+};
+
+//pre-validate middleware to ensure medicalRecordNumber is set before validation
+medicalRecordSchema.pre('validate', async function(next) {
+    try {
+        if (!this.medicalRecordNumber) {
+            this.medicalRecordNumber = await this.constructor.getNextMedicalRecordNumber();
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 
 //pre-save middleware to auto-calculate BMI
 medicalRecordSchema.pre('save', function(next) {

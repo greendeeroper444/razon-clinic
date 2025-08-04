@@ -100,11 +100,7 @@ class MedicalRecordController {
 
         } catch (error) {
             console.error('Error creating medical record:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Internal server error',
-                error: error.message
-            });
+            next(error);
         }
     }
 
@@ -181,11 +177,7 @@ class MedicalRecordController {
 
         } catch (error) {
             console.error('Error searching appointments:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Internal server error',
-                error: error.message
-            });
+            next(error);
         }
     }
 
@@ -226,11 +218,7 @@ class MedicalRecordController {
 
         } catch (error) {
             console.error('Error getting appointment for autofill:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Internal server error',
-                error: error.message
-            });
+            next(error);
         }
     }
 
@@ -271,11 +259,7 @@ class MedicalRecordController {
 
         } catch (error) {
             console.error('Error getting medical records:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Internal server error',
-                error: error.message
-            });
+            next(error);
         }
     }
 
@@ -300,11 +284,7 @@ class MedicalRecordController {
 
         } catch (error) {
             console.error('Error getting medical record:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Internal server error',
-                error: error.message
-            });
+            next(error);
         }
     }
 
@@ -335,11 +315,7 @@ class MedicalRecordController {
 
         } catch (error) {
             console.error('Error updating medical record:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Internal server error',
-                error: error.message
-            });
+            next(error);
         }
     }
 
@@ -364,11 +340,7 @@ class MedicalRecordController {
 
         } catch (error) {
             console.error('Error deleting medical record:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Internal server error',
-                error: error.message
-            });
+            next(error);
         }
     }
 }

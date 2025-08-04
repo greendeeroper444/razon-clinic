@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore } from '../../../stores'
 
 const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     
     //zustand store selectors
     const {
@@ -31,7 +31,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         closeUpdateModal,
         closeDeleteModal,
         currentOperation
-    } = useAppointmentStore()
+    } = useAppointmentStore();
 
 
     useEffect(() => {

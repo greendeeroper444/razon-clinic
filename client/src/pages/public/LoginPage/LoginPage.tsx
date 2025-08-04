@@ -10,7 +10,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { SectionFeatures, Footer } from '../../../components'
-import { useAuthenticationStore } from '../../../stores/authenticationStore'
+import { useAuthenticationStore } from '../../../stores'
 import { validateLoginForm } from '../../../utils'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
 

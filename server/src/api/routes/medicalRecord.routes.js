@@ -14,7 +14,7 @@ router.get(
 );
 
 router.get(
-    '/getMedicalRecord/:medicalRecordId',
+    '/getMedicalRecordById/:medicalRecordId',
     authenticate,
     MedicalRecordController.getMedicalRecordById
 );

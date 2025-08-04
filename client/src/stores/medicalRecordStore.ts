@@ -86,7 +86,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 }
             },
 
-            //fetch medical record by ID for details page
+            //fetch medical record by id for details page
             fetchMedicalRecordById: async (medicalRecordId: string) => {
                 try {
                     set({ fetchLoading: true, loading: true, error: null });

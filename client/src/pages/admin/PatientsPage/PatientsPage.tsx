@@ -7,7 +7,7 @@ import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { FormDataType, PatientDisplayData, PatientFormData } from '../../../types';
 import { calculateAge2, generateInitials, getLoadingText, openModalWithRefresh } from '../../../utils';
 import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
-import { usePatientStore } from '../../../stores/patientStore';
+import { usePatientStore } from '../../../stores';
 
 const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [activeTab, setActiveTab] = useState('overview');

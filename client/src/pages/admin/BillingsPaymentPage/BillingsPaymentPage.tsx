@@ -6,7 +6,7 @@ import { BillingFormData, BillingResponse, FormDataType } from '../../../types'
 import { Header, Main, Modal, SubmitLoading } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
 import { formatDate, getLoadingText, getMedicalRecordId, getPaymentStatusClass, getStatusIcon, openModalWithRefresh } from '../../../utils'
-import { useBillingStore } from '../../../stores/billingStore'
+import { useBillingStore } from '../../../stores'
 
 const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [showModal, setShowModal] = useState(false);

@@ -24,7 +24,7 @@ import { Header, Main, Modal, SubmitLoading } from '../../../components'
 import { useAppointmentStore } from '../../../stores'
 
 const AppointmentDetailsPage = () => {
-    const { appointmentId } = useParams()
+    const { appointmentId } = useParams();
 
     //zustand store selectors
     const {
@@ -42,12 +42,12 @@ const AppointmentDetailsPage = () => {
         closeUpdateModal,
         clearCurrentAppointment,
         currentOperation
-    } = useAppointmentStore()
+    } = useAppointmentStore();
 
     useEffect(() => {
         if (appointmentId) {
-            fetchAppointmentById(appointmentId)
-            fetchMyAppointments() //for patient dropdown in modal
+            fetchAppointmentById(appointmentId);
+            fetchMyAppointments();
         }
 
         //cleanup when component unmounts

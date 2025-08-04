@@ -5,7 +5,7 @@ import { BillingFormData, BillingResponse } from "./billing";
 import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
 import { MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
-import { Patient, PatientFormData, PatientsResponse } from "./patient"
+import { Patient, PatientFormData } from "./patient"
 import { User } from "./user";
 
 
@@ -138,7 +138,7 @@ export interface MedicalRecordState {
     deleteMedicalRecordData: { id: string, itemName: string, itemType: string } | null;
 
     //state for medical record details
-    currentMedicalRecord: MedicalRecord | null;
+    currentMedicalRecord: MedicalRecordResponse | null;
     
     //search and pagination state
     searchTerm: string;

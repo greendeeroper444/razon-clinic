@@ -7,97 +7,6 @@ export interface MedicalRecordFormProps {
     onAutofill?: (data: MedicalRecordFormData) => void;
 }
 
-
-export interface PersonalDetails {
-    fullName: string;
-    dateOfBirth: string;
-    gender: 'Male' | 'Female' | 'Other';
-    bloodType?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-    address?: string;
-    phone: string;
-    email?: string;
-    emergencyContact?: string;
-    age?: number; 
-}
-
-export interface MedicalHistory {
-    allergies?: string;
-    chronicConditions?: string;
-    previousSurgeries?: string;
-    familyHistory?: string;
-    general?: string;
-}
-
-export interface GrowthMilestones {
-    height?: number;
-    weight?: number;
-    bmi?: number;
-    growthNotes?: string;
-    general?: string;
-}
-
-export interface CurrentSymptoms {
-    chiefComplaint: string;
-    symptomsDescription: string;
-    symptomsDuration?: string;
-    painScale?: number;
-    general?: string;
-}
-
-
-//form data interface for creating/updating records
-export interface MedicalRecordFormData {
-    //personal details (flattened for form)
-    id: string;
-    fullName: string;
-    dateOfBirth: string;
-    gender: 'Male' | 'Female' | 'Other' | '';
-    bloodType: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | '';
-    address: string;
-    phone: string;
-    email: string;
-    emergencyContact: string;
-
-    //medical history (flattened for form)
-    allergies: string;
-    chronicConditions: string;
-    previousSurgeries: string;
-    familyHistory: string;
-
-    //growth milestones (flattened for form)
-    height: number | '';
-    weight: number | '';
-    bmi: number | '';
-    growthNotes: string;
-
-    //current symptoms (flattened for form)
-    chiefComplaint: string;
-    symptomsDescription: string;
-    symptomsDuration: string;
-    painScale: number | '';
-
-    //additional fields
-    diagnosis: string;
-    treatmentPlan: string;
-    prescribedMedications: string;
-    consultationNotes: string;
-    followUpDate: string | undefined;
-    vaccinationHistory: string;
-}
-
-//api response interfaces
-export interface MedicalRecordResponse {
-    success: boolean;
-    data: MedicalRecord[];
-    pagination: {
-        current: number;
-        total: number;
-        count: number;
-        totalRecords: number;
-    };
-    message?: string;
-}
-
 export interface MedicalRecord {
     id: string;
     personalDetails: {
@@ -142,6 +51,139 @@ export interface MedicalRecord {
     createdAt: string;
     updatedAt: string;
 }
+
+
+
+export interface PersonalDetails {
+    fullName: string;
+    dateOfBirth: string;
+    gender: 'Male' | 'Female' | 'Other';
+    bloodType?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+    address?: string;
+    phone: string;
+    email?: string;
+    emergencyContact?: string;
+    age?: number; 
+}
+
+export interface MedicalHistory {
+    allergies?: string;
+    chronicConditions?: string;
+    previousSurgeries?: string;
+    familyHistory?: string;
+    general?: string;
+}
+
+export interface GrowthMilestones {
+    height?: number;
+    weight?: number;
+    bmi?: number;
+    growthNotes?: string;
+    general?: string;
+}
+
+export interface CurrentSymptoms {
+    chiefComplaint: string;
+    symptomsDescription: string;
+    symptomsDuration?: string;
+    painScale?: number;
+    general?: string;
+}
+
+
+//form data interface for creating/updating records
+export interface MedicalRecordFormData {
+    //personal details (flattened for form)
+    id: string;
+    medicalRecordNumber: string;
+    fullName: string;
+    dateOfBirth: string;
+    gender: 'Male' | 'Female' | 'Other' | '';
+    bloodType: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | '';
+    address: string;
+    phone: string;
+    email: string;
+    emergencyContact: string;
+
+    //medical history (flattened for form)
+    allergies: string;
+    chronicConditions: string;
+    previousSurgeries: string;
+    familyHistory: string;
+
+    //growth milestones (flattened for form)
+    height: number | '';
+    weight: number | '';
+    bmi: number | '';
+    growthNotes: string;
+
+    //current symptoms (flattened for form)
+    chiefComplaint: string;
+    symptomsDescription: string;
+    symptomsDuration: string;
+    painScale: number | '';
+
+    //additional fields
+    diagnosis: string;
+    treatmentPlan: string;
+    prescribedMedications: string;
+    consultationNotes: string;
+    followUpDate: string | undefined;
+    vaccinationHistory: string;
+    personalDetails?: {
+        fullName: string;
+        dateOfBirth: string;
+        gender: 'Male' | 'Female' | 'Other';
+        bloodType?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+        address?: string;
+        phone: string;
+        email?: string;
+        emergencyContact?: string;
+        age?: number;
+    };
+    medicalHistory?: {
+        allergies?: string;
+        chronicConditions?: string;
+        previousSurgeries?: string;
+        familyHistory?: string;
+        general?: string;
+    };
+    growthMilestones?: {
+        height?: number;
+        weight?: number;
+        bmi?: number;
+        growthNotes?: string;
+        general?: string;
+    };
+    currentSymptoms?: {
+        chiefComplaint: string;
+        symptomsDescription: string;
+        symptomsDuration?: string;
+        painScale?: number;
+        general?: string;
+    };
+}
+
+//api response interfaces
+export interface MedicalRecordResponse extends MedicalRecordFormData {
+    success: boolean;
+    pagination: {
+        current: number;
+        total: number;
+        count: number;
+        totalRecords: number;
+    };
+    message?: string;
+    data: {
+        success: boolean;
+        data: MedicalRecord[];
+    };
+    updatedAt?: string;
+    createdAt?: string;
+    dateRecorded?: string;
+}
+
+
 
 
 // export interface ApiError {

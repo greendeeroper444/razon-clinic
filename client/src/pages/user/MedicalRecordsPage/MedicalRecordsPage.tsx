@@ -15,7 +15,7 @@ import { OpenModalProps } from '../../../hooks/hook';
 import { MedicalRecordResponse } from '../../../types';
 import { Header, Main } from '../../../components';
 import { calculateAge2 } from '../../../utils';
-import { useMedicalRecordStore } from '../../../stores/medicalRecordStore';
+import { useMedicalRecordStore } from '../../../stores';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
 
@@ -41,7 +41,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
 
     useEffect(() => {
         fetchMedicalRecords();
-    }, []);
+    }, [fetchMedicalRecords]);
 
     //handle search with debounce
     useEffect(() => {
@@ -51,7 +51,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
 
         // return () => clearTimeout(delayedSearch);
         fetchMedicalRecords(1, searchTerm);
-    }, [searchTerm]);
+    }, [fetchMedicalRecords, searchTerm]);
 
 
     const handleReport = () => {

@@ -4,9 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom'
 import { faCalendar, faPrescriptionBottleAlt, faFolder, faCheckDouble, faUserPlus, faBoxes, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { getNotifications, markAllAsRead, markAsRead } from '../../../services';
-import { useAuth } from '../../../hooks/usesAuth';
 import { NotificationProps, NotificationTypeToUICategory, NotificationFormData } from '../../../types';
 import { formatTimeAgo } from '../../../utils';
+import { useAuthenticationStore } from '../../../stores/authenticationStore';
 
 interface ExtendedNotificationProps extends NotificationProps {
     onUnreadCountChange?: (count: number) => void;
@@ -21,7 +21,9 @@ const Notification: React.FC<ExtendedNotificationProps> = ({
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-    const { currentUser } = useAuth();
+    const {
+        user
+    } = useAuthenticationStore();
 
     
     const fetchNotifications = useCallback(async () => {
@@ -173,7 +175,7 @@ const Notification: React.FC<ExtendedNotificationProps> = ({
         </div>
       
         {
-            currentUser && (currentUser.role === 'Staff') && (
+            user && (user.role === 'Staff') && (
                <div className={styles.notificationList}>
                     {
                         loading ? (

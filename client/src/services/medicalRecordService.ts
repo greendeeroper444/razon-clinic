@@ -11,7 +11,7 @@ export const addMedicalRecord = async (medicalRecordData: MedicalRecordFormData)
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }
         );
@@ -34,7 +34,7 @@ export const getMedicalRecords = async (page: number = 1, limit: number = 10, se
 
         const response = await axios.get(url, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         });
         return response.data;
@@ -48,10 +48,10 @@ export const getMedicalRecords = async (page: number = 1, limit: number = 10, se
 export const getMedicalRecordById = async (medicalRecordId: string) => {
     try {
         const response = await axios.get(
-            `${API_BASE_URL}/api/medicalRecords/getMedicalRecord/${medicalRecordId}`,
+            `${API_BASE_URL}/api/medicalRecords/getMedicalRecordById/${medicalRecordId}`,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }
         );
@@ -78,7 +78,7 @@ export const updateMedicalRecord = async (
             {
                 headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }
         );
@@ -99,7 +99,7 @@ export const updateMedicalRecord = async (
 //             {
 //                 headers: {
 //                     'Content-Type': 'application/json',
-//                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+//                     'Authorization': `Bearer ${localStorage.getItem('token')}`
 //                 }
 //             }
 //         );
@@ -119,7 +119,7 @@ export const deleteMedicalRecord = async (medicalRecordId: string) => {
             `${API_BASE_URL}/api/medicalRecords/deleteMedicalRecord/${medicalRecordId}`,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }
         );
@@ -139,7 +139,7 @@ export const searchAppointmentsByName = async (searchTerm: string) => {
             `${API_BASE_URL}/api/medicalRecords/searchAppointments?searchTerm=${encodeURIComponent(searchTerm)}`,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }
         );
@@ -158,7 +158,7 @@ export const getAppointmentForAutofill = async (appointmentId: string) => {
             `${API_BASE_URL}/api/medicalRecords/getAppointmentForAutofill/${appointmentId}`,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }
         );
@@ -188,7 +188,7 @@ export const generateMedicalReport = async (filters?: {
             {
                 headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }
         );

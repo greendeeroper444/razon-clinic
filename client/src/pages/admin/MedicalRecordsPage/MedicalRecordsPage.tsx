@@ -18,10 +18,12 @@ import { Header, Main, Modal, SubmitLoading } from '../../../components';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
 import { calculateAge2, getLoadingText, openModalWithRefresh } from '../../../utils';
-import { useMedicalRecordStore } from '../../../stores/medicalRecordStore';
+import { useMedicalRecordStore } from '../../../stores';
+import { useNavigate } from 'react-router-dom';
 
 const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
-    
+    const navigate = useNavigate();
+
     //zustand store selectors
     const {
         medicalRecords,
@@ -55,7 +57,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
     useEffect(() => {
         fetchMedicalRecords();
-    }, []);
+    }, [fetchMedicalRecords]);
 
     //handle search with debounce
     useEffect(() => {
@@ -65,7 +67,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         // return () => clearTimeout(delayedSearch);
         fetchMedicalRecords(1, searchTerm);
-    }, [searchTerm]);
+    }, [fetchMedicalRecords, searchTerm]);
 
     const handleOpenModal = () => {
         openModalWithRefresh({
@@ -79,13 +81,9 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         console.log('Generate report');
     };
 
-    const handleUpdateClick = (record: MedicalRecordResponse) => {
-        openUpdateModal(record);
-    };
-
-    const handleDeleteClick = (record: MedicalRecordResponse) => {
-        openDeleteModal(record);
-    };
+    const handleViewClick = (record: MedicalRecordResponse) => {
+        navigate(`/admin/medical-records/details/${record.id}`)
+    }
 
     const handleViewRecord = (record: MedicalRecordResponse) => {
         viewMedicalRecord(record);
@@ -215,7 +213,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                             <button
                                                 type='button'
                                                 className={`${styles.actionBtn} ${styles.view}`}
-                                                onClick={() => handleViewRecord(record)}
+                                                onClick={() => handleViewClick(record)}
                                                 title='View Details'
                                             >
                                                 View
@@ -223,7 +221,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                             <button
                                                 type='button' 
                                                 className={`${styles.actionBtn} ${styles.update}`} 
-                                                onClick={() => handleUpdateClick(record)}
+                                                onClick={() => openUpdateModal(record)}
                                                 title='Update'
                                             >
                                                 Update
@@ -231,7 +229,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                             <button
                                                 type='button' 
                                                 className={`${styles.actionBtn} ${styles.delete}`} 
-                                                onClick={() => handleDeleteClick(record)}
+                                                onClick={() => openDeleteModal(record)}
                                                 title='Delete'
                                             >
                                                 Delete

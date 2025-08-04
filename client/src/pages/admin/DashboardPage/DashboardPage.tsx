@@ -1,69 +1,28 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect } from 'react'
 import styles from './DashboardPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDay, faUserClock, faExclamationTriangle, faUserMd, faChevronRight, faArrowUp, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { getAppointments, getInventoryItems } from '../../../services';
-import { AppointmentResponse, InventoryItem } from '../../../types';
+import { AppointmentResponse } from '../../../types';
 import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial, formatDate, formatTime, getAppointmentStatusClass, getItemIcon, getStockStatus, getExpiryStatus } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Header, Main } from '../../../components';
+import { useAppointmentStore, useInventoryStore } from '../../../stores';
 
 const DashboardPage = () => {
     const navigate = useNavigate();
-    const [appointments, setAppointments] = useState<AppointmentResponse[]>([]);
-    const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [inventoryLoading, setInventoryLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [inventoryError, setInventoryError] = useState<string | null>(null);
-
-    //fetch appointments function
-    const fetchAppointments = useCallback(async () => {
-        try {
-            setLoading(true);
-            const response = await getAppointments();
-            if (response.data.success) {
-                //show only first 5 appointments for dashboard
-                setAppointments(response.data.data.slice(0, 5));
-            } else {
-                setError('Failed to fetch appointments');
-            }
-        } catch (err) {
-            setError('An error occurred while fetching appointments');
-            console.error('Error fetching appointments:', err);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    //fetch inventory items function
-    const fetchInventoryItems = useCallback(async () => {
-        try {
-            setInventoryLoading(true);
-            const response = await getInventoryItems();
-            if (response.data.inventoryItems) {
-                //show only first 4 inventory items for dashboard
-                setInventoryItems(response.data.inventoryItems.slice(0, 4));
-            } else {
-                setInventoryError('Failed to fetch inventory items');
-            }
-        } catch (err) {
-            setInventoryError('An error occurred while fetching inventory items');
-            console.error('Error fetching inventory items:', err);
-        } finally {
-            setInventoryLoading(false);
-        }
-    }, []);
+    //zustand store selectors
+    const { appointments, loading, error, fetchAppointments } = useAppointmentStore();
+    const { inventoryItems, loading: inventoryLoading, error: inventoryError, fetchInventoryItems } = useInventoryStore();
 
     useEffect(() => {
         fetchAppointments();
         fetchInventoryItems();
-    }, [fetchAppointments, fetchInventoryItems]);
+    }, [fetchAppointments, fetchInventoryItems])
+
 
     const handleViewClick = (appointment: AppointmentResponse) => {
         navigate(`/admin/appointments/details/${appointment.id}`);
     };
-
 
 
     const formatInventoryDate = (dateString: string) => {

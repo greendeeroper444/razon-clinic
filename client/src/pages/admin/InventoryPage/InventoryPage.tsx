@@ -7,7 +7,7 @@ import { Header, Main, Modal, SubmitLoading } from '../../../components';
 import { FormDataType, InventoryItemFormData } from '../../../types';
 import { formatDate, getExpiryStatus, getItemIcon, getLoadingText, getStockStatus, openModalWithRefresh } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
-import { useInventoryStore } from '../../../stores/inventoryStore';
+import { useInventoryStore } from '../../../stores';
 
 const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 

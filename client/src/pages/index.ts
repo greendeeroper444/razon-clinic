@@ -16,6 +16,7 @@ export { default as InventoryPage } from './admin/InventoryPage/InventoryPage';
 export { default as ArchivePage } from './admin/ArchivePage/ArchivePage';
 export { default as AppointmentDetailsPage } from './admin/AppointmentDetailsPage/AppointmentDetailsPage';
 export { default as MedicalRecordsPage } from './admin/MedicalRecordsPage/MedicalRecordsPage';
+export { default as MedicalRecordDetailsPage } from './admin/MedicalRecordDetailsPage/MedicalRecordDetailsPage';
 export { default as BillingsPaymentPage } from './admin/BillingsPaymentPage/BillingsPaymentPage';
 export { default as CalendarDateDetailsPage } from './admin/CalendarDateDetailsPage/CalendarDateDetailsPage';
 export { default as GrowthMilestonePage } from './admin/GrowthMilestonePage/GrowthMilestonePage';

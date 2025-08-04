@@ -31,7 +31,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         closeUpdateModal,
         closeDeleteModal,
         currentOperation
-    } = useAppointmentStore()
+    } = useAppointmentStore();
 
 
     useEffect(() => {
