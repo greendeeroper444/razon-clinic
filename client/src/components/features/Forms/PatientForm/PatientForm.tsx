@@ -46,7 +46,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
 
         <div className={styles.formRow}>
             <Input
-                type='text'
+                type='email'
                 label='Email Address (Optional)'
                 name='email'
                 placeholder="Email Address (Optional)"

@@ -3,6 +3,9 @@ import styles from './MedicalRecordForm.module.css'
 import { searchAppointmentsByName, getAppointmentForAutofill } from '../../../../services';
 import { Appointment, MedicalRecordFormProps } from '../../../../types';
 import { convertTo12HourFormat, formatDate } from '../../../../utils';
+import Input from '../../../ui/Input/Input';
+import Select from '../../../ui/Select/Select';
+import TextArea from '../../../ui/TextArea/TextArea';
 
 
 const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange, isLoading, onAutofill}) => {
@@ -194,19 +197,18 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
         <h4>Personal Details</h4>
         <div className={styles.formRow}>
             <div className={styles.searchContainer} ref={dropdownRef}>
-                <label htmlFor='fullName'>Full Name *</label>
-                <input
+                <Input
                     type='text'
-                    id='fullName'
+                    label='Full Name'
                     name='fullName'
                     value={formData?.fullName || ''}
                     onChange={handleSearchChange}
                     onFocus={handleInputFocus}
-                    className={styles.formControl}
                     required
                     disabled={isLoading}
                     placeholder="Start typing patient's name to search..."
                     autoComplete="off"
+                    leftIcon="user"
                 />
                 
                 {/* search dropdown */}
@@ -267,177 +269,147 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
         </div>
 
         <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-                <label htmlFor='dateOfBirth'>Date of Birth *</label>
-                <input
-                    type='date'
-                    id='dateOfBirth'
-                    name='dateOfBirth'
-                    value={formData?.dateOfBirth || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    required
-                    disabled={isLoading}
-                />
-            </div>
+            <Input
+                type='date'
+                label='Date of Birth'
+                name='dateOfBirth'
+                placeholder={formData.dateOfBirth ? undefined : 'Select date of birth'}
+                leftIcon='calendar'
+                value={formData.dateOfBirth || ''}
+                onChange={onChange}
+                onFocus={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    target.type = 'date';
+                }}
+                disabled={isLoading}
+            />
 
-            <div className={styles.formGroup}>
-                <label htmlFor='gender'>Gender *</label>
-                <select
-                    id='gender'
-                    name='gender'
-                    value={formData?.gender || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    required
-                    disabled={isLoading}
-                >
-                    <option value=''>Select Gender</option>
-                    <option value='Male'>Male</option>
-                    <option value='Female'>Female</option>
-                    <option value='Other'>Other</option>
-                </select>
-            </div>
-        </div>
-
-        <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-                <label htmlFor='bloodType'>Blood Type</label>
-                <select
-                    id='bloodType'
-                    name='bloodType'
-                    value={formData?.bloodType || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    required
-                >
-                    <option value=''>Select Blood Type</option>
-                    <option value='A+'>A+</option>
-                    <option value='A-'>A-</option>
-                    <option value='B+'>B+</option>
-                    <option value='B-'>B-</option>
-                    <option value='AB+'>AB+</option>
-                    <option value='AB-'>AB-</option>
-                    <option value='O+'>O+</option>
-                    <option value='O-'>O-</option>
-                </select>
-            </div>
-
-            <div className={styles.formGroup}>
-                <label htmlFor='phone'>Phone Number *</label>
-                <input
-                    type='tel'
-                    id='phone'
-                    name='phone'
-                    value={formData?.phone || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    required
-                    disabled={isLoading}
-                    placeholder='Enter contact number'
-                />
-            </div>
-        </div>
-
-        <div className={styles.formGroup}>
-            <label htmlFor='address'>Address</label>
-            <textarea
-            id='address'
-            name='address'
-            value={formData?.address || ''}
-            onChange={onChange}
-            className={styles.formControl}
-            disabled={isLoading}
-            placeholder="Enter address"
+           <Select
+                name='gender'
+                label='Gender'
+                leftIcon='users'
+                placeholder='Select Gender'
+                value={formData.gender || ''}
+                onChange={onChange}
+                options={[
+                    { value: 'Male', label: 'Male' },
+                    { value: 'Female', label: 'Female' },
+                    { value: 'Other', label: 'Other' }
+                ]}
             />
         </div>
 
         <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-                <label htmlFor='email'>Email</label>
-                <input
-                    type='email'
-                    id='email'
-                    name='email'
-                    value={formData?.email || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="Enter email address"
-                />
-            </div>
+            <Select
+                name='bloodType'
+                label='Blood Type'
+                leftIcon='users'
+                placeholder='Select Blood Type'
+                value={formData.bloodType || ''}
+                onChange={onChange}
+                options={[
+                    { value: 'A', label: 'A' },
+                    { value: 'B+', label: 'B+' },
+                    { value: 'B-', label: 'B-' },
+                    { value: 'AB+', label: 'AB+' },
+                    { value: 'AB-', label: 'AB-' },
+                    { value: 'O+', label: 'O+' },
+                    { value: 'O-', label: 'O-' }
+                ]}
+            />
 
-            <div className={styles.formGroup}>
-                <label htmlFor='emergencyContact'>Emergency Contact</label>
-                <input
-                    type='text'
-                    id='emergencyContact'
-                    name='emergencyContact'
-                    value={formData?.emergencyContact || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="Emergency contact person"
-                />
-            </div>
+            <Input
+                type='tel'
+                label='Phone'
+                name='phone'
+                placeholder="Enter a phone number"
+                value={formData?.phone || ''}
+                onChange={onChange}
+                disabled={isLoading}
+            />
+        </div>
+
+        <TextArea
+            name='address'
+            label='Address'
+            placeholder='Address'
+            leftIcon='map-pin'
+            value={formData?.address || ''}
+            onChange={onChange}
+            rows={3}
+            resize='vertical'
+            disabled={isLoading}
+        />
+
+        <div className={styles.formRow}>
+            <Input
+                type='email'
+                label='Email Address'
+                name='email'
+                placeholder="Enter an email ddress"
+                value={formData?.email || ''}
+                onChange={onChange}
+                disabled={isLoading}
+            />
+
+            <Input
+                type='text'
+                label='Emergency Contact'
+                name='emergencyContact'
+                placeholder="Emergency contact person"
+                value={formData?.emergencyContact || ''}
+                onChange={onChange}
+                disabled={isLoading}
+            />
         </div>
 
         {/* medical history section */}
         <div className={styles.sectionDivider}>
             <h4>Medical History</h4>
             
-            <div className={styles.formGroup}>
-                <label htmlFor='allergies'>Known Allergies</label>
-                <textarea
-                    id='allergies'
-                    name='allergies'
-                    value={formData?.allergies || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="List any known allergies"
-                />
-            </div>
+            <TextArea
+                name='allergies'
+                label='Known Allergies'
+                placeholder='List any known allergies'
+                value={formData?.allergies || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
 
-            <div className={styles.formGroup}>
-                <label htmlFor='chronicConditions'>Chronic Conditions</label>
-                <textarea
-                    id='chronicConditions'
-                    name='chronicConditions'
-                    value={formData?.chronicConditions || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="List any chronic conditions"
-                />
-            </div>
+            <TextArea
+                name='chronicConditions'
+                label='Chronic Conditions'
+                placeholder='List any known chronic conditions'
+                value={formData?.chronicConditions || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
 
-            <div className={styles.formGroup}>
-                <label htmlFor='previousSurgeries'>Previous Surgeries</label>
-                <textarea
-                    id='previousSurgeries'
-                    name='previousSurgeries'
-                    value={formData?.previousSurgeries || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="List any previous surgeries"
-                />
-            </div>
+            <TextArea
+                name='previousSurgeries'
+                label='Previous Surgeries'
+                placeholder='List any known previous surgeries'
+                value={formData?.previousSurgeries || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
 
-            <div className={styles.formGroup}>
-                <label htmlFor='familyHistory'>Family Medical History</label>
-                <textarea
-                    id='familyHistory'
-                    name='familyHistory'
-                    value={formData?.familyHistory || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="Relevant family medical history"
-                />
-            </div>
+             <TextArea
+                name='familyHistory'
+                label='Family History'
+                placeholder='List any known family history'
+                value={formData?.familyHistory || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
         </div>
 
         {/* growth milestone section */}
@@ -445,135 +417,106 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             <h4>Pediatric Growth Monitor</h4>
             
             <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                    <label htmlFor='height'>Height (cm)</label>
-                    <input
-                        type='number'
-                        id='height'
-                        name='height'
-                        value={formData?.height || ''}
-                        onChange={onChange}
-                        className={styles.formControl}
-                        min={30}
-                        max={300}
-                        placeholder="Height in cm"
-                        disabled={isLoading}
-                    />
-                </div>
+                <Input
+                    type='number'
+                    label='Height (cm)'
+                    name='height'
+                    placeholder="Height in cm"
+                    value={formData?.height || ''}
+                    onChange={onChange}
+                    min={30}
+                    max={300}
+                    disabled={isLoading}
+                />
 
-                <div className={styles.formGroup}>
-                    <label htmlFor='weight'>Weight (kg)</label>
-                    <input
-                        type='number'
-                        id='weight'
-                        name='weight'
-                        value={formData?.weight || ''}
-                        onChange={onChange}
-                        className={styles.formControl}
-                        min={1}
-                        max={500}
-                        placeholder="Weight in kg"
-                        disabled={isLoading}
-                    />
-                </div>
+                <Input
+                    type='number'
+                    label='Weight (kg)'
+                    name='weight'
+                    placeholder="Weight in cm"
+                    value={formData?.weight || ''}
+                    onChange={onChange}
+                    min={30}
+                    max={300}
+                    disabled={isLoading}
+                />
             </div>
 
             <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                    <label htmlFor='bmi'>BMI (Auto-calculated)</label>
-                    <input
-                        type='number'
-                        id='bmi'
-                        name='bmi'
-                        value={formData?.bmi || ''}
-                        className={styles.formControl}
-                        step='0.1'
-                        placeholder="BMI (calculated automatically)"
-                        disabled={true}
-                        readOnly
-                    />
-                </div>
-                <div className={styles.formGroup}>
-                </div>
-            </div>
-
-            <div className={styles.formGroup}>
-                <label htmlFor='growthNotes'>Growth Notes</label>
-                <textarea
-                    id='growthNotes'
-                    name='growthNotes'
-                    value={formData?.growthNotes || ''}
+                <Input
+                    type='number'
+                    label='BMI (Auto-calculated)'
+                    name='bmi'
+                    placeholder="BMI (calculated automatically)"
+                    value={formData?.bmi || ''}
                     onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="Additional growth-related notes"
+                    step='0.1'
+                    disabled={true}
+                    readOnly
                 />
             </div>
+
+            <TextArea
+                name='growthNotes'
+                label='Growth Notes'
+                placeholder='Additional growth-related notes'
+                value={formData?.growthNotes || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
         </div>
 
         {/* current symptoms section */}
         <div className={styles.sectionDivider}>
             <h4>Current Symptoms</h4>
             
-            <div className={styles.formGroup}>
-                <label htmlFor='chiefComplaint'>Chief Complaint *</label>
-                <input
-                    type='text'
-                    id='chiefComplaint'
-                    name='chiefComplaint'
-                    value={formData?.chiefComplaint || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    required
-                    disabled={isLoading}
-                    placeholder="Main reason for visit"
-                />
-            </div>
+            <Input
+                type='text'
+                label='Chief Complaint'
+                name='chiefComplaint'
+                placeholder="Main reason for visit"
+                value={formData?.chiefComplaint || ''}
+                onChange={onChange}
+                disabled={isLoading}
+            />
 
-            <div className={styles.formGroup}>
-                <label htmlFor='symptomsDescription'>Symptoms Description *</label>
-                <textarea
-                    id='symptomsDescription'
-                    name='symptomsDescription'
-                    value={formData?.symptomsDescription || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    required
-                    disabled={isLoading}
-                    placeholder="Detailed description of symptoms"
-                />
-            </div>
+            <br />
+
+            <TextArea
+                name='symptomsDescription'
+                label='Symptoms Description'
+                placeholder='Detailed description of symptoms'
+                value={formData?.symptomsDescription || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
 
             <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                    <label htmlFor='symptomsDuration'>Duration of Symptoms</label>
-                    <input
+                <Input
                     type='text'
-                    id='symptomsDuration'
+                    label='Duration of Symptoms'
                     name='symptomsDuration'
+                    placeholder="e.g., 3 days, 2 weeks"
                     value={formData?.symptomsDuration || ''}
                     onChange={onChange}
-                    className={styles.formControl}
                     disabled={isLoading}
-                    placeholder="e.g., 3 days, 2 weeks"
-                    />
-                </div>
+                />
 
-                <div className={styles.formGroup}>
-                    <label htmlFor='painScale'>Pain Scale (1-10)</label>
-                    <input
+                <Input
                     type='number'
-                    id='painScale'
+                    label='Pain Scale (1-10)'
                     name='painScale'
+                    placeholder="Rate pain 1-10"
                     value={formData?.painScale || ''}
                     onChange={onChange}
-                    className={styles.formControl}
                     min={1}
                     max={10}
-                    placeholder="Rate pain 1-10"
                     disabled={isLoading}
-                    />
-                </div>
+                />
             </div>
         </div>
 
@@ -581,84 +524,73 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
         <div className={styles.sectionDivider}>
             <h4>Additional Information</h4>
             
-            <div className={styles.formGroup}>
-                <label htmlFor='vaccinationHistory'>Vaccination History</label>
-                <textarea
-                    id='vaccinationHistory'
-                    name='vaccinationHistory'
-                    value={formData?.vaccinationHistory || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="Recent vaccinations or immunization history"
-                />
-            </div>
+            <TextArea
+                name='vaccinationHistory'
+                label='Vaccination History'
+                placeholder='Recent vaccinations or immunization history'
+                value={formData?.vaccinationHistory || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
 
-            <div className={styles.formGroup}>
-                <label htmlFor='diagnosis'>Diagnosis</label>
-                <textarea
-                    id='diagnosis'
-                    name='diagnosis'
-                    value={formData?.diagnosis || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="Medical diagnosis (to be filled by healthcare provider)"
-                />
-            </div>
+            <TextArea
+                name='diagnosis'
+                label='Diagnosis'
+                placeholder='Medical diagnosis (to be filled by healthcare provider)'
+                value={formData?.diagnosis || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
 
-            <div className={styles.formGroup}>
-                <label htmlFor='treatmentPlan'>Treatment Plan</label>
-                <textarea
-                    id='treatmentPlan'
-                    name='treatmentPlan'
-                    value={formData?.treatmentPlan || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="Recommended treatment plan"
-                />
-            </div>
 
-            <div className={styles.formGroup}>
-                <label htmlFor='prescribedMedications'>Prescribed Medications</label>
-                <textarea
-                    id='prescribedMedications'
-                    name='prescribedMedications'
-                    value={formData?.prescribedMedications || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="List of prescribed medications"
-                />
-            </div>
+            <TextArea
+                name='treatmentPlan'
+                label='Treatment Plan'
+                placeholder='Recommended treatment plan'
+                value={formData?.treatmentPlan || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
 
-            <div className={styles.formGroup}>
-                <label htmlFor='consultationNotes'>Consultation Notes</label>
-                <textarea
-                    id='consultationNotes'
-                    name='consultationNotes'
-                    value={formData?.consultationNotes || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    disabled={isLoading}
-                    placeholder="Additional notes from consultation"
-                />
-            </div>
 
-            <div className={styles.formGroup}>
-                <label htmlFor='followUpDate'>Follow-up Date</label>
-                <input
-                    type='date'
-                    id='followUpDate'
-                    name='followUpDate'
-                    value={formData?.followUpDate || ''}
-                    onChange={onChange}
-                    className={styles.formControl}
-                    min={new Date().toISOString().split('T')[0]}
-                    disabled={isLoading}
-                />
-            </div>
+            <TextArea
+                name='prescribedMedications'
+                label='Prescribed Medications'
+                placeholder='List of prescribed medications'
+                value={formData?.prescribedMedications || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
+
+             <TextArea
+                name='consultationNotes'
+                label='Consultation Notes'
+                placeholder='Additional notes from consultation'
+                value={formData?.consultationNotes || ''}
+                onChange={onChange}
+                rows={3}
+                resize='vertical'
+                disabled={isLoading}
+            />
+
+            <Input
+                type='date'
+                label='Follow-up Date'
+                name='followUpDate'
+                value={formData?.followUpDate || ''}
+                onChange={onChange}
+                min={new Date().toISOString().split('T')[0]}
+                disabled={isLoading}
+                leftIcon='calendar'
+            />
         </div>
     </div>
   )
