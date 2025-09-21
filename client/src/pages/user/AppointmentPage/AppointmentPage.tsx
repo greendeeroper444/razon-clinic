@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
 import styles from './AppointmentPage.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { Plus, ChevronRight } from 'lucide-react'
 import { OpenModalProps } from '../../../hooks/hook'
 import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass, getLoadingText } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType } from '../../../types'
-import { Header, Main, Modal, SubmitLoading } from '../../../components'
+import { Header, Loading, Main, Modal, SubmitLoading } from '../../../components'
 import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore } from '../../../stores'
 
@@ -76,14 +75,14 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         {
             id: 'newAppointmentBtn',
             label: 'New Appointment',
-            icon: faPlus,
+            icon: <Plus />,
             onClick: handleOpenModal,
             type: 'primary' as const
         }
     ]
 
   return (
-    <Main loading={loading} error={error} loadingMessage='Loading appointments...'>
+    <Main error={error}>
         <Header
             title='Appointments'
             actions={headerActions}
@@ -98,93 +97,107 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                 <div className={styles.sectionActions}>
                     <a href="#">
                         <span>View All</span>
-                        <FontAwesomeIcon icon={faChevronRight} />
+                        <ChevronRight />
                     </a>
                 </div>
             </div>
 
-            <div className={styles.tableResponsive}>
-                <table className={styles.appointmentsTable}>
-                    <thead>
-                        <tr>
-                            <th>Patient Name</th>
-                            <th>Preferred Date</th>
-                            <th>Preferred Time</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            appointments.length === 0 ? (
+            {
+                loading ? (
+                    <div className={styles.tableResponsive}>
+                        <Loading
+                            type='skeleton'
+                            rows={7}
+                            message='Loading appointments data...'
+                            delay={0}
+                            minDuration={1000}
+                        />
+                    </div>
+                ) : (
+                    <div className={styles.tableResponsive}>
+                        <table className={styles.appointmentsTable}>
+                            <thead>
                                 <tr>
-                                    <td colSpan={6} className={styles.noData}>
-                                        No appointments found. Create your first appointment using the "New Appointment" button.
-                                    </td>
+                                    <th>Patient Name</th>
+                                    <th>Preferred Date</th>
+                                    <th>Preferred Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ) : (
-                                appointments.map((appointment) => (
-                                    <tr key={appointment.id}>
-                                        <td>
-                                            <div className={styles.patientInfo}>
-                                                <div className={styles.patientAvatar}>
-                                                    {getFirstLetterOfFirstAndLastName(appointment.firstName)}
-                                                </div>
-                                                <div>
-                                                    <div className={styles.patientName}>
-                                                        {appointment.firstName} {appointment.lastName}
+                            </thead>
+                            <tbody>
+                                {
+                                    appointments.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={6} className={styles.noData}>
+                                                No appointments found. Create your first appointment using the "New Appointment" button.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        appointments.map((appointment) => (
+                                            <tr key={appointment.id}>
+                                                <td>
+                                                    <div className={styles.patientInfo}>
+                                                        <div className={styles.patientAvatar}>
+                                                            {getFirstLetterOfFirstAndLastName(appointment.firstName)}
+                                                        </div>
+                                                        <div>
+                                                            <div className={styles.patientName}>
+                                                                {appointment.firstName} {appointment.lastName}
+                                                            </div>
+                                                            <div className={styles.patientId}>
+                                                                APT-ID: {appointment.appointmentNumber}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div className={styles.patientId}>
-                                                        APT-ID: {appointment.appointmentNumber}
+                                                </td>
+                                                <td>
+                                                    <div className={styles.appointmentDate}>
+                                                        {formatDate(appointment.preferredDate)}
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className={styles.appointmentDate}>
-                                                {formatDate(appointment.preferredDate)}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className={styles.appointmentTime}>
-                                                {formatTime(appointment.preferredTime)}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
-                                                {appointment.status}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <button 
-                                                type='button' 
-                                                className={`${styles.actionBtn} ${styles.view}`}
-                                                onClick={() => handleViewClick(appointment)}
-                                            >
-                                                View
-                                            </button>
-                                            <button 
-                                                type='button' 
-                                                className={`${styles.actionBtn} ${styles.update}`}
-                                                onClick={() => openUpdateModal(appointment)}
-                                            >
-                                                Update
-                                            </button>
-                                            <button 
-                                                type='button' 
-                                                className={`${styles.actionBtn} ${styles.delete}`}
-                                                onClick={() => openDeleteModal(appointment)}
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )
-                        }
-                    </tbody>
-                </table>
-            </div>
+                                                </td>
+                                                <td>
+                                                    <div className={styles.appointmentTime}>
+                                                        {formatTime(appointment.preferredTime)}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
+                                                        {appointment.status}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button 
+                                                        type='button' 
+                                                        className={`${styles.actionBtn} ${styles.view}`}
+                                                        onClick={() => handleViewClick(appointment)}
+                                                    >
+                                                        View
+                                                    </button>
+                                                    <button 
+                                                        type='button' 
+                                                        className={`${styles.actionBtn} ${styles.update}`}
+                                                        onClick={() => openUpdateModal(appointment)}
+                                                    >
+                                                        Update
+                                                    </button>
+                                                    <button 
+                                                        type='button' 
+                                                        className={`${styles.actionBtn} ${styles.delete}`}
+                                                        onClick={() => openDeleteModal(appointment)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                )
+            }
         </div>
         
         {/* update appointment modal */}

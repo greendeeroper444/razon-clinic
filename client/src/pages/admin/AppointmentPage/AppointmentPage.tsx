@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import styles from './AppointmentPage.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { ChevronRight, Plus } from 'lucide-react'
 import { OpenModalProps } from '../../../hooks/hook'
 import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass, getLoadingText } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType } from '../../../types'
@@ -74,7 +73,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         {
             id: 'newAppointmentBtn',
             label: 'New Appointment',
-            icon: faPlus,
+            icon: <Plus />,
             onClick: handleOpenModal,
             type: 'primary' as const
         }
@@ -96,7 +95,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                 <div className={styles.sectionActions}>
                     <a href="#">
                         <span>View All</span>
-                        <FontAwesomeIcon icon={faChevronRight} />
+                        <ChevronRight />
                     </a>
                 </div>
             </div>

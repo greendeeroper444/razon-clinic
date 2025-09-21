@@ -1,18 +1,18 @@
-import { faPills, faSyringe, faTablets, faCapsules, faPrescriptionBottle, faCheck, faClock, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { Pill, Syringe, FlaskConical, Check, Clock, AlertTriangle } from 'lucide-react';
 import { Appointment, ModalType, OperationType } from '../types';
 
 export const getItemIcon = (category: string) => {
     switch (category.toLowerCase()) {
         case 'vaccine':
-            return faSyringe;
+            return Syringe;
         case 'tablets':
-            return faTablets;
+            return Pill;
         case 'capsules':
-            return faCapsules;
+            return Pill;
         case 'medical supply':
-            return faPrescriptionBottle;
+            return FlaskConical;
         default:
-            return faPills;
+            return Pill;
     }
 };
 
@@ -74,13 +74,13 @@ export const getStatusColor = (status: Appointment['status']): string => {
 export const getStatusIcon = (status: string) => {
     switch (status) {
         case 'Paid':
-            return faCheck;
+            return Check;
         case 'Pending':
-            return faClock;
+            return Clock;
         case 'Unpaid':
-            return faExclamationTriangle;
+            return AlertTriangle;
         default:
-            return faClock;
+            return Clock;
     }
 };
 

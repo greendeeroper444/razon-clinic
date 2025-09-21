@@ -42,8 +42,8 @@ export interface NotificationProps {
 export interface HeaderProps {
     title: string;
     subtitle?: string;
-    backButton?: BackButtonProps;
-    actions?: ActionButton[];
+    backButton?: BackButtonProps | any;
+    actions?: ActionButton[] | any;
     children?: ReactNode;
     className?: string;
 }

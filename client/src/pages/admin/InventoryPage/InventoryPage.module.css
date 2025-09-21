@@ -144,7 +144,7 @@
     color: var(--gray);
 }
   
-  /* Table Styles */
+
 .inventoryTableContainer {
     background: white;
     border-radius: var(--border-radius);
@@ -259,6 +259,9 @@
 }
   
 .actionBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     padding: 6px 12px;
     border-radius: 6px;
     border: none;
@@ -268,6 +271,11 @@
     transition: var(--transition);
 }
   
+.icon {
+    width: 16px;
+    height: 16px;
+}
+
 .actionBtn.view,
 .actionBtn.primary {
     background-color: var(--primary-light);
@@ -301,9 +309,6 @@
 .actionBtn.success:hover {
     background-color: #a7f3d0;
 }
-
-
-
 
 
 

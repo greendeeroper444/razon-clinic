@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import styles from './PatientsPage.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faIdCard, faVenusMars, faBirthdayCake, faPhone, faMapMarkerAlt, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { Plus, IdCard, Cake, Phone, MapPin, ArrowLeft, UserRound } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Main, Header, Modal, SubmitLoading, Loading } from '../../../components';
 import { FormDataType, PatientDisplayData, PatientFormData } from '../../../types';
@@ -136,7 +135,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
         {
             id: 'newPatientBtn',
             label: 'New Patient',
-            icon: faPlus,
+            icon: <Plus />,
             onClick: handleOpenModal,
             type: 'primary' as const
         }
@@ -157,7 +156,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                         <div className={styles.cardHeader}>
                             <div className={styles.cardTitle}>{card.title}</div>
                             <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
-                                <FontAwesomeIcon icon={card.icon} />
+                                <card.icon /> 
                             </div>
                         </div>
                         <div className={styles.cardValue}>{card.value}</div>
@@ -270,7 +269,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
             showPatientDetail && selectedPatient && (
                 <div className={styles.patientDetailContainer}>
                     <button type='button' title='Back' className={styles.btnBack} onClick={() => setShowPatientDetail(false)}>
-                        <FontAwesomeIcon icon={faArrowLeft} />
+                        <ArrowLeft />
                     </button>
                     <div className={styles.patientHeader}>
                         <div className={styles.patientAvatarLg}>{selectedPatient.initials}</div>
@@ -278,24 +277,24 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                             <div className={styles.patientNameLg}>{selectedPatient.firstName || 'Unknown Patient'}</div>
                             <div className={styles.patientMeta}>
                                 <div className={styles.patientMetaItem}>
-                                    <FontAwesomeIcon icon={faIdCard} />
+                                    <IdCard />
                                     <span>#{selectedPatient.id}</span>
                                 </div>
                                 <div className={styles.patientMetaItem}>
-                                    <FontAwesomeIcon icon={faVenusMars} />
+                                    <UserRound />
                                     <span>{selectedPatient.sex || 'N/A'}</span>
                                 </div>
                                 <div className={styles.patientMetaItem}>
-                                    <FontAwesomeIcon icon={faBirthdayCake} />
+                                    <Cake />
                                     <span>{selectedPatient.age || 'N/A'} years ({selectedPatient.birthdate || 'N/A'})</span>
                                 </div>
                                 <div className={styles.patientMetaItem}>
-                                    <FontAwesomeIcon icon={faPhone} />
+                                    <Phone />
                                     <span>{selectedPatient.contactNumber || 'N/A'}</span>
                                 </div>
                             </div>
                             <div className={styles.patientMetaItem}>
-                                <FontAwesomeIcon icon={faMapMarkerAlt} />
+                                <MapPin />
                                 <span>{selectedPatient.address || 'N/A'}</span>
                             </div>
                         </div>

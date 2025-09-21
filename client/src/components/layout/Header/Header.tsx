@@ -1,5 +1,4 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styles from './Header.module.css'
 import { HeaderProps } from '../../../types'
 
@@ -35,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({
                             onClick={backButton.onClick || (() => window.history.back())}
                             title='Go Back'
                         >
-                            {backButton.icon && <FontAwesomeIcon icon={backButton.icon} />}
+                            {backButton.icon}
                         </button>
                     )
                 }
@@ -57,7 +56,7 @@ const Header: React.FC<HeaderProps> = ({
                                     onClick={action.onClick}
                                     disabled={action.disabled}
                                 >
-                                    {action.icon && <FontAwesomeIcon icon={action.icon} />}
+                                    {action.icon && action.icon}
                                     {action.label}
                                 </button>
                             ))

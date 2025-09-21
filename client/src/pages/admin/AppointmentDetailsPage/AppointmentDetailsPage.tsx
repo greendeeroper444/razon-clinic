@@ -1,24 +1,7 @@
 import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css';
 import { useParams } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faCalendarAlt, 
-    faClock, 
-    faUser,
-    faPhone, 
-    faNotesMedical, 
-    faMapMarkerAlt, 
-    faBirthdayCake, 
-    faVenusMars,
-    faArrowLeft,
-    faEdit,
-    faCheckCircle,
-    faRulerVertical,
-    faWeight,
-    faUsers,
-    faPray
-} from '@fortawesome/free-solid-svg-icons';
+import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand } from 'lucide-react';
 import { calculateAge, formatBirthdate, formatDate, formatTime, getAppointmentStatusClass, getLoadingText, getMiddleNameInitial } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { AppointmentFormData, FormDataType } from '../../../types';
@@ -104,20 +87,20 @@ const AppointmentDetailsPage = () => {
     const headerActions = [
         {
             label: 'Edit',
-            icon: faEdit,
+            icon: <Edit />,
             onClick: handleAppointmentUpdateClick,
             type: 'primary' as const
         },
         {
             label: 'Status',
-            icon: faCheckCircle,
+            icon: <CheckCircle />,
             onClick: handleUpdateStatusClick,
             type: 'outline' as const
         }
     ];
 
     const backButton = {
-        icon: faArrowLeft,
+        icon: <ArrowLeft />,
         onClick: () => window.history.back()
     };
 
@@ -141,7 +124,7 @@ const AppointmentDetailsPage = () => {
         {/* single comprehensive appointment details table */}
         <div className={styles.detailsCard}>
             <div className={styles.cardHeader}>
-                <FontAwesomeIcon icon={faCalendarAlt} className={styles.cardIcon} />
+                <Calendar className={styles.cardIcon} />
                 <h2>Complete Appointment Details</h2>
             </div>
             <div className={styles.cardContent}>
@@ -149,23 +132,23 @@ const AppointmentDetailsPage = () => {
                     {/* appointment sex */}
                     <div className={styles.tableSection}>
                         <h3 className={styles.sectionTitle}>
-                            <FontAwesomeIcon icon={faCalendarAlt} /> Appointment Information
+                            <Calendar /> Appointment Information
                         </h3>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faCalendarAlt} /> Preferred Date:
+                                <Calendar /> Preferred Date:
                             </span>
                             <span className={styles.tableValue}>{formatDate(currentAppointment.preferredDate)}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faClock} /> Preferred Time:
+                                <Clock/> Preferred Time:
                             </span>
                             <span className={styles.tableValue}>{formatTime(currentAppointment.preferredTime)}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faNotesMedical} /> Reason for Visit:
+                                <Notebook /> Reason for Visit:
                             </span>
                             <span className={styles.tableValue}>{currentAppointment.reasonForVisit}</span>
                         </div>
@@ -190,11 +173,11 @@ const AppointmentDetailsPage = () => {
                     {/* patient details information */}
                     <div className={styles.tableSection}>
                         <h3 className={styles.sectionTitle}>
-                            <FontAwesomeIcon icon={faUser} /> Patient Information
+                            <User /> Patient Information
                         </h3>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faUser} /> Full Name:
+                                <User /> Full Name:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentAppointment.firstName}, {currentAppointment.lastName}
@@ -203,7 +186,7 @@ const AppointmentDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faBirthdayCake} /> Birthdate:
+                                <Cake /> Birthdate:
                             </span>
                             <span className={styles.tableValue}>
                                 {formatBirthdate(String(currentAppointment.birthdate))} 
@@ -212,20 +195,20 @@ const AppointmentDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faVenusMars} /> Sex:
+                                <Venus /> Sex:
                             </span>
                             <span className={styles.tableValue}>{currentAppointment.sex}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faPhone} /> Contact Number:
+                                <Phone /> Contact Number:
                             </span>
                             <span className={styles.tableValue}>{currentAppointment.contactNumber}</span>
                         </div>
                         
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faMapMarkerAlt} /> Address:
+                                <MapPin /> Address:
                             </span>
                             <span className={styles.tableValue}>{currentAppointment.address}</span>
                         </div>
@@ -234,23 +217,23 @@ const AppointmentDetailsPage = () => {
                     {/* medical informations sec*/}
                     <div className={styles.tableSection}>
                         <h3 className={styles.sectionTitle}>
-                            <FontAwesomeIcon icon={faNotesMedical} /> Medical Information
+                            <Notebook /> Medical Information
                         </h3>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faRulerVertical} /> Height:
+                                <Ruler /> Height:
                             </span>
                             <span className={styles.tableValue}>{currentAppointment.height} cm</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faWeight} /> Weight:
+                                <Weight /> Weight:
                             </span>
                             <span className={styles.tableValue}>{currentAppointment.weight} kg</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faPray} /> Religion:
+                                <Hand /> Religion:
                             </span>
                             <span className={styles.tableValue}>{currentAppointment.religion}</span>
                         </div>
@@ -259,7 +242,7 @@ const AppointmentDetailsPage = () => {
                     {/* family info sex */}
                     <div className={styles.tableSection}>
                         <h3 className={styles.sectionTitle}>
-                            <FontAwesomeIcon icon={faUsers} /> Family Information
+                            <Users /> Family Information
                         </h3>
                         
                         {/* mother's info */}
@@ -267,7 +250,7 @@ const AppointmentDetailsPage = () => {
                             <h4 className={styles.familyTitle}>Mother's Information</h4>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>
-                                    <FontAwesomeIcon icon={faUser} /> Name:
+                                    <User /> Name:
                                 </span>
                                 <span className={styles.tableValue}>{currentAppointment.motherInfo?.name}</span>
                             </div>
@@ -288,7 +271,7 @@ const AppointmentDetailsPage = () => {
                             <h4 className={styles.familyTitle}>Father's Information</h4>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>
-                                    <FontAwesomeIcon icon={faUser} /> Name:
+                                    <User /> Name:
                                 </span>
                                 <span className={styles.tableValue}>{currentAppointment.fatherInfo?.name}</span>
                             </div>

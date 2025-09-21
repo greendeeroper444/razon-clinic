@@ -1,4 +1,4 @@
-import { faPills, faExclamationTriangle, faClock, faCube } from '@fortawesome/free-solid-svg-icons';
+import { Pill, AlertTriangle, Clock, Package } from 'lucide-react';
 
 export const getInventorySummaryCards = (summaryStats: {
     total: number;
@@ -8,28 +8,28 @@ export const getInventorySummaryCards = (summaryStats: {
 }) => [
     {
         title: "Total Medicines",
-        icon: faPills,
+        icon: Pill,
         iconColor: "blue",
         value: summaryStats.total,
         footer: "Total inventory items"
     },
     {
         title: "Low Stock Items",
-        icon: faExclamationTriangle,
+        icon: AlertTriangle,
         iconColor: "red",
         value: summaryStats.lowStock,
         footer: "Need restocking"
     },
     {
         title: "Expiring Soon",
-        icon: faClock,
+        icon: Clock,
         iconColor: "red",
         value: summaryStats.expiring,
         footer: "Within 30 days"
     },
     {
         title: "Recently Added",
-        icon: faCube,
+        icon: Package,
         iconColor: "green",
         value: summaryStats.recentlyAdded,
         footer: "This month"

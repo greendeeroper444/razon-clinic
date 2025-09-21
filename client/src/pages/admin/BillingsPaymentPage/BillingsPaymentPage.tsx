@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import styles from './BillingsPaymentPage.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faSearch, faDownload, faCreditCard, faCheck, faExclamationTriangle, faTimes, faUser, faCalendar, faEye, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { Plus, Search, Download, CreditCard, Check, AlertTriangle, X, User, Calendar, Eye } from 'lucide-react';
 import { BillingFormData, BillingResponse, FormDataType } from '../../../types'
 import { Header, Loading, Main, Modal, SubmitLoading } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
@@ -149,13 +148,13 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         {
             id: 'newBillingBtn',
             label: 'New Billing',
-            icon: faPlus,
+            icon: <Plus />,
             onClick: handleOpenModal,
             type: 'primary' as const
         },
         {
             label: 'Export',
-            icon: faDownload,
+            icon: <Download />,
             onClick: handleExport,
             type: 'outline' as const
         }
@@ -172,7 +171,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         <div className={styles.summaryCards}>
             <div className={styles.summaryCard}>
                 <div className={styles.cardIcon}>
-                    <FontAwesomeIcon icon={faCreditCard} />
+                    <CreditCard />
                 </div>
                 <div className={styles.cardContent}>
                     <h3>Total Revenue</h3>
@@ -181,7 +180,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             </div>
             <div className={styles.summaryCard}>
                 <div className={`${styles.cardIcon} ${styles.iconSuccess}`}>
-                    <FontAwesomeIcon icon={faCheck} />
+                    <Check />
                 </div>
                 <div className={styles.cardContent}>
                     <h3>Paid Amount</h3>
@@ -190,7 +189,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             </div>
             <div className={styles.summaryCard}>
                 <div className={`${styles.cardIcon} ${styles.iconDanger}`}>
-                    <FontAwesomeIcon icon={faExclamationTriangle} />
+                    <AlertTriangle />
                 </div>
                 <div className={styles.cardContent}>
                     <h3>Outstanding</h3>
@@ -202,7 +201,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         {/* search and filter section */}
         <div className={styles.filtersSection}>
             <div className={styles.searchBox}>
-                <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+                <Search className={styles.searchIcon} />
                 <input
                     type="text"
                     placeholder="Search by patient name..."
@@ -262,7 +261,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                         <tr key={bill.id}>
                                             <td>
                                                 <div className={styles.patientInfo}>
-                                                    <FontAwesomeIcon icon={faUser} />
+                                                    <User />
                                                     <span>{bill.patientName}</span>
                                                 </div>
                                             </td>
@@ -278,13 +277,18 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                             </td>
                                             <td>
                                                 <span className={`${styles.status} ${getPaymentStatusClass(bill.paymentStatus, styles)}`}>
-                                                    <FontAwesomeIcon icon={getStatusIcon(bill.paymentStatus)} />
+                                                    {
+                                                        (() => {
+                                                            const Icon = getStatusIcon(bill.paymentStatus);
+                                                            return <Icon className={styles.icon} />;
+                                                        })()
+                                                    }
                                                     {bill.paymentStatus}
                                                 </span>
                                             </td>
                                             <td>
                                                 <div className={styles.dateInfo}>
-                                                    <FontAwesomeIcon icon={faCalendar} />
+                                                    <Calendar />
                                                     <span>{formatDate(bill.createdAt)}</span>
                                                 </div>
                                             </td>
@@ -296,7 +300,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                         className={styles.btnView}
                                                         title="View Details"
                                                     >
-                                                        <FontAwesomeIcon icon={faEye} />
+                                                        <Eye />
                                                     </button>
                                                     {
                                                         bill.paymentStatus !== 'Paid' && (
@@ -307,7 +311,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                                 title="Process Payment"
                                                                 disabled={isProcessing}
                                                             >
-                                                                <FontAwesomeIcon icon={faCreditCard} />
+                                                                <CreditCard />
                                                             </button>
                                                         )
                                                     }
@@ -356,7 +360,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         {
             !loading && !error && billings.length === 0 && (
                 <div className={styles.emptyState}>
-                    <FontAwesomeIcon icon={faCreditCard} className={styles.emptyIcon} />
+                    <CreditCard className={styles.emptyIcon} />
                     <h3>No billing records found</h3>
                     <p>Try adjusting your search criteria or create a new bill.</p>
                 </div>
@@ -371,7 +375,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                         <div className={styles.modalHeader}>
                             <h2>Bill Details</h2>
                             <button type='button' title='Close' onClick={closeModal} className={styles.closeBtn}>
-                                <FontAwesomeIcon icon={faTimes} />
+                                <X />
                             </button>
                         </div>
                         <div className={styles.modalBody}>

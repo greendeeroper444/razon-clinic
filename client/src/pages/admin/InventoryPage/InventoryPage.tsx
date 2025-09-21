@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import styles from './InventoryPage.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Plus, Edit, Trash } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Header, Loading, Main, Modal, SubmitLoading } from '../../../components';
 import { FormDataType, InventoryItemFormData } from '../../../types';
@@ -97,7 +96,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         {
             id: 'newItemBtn',
             label: 'New Item',
-            icon: faPlus,
+            icon: <Plus className={styles.icon} /> ,
             onClick: handleOpenModal,
             type: 'primary' as const
         }
@@ -119,7 +118,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                         <div className={styles.cardHeader}>
                             <div className={styles.cardTitle}>{card.title}</div>
                             <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
-                                <FontAwesomeIcon icon={card.icon} />
+                                <card.icon />
                             </div>
                         </div>
                         <div className={styles.cardValue}>{card.value}</div>
@@ -177,7 +176,12 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                 <td>
                                                     <div className={styles.medicineInfo}>
                                                         <div className={styles.medicineIcon}>
-                                                            <FontAwesomeIcon icon={getItemIcon(item.category)} />
+                                                            {
+                                                                (() => {
+                                                                    const Icon = getItemIcon(item.category);
+                                                                    return <Icon className={styles.icon} />;
+                                                                })()
+                                                            }
                                                         </div>
                                                         <div>
                                                             <div className={styles.medicineName}>{item.itemName}</div>
@@ -203,7 +207,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                         onClick={() => handleUpdateClick(item, false, false)}
                                                         disabled={isProcessing}
                                                     >
-                                                        <FontAwesomeIcon icon={faEdit} /> Edit
+                                                        <Edit className={styles.icon} /> Edit
                                                     </button>
                                                     <button 
                                                         type='button'
@@ -211,7 +215,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                         onClick={() => handleDeleteClick(item)}
                                                         disabled={isProcessing}
                                                     >
-                                                        <FontAwesomeIcon icon={faTrash} /> Delete
+                                                        <Trash className={styles.icon} /> Delete
                                                     </button>
                                                     <button 
                                                         type='button'
@@ -219,7 +223,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                         onClick={() => handleUpdateClick(item, true, true)}
                                                         disabled={isProcessing}
                                                     >
-                                                        <FontAwesomeIcon icon={faPlus} /> Restock
+                                                        <Plus className={styles.icon} /> Restock
                                                     </button>
                                                 </td>
                                             </tr>

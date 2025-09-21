@@ -332,6 +332,9 @@
 }
 
 .actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 6px 12px;
   border-radius: 6px;
   border: none;
@@ -339,6 +342,11 @@
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
+}
+  
+.icon {
+  width: 16px;
+  height: 16px;
 }
 
 .view,

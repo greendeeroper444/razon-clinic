@@ -1,16 +1,6 @@
 import React, { useEffect } from 'react'
 import styles from './MedicalRecordsPage.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faUser, 
-    faHistory, 
-    faRuler,
-    faStethoscope, 
-    faDiagnoses,
-    faTimes,
-    faFileAlt,
-    faDownload
-} from '@fortawesome/free-solid-svg-icons';
+import { User, History, Ruler, Stethoscope, Activity, X, FileText, Download } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { MedicalRecordResponse } from '../../../types';
 import { Header, Main } from '../../../components';
@@ -77,7 +67,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     const headerActions = [
         {
             label: 'Report',
-            icon: faFileAlt,
+            icon: <FileText />,
             onClick: handleReport,
             type: 'outline' as const
         }
@@ -206,7 +196,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                                     className={styles.downloadBtn}
                                     title='Download Receipt'
                                 >
-                                    <FontAwesomeIcon icon={faDownload} /> Download Receipt
+                                    <Download /> Download Receipt
                                 </button>
                                 <button 
                                     type='button'
@@ -214,7 +204,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                                     onClick={closeDetailsModal} 
                                     className={styles.closeBtn}
                                 >
-                                    <FontAwesomeIcon icon={faTimes} />
+                                    <X />
                                 </button>
                             </div>
                         </div>
@@ -222,7 +212,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                         <div className={styles.modalBody}>
                             {/* personal details section */}
                             <div className={styles.detailSection}>
-                                <h3><FontAwesomeIcon icon={faUser} /> Personal Details</h3>
+                                <h3><User /> Personal Details</h3>
                                 <div className={styles.detailGrid}>
                                     <div><strong>Name:</strong> {selectedRecord.personalDetails.fullName}</div>
                                     <div><strong>Date of Birth:</strong> {new Date(selectedRecord.personalDetails.dateOfBirth).toLocaleDateString()}</div>
@@ -238,7 +228,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
 
                             {/* current symptoms section */}
                             <div className={styles.detailSection}>
-                                <h3><FontAwesomeIcon icon={faStethoscope} /> Current Symptoms</h3>
+                                <h3><Stethoscope /> Current Symptoms</h3>
                                 <div className={styles.detailGrid}>
                                     <div><strong>Chief Complaint:</strong> {selectedRecord.currentSymptoms.chiefComplaint}</div>
                                     <div><strong>Symptoms Description:</strong> {selectedRecord.currentSymptoms.symptomsDescription}</div>
@@ -249,7 +239,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
 
                             {/* medical history section */}
                             <div className={styles.detailSection}>
-                                <h3><FontAwesomeIcon icon={faHistory} /> Medical History</h3>
+                                <h3><History /> Medical History</h3>
                                 <div className={styles.detailGrid}>
                                     <div><strong>Allergies:</strong> {selectedRecord.medicalHistory.allergies || 'None reported'}</div>
                                     <div><strong>Chronic Conditions:</strong> {selectedRecord.medicalHistory.chronicConditions || 'None reported'}</div>
@@ -260,7 +250,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
 
                             {/* growth milestones section */}
                             <div className={styles.detailSection}>
-                                <h3><FontAwesomeIcon icon={faRuler} /> Growth Milestones</h3>
+                                <h3><Ruler /> Growth Milestones</h3>
                                 <div className={styles.detailGrid}>
                                     <div><strong>Height:</strong> {selectedRecord.growthMilestones.height ? `${selectedRecord.growthMilestones.height} cm` : 'Not measured'}</div>
                                     <div><strong>Weight:</strong> {selectedRecord.growthMilestones.weight ? `${selectedRecord.growthMilestones.weight} kg` : 'Not measured'}</div>
@@ -271,7 +261,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
 
                             {/* clinical information */}
                             <div className={styles.detailSection}>
-                                <h3><FontAwesomeIcon icon={faDiagnoses} /> Clinical Information</h3>
+                                <h3><Activity /> Clinical Information</h3>
                                 <div className={styles.detailGrid}>
                                     <div><strong>Diagnosis:</strong> {selectedRecord.diagnosis || 'Pending'}</div>
                                     <div><strong>Treatment Plan:</strong> {selectedRecord.treatmentPlan || 'Not specified'}</div>

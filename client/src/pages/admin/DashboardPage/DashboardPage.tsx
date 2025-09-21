@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import styles from './DashboardPage.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarDay, faUserClock, faExclamationTriangle, faUserMd, faChevronRight, faArrowUp, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { CalendarDays, UserLock, AlertTriangle, Stethoscope, ChevronRight, ArrowUp, Plus } from 'lucide-react';
 import { AppointmentResponse } from '../../../types';
 import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial, formatDate, formatTime, getAppointmentStatusClass, getItemIcon, getStockStatus, getExpiryStatus } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
@@ -33,28 +32,28 @@ const DashboardPage = () => {
         {
             title: 'Today\'s Appointments',
             value: '18',
-            icon: faCalendarDay,
+            icon: <CalendarDays />,
             iconColor: 'purple',
-            footer: <><FontAwesomeIcon icon={faArrowUp} className={styles.positive} /> <span className={styles.positive}>3 more than yesterday</span></>
+            footer: <><ArrowUp className={styles.positive} /> <span className={styles.positive}>3 more than yesterday</span></>
         },
         {
             title: 'Patients Waiting',
             value: '5',
-            icon: faUserClock,
+            icon: <UserLock />,
             iconColor: 'orange',
             footer: <>Average wait time: <span>15 min</span></>
         },
         {
             title: 'Low Stock Items',
             value: '7',
-            icon: faExclamationTriangle,
+            icon: <AlertTriangle />,
             iconColor: 'red',
-            footer: <><FontAwesomeIcon icon={faArrowUp} className={styles.negative} /> <span className={styles.negative}>2 critical items</span></>
+            footer: <><ArrowUp className={styles.negative} /> <span className={styles.negative}>2 critical items</span></>
         },
         {
             title: 'Available Doctors',
             value: '4',
-            icon: faUserMd,
+            icon: <Stethoscope />,
             iconColor: 'green',
             footer: <span>2 GPs, 1 Dentist, 1 Specialist</span>
         }
@@ -78,10 +77,10 @@ const DashboardPage = () => {
                 dashboardCards.map((card, index) => (
                     <div className={styles.card} key={index}>
                         <div className={styles.cardHeader}>
-                        <div className={styles.cardTitle}>{card.title}</div>
-                        <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
-                            <FontAwesomeIcon icon={card.icon} />
-                        </div>
+                            <div className={styles.cardTitle}>{card.title}</div>
+                            <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
+                                {card.icon}
+                            </div>
                         </div>
                         <div className={styles.cardValue}>{card.value}</div>
                         <div className={styles.cardFooter}>{card.footer}</div>
@@ -101,7 +100,7 @@ const DashboardPage = () => {
                 <div className={styles.sectionActions}>
                     <a href="#" onClick={() => navigate('/admin/appointments')}>
                         <span>View All</span>
-                        <FontAwesomeIcon icon={faChevronRight} />
+                        <ChevronRight />
                     </a>
                 </div>
             </div>
@@ -205,8 +204,8 @@ const DashboardPage = () => {
             </h3>
             <div className={styles.sectionActions}>
                 <a href="#" onClick={() => navigate('/admin/inventory')}>
-                <span>Manage Inventory</span>
-                <FontAwesomeIcon icon={faChevronRight} />
+                    <span>Manage Inventory</span>
+                    <ChevronRight />
                 </a>
             </div>
             </div>
@@ -250,7 +249,12 @@ const DashboardPage = () => {
                                                 <td>
                                                     <div className={styles.medicineInfo}>
                                                         <div className={styles.medicineIcon}>
-                                                            <FontAwesomeIcon icon={getItemIcon(item.category)} />
+                                                            {
+                                                                (() => {
+                                                                    const Icon = getItemIcon(item.category);
+                                                                    return <Icon className={styles.icon} />;
+                                                                })()
+                                                            }
                                                         </div>
                                                         <div>
                                                             <div className={styles.medicineName}>{item.itemName}</div>
@@ -273,7 +277,7 @@ const DashboardPage = () => {
                                                 </td>
                                                 <td>
                                                     <button type='button' className={`${styles.actionBtn} ${styles.restock}`} onClick={() => navigate('/admin/inventory')}>
-                                                        <FontAwesomeIcon icon={faPlus} /> Restock
+                                                        <Plus className={styles.icon} /> Restock
                                                     </button>
                                                 </td>
                                             </tr>
