@@ -16,3 +16,5 @@ export { default as Input } from './ui/Input/Input';
 export { default as Select } from './ui/Select/Select';
 export { default as TextArea } from './ui/TextArea/TextArea';
 export { default as Loading } from './ui/Loading/Loading';
+export { default as Pagination } from './ui/Pagination/Pagination';
+export { default as Searchbar } from './ui/Searchbar/Searchbar';

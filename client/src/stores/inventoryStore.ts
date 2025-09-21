@@ -29,19 +29,47 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
             currentOperation: null as OperationType,
 
             //fetch inventory items
-            fetchInventoryItems: async () => {
+            // fetchInventoryItems: async () => {
+            //     try {
+            //         set({ fetchLoading: true, loading: true, error: null });
+
+            //         const response = await getInventoryItems();
+            //         const inventoryItems = response.data.inventoryItems || [];
+
+            //         set({ 
+            //             inventoryItems,
+            //             loading: false 
+            //         });
+
+            //         await get().fetchSummaryStats();
+                    
+            //     } catch (error) {
+            //         console.error('Error fetching inventory items:', error);
+            //         set({ 
+            //             error: 'An error occurred while fetching items', 
+            //             loading: false 
+            //         });
+            //     }
+            // },
+            fetchInventoryItems: async (params = {}) => {
                 try {
                     set({ fetchLoading: true, loading: true, error: null });
 
-                    const response = await getInventoryItems();
+                    const response = await getInventoryItems(params);
                     const inventoryItems = response.data.inventoryItems || [];
+                    const paginationData = response.data.pagination || {};
 
                     set({ 
                         inventoryItems,
-                        loading: false 
+                        loading: false,
+                        //store pagination data in your store if needed
+                        pagination: paginationData
                     });
 
-                    await get().fetchSummaryStats();
+                    //only fetch summary stats if no search term (to get overall stats)
+                    if (!params.search) {
+                        await get().fetchSummaryStats();
+                    }
                     
                 } catch (error) {
                     console.error('Error fetching inventory items:', error);

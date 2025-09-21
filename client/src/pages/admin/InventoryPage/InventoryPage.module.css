@@ -54,25 +54,23 @@
 .btnOutline:hover {
     background-color: rgba(79, 70, 229, 0.1);
 }
+
 .cancel {
     background-color: #fee2e2;
     color: var(--danger);
     margin-left: 8px;
 }
+
 .cancel:hover {
     background-color: #fecaca;
 }
-  
 
-
-  
 .sectionTitle {
     margin: 25px 0 15px;
     font-size: 1.1rem;
     font-weight: 600;
     color: #374151;
 }
-
 
 .inventoryCards {
     display: grid;
@@ -143,7 +141,6 @@
     font-size: 0.8rem;
     color: var(--gray);
 }
-  
 
 .inventoryTableContainer {
     background: white;
@@ -154,17 +151,84 @@
   
 .inventoryTableHeader {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
     border-bottom: 1px solid var(--gray-light);
 }
   
 .inventoryTableTitle {
     font-size: 1.1rem;
     font-weight: 600;
+    color: #333;
 }
-  
+
+/* New styles for search and pagination controls */
+.inventoryControls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.searchbar {
+    flex: 1;
+    min-width: 250px;
+    max-width: 400px;
+}
+
+.itemsPerPageControl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.itemsPerPageControl label {
+    font-size: 14px;
+    color: var(--gray, #64748b);
+    font-weight: 500;
+}
+
+.itemsPerPageSelect {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-light, #e2e8f0);
+    border-radius: var(--border-radius, 6px);
+    background: white;
+    color: #333;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition, all 0.2s ease);
+    min-width: 80px;
+}
+
+.itemsPerPageSelect:hover {
+    border-color: var(--gray, #cbd5e0);
+}
+
+.itemsPerPageSelect:focus {
+    outline: none;
+    border-color: var(--primary, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb, 59, 130, 246), 0.1);
+}
+
+.itemsPerPageSelect:disabled {
+    background: #f8fafc;
+    color: var(--gray, #94a3b8);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pagination {
+    margin-top: 20px;
+    padding: 20px;
+    border-top: 1px solid var(--gray-light, #e2e8f0);
+    background: #fafbfc;
+}
+
 .tableResponsive {
     overflow-x: auto;
 }
@@ -181,6 +245,7 @@
     color: var(--gray);
     font-weight: 500;
     border-bottom: 1px solid var(--gray-light);
+    background: #f8fafc;
 }
   
 .inventoryTable td {
@@ -193,11 +258,24 @@
 .inventoryTable tr:last-child td {
     border-bottom: none;
 }
+
+.inventoryTable tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.emptyState {
+    padding: 60px 20px !important;
+    text-align: center !important;
+    color: var(--gray, #64748b);
+    font-size: 16px;
+    font-style: italic;
+}
   
 .medicineInfo {
     display: flex;
     align-items: center;
     gap: 15px;
+    text-align: left;
 }
   
 .medicineIcon {
@@ -209,10 +287,13 @@
     align-items: center;
     justify-content: center;
     color: white;
+    flex-shrink: 0;
 }
   
 .medicineName {
     font-weight: 500;
+    color: #333;
+    margin-bottom: 2px;
 }
   
 .medicineCategory {
@@ -269,6 +350,12 @@
     font-weight: 500;
     cursor: pointer;
     transition: var(--transition);
+    margin: 0 2px;
+}
+
+.actionBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
   
 .icon {
@@ -280,8 +367,8 @@
 .actionBtn.primary {
     background-color: var(--primary-light);
     color: var(--primary);
-    /* margin-left: 8px; */
 }
+
 .actionBtn.view:hover,
 .actionBtn.primary:hover {
     background-color: #bfdbfe;
@@ -290,15 +377,17 @@
 .actionBtn.update {
     background-color: #fef7e2;
     color: var(--warning);
-    margin-left: 8px;
 }
+
 .actionBtn.update:hover{
     background-color: #fee6ca;
 }
+
 .actionBtn.delete {
     background-color: #fee2e2;
     color: var(--danger);
 }
+
 .actionBtn.delete:hover {
     background-color: #fecaca;
 }
@@ -307,19 +396,153 @@
     background-color: #d1fae5;
     color: var(--success);
 }
+
 .actionBtn.success:hover {
     background-color: #a7f3d0;
 }
 
-
-
-
+/* Responsive design */
 @media (max-width: 768px) {
     .content {
-        padding: 10px;
+        padding: 15px;
     }
+    
     .contentHeader {
         flex-direction: column;
         align-items: flex-start;
+        gap: 16px;
     }
+
+    .inventoryCards {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .inventoryTableHeader {
+        padding: 16px;
+    }
+
+    .inventoryControls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .searchbar {
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .itemsPerPageControl {
+        justify-content: space-between;
+    }
+
+    .pagination {
+        padding: 16px;
+    }
+
+    .inventoryTable th,
+    .inventoryTable td {
+        padding: 10px 8px;
+        font-size: 0.75rem;
+    }
+
+    .medicineInfo {
+        gap: 10px;
+    }
+
+    .medicineIcon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .actionBtn {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+        margin: 0 1px;
+    }
+
+    .actionBtn .icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* Stack action buttons on very small screens */
+    .inventoryTable td:last-child {
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        padding: 10px;
+    }
+
+    .inventoryTableHeader {
+        padding: 12px;
+    }
+    
+    .inventoryControls {
+        gap: 8px;
+    }
+    
+    .itemsPerPageControl {
+        font-size: 13px;
+    }
+    
+    .itemsPerPageSelect {
+        padding: 6px 8px;
+        font-size: 13px;
+        min-width: 70px;
+    }
+
+    .pagination {
+        padding: 12px;
+    }
+
+    .inventoryTable {
+        font-size: 0.7rem;
+    }
+
+    .inventoryTable th,
+    .inventoryTable td {
+        padding: 8px 4px;
+    }
+
+    .medicineInfo {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 8px;
+    }
+
+    .actionBtn {
+        padding: 3px 6px;
+        font-size: 0.65rem;
+    }
+
+    .emptyState {
+        padding: 40px 15px !important;
+        font-size: 14px;
+    }
+}
+
+/* Loading states */
+.inventoryTableContainer.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.inventoryTableContainer.loading .inventoryTable {
+    filter: blur(1px);
+}
+
+/* Smooth transitions for dynamic content */
+.inventoryTable tbody {
+    transition: opacity 0.2s ease;
+}
+
+.inventoryTable tbody.loading {
+    opacity: 0.5;
 }

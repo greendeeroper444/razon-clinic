@@ -19,12 +19,39 @@ export const addInventoryItem = async (inventoryData: InventoryItemFormData) => 
     }
 };
 
+// export const getInventoryItems = async (params = {}) => {
+//     try {
+//         const response = await axios.get(
+//             `${API_BASE_URL}/api/inventoryItems/getInventoryItems`,
+//             { params }
+//         );
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error fetching inventory items:', error);
+//         if (axios.isAxiosError(error)) {
+//             throw error.response?.data || error.message;
+//         }
+
+//         throw error;
+//     }
+// };
+
 export const getInventoryItems = async (params = {}) => {
     try {
+        //set default parameters if not provided
+        const defaultParams = {
+            page: 1,
+            limit: 10,
+            search: ''
+        };
+
+        const queryParams = { ...defaultParams, ...params };
+
         const response = await axios.get(
             `${API_BASE_URL}/api/inventoryItems/getInventoryItems`,
-            { params }
+            { params: queryParams }
         );
+        
         return response.data;
     } catch (error) {
         console.error('Error fetching inventory items:', error);
@@ -35,6 +62,7 @@ export const getInventoryItems = async (params = {}) => {
         throw error;
     }
 };
+
 
 export const getInventoryItemById = async (inventoryItemId: string) => {
     try {
