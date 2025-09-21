@@ -10959,3 +10959,47 @@ Use mongoose.model(name, schema)
 2025-09-21 23:23:23 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
     at AuthService.authenticateUser (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:86:23)
     at async login (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:56:28)
+2025-09-21 23:26:06 [ERROR]: Error: Resource not found: /favicon.ico ApiError: Resource not found: /favicon.ico
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at logger (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\morgan\index.js:144:5)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+2025-09-21 23:46:44 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-21 23:53:20 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:53:20 [INFO]: Server running on port 3000 
+2025-09-21 23:53:23 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:53:23 [INFO]: Server running on port 3000 
+2025-09-21 23:53:42 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:53:42 [INFO]: Server running on port 3000 
+2025-09-21 23:57:02 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:57:02 [INFO]: Server running on port 3000 
+2025-09-21 23:57:20 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:57:20 [INFO]: Server running on port 3000 
+2025-09-21 23:57:26 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:57:26 [INFO]: Server running on port 3000 
+2025-09-21 23:57:32 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:57:32 [INFO]: Server running on port 3000 
+2025-09-21 23:57:35 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:57:35 [INFO]: Server running on port 3000 
+2025-09-21 23:57:40 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:57:40 [INFO]: Server running on port 3000 
+2025-09-21 23:57:52 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:57:52 [INFO]: Server running on port 3000 
+2025-09-21 23:57:59 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:57:59 [INFO]: Server running on port 3000 

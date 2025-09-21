@@ -14,17 +14,21 @@ class InventoryItemService {
 
     async getInventoryItems(queryParams) {
         try {
-            const { 
+            const {
+                search,
                 page, 
                 limit, 
                 category,
-                itemName, 
+                itemName,
                 sortBy = 'createdAt', 
                 sortOrder = 'desc' 
             } = queryParams;
 
             //build filter object
             const filter = {};
+            if (search) {
+                filter.itemName = { $regex: search, $options: 'i' };
+            }
             if (category) {
                 filter.category = category;
             }
@@ -32,33 +36,73 @@ class InventoryItemService {
                 filter.itemName = { $regex: itemName, $options: 'i' };
             }
 
-            //calculate pagination
-            const skip = (parseInt(page) - 1) * parseInt(limit);
-
             //build sort object
             const sort = {};
             sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
-            //execute query with pagination and sorting
-            const inventoryItems = await InventoryItem.find(filter)
-                .sort(sort)
-                .skip(skip)
-                .limit(parseInt(limit));
-
-            //get total count for pagination
+            //get total count first
             const totalItems = await InventoryItem.countDocuments(filter);
-            const totalPages = Math.ceil(totalItems / parseInt(limit));
+
+            const searchTerm = search || itemName || null;
+
+            let inventoryItems;
+            let pagination;
+
+            //check if limit is provided (pagination requested)
+            if (limit && parseInt(limit) > 0) {
+                //paginated query
+                const currentPage = parseInt(page);
+                const itemsPerPage = parseInt(limit);
+                const skip = (currentPage - 1) * itemsPerPage;
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                
+                inventoryItems = await InventoryItem.find(filter)
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(itemsPerPage);
+
+                const startIndex = totalItems > 0 ? skip + 1 : 0;
+                const endIndex = Math.min(skip + itemsPerPage, totalItems);
+
+                pagination = {
+                    currentPage: currentPage,
+                    totalPages: totalPages,
+                    totalItems: totalItems,
+                    itemsPerPage: itemsPerPage,
+                    hasNextPage: currentPage < totalPages,
+                    hasPreviousPage: currentPage > 1,
+                    startIndex: startIndex,
+                    endIndex: endIndex,
+                    isUnlimited: false,
+                    nextPage: currentPage < totalPages ? currentPage + 1 : null,
+                    previousPage: currentPage > 1 ? currentPage - 1 : null,
+                    remainingItems: Math.max(0, totalItems - endIndex),
+                    searchTerm: searchTerm
+                };
+            } else {
+                //unlimited query (no pagination)
+                inventoryItems = await InventoryItem.find(filter).sort(sort);
+
+                pagination = {
+                    currentPage: 1,
+                    totalPages: 1,
+                    totalItems: totalItems,
+                    itemsPerPage: totalItems,
+                    hasNextPage: false,
+                    hasPreviousPage: false,
+                    startIndex: totalItems > 0 ? 1 : 0,
+                    endIndex: totalItems,
+                    isUnlimited: true,
+                    nextPage: null,
+                    previousPage: null,
+                    remainingItems: 0,
+                    searchTerm: searchTerm
+                };
+            }
 
             return {
                 inventoryItems,
-                pagination: {
-                    currentPage: parseInt(page),
-                    totalPages,
-                    totalItems,
-                    itemsPerPage: parseInt(limit),
-                    hasNextPage: parseInt(page) < totalPages,
-                    hasPrevPage: parseInt(page) > 1
-                }
+                pagination
             };
         } catch (error) {
             throw error;
