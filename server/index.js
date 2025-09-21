@@ -3,12 +3,9 @@ const express = require('express');
 const config = require('./src/config');
 const logger = require('./src/utils/logger');
 const { connectDB } = require('./src/config/database');
-const setupMiddleware = require('./src/api/middlewares');
+const setupMiddleware = require('./src/api/middlewares/middleware');
 const setupRoutes = require('./src/api/routes');
 const errorHandler = require('./src/api/middlewares/errorHandler.middleware');
-
-
-
 
 
 //initialize express app

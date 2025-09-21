@@ -10391,3 +10391,571 @@ Use mongoose.model(name, schema)
     at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\mongoose\lib\document.js:3104:17
     at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\mongoose\lib\schemaType.js:1407:9
     at process.processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-09-21 15:25:03 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 15:25:03 [INFO]: Server running on port 3000 
+2025-09-21 18:07:10 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:07:10 [INFO]: Server running on port 3000 
+2025-09-21 18:08:12 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:08:12 [INFO]: Server running on port 3000 
+2025-09-21 18:08:26 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:08:26 [INFO]: Server running on port 3000 
+2025-09-21 18:10:41 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:10:41 [INFO]: Server running on port 3000 
+2025-09-21 18:10:45 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:10:45 [INFO]: Server running on port 3000 
+2025-09-21 18:11:09 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:11:09 [INFO]: Server running on port 3000 
+2025-09-21 18:11:23 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:11:23 [INFO]: Server running on port 3000 
+2025-09-21 18:11:48 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:11:48 [INFO]: Server running on port 3000 
+2025-09-21 18:12:19 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:12:19 [INFO]: Server running on port 3000 
+2025-09-21 18:12:42 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:12:42 [INFO]: Server running on port 3000 
+2025-09-21 18:13:21 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:13:21 [INFO]: Server running on port 3000 
+2025-09-21 18:16:12 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:16:12 [INFO]: Server running on port 3000 
+2025-09-21 18:18:24 [ERROR]: Error: Authentication required ApiError: Authentication required
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:11:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-21 18:18:34 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:18:34 [INFO]: Server running on port 3000 
+2025-09-21 18:19:11 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:19:11 [INFO]: Server running on port 3000 
+2025-09-21 18:22:28 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:22:28 [INFO]: Server running on port 3000 
+2025-09-21 18:22:31 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:22:31 [INFO]: Server running on port 3000 
+2025-09-21 18:30:51 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:30:51 [INFO]: Server running on port 3000 
+2025-09-21 18:31:42 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:31:42 [INFO]: Server running on port 3000 
+2025-09-21 18:32:28 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:32:28 [INFO]: Server running on port 3000 
+2025-09-21 18:32:33 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:32:33 [INFO]: Server running on port 3000 
+2025-09-21 18:34:30 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:34:30 [INFO]: Server running on port 3000 
+2025-09-21 18:34:36 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:34:36 [INFO]: Server running on port 3000 
+2025-09-21 18:35:07 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:35:07 [INFO]: Server running on port 3000 
+2025-09-21 18:37:22 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:37:22 [INFO]: Server running on port 3000 
+2025-09-21 18:37:47 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:37:47 [INFO]: Server running on port 3000 
+2025-09-21 18:39:18 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:39:18 [INFO]: Server running on port 3000 
+2025-09-21 18:39:27 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:39:27 [INFO]: Server running on port 3000 
+2025-09-21 18:40:08 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:40:08 [INFO]: Server running on port 3000 
+2025-09-21 18:40:48 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:40:48 [INFO]: Server running on port 3000 
+2025-09-21 18:41:10 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:41:10 [INFO]: Server running on port 3000 
+2025-09-21 18:41:14 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:41:14 [INFO]: Server running on port 3000 
+2025-09-21 18:42:03 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:42:03 [INFO]: Server running on port 3000 
+2025-09-21 18:43:04 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:43:04 [INFO]: Server running on port 3000 
+2025-09-21 18:43:07 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:43:07 [INFO]: Server running on port 3000 
+2025-09-21 18:43:17 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:43:17 [INFO]: Server running on port 3000 
+2025-09-21 18:43:24 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:43:24 [INFO]: Server running on port 3000 
+2025-09-21 18:46:09 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:46:09 [INFO]: Server running on port 3000 
+2025-09-21 18:46:26 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:46:26 [INFO]: Server running on port 3000 
+2025-09-21 18:47:04 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:47:04 [INFO]: Server running on port 3000 
+2025-09-21 18:48:25 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:48:25 [INFO]: Server running on port 3000 
+2025-09-21 18:48:38 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:48:38 [INFO]: Server running on port 3000 
+2025-09-21 18:49:35 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:49:35 [INFO]: Server running on port 3000 
+2025-09-21 18:49:42 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:49:42 [INFO]: Server running on port 3000 
+2025-09-21 18:50:11 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:50:11 [INFO]: Server running on port 3000 
+2025-09-21 18:54:40 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:54:40 [INFO]: Server running on port 3000 
+2025-09-21 18:54:47 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:54:47 [INFO]: Server running on port 3000 
+2025-09-21 18:55:11 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:55:11 [INFO]: Server running on port 3000 
+2025-09-21 18:55:18 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:55:18 [INFO]: Server running on port 3000 
+2025-09-21 18:55:30 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:55:30 [INFO]: Server running on port 3000 
+2025-09-21 18:55:40 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:55:40 [INFO]: Server running on port 3000 
+2025-09-21 18:59:48 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:59:48 [INFO]: Server running on port 3000 
+2025-09-21 18:59:56 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:59:56 [INFO]: Server running on port 3000 
+2025-09-21 18:59:59 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 18:59:59 [INFO]: Server running on port 3000 
+2025-09-21 19:00:08 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:00:08 [INFO]: Server running on port 3000 
+2025-09-21 19:00:10 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:00:10 [INFO]: Server running on port 3000 
+2025-09-21 19:00:17 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:00:17 [INFO]: Server running on port 3000 
+2025-09-21 19:00:25 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:00:25 [INFO]: Server running on port 3000 
+2025-09-21 19:04:37 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:04:37 [INFO]: Server running on port 3000 
+2025-09-21 19:08:12 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:08:12 [INFO]: Server running on port 3000 
+2025-09-21 19:08:30 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:08:30 [INFO]: Server running on port 3000 
+2025-09-21 19:08:34 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:08:34 [INFO]: Server running on port 3000 
+2025-09-21 19:08:53 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:08:53 [INFO]: Server running on port 3000 
+2025-09-21 19:08:57 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:08:57 [INFO]: Server running on port 3000 
+2025-09-21 19:09:45 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:09:45 [INFO]: Server running on port 3000 
+2025-09-21 19:09:51 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:09:51 [INFO]: Server running on port 3000 
+2025-09-21 19:10:03 [ERROR]: Error: Resource not found: /api/auth/adminLogin ApiError: Resource not found: /api/auth/adminLogin
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-21 19:12:26 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:12:26 [INFO]: Server running on port 3000 
+2025-09-21 19:12:32 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:12:32 [INFO]: Server running on port 3000 
+2025-09-21 19:13:06 [ERROR]: Error: Resource not found: /api/auth/refreshToken ApiError: Resource not found: /api/auth/refreshToken
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-21 19:13:21 [ERROR]: Error: Invalid user data: Unable to determine model type Error: Invalid user data: Unable to determine model type
+    at TokenHelper._normalizeUserData (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\helpers\token.helpers.js:53:19)
+    at TokenHelper.generateAccessToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\helpers\token.helpers.js:59:37)
+    at TokenHelper.generateTokens (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\helpers\token.helpers.js:112:31)
+    at refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:180:40)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-09-21 19:13:28 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:13:28 [INFO]: Server running on port 3000 
+2025-09-21 19:13:31 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:13:31 [INFO]: Server running on port 3000 
+2025-09-21 19:13:34 [ERROR]: Error: Invalid user data: Unable to determine model type Error: Invalid user data: Unable to determine model type
+    at TokenHelper._normalizeUserData (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\helpers\token.helpers.js:53:19)
+    at TokenHelper.generateAccessToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\helpers\token.helpers.js:59:37)
+    at TokenHelper.generateTokens (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\helpers\token.helpers.js:112:31)
+    at refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:180:40)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-09-21 19:15:09 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:15:10 [INFO]: Server running on port 3000 
+2025-09-21 19:15:26 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:15:26 [INFO]: Server running on port 3000 
+2025-09-21 19:17:33 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:17:33 [INFO]: Server running on port 3000 
+2025-09-21 19:17:46 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:17:46 [INFO]: Server running on port 3000 
+2025-09-21 19:17:56 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:17:56 [INFO]: Server running on port 3000 
+2025-09-21 19:18:26 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:111:28)
+2025-09-21 19:18:43 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:179:28)
+2025-09-21 19:19:10 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:19:10 [INFO]: Server running on port 3000 
+2025-09-21 19:19:14 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:179:28)
+2025-09-21 19:20:33 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:179:28)
+2025-09-21 19:21:12 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:179:28)
+2025-09-21 19:22:28 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:22:28 [INFO]: Server running on port 3000 
+2025-09-21 19:22:30 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:22:30 [INFO]: Server running on port 3000 
+2025-09-21 19:22:33 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:179:28)
+2025-09-21 19:22:35 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:179:28)
+2025-09-21 19:22:36 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:179:28)
+2025-09-21 19:23:00 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:23:00 [INFO]: Server running on port 3000 
+2025-09-21 19:23:04 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:23:04 [INFO]: Server running on port 3000 
+2025-09-21 19:23:06 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:179:28)
+2025-09-21 19:24:11 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:24:11 [INFO]: Server running on port 3000 
+2025-09-21 19:24:15 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:187:28)
+2025-09-21 19:24:17 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:187:28)
+2025-09-21 19:24:34 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:24:34 [INFO]: Server running on port 3000 
+2025-09-21 19:24:55 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:24:55 [INFO]: Server running on port 3000 
+2025-09-21 19:25:00 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:25:00 [INFO]: Server running on port 3000 
+2025-09-21 19:25:04 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:111:28)
+2025-09-21 19:25:11 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:25:11 [INFO]: Server running on port 3000 
+2025-09-21 19:25:24 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:25:24 [INFO]: Server running on port 3000 
+2025-09-21 19:27:34 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getUserProfile (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:154:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:179:28)
+2025-09-21 19:31:23 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:31:23 [INFO]: Server running on port 3000 
+2025-09-21 19:31:57 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:31:57 [INFO]: Server running on port 3000 
+2025-09-21 19:32:05 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:32:05 [INFO]: Server running on port 3000 
+2025-09-21 19:32:10 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:32:10 [INFO]: Server running on port 3000 
+2025-09-21 19:32:56 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:32:56 [INFO]: Server running on port 3000 
+2025-09-21 19:33:11 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:33:11 [INFO]: Server running on port 3000 
+2025-09-21 19:33:19 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:33:19 [INFO]: Server running on port 3000 
+2025-09-21 19:33:28 [ERROR]: Error: User not found ApiError: User not found
+    at AuthService.getRawUserData (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:178:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async refreshToken (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:177:33)
+2025-09-21 19:42:50 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:10:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-21 19:42:50 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:10:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-21 19:42:51 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:10:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-21 19:42:51 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:10:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-21 19:42:51 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:10:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-21 19:42:51 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:10:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-21 19:43:03 [ERROR]: Error: Resource not found: /api/auth/verify-token ApiError: Resource not found: /api/auth/verify-token
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-21 19:43:21 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:43:21 [INFO]: Server running on port 3000 
+2025-09-21 19:46:14 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:46:14 [INFO]: Server running on port 3000 
+2025-09-21 19:46:37 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:46:37 [INFO]: Server running on port 3000 
+2025-09-21 19:46:44 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:46:44 [INFO]: Server running on port 3000 
+2025-09-21 19:49:15 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:49:15 [INFO]: Server running on port 3000 
+2025-09-21 19:53:54 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:53:54 [INFO]: Server running on port 3000 
+2025-09-21 19:54:01 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:54:01 [INFO]: Server running on port 3000 
+2025-09-21 19:54:13 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:54:13 [INFO]: Server running on port 3000 
+2025-09-21 19:54:25 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:54:25 [INFO]: Server running on port 3000 
+2025-09-21 19:55:46 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:55:47 [INFO]: Server running on port 3000 
+2025-09-21 19:55:58 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:55:58 [INFO]: Server running on port 3000 
+2025-09-21 19:57:23 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:57:23 [INFO]: Server running on port 3000 
+2025-09-21 19:57:57 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:57:57 [INFO]: Server running on port 3000 
+2025-09-21 19:59:02 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:59:02 [INFO]: Server running on port 3000 
+2025-09-21 19:59:36 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 19:59:36 [INFO]: Server running on port 3000 
+2025-09-21 20:00:09 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:00:09 [INFO]: Server running on port 3000 
+2025-09-21 20:01:06 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:01:06 [INFO]: Server running on port 3000 
+2025-09-21 20:01:11 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:01:11 [INFO]: Server running on port 3000 
+2025-09-21 20:01:13 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:01:13 [INFO]: Server running on port 3000 
+2025-09-21 20:01:21 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:01:21 [INFO]: Server running on port 3000 
+2025-09-21 20:01:27 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:01:27 [INFO]: Server running on port 3000 
+2025-09-21 20:01:31 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:01:31 [INFO]: Server running on port 3000 
+2025-09-21 20:03:10 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:03:10 [INFO]: Server running on port 3000 
+2025-09-21 20:03:15 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:03:15 [INFO]: Server running on port 3000 
+2025-09-21 20:03:20 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:03:20 [INFO]: Server running on port 3000 
+2025-09-21 20:03:39 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:03:39 [INFO]: Server running on port 3000 
+2025-09-21 20:03:46 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:03:46 [INFO]: Server running on port 3000 
+2025-09-21 20:03:50 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:03:50 [INFO]: Server running on port 3000 
+2025-09-21 20:04:01 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:04:01 [INFO]: Server running on port 3000 
+2025-09-21 20:04:05 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:04:05 [INFO]: Server running on port 3000 
+2025-09-21 20:04:24 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:04:24 [INFO]: Server running on port 3000 
+2025-09-21 20:04:45 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:04:45 [INFO]: Server running on port 3000 
+2025-09-21 20:04:57 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:04:57 [INFO]: Server running on port 3000 
+2025-09-21 20:05:11 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:05:11 [INFO]: Server running on port 3000 
+2025-09-21 20:05:31 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:05:31 [INFO]: Server running on port 3000 
+2025-09-21 20:05:34 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:05:34 [INFO]: Server running on port 3000 
+2025-09-21 20:05:50 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:05:50 [INFO]: Server running on port 3000 
+2025-09-21 20:06:00 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:06:00 [INFO]: Server running on port 3000 
+2025-09-21 20:06:13 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:06:13 [INFO]: Server running on port 3000 
+2025-09-21 20:06:44 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:06:44 [INFO]: Server running on port 3000 
+2025-09-21 20:07:22 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-21 20:07:22 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-21 20:07:22 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-21 20:07:22 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-21 20:07:22 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-21 20:07:22 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-21 20:09:39 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 20:09:39 [INFO]: Server running on port 3000 
+2025-09-21 22:52:32 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 22:52:32 [INFO]: Server running on port 3000 
+2025-09-21 22:57:37 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 22:57:37 [INFO]: Server running on port 3000 
+2025-09-21 23:14:45 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:14:45 [INFO]: Server running on port 3000 
+2025-09-21 23:16:12 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:16:12 [INFO]: Server running on port 3000 
+2025-09-21 23:16:31 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:16:31 [INFO]: Server running on port 3000 
+2025-09-21 23:16:42 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:16:42 [INFO]: Server running on port 3000 
+2025-09-21 23:16:47 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:16:47 [INFO]: Server running on port 3000 
+2025-09-21 23:17:03 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:17:03 [INFO]: Server running on port 3000 
+2025-09-21 23:17:16 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:17:17 [INFO]: Server running on port 3000 
+2025-09-21 23:17:24 [ERROR]: Error: AuthService.validateLoginData is not a function TypeError: AuthService.validateLoginData is not a function
+    at login (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:58:25)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at validateLogin (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\validators\auth.validator.js:138:9)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at middleware (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\express-validator\lib\middlewares\check.js:16:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-09-21 23:18:04 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:18:04 [INFO]: Server running on port 3000 
+2025-09-21 23:18:09 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:18:09 [INFO]: Server running on port 3000 
+2025-09-21 23:18:13 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:18:13 [INFO]: Server running on port 3000 
+2025-09-21 23:18:21 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:18:21 [INFO]: Server running on port 3000 
+2025-09-21 23:18:31 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:18:31 [INFO]: Server running on port 3000 
+2025-09-21 23:18:46 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:18:46 [INFO]: Server running on port 3000 
+2025-09-21 23:21:41 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:21:41 [INFO]: Server running on port 3000 
+2025-09-21 23:21:46 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:21:46 [INFO]: Server running on port 3000 
+2025-09-21 23:22:21 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:22:21 [INFO]: Server running on port 3000 
+2025-09-21 23:22:26 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:22:26 [INFO]: Server running on port 3000 
+2025-09-21 23:22:32 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:22:32 [INFO]: Server running on port 3000 
+2025-09-21 23:22:38 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:22:38 [INFO]: Server running on port 3000 
+2025-09-21 23:22:43 [INFO]: MongoDB Connected: 127.0.0.1 
+2025-09-21 23:22:43 [INFO]: Server running on port 3000 
+2025-09-21 23:23:23 [ERROR]: Error: Invalid credentials ApiError: Invalid credentials
+    at AuthService.authenticateUser (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\auth.service.js:86:23)
+    at async login (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\auth.controller.js:56:28)

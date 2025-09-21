@@ -1,70 +1,30 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import {
-  HomePage,
-  DashboardPage,
-  AppointmentPage, 
-  PatientsPage,
-  InventoryPage,
-  ArchivePage,
-  LoginPage,
-  SignupPage,
-  UserAppointmentPage,
-  ForgotPasswordPage,
-  AppointmentDetailsPage,
-  UserAppointmentDetailsPage,
-  MedicalRecordsPage,
-  BillingsPaymentPage,
-  TermsAndConditionPage,
-  CalendarDateDetailsPage,
-  GrowthMilestonePage,
-  UserMedicalRecordsPage,
-  UserMedicalRecordDetailsPage,
-  MedicalRecordDetailsPage
-} from './pages'
 import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
-import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, RouteType, PatientFormData, FormDataType, ModalType, BillingFormData } from './types'
+import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, PatientFormData, FormDataType, ModalType, BillingFormData } from './types'
 import { Layout, Modal, PageTitle } from './components'
 import { addAppointment, addBilling, addInventoryItem, addMedicalRecord, addPatient } from './services'
+import { routes } from './routes'
+import axios from 'axios'
+import { useAuthenticationStore } from './stores'
 
-
-
-const routes: RouteType[] = [
-  //public routes
-  { path: '/', component: HomePage, layout: 'user' },
-  { path: '/login', component: LoginPage, layout: 'user' },
-  { path: '/signup', component: SignupPage, layout: 'user' },
-  { path: '/forgot-password', component: ForgotPasswordPage, layout: 'user' },
-  { path: '/terms-and-conditions', component: TermsAndConditionPage, layout: 'user' },
-
-  //admin routes
-  { path: '/admin/dashboard', component: DashboardPage, layout: 'admin' },
-  { path: '/admin/appointments', component: AppointmentPage, layout: 'admin' },
-    { path: '/admin/appointments/details/:appointmentId', component: AppointmentDetailsPage, layout: 'admin' },
-  { path: '/admin/patients', component: PatientsPage, layout: 'admin' },
-  { path: '/admin/inventory', component: InventoryPage, layout: 'admin' },
-  { path: '/admin/archives', component: ArchivePage, layout: 'admin' },
-  { path: '/admin/medical-records', component: MedicalRecordsPage, layout: 'admin' },
-    { path: '/admin/medical-records/details/:medicalRecordId', component: MedicalRecordDetailsPage, layout: 'admin' },
-  { path: '/admin/billings-payment', component: BillingsPaymentPage, layout: 'admin' },
-  { path: '/admin/calendar-date-details', component: CalendarDateDetailsPage, layout: 'admin' },
-  { path: '/admin/growth-milestone', component: GrowthMilestonePage, layout: 'admin' },
-
-  //user routees
-  { path: '/user/appointments', component: UserAppointmentPage, layout: 'user' },
-      { path: '/user/appointments/details/:appointmentId', component: UserAppointmentDetailsPage, layout: 'user' },
-      { path: '/user/medical-records', component: UserMedicalRecordsPage, layout: 'user' },
-      { path: '/user/medical-records/details/:medicalRecordId', component: UserMedicalRecordDetailsPage, layout: 'user' },
-  
-]
+axios.defaults.withCredentials = true;
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<ModalType>('appointment');
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   
+  //initialize authentication on app load
+  const initializeAuth = useAuthenticationStore(state => state.initializeAuth)
+  
+  useEffect(() => {
+    initializeAuth()
+  }, [initializeAuth])
+  
+
   //check for mobile view on initial load and window resize
   useEffect(() => {
     const checkMobile = () => {

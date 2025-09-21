@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const config = require('../../config');
 const logger = require('../../utils/logger');
@@ -12,6 +13,7 @@ const setupMiddleware = (app) => {
     app.use(cors(config.corsOptions));
     
     //request parsing middleware
+    app.use(cookieParser());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     

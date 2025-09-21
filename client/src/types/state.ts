@@ -310,9 +310,10 @@ export interface AuthenticationState {
     
     //actions
     login: (credentials: Omit<LoginFormData, 'rememberMe'>) => Promise<void>
-    logout: () => void
+    logout: () => Promise<void>
     register: (userData: Omit<SignupFormData, 'confirmPassword' | 'agreeToTerms'>) => Promise<void>
-    
+    fetchUserProfile: () => Promise<void>
+
     //form actions
     updateLoginForm: (field: keyof LoginFormData, value: string | boolean) => void
     updateSignupForm: (field: keyof SignupFormData, value: string | boolean) => void
@@ -340,6 +341,6 @@ export interface AuthenticationState {
     clearSavedFormData: () => void
     
     //auth helpers
-    initializeAuth: () => void
+    initializeAuth: () => Promise<void> 
     checkTokenExpiration: () => boolean
 }

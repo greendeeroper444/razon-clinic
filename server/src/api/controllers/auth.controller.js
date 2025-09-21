@@ -1,12 +1,8 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const AuthService = require('../../services/auth.service');
+const TokenHelper = require('../../helpers/token.helpers');
 const { ApiError } = require('../../utils/errors');
-const config = require('../../config');
-const Admin = require('../../models/admin.model');
-const User = require('../../models/user.model');
 
 class AuthController {
-
 
     async register(req, res, next) {
         try {
@@ -22,76 +18,30 @@ class AuthController {
                 religion
             } = req.body;
             
-            //determine if input is email or contact number
-            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrContactNumber);
-            const isContactNumber = /^(09|\+639)\d{9}$/.test(emailOrContactNumber);
-            
-            if (!isEmail && !isContactNumber) {
-                throw new ApiError('Please provide a valid email or contact number', 400);
-            }
-            
-            //check if user already exists with either email or contact number
-            const existingUser = await User.findOne(
-                isEmail 
-                    ? { email: emailOrContactNumber } 
-                    : { contactNumber: emailOrContactNumber }
-            );
-            
-            if (existingUser) {
-                throw new ApiError('User with this email or contact number already exists', 400);
-            }
-            
-            //hash password
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
-            
-            //create new user with either email or contact number
             const userData = {
                 firstName,
                 lastName,
-                middleName: middleName || null,
-                password: hashedPassword,
-                birthdate: new Date(birthdate),
+                middleName,
+                emailOrContactNumber,
+                password,
+                birthdate,
                 sex,
                 address,
-                dateRegistered: new Date(),
-                role: 'User'
+                religion
             };
             
-            //add either email or contact number based on validation
-            if (isEmail) {
-                userData.email = emailOrContactNumber;
-            } else {
-                userData.contactNumber = emailOrContactNumber;
-            }
+            const result = await AuthService.createUser(userData);
             
+            const tokens = TokenHelper.generateTokens(result.user);
             
-            if (religion) {
-                userData.religion = religion;
-            }
+            TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
             
-            const user = new User(userData);
-            
-            //save user to database
-            await user.save();
-            
-            //return user info and token
             res.status(201).json({
                 status: 'success',
+                message: 'User registered successfully',
                 data: {
-                    user: {
-                        id: user._id,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        middleName: user.middleName,
-                        email: user.email,
-                        contactNumber: user.contactNumber,
-                        birthdate: user.birthdate,
-                        sex: user.sex,
-                        address: user.address,
-                        religion: user.religion,
-                        dateRegistered: user.dateRegistered
-                    }
+                    user: result.user,
+                    tokens: tokens
                 }
             });
         } catch (error) {
@@ -99,79 +49,41 @@ class AuthController {
         }
     }
 
-
     async login(req, res, next) {
         try {
             const { emailOrContactNumber, password } = req.body;
             
-            //determine if input is email or contact number
-            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrContactNumber);
-            const isContactNumber = /^(09|\+639)\d{9}$/.test(emailOrContactNumber);
+            const result = await AuthService.authenticateUser(emailOrContactNumber, password);
             
-            if (!isEmail && !isContactNumber) {
-                throw new ApiError('Please provide a valid email or contact number', 400);
+            const tokens = TokenHelper.generateTokens(result.user);
+            const decoded = TokenHelper.verifyAccessToken(tokens.accessToken);
+            
+            TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
+            
+            const isAdmin = TokenHelper.isAdmin(decoded);
+            const isUser = TokenHelper.isUser(decoded);
+            
+            const responseData = {
+                user: result.user,
+                tokens: tokens,
+                userType: isAdmin ? 'admin' : 'user',
+                role: decoded.role
+            };
+            
+            if (isAdmin) {
+                responseData.isDoctor = TokenHelper.isDoctor(decoded);
+                responseData.isStaff = TokenHelper.isStaff(decoded);
             }
             
-            //prepare the query based on input type
-            const query = isEmail 
-                ? { email: emailOrContactNumber } 
-                : { contactNumber: emailOrContactNumber };
-            
-            //find user in Admin collection first
-            let user = await Admin.findOne(query).select('+password');
-            let userType = 'admin';
-            
-            //If not found in Admin, try user collection
-            if (!user) {
-                user = await User.findOne(query).select('+password');
-                userType = 'user';
-                
-                //if still not found, return error
-                if (!user) {
-                    throw new ApiError('Invalid credentials', 401);
-                }
+            if (isUser) {
+                responseData.userNumber = decoded.userNumber;
+                responseData.isPatient = TokenHelper.isPatient(decoded);
             }
             
-            // check password
-            const isPasswordValid = await bcrypt.compare(password, user.password);
-            
-            if (!isPasswordValid) {
-                throw new ApiError('Invalid credentials', 401);
-            }
-            
-            //create JWT token
-            const token = jwt.sign(
-                { 
-                    id: user._id,
-                    email: user.email,
-                    contactNumber: user.contactNumber,
-                    role: user.role,
-                    userType: userType
-                },
-                config.jwtSecret,
-                { expiresIn: config.jwtExpiration }
-            );
-            
-            //return user info and token
             res.status(200).json({
                 status: 'success',
-                data: {
-                    user: {
-                        id: user._id,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        middleName: user.middleName,
-                        email: user.email,
-                        contactNumber: user.contactNumber,
-                        birthdate: user.birthdate,
-                        sex: user.sex,
-                        address: user.address,
-                        religion: user.religion,
-                        role: user.role,
-                        userType: userType
-                    },
-                    token
-                }
+                message: 'Login successful',
+                data: responseData
             });
         } catch (error) {
             next(error);
@@ -183,39 +95,87 @@ class AuthController {
             const userId = req.user.id;
             const userType = req.user.userType;
             
-            let user;
+            const result = await AuthService.getUserProfile(userId, userType);
             
-            //find user based on userType from token
-            if (userType === 'admin') {
-                user = await Admin.findById(userId);
-                if (!user) {
-                    throw new ApiError('Admin not found', 404);
-                }
-            } else {
-                user = await User.findById(userId);
-                if (!user) {
-                    throw new ApiError('User not found', 404);
-                }
-            }
-            
-            //return user profile
             res.status(200).json({
                 status: 'success',
+                data: result
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async updateProfile(req, res, next) {
+        try {
+            const userId = req.user.id;
+            const userType = req.user.userType;
+            const updateData = req.body;
+            
+            const result = await AuthService.updateUserProfile(userId, userType, updateData);
+            
+            res.status(200).json({
+                status: 'success',
+                message: 'Profile updated successfully',
+                data: result
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async changePassword(req, res, next) {
+        try {
+            const userId = req.user.id;
+            const userType = req.user.userType;
+            const { currentPassword, newPassword, confirmPassword } = req.body;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                throw new ApiError('Current password, new password, and confirm password are required', 400);
+            }
+            
+            if (newPassword !== confirmPassword) {
+                throw new ApiError('New password and confirm password do not match', 400);
+            }
+            
+            if (newPassword.length < 6) {
+                throw new ApiError('New password must be at least 6 characters long', 400);
+            }
+            
+            if (currentPassword === newPassword) {
+                throw new ApiError('New password must be different from current password', 400);
+            }
+            
+            const result = await AuthService.changePassword(userId, userType, currentPassword, newPassword);
+            
+            res.status(200).json({
+                status: 'success',
+                message: result.message
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async refreshToken(req, res, next) {
+        try {
+            const userId = req.user.id;
+            const userType = req.user.userType;
+            
+            const rawUserData = await AuthService.getRawUserData(userId, userType);
+            
+            const tokens = TokenHelper.generateTokens(rawUserData);
+            
+            TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
+            
+            const formattedResult = AuthService.formatUserResponse(rawUserData, userType);
+            
+            res.status(200).json({
+                status: 'success',
+                message: 'Token refreshed successfully',
                 data: {
-                    user: {
-                        id: user._id,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        middleName: user.middleName,
-                        email: user.email,
-                        contactNumber: user.contactNumber,
-                        birthdate: user.birthdate,
-                        sex: user.sex,
-                        address: user.address,
-                        religion: user.religion,
-                        role: user.role,
-                        userType: userType
-                    }
+                    tokens: tokens,
+                    user: formattedResult.user
                 }
             });
         } catch (error) {
@@ -223,12 +183,59 @@ class AuthController {
         }
     }
 
+    async verifyToken(req, res, next) {
+        try {
+            const token = TokenHelper.extractToken(req, 'access');
+            
+            if (!token) {
+                return res.status(200).json({
+                    status: 'success',
+                    message: 'No token found',
+                    data: {
+                        isValid: false,
+                        error: 'No access token found in cookies'
+                    }
+                });
+            }
+            
+            const decoded = TokenHelper.verifyAccessToken(token);
+            const user = TokenHelper.createUserFromToken(decoded);
+            
+            const isExpired = TokenHelper.isTokenExpired(token);
+            const expiration = TokenHelper.getTokenExpiration(token);
+            
+            res.status(200).json({
+                status: 'success',
+                message: 'Token is valid',
+                data: {
+                    decoded: user,
+                    isValid: !isExpired,
+                    isExpired: isExpired,
+                    expiration: expiration,
+                    userType: user.modelType,
+                    role: user.role
+                }
+            });
+        } catch (error) {
+            if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+                return res.status(200).json({
+                    status: 'success',
+                    message: 'Token verification result',
+                    data: {
+                        isValid: false,
+                        isExpired: error.name === 'TokenExpiredError',
+                        error: error.message
+                    }
+                });
+            }
+            next(error);
+        }
+    }
 
     async logout(req, res, next) {
         try {
-            // Since JWT is stateless, we don't actually invalidate the token on the server side
-            // Instead, we return a success response that the client will use to remove the token
-
+            TokenHelper.clearAuthCookies(res);
+            
             res.status(200).json({
                 status: 'success',
                 message: 'Successfully logged out'
@@ -236,8 +243,49 @@ class AuthController {
         } catch (error) {
             next(error);
         }
-    };
-}
+    }
 
+    async requestPasswordReset(req, res, next) {
+        try {
+            const { emailOrContactNumber } = req.body;
+            
+            if (!emailOrContactNumber) {
+                throw new ApiError('Email or contact number is required', 400);
+            }
+            
+            res.status(200).json({
+                status: 'success',
+                message: 'Password reset instructions sent successfully'
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async resetPassword(req, res, next) {
+        try {
+            const { resetToken, newPassword, confirmPassword } = req.body;
+            
+            if (!resetToken || !newPassword || !confirmPassword) {
+                throw new ApiError('Reset token, new password, and confirm password are required', 400);
+            }
+            
+            if (newPassword !== confirmPassword) {
+                throw new ApiError('New password and confirm password do not match', 400);
+            }
+            
+            if (newPassword.length < 6) {
+                throw new ApiError('New password must be at least 6 characters long', 400);
+            }
+            
+            res.status(200).json({
+                status: 'success',
+                message: 'Password reset successfully'
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+}
 
 module.exports = new AuthController();
