@@ -4,6 +4,9 @@ import styles from './AppointmentForm.module.css'
 import { getAppointments } from '../../../../services'
 import { convertTo12HourFormat, generateTimeSlots } from '../../../../utils'
 import { AppointmentFormProps } from '../../../../types'
+import Input from '../../../ui/Input/Input'
+import Select, { SelectOption } from '../../../ui/Select/Select'
+import TextArea from '../../../ui/TextArea/TextArea'
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({
     formData,
@@ -81,6 +84,41 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             } as any);
         }
     }, [additionalPatients, formData?.firstName, formData?.lastName, formData?.middleName, formData?.birthdate, formData?.sex, formData?.height, formData?.weight]);
+
+
+    const getReasonError = () => {
+        const reason = formData?.reasonForVisit || '';
+        
+        if (reason.length > 0 && reason.length < 5) {
+            return 'Reason must be at least 5 characters long.';
+        }
+        
+        if (reason.length > 200) {
+            return 'Reason cannot exceed 200 characters.';
+        }
+        
+        return undefined;
+    };
+
+
+    const generateTimeOptions = (): SelectOption[] => {
+        return generateTimeSlots().map(time => {
+            const isAvailable = isTimeAvailable(time);
+            return {
+                value: time,
+                label: `${time}${!isAvailable ? ' (Not Available)' : ''}`,
+                disabled: !isAvailable
+            };
+        });
+    };
+
+    const getTimeSelectError = () => {
+        if (formData?.preferredDate && availableTimes.length === 0) {
+            return 'No available times for this date.';
+        }
+        return undefined;
+    };
+
 
     // check if a date has any available times
     const isDateAvailable = (dateString: string) => {
@@ -190,22 +228,15 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         return (
             <div key={isAdditional ? `additional_${index}` : 'primary'}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <h4>{isAdditional ? `Patient ${index + 2} Information` : 'Patient Information'}</h4>
+                <h4>{isAdditional ? `Patient ${index + 2} Information` : 'Patient Information'}</h4>
+                <div className={styles.removePatientContainer}>
+                   
                     {
                         isAdditional && (
                             <button
                                 type="button"
                                 onClick={() => removePatient(index)}
-                                style={{
-                                    background: '#dc3545',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    padding: '0.5rem 1rem',
-                                    cursor: 'pointer',
-                                    fontSize: '0.875rem'
-                                }}
+                                className={styles.removePatient}
                                 disabled={isLoading}
                             >
                                 Remove Patient
@@ -214,117 +245,87 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     }
                 </div>
                 
-                <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                        <label htmlFor={`${fieldPrefix}firstName`}>First Name *</label>
-                        <input
-                            type='text'
-                            id={`${fieldPrefix}firstName`}
-                            name={`${fieldPrefix}firstName`}
-                            value={patientData?.firstName || ''}
-                            onChange={handleChange}
-                            className={styles.formControl}
-                            required
-                            disabled={isLoading}
-                            placeholder="Patient's first name"
-                        />
-                    </div>
-                </div>
-                <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                        <label htmlFor={`${fieldPrefix}lastName`}>Last Name *</label>
-                        <input
-                            type='text'
-                            id={`${fieldPrefix}lastName`}
-                            name={`${fieldPrefix}lastName`}
-                            value={patientData?.lastName || ''}
-                            onChange={handleChange}
-                            className={styles.formControl}
-                            required
-                            disabled={isLoading}
-                            placeholder="Patient's last name"
-                        />
-                    </div>
-                </div>
-                <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                        <label htmlFor={`${fieldPrefix}middleName`}>Middle Name (Optional)</label>
-                        <input
-                            type='text'
-                            id={`${fieldPrefix}middleName`}
-                            name={`${fieldPrefix}middleName`}
-                            value={patientData?.middleName || ''}
-                            onChange={handleChange}
-                            className={styles.formControl}
-                            disabled={isLoading}
-                            placeholder="Patient's middle name (optional)"
-                        />
-                    </div>
-                </div>
-                <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                        <label htmlFor={`${fieldPrefix}birthdate`}>Birth Date *</label>
-                        <input
-                            type='date'
-                            id={`${fieldPrefix}birthdate`}
-                            name={`${fieldPrefix}birthdate`}
-                            value={patientData?.birthdate || ''}
-                            onChange={handleChange}
-                            className={styles.formControl}
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
+                <Input
+                    type='text'
+                    label='First Name'
+                    name={`${fieldPrefix}firstName`}
+                    placeholder="Patient's first name"
+                    value={patientData?.firstName || ''}
+                    onChange={handleChange}
+                />
 
-                    <div className={styles.formGroup}>
-                        <label htmlFor={`${fieldPrefix}sex`}>Sex *</label>
-                        <select
-                            id={`${fieldPrefix}sex`}
-                            name={`${fieldPrefix}sex`}
-                            value={patientData?.sex || ''}
-                            onChange={handleChange}
-                            className={styles.formControl}
-                            required
-                            disabled={isLoading}
-                        >
-                            <option value=''>Select Sex</option>
-                            <option value='Male'>Male</option>
-                            <option value='Female'>Female</option>
-                        </select>
-                    </div>
-                </div>
-                <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                        <label htmlFor={`${fieldPrefix}height`}>Height (cm)</label>
-                        <input
-                            type='number'
-                            id={`${fieldPrefix}height`}
-                            name={`${fieldPrefix}height`}
-                            value={patientData?.height || ''}
-                            onChange={handleChange}
-                            className={styles.formControl}
-                            min={30}
-                            max={300}
-                            placeholder="Height in cm"
-                            disabled={isLoading}
-                        />
-                    </div>
+                <br />
+                
+                <Input
+                    type='text'
+                    label='Last Name'
+                    name={`${fieldPrefix}lastName`}
+                    placeholder="Patient's last name"
+                    value={patientData?.lastName || ''}
+                    onChange={handleChange}
+                />
 
-                    <div className={styles.formGroup}>
-                        <label htmlFor={`${fieldPrefix}weight`}>Weight (kg)</label>
-                        <input
-                            type='number'
-                            id={`${fieldPrefix}weight`}
-                            name={`${fieldPrefix}weight`}
-                            value={patientData?.weight || ''}
-                            onChange={handleChange}
-                            className={styles.formControl}
-                            min={1}
-                            max={500}
-                            placeholder="Weight in kg"
-                            disabled={isLoading}
-                        />
-                    </div>
+                <br />
+
+                <Input
+                    type='text'
+                    label='Middle Name (Optional)'
+                    name={`${fieldPrefix}middleName`}
+                    placeholder="Patient's middle name (optional)"
+                    value={patientData?.middleName || ''}
+                    onChange={handleChange}
+                />
+
+                <br />
+
+                <div className={styles.formRow}>
+
+                    <Input
+                        type='date'
+                        name={`${fieldPrefix}birthdate`}
+                        placeholder={patientData.birthdate ? undefined : 'Select your birthdate'}
+                        leftIcon='calendar'
+                        value={patientData.birthdate || ''}
+                        onChange={handleChange}
+                        onFocus={(e) => {
+                            const target = e.target as HTMLInputElement;
+                            target.type = 'date';
+                        }}
+                    />
+
+                    <Select
+                        name={`${fieldPrefix}sex`}
+                        title='Select Gender'
+                        leftIcon='users'
+                        placeholder='Select Gender'
+                        value={patientData.sex || ''}
+                        onChange={handleChange}
+                        options={[
+                            { value: 'Male', label: 'Male' },
+                            { value: 'Female', label: 'Female' },
+                            { value: 'Other', label: 'Other' }
+                        ]}
+                    />
+                </div>
+
+                <div className={styles.formRow}>
+                   <Input
+                        type='number'
+                        label='Height (cm)'
+                        name={`${fieldPrefix}height`}
+                        placeholder="Height in cm"
+                        value={patientData?.height || ''}
+                        onChange={handleChange}
+                    />
+
+                    <Input
+                        type='number'
+                        label='Weight (cm)'
+                        name={`${fieldPrefix}weight`}
+                        placeholder="Weight in cm"
+                        value={patientData?.weight || ''}
+                        onChange={handleChange}
+                    />
                 </div>
             </div>
         );
@@ -345,22 +346,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         }
 
         {/* add patient button */}
-        <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+        <div className={styles.addPatientContainer}>
             <button
                 type="button"
                 onClick={addPatient}
                 disabled={isLoading}
-                style={{
-                    background: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '0.75rem 1.5rem',
-                    cursor: 'pointer',
-                    fontSize: '1rem',
-                    fontWeight: 'bold',
-                    transition: 'background-color 0.2s'
-                }}
+                className={styles.addPatient}
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
             >
@@ -368,7 +359,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             </button>
             {
                 additionalPatients.length > 0 && (
-                    <p style={{ marginTop: '0.5rem', color: '#666', fontSize: '0.875rem' }}>
+                    <p className={styles.totalPatient}>
                         Total patients: {additionalPatients.length + 1}
                     </p>
                 )
@@ -380,254 +371,160 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             <h4>Mother's Information</h4>
             
             <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                    <label htmlFor='motherName'>Mother's Name</label>
-                    <input
-                        type='text'
-                        id='motherName'
-                        name='motherName'
-                        value={formData?.motherName || ''}
-                        onChange={onChange}
-                        className={styles.formControl}
-                        maxLength={50}
-                        placeholder="Mother's full name"
-                        disabled={isLoading}
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label htmlFor='motherAge'>Mother's Age</label>
-                    <input
-                        type='number'
-                        id='motherAge'
-                        name='motherAge'
-                        value={formData?.motherAge || ''}
-                        onChange={onChange}
-                        className={styles.formControl}
-                        min={15}
-                        max={120}
-                        placeholder="Age"
-                        disabled={isLoading}
-                    />
-                </div>
-            </div>
-
-            <div className={styles.formGroup}>
-                <label htmlFor='motherOccupation'>Mother's Occupation</label>
-                <input
+                <Input
                     type='text'
-                    id='motherOccupation'
-                    name='motherOccupation'
-                    value={formData?.motherOccupation || ''}
+                    label="Name"
+                    name='motherName'
+                    placeholder="Mother's name"
+                    value={formData?.motherName || ''}
                     onChange={onChange}
-                    className={styles.formControl}
-                    maxLength={50}
-                    placeholder="Mother's occupation"
-                    disabled={isLoading}
+                />
+
+                <Input
+                    type='number'
+                    label="Age"
+                    name='motherAge'
+                    placeholder="Mother's age"
+                    value={formData?.motherAge || ''}
+                    onChange={onChange}
                 />
             </div>
+
+            <Input
+                type='text'
+                label="Occupation"
+                name='motherOccupation'
+                placeholder="Mother's Occupation"
+                value={formData?.motherOccupation || ''}
+                onChange={onChange}
+            />
         </div>
+
+        <br />
 
         {/* father's information */}
         <div className={styles.sectionDivider}>
             <h4>Father's Information</h4>
             
             <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                    <label htmlFor='fatherName'>Father's Name</label>
-                    <input
-                        type='text'
-                        id='fatherName'
-                        name='fatherName'
-                        value={formData?.fatherName || ''}
-                        onChange={onChange}
-                        className={styles.formControl}
-                        maxLength={50}
-                        placeholder="Father's full name"
-                        disabled={isLoading}
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label htmlFor='fatherAge'>Father's Age</label>
-                    <input
-                        type='number'
-                        id='fatherAge'
-                        name='fatherAge'
-                        value={formData?.fatherAge || ''}
-                        onChange={onChange}
-                        className={styles.formControl}
-                        min={15}
-                        max={120}
-                        placeholder="Age"
-                        disabled={isLoading}
-                    />
-                </div>
-            </div>
-
-            <div className={styles.formGroup}>
-                <label htmlFor='fatherOccupation'>Father's Occupation</label>
-                <input
+                <Input
                     type='text'
-                    id='fatherOccupation'
-                    name='fatherOccupation'
-                    value={formData?.fatherOccupation || ''}
+                    label="Name"
+                    name='fatherName'
+                    placeholder="Father's Name"
+                    value={formData?.fatherName || ''}
                     onChange={onChange}
-                    className={styles.formControl}
-                    maxLength={50}
-                    placeholder="Father's occupation"
-                    disabled={isLoading}
+                />
+                <Input
+                    type='number'
+                    label="Age"
+                    name='fatherAge'
+                    placeholder="Father's Age"
+                    value={formData?.fatherAge || ''}
+                    onChange={onChange}
                 />
             </div>
-        </div>
-        <div className={styles.formGroup}>
-            <label htmlFor='contactNumber'>Contact Number *</label>
-            <input
-                type='number'
-                id='contactNumber'
-                name='contactNumber'
-                value={formData?.contactNumber || ''}
-                onChange={onChange}
-                className={styles.formControl}
-                required
-                disabled={isLoading}
-                placeholder='Enter contact number'
-            />
-        </div>
-        <div className={styles.formGroup}>
-            <label htmlFor='address'>Address *</label>
-            <input
+
+            <Input
                 type='text'
-                id='address'
-                name='address'
-                value={formData?.address || ''}
+                label="Occupation"
+                name='fatherOccupation'
+                placeholder="Father's Occupation"
+                value={formData?.fatherOccupation || ''}
                 onChange={onChange}
-                className={styles.formControl}
-                required
-                disabled={isLoading}
-                placeholder="Enter address"
-                title="Address"
             />
         </div>
-        <div className={styles.formGroup}>
-            <label htmlFor='religion'>Religion *</label>
-            <input
-                type='text'
-                id='religion'
-                name='religion'
-                value={formData?.religion || ''}
-                onChange={onChange}
-                className={styles.formControl}
-                required
-                disabled={isLoading}
-                placeholder="Enter religion"
-                title="Religion"
-            />
-        </div>
+
+        <br />
+
+        <Input
+            type='number'
+            label="Contact"
+            name='contactNumber'
+            placeholder="Contact Number"
+            value={formData?.contactNumber || ''}
+            onChange={onChange}
+        />
+
+        <br />
+
+        <Input
+            type='text'
+            label="Address"
+            name='address'
+            placeholder="Address"
+            value={formData?.address || ''}
+            onChange={onChange}
+        />
+
+        <br />
+
+        <Input
+            type='text'
+            label="Religion"
+            name='religion'
+            placeholder="Religion"
+            value={formData?.religion || ''}
+            onChange={onChange}
+        />
+
+        <br />
 
         {/* appointment details */}
         <h4>Appointment Details</h4>
         <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-                <label htmlFor='preferredDate'>Preferred Date *</label>
-                <input
-                    type='date'
-                    id='preferredDate'
-                    name='preferredDate'
-                    value={formData?.preferredDate || ''}
-                    onChange={handleDateChange}
-                    className={styles.formControl}
-                    min={new Date().toISOString().split('T')[0]} //prevent past dates
-                    required
-                    disabled={isLoading}
-                />
-                {
-                    formData?.preferredDate && !isDateAvailable(formData.preferredDate) && (
-                        <small style={{ color: 'red' }}>
-                            This date is fully booked. Please select another date.
-                        </small>
-                    )
-                }
-            </div>
 
-            <div className={styles.formGroup}>
-                <label htmlFor='preferredTime'>Preferred Time *</label>
-                <select
-                    id='preferredTime'
-                    name='preferredTime'
-                    value={formData?.preferredTime || ''}
-                    onChange={handleTimeChange}
-                    className={styles.formControl}
-                    required
-                    disabled={isLoading || !formData?.preferredDate}
-                    style={{
-                        position: 'relative'
-                    }}
-                >
-                    <option value=''>Select Time</option>
-                    {
-                        generateTimeSlots().map(time => {
-                            const isAvailable = isTimeAvailable(time);
-                            return (
-                                <option 
-                                    key={time} 
-                                    value={time}
-                                    disabled={!isAvailable}
-                                    style={{
-                                        color: isAvailable ? 'inherit' : '#999',
-                                        backgroundColor: isAvailable ? 'inherit' : '#f5f5f5',
-                                        cursor: isAvailable ? 'pointer' : 'not-allowed'
-                                    }}
-                                >
-                                    {time} {!isAvailable ? '(Not Available)' : ''}
-                                </option>
-                            );
-                        })
-                    }
-                </select>
-                {
-                    formData?.preferredDate && availableTimes.length === 0 && (
-                        <small style={{ color: 'red' }}>
-                            No available times for this date.
-                        </small>
-                    )
-                }
-            </div>
-        </div>
-
-        <div className={styles.formGroup}>
-            <label htmlFor='reasonForVisit'>Reason for Visit *</label>
-            <textarea
-                id='reasonForVisit'
-                name='reasonForVisit'
-                value={formData?.reasonForVisit || ''}
-                onChange={onChange}
-                className={styles.formControl}
-                rows={4}
-                minLength={5}
-                maxLength={200}
-                placeholder="Please describe the reason for your visit (5-200 characters)"
+            <Input
+                type="date"
+                id="preferredDate"
+                name="preferredDate"
+                label="Preferred Date *"
+                leftIcon="calendar"
+                value={formData?.preferredDate || ''}
+                onChange={handleDateChange}
+                min={new Date().toISOString().split('T')[0]} // prevent past dates
                 required
                 disabled={isLoading}
-            ></textarea>
-            <small className={styles.charCount}>
-                {(formData?.reasonForVisit || '').length}/200 characters
-            </small>
+                error={
+                    formData?.preferredDate && !isDateAvailable(formData.preferredDate)
+                        ? 'This date is fully booked. Please select another date.'
+                        : undefined
+                }
+            />
+
+            <Select
+                id="preferredTime"
+                name="preferredTime"
+                label="Preferred Time *"
+                leftIcon="clock"
+                placeholder="Select Time"
+                value={formData?.preferredTime || ''}
+                onChange={handleTimeChange}
+                options={generateTimeOptions()}
+                required
+                disabled={isLoading || !formData?.preferredDate}
+                error={getTimeSelectError()}
+            />
         </div>
 
+        <TextArea
+            id="reasonForVisit"
+            name="reasonForVisit"
+            label="Reason for Visit *"
+            leftIcon="file-text"
+            value={formData?.reasonForVisit || ''}
+            onChange={onChange}
+            rows={4}
+            minLength={5}
+            maxLength={200}
+            placeholder="Please describe the reason for your visit (5-200 characters)"
+            required
+            disabled={isLoading}
+            showCharCount={true}
+            error={getReasonError()}
+            resize="vertical"
+        />
 
-        <style>{`
-            select option:disabled {
-                color: #999 !important;
-                background-color: #f5f5f5 !important;
-                font-style: italic;
-            }
-            
-            select:focus option:disabled {
-                color: #999 !important;
-                background-color: #f5f5f5 !important;
-            }
-        `}</style>
     </div>
   )
 }

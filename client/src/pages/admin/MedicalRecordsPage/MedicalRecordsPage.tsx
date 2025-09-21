@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
 import { FormDataType, MedicalRecordFormData, MedicalRecordResponse } from '../../../types';
-import { Header, Main, Modal, SubmitLoading } from '../../../components';
+import { Header, Loading, Main, Modal, SubmitLoading } from '../../../components';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
 import { calculateAge2, getLoadingText, openModalWithRefresh } from '../../../utils';
@@ -150,7 +150,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     ];
 
   return (
-    <Main loading={loading} error={error} loadingMessage='Loading medical records...'>
+    <Main error={error}>
         <Header
             title='Medical Records'
             actions={headerActions}
@@ -171,78 +171,90 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         </div> */}
 
         {/* medical records table */}
-        <div className={styles.tableContainer}>
-            <table className={styles.recordsTable}>
-                <thead>
-                    <tr>
-                        <th>Patient Name</th>
-                        <th>Date of Birth</th>
-                        <th>Age</th>
-                        <th>Gender</th>
-                        <th>Phone</th>
-                        <th>Date Recorded</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        medicalRecords.length === 0 ? (
+        {
+            loading ? (
+                <Loading
+                    type='skeleton'
+                    rows={7}
+                    message='Loading medical records data...'
+                    delay={0}
+                    minDuration={1000}
+                />
+            ) : (
+                <div className={styles.tableContainer}>
+                    <table className={styles.recordsTable}>
+                        <thead>
                             <tr>
-                                <td colSpan={7} className={styles.noRecords}>
-                                    No medical records found
-                                </td>
+                                <th>Patient Name</th>
+                                <th>Date of Birth</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Phone</th>
+                                <th>Date Recorded</th>
+                                <th>Actions</th>
                             </tr>
-                        ) : (
-                            medicalRecords.map((record) => {
-                                getStatusFromRecord(record);
-                                return (
-                                    <tr key={record.id} className={styles.tableRow}>
-                                        <td className={styles.patientName}>
-                                            {record.personalDetails.fullName}
-                                        </td>
-                                        <td>
-                                            {new Date(record.personalDetails.dateOfBirth).toLocaleDateString()}
-                                        </td>
-                                        <td>{calculateAge2(record.personalDetails.dateOfBirth)}</td>
-                                        <td>{record.personalDetails.gender}</td>
-                                        <td>{record.personalDetails.phone}</td>
-                                        <td>
-                                            {new Date(record.dateRecorded).toLocaleDateString()}
-                                        </td>
-                                        <td className={styles.actions}>
-                                            <button
-                                                type='button'
-                                                className={`${styles.actionBtn} ${styles.view}`}
-                                                onClick={() => handleViewClick(record)}
-                                                title='View Details'
-                                            >
-                                                View
-                                            </button>
-                                            <button
-                                                type='button' 
-                                                className={`${styles.actionBtn} ${styles.update}`} 
-                                                onClick={() => openUpdateModal(record)}
-                                                title='Update'
-                                            >
-                                                Update
-                                            </button>
-                                            <button
-                                                type='button' 
-                                                className={`${styles.actionBtn} ${styles.delete}`} 
-                                                onClick={() => openDeleteModal(record)}
-                                                title='Delete'
-                                            >
-                                                Delete
-                                            </button>
+                        </thead>
+                        <tbody>
+                            {
+                                medicalRecords.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} className={styles.noRecords}>
+                                            No medical records found
                                         </td>
                                     </tr>
-                                );
-                            })
-                        )
-                    }
-                </tbody>
-            </table>
-        </div>
+                                ) : (
+                                    medicalRecords.map((record) => {
+                                        getStatusFromRecord(record);
+                                        return (
+                                            <tr key={record.id} className={styles.tableRow}>
+                                                <td className={styles.patientName}>
+                                                    {record.personalDetails.fullName}
+                                                </td>
+                                                <td>
+                                                    {new Date(record.personalDetails.dateOfBirth).toLocaleDateString()}
+                                                </td>
+                                                <td>{calculateAge2(record.personalDetails.dateOfBirth)}</td>
+                                                <td>{record.personalDetails.gender}</td>
+                                                <td>{record.personalDetails.phone}</td>
+                                                <td>
+                                                    {new Date(record.dateRecorded).toLocaleDateString()}
+                                                </td>
+                                                <td className={styles.actions}>
+                                                    <button
+                                                        type='button'
+                                                        className={`${styles.actionBtn} ${styles.view}`}
+                                                        onClick={() => handleViewClick(record)}
+                                                        title='View Details'
+                                                    >
+                                                        View
+                                                    </button>
+                                                    <button
+                                                        type='button' 
+                                                        className={`${styles.actionBtn} ${styles.update}`} 
+                                                        onClick={() => openUpdateModal(record)}
+                                                        title='Update'
+                                                    >
+                                                        Update
+                                                    </button>
+                                                    <button
+                                                        type='button' 
+                                                        className={`${styles.actionBtn} ${styles.delete}`} 
+                                                        onClick={() => openDeleteModal(record)}
+                                                        title='Delete'
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                )
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            )
+        }
 
         {/* pagination */}
         {

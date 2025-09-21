@@ -1,0 +1,153 @@
+.container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #2a2a2a;
+}
+
+.textareaWrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+}
+
+.textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1.5;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+    color: #2a2a2a;
+    min-height: 80px;
+    resize: vertical;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: var(--primary, #4a6bdf);
+    box-shadow: 0 0 0 3px rgba(74, 107, 223, 0.15);
+    background-color: #ffffff;
+}
+
+.textarea::placeholder {
+    color: #9ca3af;
+}
+
+.textarea.focused {
+    border-color: var(--primary, #4a6bdf);
+    background-color: #ffffff;
+}
+
+.textarea.error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.textarea.error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.textareaWithLeftIcon {
+    padding-left: 2.75rem;
+}
+
+.iconContainer {
+    position: absolute;
+    left: 1rem;
+    top: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.icon {
+    width: 1rem;
+    height: 1rem;
+    color: #8896bd;
+    transition: color 0.2s ease;
+}
+
+.textarea:focus ~ .iconContainer .icon,
+.focused .iconContainer .icon {
+    color: var(--primary, #4a6bdf);
+}
+
+.errorMessage {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #ef4444;
+    font-weight: 500;
+}
+
+.charCount {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-align: right;
+}
+
+.textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+.textarea::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.textarea::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.textarea::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* different resize options */
+.textarea[style*="resize: none"] {
+    resize: none;
+}
+
+.textarea[style*="resize: both"] {
+    resize: both;
+}
+
+.textarea[style*="resize: horizontal"] {
+    resize: horizontal;
+}
+
+.textarea[style*="resize: vertical"] {
+    resize: vertical;
+}
+
+
+@media (max-width: 768px) {
+    .textarea {
+        font-size: 0.875rem;
+        padding: 0.75rem 1rem;
+        min-height: 70px;
+    }
+    
+    .textareaWithLeftIcon {
+        padding-left: 2.5rem;
+    }
+    
+    .iconContainer {
+        left: 0.875rem;
+        top: 0.75rem;
+    }
+}

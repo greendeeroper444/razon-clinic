@@ -180,12 +180,12 @@
 }
 
 .recordsTable th {
-    text-align: center;
-    padding: 12px 15px;
-    font-size: 0.8rem;
-    color: var(--gray);
-    font-weight: 500;
-    border-bottom: 1px solid var(--gray-light);
+  text-align: center;
+  padding: 12px 15px;
+  font-size: 0.8rem;
+  color: var(--gray);
+  font-weight: 500;
+  border-bottom: 1px solid var(--gray-light);
 }
 
 .recordsTable td {

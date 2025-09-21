@@ -3,7 +3,7 @@ import styles from './PatientsPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faIdCard, faVenusMars, faBirthdayCake, faPhone, faMapMarkerAlt, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { Main, Header, Modal, SubmitLoading } from '../../../components';
+import { Main, Header, Modal, SubmitLoading, Loading } from '../../../components';
 import { FormDataType, PatientDisplayData, PatientFormData } from '../../../types';
 import { calculateAge2, generateInitials, getLoadingText, openModalWithRefresh } from '../../../utils';
 import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
@@ -143,7 +143,7 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
     ];
 
   return (
-    <Main loading={loading} error={error} loadingMessage='Loading patients...'>
+    <Main error={error}>
         <Header
             title='Patients'
             actions={headerActions}
@@ -177,80 +177,90 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
                         <div className={styles.patientTableTitle}>Patient Records</div>
                     </div>
 
-                    <div className={styles.tableResponsive}>
-                        <table className={styles.patientTable}>
-                            <thead>
-                                <tr>
-                                    <th>Patient</th>
-                                    <th>Gender</th>
-                                    <th>Age</th>
-                                    <th>Contact</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    loading ? (
+                    {
+                        loading ? (
+                            <div className={styles.tableResponsive}>
+                                <Loading
+                                    type='skeleton'
+                                    rows={7}
+                                    message='Loading patient data...'
+                                    delay={0}
+                                    minDuration={1000}
+                                />
+                            </div>
+                        ) : (
+                            <div className={styles.tableResponsive}>
+                                <table className={styles.patientTable}>
+                                    <thead>
                                         <tr>
-                                            <td colSpan={6} style={{textAlign: 'center'}}>Loading...</td>
+                                            <th>Patient</th>
+                                            <th>Gender</th>
+                                            <th>Age</th>
+                                            <th>Contact</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
                                         </tr>
-                                    ) : displayPatients.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={6} style={{textAlign: 'center'}}>No patients found</td>
-                                        </tr>
-                                    ) : (
-                                        displayPatients.map((patient, index) => (
-                                            <tr key={patient.id || index}>
-                                                <td>
-                                                    <div className={styles.patientInfo}>
-                                                        <div className={styles.patientAvatar}>{patient.initials}</div>
-                                                        <div style={{ textAlign: 'start' }}>
-                                                            <div className={styles.patientName}>{patient.firstName} {patient.lastName}</div>
-                                                            <div className={styles.patientId}>#{patient.id}</div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span className={`${styles.patientGender} ${styles[patient.sex?.toLowerCase() || 'unknown']}`}>{patient.sex || 'N/A'}</span>
-                                                </td>
-                                                <td>{patient.age || 'N/A'}</td>
-                                                <td>{patient.contactNumber || 'N/A'}</td>
-                                                <td>
-                                                    <span className={`${styles.patientStatus} ${patient.isArchive ? styles.archived : styles.active}`}>
-                                                        {patient.isArchive ? 'Archived' : 'Active'}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <button 
-                                                        type='button'
-                                                        className={`${styles.actionBtn} ${styles.primary}`} 
-                                                        onClick={() => handleViewPatient(patient)}
-                                                    >
-                                                        View
-                                                    </button>
-                                                    <button 
-                                                        type='button'
-                                                        className={`${styles.actionBtn} ${styles.update}`}
-                                                        onClick={() => handleUpdatePatient(patient)}
-                                                    >
-                                                        Update
-                                                    </button>
-                                                    <button 
-                                                        type='button'
-                                                        className={`${styles.actionBtn} ${styles.cancel}`} 
-                                                        onClick={() => handleDeletePatient(patient)}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            displayPatients.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan={6} style={{textAlign: 'center'}}>No patients found</td>
+                                                </tr>
+                                            ) : (
+                                                displayPatients.map((patient, index) => (
+                                                    <tr key={patient.id || index}>
+                                                        <td>
+                                                            <div className={styles.patientInfo}>
+                                                                <div className={styles.patientAvatar}>{patient.initials}</div>
+                                                                <div style={{ textAlign: 'start' }}>
+                                                                    <div className={styles.patientName}>{patient.firstName} {patient.lastName}</div>
+                                                                    <div className={styles.patientId}>#{patient.id}</div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span className={`${styles.patientGender} ${styles[patient.sex?.toLowerCase() || 'unknown']}`}>{patient.sex || 'N/A'}</span>
+                                                        </td>
+                                                        <td>{patient.age || 'N/A'}</td>
+                                                        <td>{patient.contactNumber || 'N/A'}</td>
+                                                        <td>
+                                                            <span className={`${styles.patientStatus} ${patient.isArchive ? styles.archived : styles.active}`}>
+                                                                {patient.isArchive ? 'Archived' : 'Active'}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <button 
+                                                                type='button'
+                                                                className={`${styles.actionBtn} ${styles.primary}`} 
+                                                                onClick={() => handleViewPatient(patient)}
+                                                            >
+                                                                View
+                                                            </button>
+                                                            <button 
+                                                                type='button'
+                                                                className={`${styles.actionBtn} ${styles.update}`}
+                                                                onClick={() => handleUpdatePatient(patient)}
+                                                            >
+                                                                Update
+                                                            </button>
+                                                            <button 
+                                                                type='button'
+                                                                className={`${styles.actionBtn} ${styles.cancel}`} 
+                                                                onClick={() => handleDeletePatient(patient)}
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        )
+                    }
                 </div>
             )
         }

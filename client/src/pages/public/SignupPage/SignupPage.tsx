@@ -1,23 +1,9 @@
 import { FormEvent, useEffect } from 'react'
 import styles from './SignupPage.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faEnvelope,
-    faLock,
-    faEye,
-    faEyeSlash, 
-    faUser,
-    faMapMarkerAlt,
-    faVenusMars,
-    faCalendar,
-    faChurch,
-    faArrowLeft,
-    faArrowRight,
-    faCheck
-} from '@fortawesome/free-solid-svg-icons'
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { SectionFeatures, Footer } from '../../../components'
+import { SectionFeatures, Footer, Input, Select, TextArea } from '../../../components'
 import { useAuthenticationStore } from '../../../stores'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
 
@@ -25,7 +11,7 @@ const STEPS = [
     { id: 1, title: 'Basic Info', description: 'Your personal details' },
     { id: 2, title: 'Account Security', description: 'Password and verification' },
     { id: 3, title: 'Personal Details', description: 'Additional information' },
-    { id: 4, title: 'Review', description: 'Confirm your information' }
+    { id: 4, title: 'Review', description: 'Carefully review and confirm your information before proceeding.' }
 ]
 
 const SignupPage = () => {
@@ -204,176 +190,129 @@ const SignupPage = () => {
             case 1:
                 return (
                     <>
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faUser} className={styles.inputIcon} />
-                                <input 
-                                    type='text' 
-                                    name='firstName'
-                                    placeholder='First Name' 
-                                    className={`${styles.formInput} ${validationErrors.firstName ? styles.inputError : ''}`}
-                                    value={signupForm.firstName}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <Input
+                            type='text'
+                            name='firstName'
+                            placeholder='First Name'
+                            leftIcon='user'
+                            value={signupForm.firstName}
+                            onChange={handleChange}
+                            error={validationErrors.firstName}
+                        />
 
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faUser} className={styles.inputIcon} />
-                                <input 
-                                    type='text' 
-                                    name='lastName'
-                                    placeholder='Last Name' 
-                                    className={`${styles.formInput} ${validationErrors.lastName ? styles.inputError : ''}`}
-                                    value={signupForm.lastName}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <Input
+                            type='text'
+                            name='lastName'
+                            placeholder='Last Name'
+                            leftIcon='user'
+                            value={signupForm.lastName}
+                            onChange={handleChange}
+                            error={validationErrors.lastName}
+                        />
 
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faUser} className={styles.inputIcon} />
-                                <input 
-                                    type='text' 
-                                    name='middleName'
-                                    placeholder='Middle Name (Optional)' 
-                                    className={`${styles.formInput} ${validationErrors.middleName ? styles.inputError : ''}`}
-                                    value={signupForm.middleName}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <Input
+                            type='text'
+                            name='middleName'
+                            placeholder='Middle Name (Optional)'
+                            leftIcon='user'
+                            value={signupForm.middleName}
+                            onChange={handleChange}
+                            error={validationErrors.middleName}
+                        />
 
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faEnvelope} className={styles.inputIcon} />
-                                <input 
-                                    type='text' 
-                                    name='emailOrContactNumber'
-                                    placeholder='Email Address / Contact Number' 
-                                    className={`${styles.formInput} ${validationErrors.emailOrContactNumber ? styles.inputError : ''}`}
-                                    value={signupForm.emailOrContactNumber}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <Input
+                            type='text'
+                            name='emailOrContactNumber'
+                            placeholder='Email Address / Contact Number'
+                            leftIcon='email'
+                            value={signupForm.emailOrContactNumber}
+                            onChange={handleChange}
+                            error={validationErrors.emailOrContactNumber}
+                        />
                     </>
                 )
 
             case 2:
                 return (
                     <>
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faLock} className={styles.inputIcon} />
-                                <input 
-                                    type={showPassword ? 'text' : 'password'} 
-                                    name='password'
-                                    placeholder='Password' 
-                                    className={`${styles.formInput} ${validationErrors.password ? styles.inputError : ''}`}
-                                    value={signupForm.password}
-                                    onChange={handleChange}
-                                />
-                                <button 
-                                    type='button' 
-                                    className={styles.passwordToggle}
-                                    onClick={togglePasswordVisibility}
-                                    title={showPassword ? 'Hide password' : 'Show password'}
-                                >
-                                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                                </button>
-                            </div>
-                        </div>
+                        <Input
+                            type={showPassword ? 'text' : 'password'}
+                            name='password'
+                            placeholder='Password'
+                            leftIcon='lock'
+                            rightIcon={showPassword ? 'eye-slash' : 'eye'}
+                            onRightIconClick={togglePasswordVisibility}
+                            value={signupForm.password}
+                            onChange={handleChange}
+                            error={validationErrors.password}
+                        />
                         
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faLock} className={styles.inputIcon} />
-                                <input 
-                                    type={showConfirmPassword ? 'text' : 'password'} 
-                                    name='confirmPassword'
-                                    placeholder='Confirm Password' 
-                                    className={`${styles.formInput} ${validationErrors.confirmPassword ? styles.inputError : ''}`}
-                                    value={signupForm.confirmPassword}
-                                    onChange={handleChange}
-                                />
-                                <button 
-                                    type='button' 
-                                    className={styles.passwordToggle}
-                                    onClick={toggleConfirmPasswordVisibility}
-                                    title={showConfirmPassword ? 'Hide password' : 'Show password'}
-                                >
-                                    <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
-                                </button>
-                            </div>
-                        </div>
+                        <Input
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            name='confirmPassword'
+                            placeholder='confirmPassword'
+                            leftIcon='lock'
+                            rightIcon={showConfirmPassword ? 'eye-slash' : 'eye'}
+                            onRightIconClick={toggleConfirmPasswordVisibility}
+                            value={signupForm.confirmPassword}
+                            onChange={handleChange}
+                            error={validationErrors.confirmPassword}
+                        />
                     </>
                 )
 
             case 3:
                 return (
                     <>
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faCalendar} className={styles.inputIcon} />
-                                <input 
-                                    type={signupForm.birthdate ? 'date' : 'text'}
-                                    name='birthdate'
-                                    placeholder={signupForm.birthdate ? undefined : 'Select your birthdate'} 
-                                    className={`${styles.formInput} ${validationErrors.birthdate ? styles.inputError : ''}`}
-                                    value={signupForm.birthdate}
-                                    onChange={handleChange}
-                                    onFocus={(e) => e.target.type = 'date'}
-                                />
-                            </div>
-                        </div>
+                        <Input
+                            type={signupForm.birthdate ? 'date' : 'text'}
+                            name='birthdate'
+                            placeholder={signupForm.birthdate ? undefined : 'Select your birthdate'}
+                            leftIcon='calendar'
+                            value={signupForm.birthdate}
+                            onChange={handleChange}
+                            onFocus={(e) => {
+                                const target = e.target as HTMLInputElement;
+                                target.type = 'date';
+                            }}
+                            error={validationErrors.birthdate}
+                        />
 
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faVenusMars} className={styles.inputIcon} />
-                                <select
-                                    name='sex'
-                                    title='Select Gender'
-                                    className={`${styles.formInput} ${validationErrors.sex ? styles.inputError : ''}`}
-                                    value={signupForm.sex}
-                                    onChange={handleChange}
-                                >
-                                    <option value=''>Select Gender</option>
-                                    <option value='Male'>Male</option>
-                                    <option value='Female'>Female</option>
-                                    <option value='Other'>Other</option>
-                                </select>
-                            </div>
-                        </div>
+                        <Select
+                            name='sex'
+                            title='Select Gender'
+                            leftIcon='users'
+                            placeholder='Select Gender'
+                            value={signupForm.sex}
+                            onChange={handleChange}
+                            error={validationErrors.sex}
+                            options={[
+                                { value: 'Male', label: 'Male' },
+                                { value: 'Female', label: 'Female' },
+                                { value: 'Other', label: 'Other' }
+                            ]}
+                        />
 
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faMapMarkerAlt} className={styles.inputIcon} />
-                                <textarea
-                                    name='address'
-                                    placeholder='Full Address' 
-                                    className={`${styles.formInput} ${styles.textareaInput} ${validationErrors.address ? styles.inputError : ''}`}
-                                    value={signupForm.address}
-                                    onChange={handleChange}
-                                    rows={3}
-                                />
-                            </div>
-                        </div>
+                        <TextArea
+                            name='address'
+                            placeholder='Full Address'
+                            leftIcon='map-pin'
+                            value={signupForm.address}
+                            onChange={handleChange}
+                            error={validationErrors.address}
+                            rows={3}
+                            resize='vertical'
+                        />
 
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faChurch} className={styles.inputIcon} />
-                                <input 
-                                    type='text' 
-                                    name='religion'
-                                    placeholder='Religion (Optional)' 
-                                    className={styles.formInput}
-                                    value={signupForm.religion || ''}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <Input
+                            type='text'
+                            name='religion'
+                            placeholder='Religion (Optional)'
+                            leftIcon='church'
+                            value={signupForm.religion}
+                            onChange={handleChange}
+                            error={validationErrors.religion}
+                        />
                     </>
                 )
 
@@ -408,7 +347,7 @@ const SignupPage = () => {
                                     onChange={handleChange}
                                 />
                                 <label htmlFor='agreeToTerms'>
-                                    I agree to the <Link to="/terms-and-conditions" className={styles.termsLink}>Terms and Conditions</Link>
+                                    I agree to the <Link to='/terms-and-conditions' className={styles.termsLink}>Terms and Conditions</Link>
                                 </label>
                             </div>
                         </div>
@@ -430,10 +369,10 @@ const SignupPage = () => {
                         <div className={styles.autoSaveIndicator}>
                             <small>✓ Form data is automatically saved for 1 hour</small>
                             <button 
-                                type="button" 
+                                type='button' 
                                 onClick={handleClearSavedData}
                                 className={styles.clearDataButton}
-                                title="Clear saved form data"
+                                title='Clear saved form data'
                             >
                                 Clear Data
                             </button>
@@ -455,7 +394,7 @@ const SignupPage = () => {
                                         <div className={styles.stepNumber}>
                                             {
                                                 completedSteps.has(step.id) ? (
-                                                    <FontAwesomeIcon icon={faCheck} />
+                                                    <Check className='w-4 h-4 mr-1' />
                                                 ) : (
                                                     step.id
                                                 )
@@ -490,7 +429,7 @@ const SignupPage = () => {
                                         className={styles.prevButton}
                                         onClick={prevStep}
                                     >
-                                        <FontAwesomeIcon icon={faArrowLeft} /> Previous
+                                        <ArrowLeft className='w-4 h-4 mr-1' /> Previous
                                     </button>
                                 )
                             }
@@ -504,7 +443,7 @@ const SignupPage = () => {
                                     isLoading ? 'Creating Account...' : 
                                     signupStep === STEPS.length ? 'Create Account' : 
                                     <>
-                                        Next <FontAwesomeIcon icon={faArrowRight} />
+                                        Next <ArrowRight className='w-4 h-4 ml-1' />
                                     </>
                                 }
                             </button>
@@ -516,7 +455,7 @@ const SignupPage = () => {
                     </form>
                 </div>
                 <div className={styles.backgroundImageSection}>
-                    <img src={backgroundImage} alt="Sign Up background" className={styles.backgroundImage} />
+                    <img src={backgroundImage} alt='Sign Up background' className={styles.backgroundImage} />
                 </div>
             </div>
         </section>

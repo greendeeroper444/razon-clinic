@@ -1,0 +1,136 @@
+.container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #2a2a2a;
+}
+
+.selectWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+    color: #2a2a2a;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.select:focus {
+    outline: none;
+    border-color: var(--primary, #4a6bdf);
+    box-shadow: 0 0 0 3px rgba(74, 107, 223, 0.15);
+    background-color: #ffffff;
+}
+
+.select.focused {
+    border-color: var(--primary, #4a6bdf);
+    background-color: #ffffff;
+}
+
+.select.error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.select.error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.selectWithLeftIcon {
+    padding-left: 2.75rem;
+}
+
+.select option {
+    padding: 0.5rem;
+    background-color: #ffffff;
+    color: #2a2a2a;
+}
+
+.select option:disabled {
+    color: #9ca3af;
+    background-color: #f3f4f6;
+}
+
+.iconContainer {
+    position: absolute;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.icon {
+    width: 1rem;
+    height: 1rem;
+    color: #8896bd;
+    transition: color 0.2s ease;
+}
+
+.chevronContainer {
+    position: absolute;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.chevronIcon {
+    width: 1rem;
+    height: 1rem;
+    color: #8896bd;
+    transition: all 0.2s ease;
+}
+
+.select:focus + .chevronContainer .chevronIcon,
+.focused .chevronIcon {
+    color: var(--primary, #4a6bdf);
+    transform: rotate(180deg);
+}
+
+.errorMessage {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #ef4444;
+    font-weight: 500;
+}
+
+
+.select::-webkit-scrollbar {
+    width: 8px;
+}
+
+.select::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.select::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.select::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

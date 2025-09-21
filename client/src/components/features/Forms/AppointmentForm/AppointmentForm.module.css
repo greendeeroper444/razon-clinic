@@ -1,81 +1,45 @@
-.formGroup {
-    margin-bottom: 1.25rem;
-}
-
 .formRow {
     display: flex;
     gap: 1rem;
     margin-bottom: 1.25rem;
 }
 
-.formRow .formGroup {
-    flex: 1;
-    margin-bottom: 0;
-}
-
-.formGroup label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--dark-light);
-    font-size: 0.875rem;
-}
-
-.formControl {
-    width: 100%;
-    padding: 0.625rem 0.875rem;
-    font-size: 0.875rem;
-    border: 1px solid var(--gray-light);
-    border-radius: 8px;
-    background-color: var(--light);
-    color: var(--dark);
-    transition: var(--transition);
-}
-
-.formControl:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px var(--primary-light);
-}
-
-select.formControl {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.875rem center;
-    padding-right: 2.5rem;
-}
-
-textarea.formControl {
-    resize: vertical;
-    min-height: 80px;
-}
-
-
-
-
-
-.medicationItem {
+.removePatientContainer {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    justify-content: center;
+    align-items: center
 }
 
-
-
-@keyframes slideIn {
-    from {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+.removePatient {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.875rem
 }
 
-
+.addPatientContainer {
+    margin-bottom: 2rem;
+    text-align: center
+}
+.addPatient {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.2s
+}
+.totalPatient {
+    margin-top: 0.5rem;
+    color: #666;
+    font-size: 0.875rem
+}
 
 .isLoading {
     position: relative;
@@ -101,7 +65,6 @@ textarea.formControl {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
 
 
 
@@ -164,17 +127,4 @@ textarea.formControl {
     background-color: var(--primary-light);
     padding: 5px;
     margin-bottom: 10px;
-}
-
-/* unavailable time */
-.unavailableTimeOption {
-    color: #999 !important;
-    background-color: #f5f5f5 !important;
-    font-style: italic;
-    border: 1px solid #dc3545;
-}
-
-.timeSelect:focus .unavailableTimeOption {
-    color: #999 !important;
-    background-color: #f5f5f5 !important;
 }

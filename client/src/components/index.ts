@@ -12,3 +12,7 @@ export { default as Header } from './layout/Header/Header';
 export { default as Button } from './ui/Button/Button';
 export { default as FormGroup } from './ui/FormGroup/FormGroup';
 export { default as SubmitLoading } from './ui/SubmitLoading/SubmitLoading';
+export { default as Input } from './ui/Input/Input';
+export { default as Select } from './ui/Select/Select';
+export { default as TextArea } from './ui/TextArea/TextArea';
+export { default as Loading } from './ui/Loading/Loading';

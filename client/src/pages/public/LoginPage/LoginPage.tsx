@@ -1,15 +1,8 @@
 import { FormEvent, useEffect } from 'react'
 import styles from './LoginPage.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faEnvelope,
-    faLock,
-    faEye,
-    faEyeSlash
-} from '@fortawesome/free-solid-svg-icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { SectionFeatures, Footer } from '../../../components'
+import { SectionFeatures, Footer, Input } from '../../../components'
 import { useAuthenticationStore } from '../../../stores'
 import { validateLoginForm } from '../../../utils'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
@@ -97,41 +90,27 @@ const LoginPage = () => {
                         <h2 className={styles.formTitle}>Welcome back!</h2>
                         <p className={styles.formSubtitle}>Log in to your account</p>
                         
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faEnvelope} className={styles.inputIcon} />
-                                <input 
-                                    type='text' 
-                                    name='emailOrContactNumber'
-                                    placeholder='Email Address / Contact Number' 
-                                    className={`${styles.formInput} ${validationErrors.emailOrContactNumber ? styles.inputError : ''}`}
-                                    value={loginForm.emailOrContactNumber}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <Input
+                            type='text'
+                            name='emailOrContactNumber'
+                            placeholder='Email Address / Contact Number'
+                            leftIcon='email'
+                            value={loginForm.emailOrContactNumber}
+                            onChange={handleChange}
+                            error={validationErrors.emailOrContactNumber}
+                        />
                         
-                        <div className={styles.inputGroup}>
-                            <div className={styles.inputWithIcon}>
-                                <FontAwesomeIcon icon={faLock} className={styles.inputIcon} />
-                                <input 
-                                    type={showPassword ? 'text' : 'password'} 
-                                    name='password'
-                                    placeholder='Password' 
-                                    className={`${styles.formInput} ${validationErrors.password ? styles.inputError : ''}`}
-                                    value={loginForm.password}
-                                    onChange={handleChange}
-                                />
-                                <button 
-                                    type='button' 
-                                    className={styles.passwordToggle}
-                                    onClick={togglePasswordVisibility}
-                                    title={showPassword ? 'Hide password' : 'Show password'}
-                                >
-                                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                                </button>
-                            </div>
-                        </div>
+                        <Input
+                            type={showPassword ? 'text' : 'password'}
+                            name='password'
+                            placeholder='Password'
+                            leftIcon='lock'
+                            rightIcon={showPassword ? 'eye-slash' : 'eye'}
+                            onRightIconClick={togglePasswordVisibility}
+                            value={loginForm.password}
+                            onChange={handleChange}
+                            error={validationErrors.password}
+                        />
 
                         <div className={styles.formOptions}>
                             <div className={styles.rememberMe}>
@@ -177,7 +156,7 @@ const LoginPage = () => {
                     </form>
                 </div>
                 <div className={styles.backgroundImageSection}>
-                    <img src={backgroundImage} alt="Login background" className={styles.backgroundImage} />
+                    <img src={backgroundImage} alt='Login background' className={styles.backgroundImage} />
                 </div>
             </div>
         </section>

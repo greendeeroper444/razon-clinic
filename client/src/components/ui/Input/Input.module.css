@@ -1,0 +1,110 @@
+.container {
+    position: relative;
+    width: 100%;
+    /* margin-bottom: 1rem; */
+}
+
+.label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #2a2a2a;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+    color: #2a2a2a;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--primary, #4a6bdf);
+    box-shadow: 0 0 0 3px rgba(74, 107, 223, 0.15);
+    background-color: #ffffff;
+}
+
+.input::placeholder {
+    color: #9ca3af;
+}
+
+.input.focused {
+    border-color: var(--primary, #4a6bdf);
+    background-color: #ffffff;
+}
+
+.input.error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.input.error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.inputWithLeftIcon {
+    padding-left: 2.75rem;
+}
+
+.inputWithRightIcon {
+    padding-right: 2.75rem;
+}
+
+.iconContainer {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.iconContainer:first-child {
+    left: 1rem;
+}
+
+.iconContainer:last-child {
+    right: 1rem;
+}
+
+.icon {
+    width: 1rem;
+    height: 1rem;
+    color: #8896bd;
+    transition: color 0.2s ease;
+}
+
+.clickable {
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    background: none;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.clickable:hover .icon {
+    color: var(--primary, #4a6bdf);
+}
+
+.clickable:active {
+    transform: scale(0.95);
+}
+
+.errorMessage {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #ef4444;
+    font-weight: 500;
+}

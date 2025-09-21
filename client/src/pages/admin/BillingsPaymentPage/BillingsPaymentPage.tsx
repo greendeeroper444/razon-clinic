@@ -3,7 +3,7 @@ import styles from './BillingsPaymentPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faSearch, faDownload, faCreditCard, faCheck, faExclamationTriangle, faTimes, faUser, faCalendar, faEye, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { BillingFormData, BillingResponse, FormDataType } from '../../../types'
-import { Header, Main, Modal, SubmitLoading } from '../../../components'
+import { Header, Loading, Main, Modal, SubmitLoading } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
 import { formatDate, getLoadingText, getMedicalRecordId, getPaymentStatusClass, getStatusIcon, openModalWithRefresh } from '../../../utils'
 import { useBillingStore } from '../../../stores'
@@ -162,7 +162,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
     ];
 
   return (
-    <Main loading={loading} error={error} loadingMessage='Loading billings...'>
+    <Main error={error}>
         <Header
             title='Billing & Payments'
             actions={headerActions}
@@ -225,111 +225,104 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                 </select>
             </div>
         </div>
-
-        {/* error message */}
-        {
-            error && (
-                <div className={styles.errorMessage}>
-                    <FontAwesomeIcon icon={faExclamationTriangle} />
-                    <span>{error}</span>
-                    <button type='button' onClick={() => fetchBillings()}>
-                        Retry
-                    </button>
-                </div>
-            )
-        }
-
-        {/* loading state */}
-        {
-            loading && (
-                <div className={styles.loadingState}>
-                    <FontAwesomeIcon icon={faSpinner} spin />
-                    <span>Loading billing data...</span>
-                </div>
-            )
-        }
-
+        
         {/* billing table */}
-        {
-            !loading && !error && (
-                <div className={styles.tableContainer}>
-                    <table className={styles.billingTable}>
-                        <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>Medical Record</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Date Issued</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                billings.map((bill) => (
-                                    <tr key={bill.id}>
-                                        <td>
-                                            <div className={styles.patientInfo}>
-                                                <FontAwesomeIcon icon={faUser} />
-                                                <span>{bill.patientName}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span className={styles.medicalRecord}>
-                                                {getMedicalRecordId(bill.medicalRecordId)}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span className={styles.amount}>
-                                                ₱{(bill.amount || 0).toFixed(2)}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span className={`${styles.status} ${getPaymentStatusClass(bill.paymentStatus, styles)}`}>
-                                                <FontAwesomeIcon icon={getStatusIcon(bill.paymentStatus)} />
-                                                {bill.paymentStatus}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div className={styles.dateInfo}>
-                                                <FontAwesomeIcon icon={faCalendar} />
-                                                <span>{formatDate(bill.createdAt)}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className={styles.actionButtons}>
-                                                <button
-                                                    type='button'
-                                                    onClick={() => handleViewDetails(bill.id)}
-                                                    className={styles.btnView}
-                                                    title="View Details"
-                                                >
-                                                    <FontAwesomeIcon icon={faEye} />
-                                                </button>
-                                                {
-                                                    bill.paymentStatus !== 'Paid' && (
-                                                        <button
-                                                            type='button'
-                                                            onClick={() => handleProcessPayment(bill.id)}
-                                                            className={styles.btnPay}
-                                                            title="Process Payment"
-                                                            disabled={isProcessing}
-                                                        >
-                                                            <FontAwesomeIcon icon={faCreditCard} />
-                                                        </button>
-                                                    )
-                                                }
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            )
-        }
 
+        <div className={styles.billingTableContainer}>
+            <div className={styles.billingTableHeader}>
+                <div className={styles.billingTableTitle}>Billing & Payments</div>
+            </div>
+            {
+                loading ? (
+                    <div className={styles.tableResponsive}>
+                        <Loading
+                            type='skeleton'
+                            rows={7}
+                            message='Loading billings data...'
+                            delay={0}
+                            minDuration={1000}
+                        />
+                    </div>
+                ) : (
+                    <div className={styles.tableResponsive}>
+                        <table className={styles.billingTable}>
+                            <thead>
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Medical Record</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date Issued</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    billings.map((bill) => (
+                                        <tr key={bill.id}>
+                                            <td>
+                                                <div className={styles.patientInfo}>
+                                                    <FontAwesomeIcon icon={faUser} />
+                                                    <span>{bill.patientName}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span className={styles.medicalRecord}>
+                                                    {getMedicalRecordId(bill.medicalRecordId)}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className={styles.amount}>
+                                                    ₱{(bill.amount || 0).toFixed(2)}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className={`${styles.status} ${getPaymentStatusClass(bill.paymentStatus, styles)}`}>
+                                                    <FontAwesomeIcon icon={getStatusIcon(bill.paymentStatus)} />
+                                                    {bill.paymentStatus}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div className={styles.dateInfo}>
+                                                    <FontAwesomeIcon icon={faCalendar} />
+                                                    <span>{formatDate(bill.createdAt)}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className={styles.actionButtons}>
+                                                    <button
+                                                        type='button'
+                                                        onClick={() => handleViewDetails(bill.id)}
+                                                        className={styles.btnView}
+                                                        title="View Details"
+                                                    >
+                                                        <FontAwesomeIcon icon={faEye} />
+                                                    </button>
+                                                    {
+                                                        bill.paymentStatus !== 'Paid' && (
+                                                            <button
+                                                                type='button'
+                                                                onClick={() => handleProcessPayment(bill.id)}
+                                                                className={styles.btnPay}
+                                                                title="Process Payment"
+                                                                disabled={isProcessing}
+                                                            >
+                                                                <FontAwesomeIcon icon={faCreditCard} />
+                                                            </button>
+                                                        )
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                )
+            }
+
+        </div>
         {/* pagination */}
         {
             !loading && billings.length > 0 && (

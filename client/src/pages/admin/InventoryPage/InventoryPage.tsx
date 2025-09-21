@@ -3,7 +3,7 @@ import styles from './InventoryPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { OpenModalProps } from '../../../hooks/hook';
-import { Header, Main, Modal, SubmitLoading } from '../../../components';
+import { Header, Loading, Main, Modal, SubmitLoading } from '../../../components';
 import { FormDataType, InventoryItemFormData } from '../../../types';
 import { formatDate, getExpiryStatus, getItemIcon, getLoadingText, getStockStatus, openModalWithRefresh } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
@@ -105,7 +105,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
     
     
   return (
-    <Main loading={loading} error={error} loadingMessage='Loading items...'>
+    <Main error={error} >
         <Header
             title='Inventory'
             actions={headerActions}
@@ -131,17 +131,26 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             }
         </div>
 
-        {/* Inventory table */}
+        {/* inventory table */}
         <div className={styles.inventoryTableContainer}>
             <div className={styles.inventoryTableHeader}>
                 <div className={styles.inventoryTableTitle}>Medicine Inventory</div>
             </div>
 
-            <div className={styles.tableResponsive}>
-                {
-                    loading ? (
-                        <div className={styles.loadingState}>Loading inventory items...</div>
-                    ) : (
+            
+            {
+                loading ? (
+                    <div className={styles.tableResponsive}>
+                        <Loading
+                            type='skeleton'
+                            rows={7}
+                            message='Loading inventory data...'
+                            delay={0}
+                            minDuration={1000}
+                        />
+                    </div>
+                ) : (
+                    <div className={styles.tableResponsive}>
                         <table className={styles.inventoryTable}>
                             <thead>
                                 <tr>
@@ -219,9 +228,9 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 }
                             </tbody>
                         </table>
-                    )
-                }
-            </div>
+                    </div>
+                )
+            }
         </div>
 
         {/* update/add inventory item modal */}

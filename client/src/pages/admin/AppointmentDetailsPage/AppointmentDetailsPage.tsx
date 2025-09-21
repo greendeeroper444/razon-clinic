@@ -50,17 +50,17 @@ const AppointmentDetailsPage = () => {
     } = useAppointmentStore();
 
     
-    useEffect(() => {
+     useEffect(() => {
         if (appointmentId) {
             fetchAppointmentById(appointmentId);
             fetchMyAppointments(); //for patient dropdown in modal
         }
 
         //cleanup when component unmounts
-        // return () => {
-        //     clearCurrentAppointment()
-        // }
-    }, [appointmentId, fetchAppointmentById, fetchMyAppointments, clearCurrentAppointment])
+        return () => {
+            clearCurrentAppointment()
+        }
+    }, [appointmentId])
 
     const handleUpdateStatusClick = () => {
         if (currentAppointment) {

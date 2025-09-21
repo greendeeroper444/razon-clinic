@@ -50,12 +50,14 @@ export interface HeaderProps {
 
 
 export interface MainProps {
-    children: ReactNode;
+    children: React.ReactNode;
     className?: string;
     loading?: boolean;
     error?: string | null;
     loadingMessage?: string;
-    loadingType? : string;
+    loadingType?: 'spinner' | 'dots' | 'skeleton' | 'progress' | 'backdrop';
+    loadingDelay?: number;
+    loadingMinDuration?: number;
     onErrorRetry?: () => void;
 }
 
