@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styles from './BillingsForm.module.css'
-import { BillingFormProps, InventoryItemOption, MedicalRecordOption } from '../../../../types';
-import { getInventoryItemsForBilling, getMedicalRecordsForBilling } from '../../../../services';
+import { BillingFormProps, InventoryItem, InventoryItemOption, MedicalRecordOption } from '../../../../types';
+import { getInventoryItems, getMedicalRecordsForBilling } from '../../../../services';
+import Select from '../../../ui/Select/Select';
+import Input from '../../../ui/Input/Input';
 
 const BillingForm: React.FC<BillingFormProps> = ({
     formData,
@@ -21,15 +23,28 @@ const BillingForm: React.FC<BillingFormProps> = ({
             try {
                 const [medicalRecordsResponse, inventoryItemsResponse] = await Promise.all([
                     getMedicalRecordsForBilling(),
-                    getInventoryItemsForBilling()
+                    getInventoryItems()
                 ]);
 
                 if (medicalRecordsResponse.data.success) {
                     setMedicalRecords(medicalRecordsResponse.data.data);
                 }
 
-                if (inventoryItemsResponse.data.success) {
-                    setAvailableItems(inventoryItemsResponse.data.data);
+                 if (medicalRecordsResponse.data.success) {
+                    setMedicalRecords(medicalRecordsResponse.data.data);
+                }
+
+                if (inventoryItemsResponse.success) {
+                    //transform the inventory items to match expected structure
+                    const transformedItems = inventoryItemsResponse.data.inventoryItems.map((item: InventoryItem) => ({
+                        name: item.itemName,
+                        category: item.category,
+                        price: item.price,
+                        availableQuantity: item.quantityInStock,
+                        id: item.id
+                    }));
+                    
+                    setAvailableItems(transformedItems);
                 }
             } catch (err) {
                 console.error('Error fetching data:', err);
@@ -234,45 +249,31 @@ const BillingForm: React.FC<BillingFormProps> = ({
 
   return (
     <>
-        <div className={styles.formGroup}>
-            <label htmlFor="medicalRecordId" className={styles.fieldLabel}>
-                Select Medical Record *
-            </label>
-            <select
-                id="medicalRecordId"
-                name="medicalRecordId"
-                value={formData.medicalRecordId || ''}
-                onChange={handleMedicalRecordChange}
-                className={styles.formControl}
-                required
-            >
-                <option value="">Choose a medical record...</option>
-                {
-                    medicalRecords.map((record) => (
-                        <option key={record.id} value={record.id}>
-                            {record.patientName} - {record.date} ({record.diagnosis})
-                        </option>
-                    ))
-                }
-            </select>
-        </div>
+        <Select
+            label='Select Medical Record'
+            name='medicalRecordId'
+            value={formData?.medicalRecordId || ''}
+            onChange={handleMedicalRecordChange}
+            placeholder='Choose a medical record...'
+            leftIcon='user'
+            required
+            options={medicalRecords.map(record => ({
+                value: record.id,
+                label: `${record.patientName} - ${record.date} (${record.diagnosis})`
+            }))}
+        />
 
-        <div className={styles.formGroup}>
-            <label htmlFor="patientName" className={styles.fieldLabel}>
-                Patient Name *
-            </label>
-            <input
-                type="text"
-                id="patientName"
-                name="patientName"
-                value={formData.patientName || ''}
-                onChange={onChange}
-                className={styles.formControl}
-                placeholder="Enter patient's full name"
-                required
-                maxLength={100}
-            />
-        </div>
+        <Input
+            type='text'
+            label='Patient Name *'
+            name='patientName'
+            value={formData?.patientName || ''}
+            onChange={onChange}
+            placeholder="Enter patient's full name"
+            leftIcon='user'
+            required
+            maxLength={100}
+        />
 
         <div className={styles.billingSection}>
             <div className={styles.sectionHeader}>
@@ -288,108 +289,111 @@ const BillingForm: React.FC<BillingFormProps> = ({
 
             {
                 formData.itemName && formData.itemName.length > 0 && (
-                    <div className={styles.billingTable}>
-                        <div className={styles.tableHeader}>
-                            <div className={styles.tableHeaderCell}>Item Name</div>
-                            <div className={styles.tableHeaderCell}>Available</div>
-                            <div className={styles.tableHeaderCell}>Quantity</div>
-                            <div className={styles.tableHeaderCell}>Unit Price</div>
-                            <div className={styles.tableHeaderCell}>Total</div>
-                            <div className={styles.tableHeaderCell}>Action</div>
-                        </div>
+                    <div className={styles.tableContainer}>
+                        <table className={styles.billingTable}>
+                            <thead>
+                                <tr className={styles.tableHeader}>
+                                    <th className={styles.tableHeaderCell}>Item Name</th>
+                                    <th className={styles.tableHeaderCell}>Available</th>
+                                    <th className={styles.tableHeaderCell}>Quantity</th>
+                                    <th className={styles.tableHeaderCell}>Unit Price</th>
+                                    <th className={styles.tableHeaderCell}>Total</th>
+                                    <th className={styles.tableHeaderCell}>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    formData.itemName.map((item, index) => (
+                                        <tr key={index} className={styles.tableRow}>
+                                            <td className={styles.tableCell}>
+                                                <select
+                                                    title='Select Item'
+                                                    value={item}
+                                                    onChange={(e) => updateItemName(index, e.target.value)}
+                                                    className={styles.itemSelect}
+                                                >
+                                                    <option value="">Select item...</option>
+                                                    {
+                                                        availableItems.map((availableItem) => (
+                                                            <option key={`${availableItem.name}-${availableItem.category}`} value={availableItem.name}>
+                                                                {availableItem.name} ({availableItem.category}) 
+                                                                {/* - Stock: {availableItem.availableQuantity} */}
+                                                            </option>
+                                                        ))
+                                                    }
+                                                </select>
+                                            </td>
 
-                        {
-                            formData.itemName.map((item, index) => (
-                                <div key={index} className={styles.tableRow}>
-                                    <div className={styles.tableCell}>
-                                        <select
-                                            value={item}
-                                            onChange={(e) => updateItemName(index, e.target.value)}
-                                            className={styles.itemSelect}
-                                        >
-                                            <option value="">Select item...</option>
-                                            {
-                                                availableItems.map((availableItem) => (
-                                                    <option key={`${availableItem.name}-${availableItem.category}`} value={availableItem.name}>
-                                                        {availableItem.name} ({availableItem.category}) 
-                                                        {/* - Stock: {availableItem.availableQuantity} */}
-                                                    </option>
-                                                ))
-                                            }
-                                        </select>
-                                    </div>
+                                            <td className={styles.tableCell}>
+                                                <span className={styles.stockInfo}>
+                                                    {item ? getAvailableStock(item) : '-'}
+                                                </span>
+                                            </td>
 
-                                    <div className={styles.tableCell}>
-                                        <span className={styles.stockInfo}>
-                                            {item ? getAvailableStock(item) : '-'}
-                                        </span>
-                                    </div>
+                                            <td className={styles.tableCell}>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    max={item ? getAvailableStock(item) : undefined}
+                                                    value={formData.itemQuantity?.[index] || 1}
+                                                    onChange={(e) => updateQuantity(index, parseInt(e.target.value) || 1)}
+                                                    className={styles.quantityInput}
+                                                    disabled={!item}
+                                                />
+                                            </td>
 
-                                    <div className={styles.tableCell}>
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            max={item ? getAvailableStock(item) : undefined}
-                                            value={formData.itemQuantity?.[index] || 1}
-                                            onChange={(e) => updateQuantity(index, parseInt(e.target.value) || 1)}
-                                            className={styles.quantityInput}
-                                            disabled={!item}
-                                        />
-                                    </div>
+                                            <td className={styles.tableCell}>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    step="0.01"
+                                                    value={formData.itemPrices?.[index] || 0}
+                                                    onChange={(e) => updateUnitPrice(index, parseFloat(e.target.value) || 0)}
+                                                    className={styles.priceInput}
+                                                    placeholder="₱0"
+                                                />
+                                            </td>
 
-                                    <div className={styles.tableCell}>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            step="0.01"
-                                            value={formData.itemPrices?.[index] || 0}
-                                            onChange={(e) => updateUnitPrice(index, parseFloat(e.target.value) || 0)}
-                                            className={styles.priceInput}
-                                            placeholder="₱0"
-                                        />
-                                    </div>
+                                            <td className={styles.tableCell}>
+                                                <span className={styles.totalCell}>
+                                                    ₱{getItemTotal(index).toFixed(2)}
+                                                </span>
+                                            </td>
 
-                                    <div className={styles.tableCell}>
-                                        <span className={styles.totalCell}>
-                                            ₱{getItemTotal(index).toFixed(2)}
-                                        </span>
-                                    </div>
-
-                                    <div className={styles.tableCell}>
-                                        <button
-                                            type="button"
-                                            onClick={() => removeItem(index)}
-                                            className={styles.removeBtn}
-                                            title="Remove item"
-                                        >
-                                            &times;
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        }
+                                            <td className={styles.tableCell}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeItem(index)}
+                                                    className={styles.removeBtn}
+                                                    title="Remove item"
+                                                >
+                                                    &times;
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 )
             }
         </div>
 
-        <div className={styles.formGroup}>
-            <label htmlFor="paymentStatus" className={styles.fieldLabel}>
-                Payment Status
-            </label>
-            <select
-                id="paymentStatus"
-                name="paymentStatus"
-                value={formData.paymentStatus || 'Unpaid'}
-                onChange={onChange}
-                className={styles.formControl}
-            >
-                <option value="Unpaid">Unpaid</option>
-                <option value="Pending">Pending</option>
-                <option value="Paid">Paid</option>
-            </select>
-        </div>
-
+        <Select
+            name='paymentStatus'
+            label='Payment Status'
+            title='Select Status'
+            leftIcon='status'
+            placeholder='Select Status'
+            value={formData.paymentStatus || ''}
+            onChange={onChange}
+            options={[
+                { value: 'Unpaid', label: 'Unpaid' },
+                { value: 'Pending', label: 'Pending' },
+                { value: 'Paid', label: 'Paid' }
+            ]}
+        />
         <div className={styles.totalSection}>
             <span className={styles.totalLabel}>Total Amount:</span>
             <span className={styles.totalAmount}>

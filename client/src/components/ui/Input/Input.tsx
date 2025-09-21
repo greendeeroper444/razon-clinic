@@ -1,17 +1,17 @@
-import { useState, InputHTMLAttributes } from 'react'
+import { useState, InputHTMLAttributes, ReactNode } from 'react'
 import styles from './Input.module.css'
 import { User, EyeOff, Eye, Lock, Mail, Calendar, Church } from 'lucide-react'
 
 type IconType = 'user' | 'email' | 'lock' | 'eye' | 'eye-slash' | 'calendar' | 'church'
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onFocus'> {
-    label?: string
-    error?: string
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
-    leftIcon?: IconType
-    rightIcon?: IconType
-    onRightIconClick?: () => void
+    label?: string | ReactNode;
+    error?: string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
+    leftIcon?: IconType;
+    rightIcon?: IconType;
+    onRightIconClick?: () => void;
 }
 
 const Input: React.FC<InputProps> = ({ 

@@ -280,7 +280,7 @@
 .actionBtn.primary {
     background-color: var(--primary-light);
     color: var(--primary);
-    margin-left: 8px;
+    /* margin-left: 8px; */
 }
 .actionBtn.view:hover,
 .actionBtn.primary:hover {
@@ -290,6 +290,7 @@
 .actionBtn.update {
     background-color: #fef7e2;
     color: var(--warning);
+    margin-left: 8px;
 }
 .actionBtn.update:hover{
     background-color: #fee6ca;

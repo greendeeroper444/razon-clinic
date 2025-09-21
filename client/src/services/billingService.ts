@@ -103,23 +103,6 @@ export const getMedicalRecordsForBilling = async () => {
     );
 };
 
-//get inventory items for billing
-export const getInventoryItemsForBilling = async () => {
-    return await axios.get<{
-        success: boolean;
-        message: string;
-        data: InventoryItemOption[];
-    }>(
-        `${API_BASE_URL}/api/billings/getInventoryItems`,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        }
-    );
-};
-
-
 
 export const deleteBilling = async (billingId: string) => {
     return await axios.delete<{

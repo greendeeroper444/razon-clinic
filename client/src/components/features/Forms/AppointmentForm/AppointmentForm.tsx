@@ -438,7 +438,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <br />
 
         <Input
-            type='number'
+            type='tel'
             label="Contact"
             name='contactNumber'
             placeholder="Contact Number"
@@ -448,15 +448,16 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         <br />
 
-        <Input
-            type='text'
-            label="Address"
+        <TextArea
             name='address'
-            placeholder="Address"
+            placeholder='Full Address'
+            leftIcon='map-pin'
             value={formData?.address || ''}
             onChange={onChange}
+            rows={3}
+            resize='vertical'
         />
-
+        
         <br />
 
         <Input

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import styles from './InventoryItemForm.module.css'
 import { InventoryItemFormProps } from '../../../../types';
+import Input from '../../../ui/Input/Input';
+import Select from '../../../ui/Select/Select';
 
 const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
     formData,
@@ -42,20 +44,20 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
         {/* show add quantity field in add quantity mode */}
         {
             isAddQuantityMode && (
-                <div className={styles.formGroup}>
-                    <label htmlFor='addQuantity'>Add quantity for <strong>{formData.itemName}</strong></label>
-                    <input
-                        type='number'
-                        id='addQuantity'
-                        name='addQuantity'
-                        value={addQuantity}
-                        onChange={handleAddQuantityChange}
-                        className={styles.formControl}
-                        min='0'
-                        placeholder='Enter quantity to add'
-                        autoFocus
-                    />
-                </div>
+                <Input
+                    type='number'
+                    label={
+                        <>
+                            Add quantity for <strong>{formData?.itemName}</strong>
+                        </>
+                    }
+                    name='addQuantity'
+                    value={addQuantity}
+                    onChange={handleAddQuantityChange}
+                    min='0'
+                    placeholder='Enter quantity to add'
+                    autoFocus
+                />
             )
         }
 
@@ -63,101 +65,92 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
         {
             !isRestockMode && !isAddQuantityMode && (
                 <>
-                    <div className={styles.formGroup}>
-                        <label htmlFor='itemName'>Item Name</label>
-                        <input
-                            type="text"
-                            id='itemName'
-                            name='itemName'
-                            value={formData.itemName || ''}
-                            onChange={onChange}
-                            className={styles.formControl}
-                            required
-                        />
-                    </div>
+                    <Input
+                        type='text'
+                        label='Item Name'
+                        name='itemName'
+                        placeholder='Item name'
+                        value={formData?.itemName || ''}
+                        onChange={onChange}
+                    />
 
-                    <div className={styles.formGroup}>
-                        <label htmlFor='category'>Category</label>
-                        <select
-                            id='category'
-                            name='category'
-                            value={formData.category || ''}
-                            onChange={onChange}
-                            className={styles.formControl}
-                            required
-                        >
-                            <option value=''>Select Category</option>
-                            <option value='Vaccine'>Vaccine</option>
-                            <option value='Medical Supply'>Medical Supply</option>
-                        </select>
-                    </div>
+                    <br />
 
-                    <div className={styles.formGroup}>
-                        <label htmlFor='price'>Price</label>
-                        <input
-                            type='number'
-                            id='price'
-                            name='price'
-                            value={formData.price || ''}
-                            onChange={onChange}
-                            className={styles.formControl}
-                            min='0'
-                            required
-                            readOnly={isAddQuantityMode}
-                            disabled={isAddQuantityMode}
-                        />
-                    </div>
+                    <Select
+                        name='category'
+                        label='Category'
+                        title='Select Category'
+                        leftIcon='pill'
+                        placeholder='Select Category'
+                        value={formData.category || ''}
+                        onChange={onChange}
+                        options={[
+                            { value: 'Vaccine', label: 'Vaccine' },
+                            { value: 'Medical Supply', label: 'Medical Supply' }
+                        ]}
+                    />
+
+                    <Input
+                        type='number'
+                        label='Price'
+                        name='price'
+                        placeholder='Enter price'
+                        value={formData?.price || ''}
+                        onChange={onChange}
+                        min='0'
+                        required
+                        readOnly={isAddQuantityMode}
+                        disabled={isAddQuantityMode}
+                    />
+
                 </>
             )
         }
 
-        {/* always show quantity fields */}
-        <div className={styles.formGroup}>
-            <label htmlFor='quantityInStock'>Quantity in Stock</label>
-            <input
-                type='number'
-                id='quantityInStock'
-                name='quantityInStock'
-                value={formData.quantityInStock || ''}
-                onChange={onChange}
-                className={styles.formControl}
-                min='0'
-                required
-                readOnly={isAddQuantityMode}
-                disabled={isAddQuantityMode}
-            />
-        </div>
+        <br />
 
-        <div className={styles.formGroup}>
-            <label htmlFor='quantityUsed'>Quantity Used</label>
-            <input
-                type='number'
-                id='quantityUsed'
-                name='quantityUsed'
-                value={formData.quantityUsed || 0}
-                onChange={onChange}
-                className={styles.formControl}
-                min='0'
-                readOnly={isRestockMode}
-                disabled={isRestockMode}
-            />
-        </div>
+        {/* always show quantity fields */}
+        <Input
+            type='number'
+            label='Quantity in Stock'
+            name='quantityInStock'
+            placeholder='Enter quantity in stock'
+            value={formData?.quantityInStock || ''}
+            onChange={onChange}
+            min='0'
+            required
+            readOnly={isAddQuantityMode}
+            disabled={isAddQuantityMode}
+        />
+
+        <br />
+
+        <Input
+            type='number'
+            label='Quantity Used'
+            name='quantityUsed'
+            placeholder='Enter quantity used'
+            value={formData?.quantityUsed || 0}
+            onChange={onChange}
+            min='0'
+            readOnly={isRestockMode}
+            disabled={isRestockMode}
+        />
+
+        <br />
 
         {/* hide expiry date in restock mode */}
         {
             !isRestockMode && (
-                <div className={styles.formGroup}>
-                    <label htmlFor='expiryDate'>Expiry Date</label>
-                    <input
-                        type='date'
-                        id='expiryDate'
-                        name='expiryDate'
-                        value={formData.expiryDate || ''}
-                        onChange={onChange}
-                        className={styles.formControl}
-                        required
-                    />
-                </div>
+                <Input
+                    type='date'
+                    label='Expiry Date'
+                    name='expiryDate'
+                    value={formData?.expiryDate || ''}
+                    onChange={onChange}
+                    required
+                    leftIcon='calendar'
+                />
             )
         }
     </>

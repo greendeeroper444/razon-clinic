@@ -10359,3 +10359,35 @@ Use mongoose.model(name, schema)
 2025-09-01 21:47:15 [INFO]: Server running on port 3000 
 2025-09-20 22:09:04 [INFO]: MongoDB Connected: 127.0.0.1 
 2025-09-20 22:09:04 [INFO]: Server running on port 3000 
+2025-09-21 12:42:22 [ERROR]: Error: Resource not found: /api/billings/688e6512c4bc9947d1a5e5c9 ApiError: Resource not found: /api/billings/688e6512c4bc9947d1a5e5c9
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-21 12:43:00 [ERROR]: Error: Resource not found: /api/billings/68cf8249170ffdceaf5d480f ApiError: Resource not found: /api/billings/68cf8249170ffdceaf5d480f
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-21 14:15:38 [ERROR]: Error: Patient validation failed: sex: Path `sex` is required. ValidationError: Patient validation failed: sex: Path `sex` is required.
+    at Document.invalidate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\mongoose\lib\document.js:3343:32)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\mongoose\lib\document.js:3104:17
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-09-21 14:16:17 [ERROR]: Error: Patient validation failed: sex: Path `sex` is required. ValidationError: Patient validation failed: sex: Path `sex` is required.
+    at Document.invalidate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\mongoose\lib\document.js:3343:32)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\mongoose\lib\document.js:3104:17
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)

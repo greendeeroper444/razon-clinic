@@ -1,8 +1,8 @@
 import { useState, SelectHTMLAttributes } from 'react'
 import styles from './Select.module.css'
-import { User, Mail, Lock, Calendar, Users, ChevronDown, Clock } from 'lucide-react'
+import { User, Mail, Lock, Calendar, Users, ChevronDown, Clock, Pill, BadgeCheck } from 'lucide-react'
 
-type IconType = 'user' | 'email' | 'lock' | 'calendar' | 'users' | 'clock'
+type IconType = 'user' | 'email' | 'lock' | 'calendar' | 'users' | 'clock' | 'pill' | 'status';
 
 export interface SelectOption {
     value: string
@@ -53,6 +53,10 @@ const Select: React.FC<SelectProps> = ({
                 return <Users className={styles.icon} />
             case 'clock':
                 return <Clock className={styles.icon} />
+            case 'pill':
+                return <Pill className={styles.icon} />
+            case 'status':
+                return <BadgeCheck  className={styles.icon} />
             default:
                 return null
         }

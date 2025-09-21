@@ -203,6 +203,14 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                 <td>
                                                     <button 
                                                         type='button'
+                                                        className={`${styles.actionBtn} ${styles.primary}`}
+                                                        onClick={() => handleUpdateClick(item, true, true)}
+                                                        disabled={isProcessing}
+                                                    >
+                                                        <Plus className={styles.icon} /> Restock
+                                                    </button>
+                                                    <button 
+                                                        type='button'
                                                         className={`${styles.actionBtn} ${styles.update}`}
                                                         onClick={() => handleUpdateClick(item, false, false)}
                                                         disabled={isProcessing}
@@ -216,14 +224,6 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                         disabled={isProcessing}
                                                     >
                                                         <Trash className={styles.icon} /> Delete
-                                                    </button>
-                                                    <button 
-                                                        type='button'
-                                                        className={`${styles.actionBtn} ${styles.primary}`}
-                                                        onClick={() => handleUpdateClick(item, true, true)}
-                                                        disabled={isProcessing}
-                                                    >
-                                                        <Plus className={styles.icon} /> Restock
                                                     </button>
                                                 </td>
                                             </tr>
