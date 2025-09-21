@@ -7,10 +7,9 @@ import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, Pati
 import { Layout, Modal, PageTitle } from './components'
 import { addAppointment, addBilling, addInventoryItem, addMedicalRecord, addPatient } from './services'
 import { routes } from './routes'
-import axios from 'axios'
+import './services/axiosConfig'
 import { useAuthenticationStore } from './stores'
 
-axios.defaults.withCredentials = true;
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

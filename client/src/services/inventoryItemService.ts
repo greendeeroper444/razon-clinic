@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axiosConfig';
 import API_BASE_URL from '../ApiBaseUrl';
 import { InventoryItemFormData } from '../types';
 
@@ -6,13 +6,7 @@ export const addInventoryItem = async (inventoryData: InventoryItemFormData) => 
     try {
         const response = await axios.post(
             `${API_BASE_URL}/api/inventoryItems/addInventoryItem`,
-            inventoryData,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }
+            inventoryData
         );
         return response.data;
     } catch (error) {
@@ -29,13 +23,7 @@ export const getInventoryItems = async (params = {}) => {
     try {
         const response = await axios.get(
             `${API_BASE_URL}/api/inventoryItems/getInventoryItems`,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                params
-            }
+            { params }
         );
         return response.data;
     } catch (error) {
@@ -51,13 +39,7 @@ export const getInventoryItems = async (params = {}) => {
 export const getInventoryItemById = async (inventoryItemId: string) => {
     try {
         const response = await axios.get(
-            `${API_BASE_URL}/api/inventoryItems/getInventoryItem/${inventoryItemId}`,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }
+            `${API_BASE_URL}/api/inventoryItems/getInventoryItem/${inventoryItemId}`
         );
         return response.data;
     } catch (error) {
@@ -74,13 +56,7 @@ export const updateInventoryItem = async (inventoryItemId: string, updateData: P
     try {
         const response = await axios.put(
             `${API_BASE_URL}/api/inventoryItems/updateInventoryItem/${inventoryItemId}`,
-            updateData,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }
+            updateData
         );
         return response.data;
     } catch (error) {
@@ -95,13 +71,7 @@ export const updateInventoryItem = async (inventoryItemId: string, updateData: P
 
 export const deleteInventoryItem = async (inventoryItemId: string) => {
     return await axios.delete<{success: boolean, message: string}>(
-        `${API_BASE_URL}/api/inventoryItems/deleteInventoryItem/${inventoryItemId}`,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        }
+        `${API_BASE_URL}/api/inventoryItems/deleteInventoryItem/${inventoryItemId}`
     );
 };
 
@@ -110,10 +80,6 @@ export const getLowStockItems = async (threshold = 10) => {
         const response = await axios.get(
             `${API_BASE_URL}/api/inventoryItems/getLowStockItems`,
             {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
                 params: { threshold }
             }
         );
@@ -131,13 +97,7 @@ export const getLowStockItems = async (threshold = 10) => {
 export const getExpiredItems = async () => {
     try {
         const response = await axios.get(
-            `${API_BASE_URL}/api/inventoryItems/getExpiredItems`,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }
+            `${API_BASE_URL}/api/inventoryItems/getExpiredItems`
         );
         return response.data;
     } catch (error) {
@@ -155,10 +115,6 @@ export const getExpiringItems = async (days = 30) => {
         const response = await axios.get(
             `${API_BASE_URL}/api/inventoryItems/getExpiringItems`,
             {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
                 params: { days }
             }
         );
@@ -177,13 +133,7 @@ export const updateStock = async (inventoryItemId: string, stockData: Partial<In
     try {
         const response = await axios.patch(
             `${API_BASE_URL}/api/inventoryItems/updateStock/${inventoryItemId}`,
-            stockData,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }
+            stockData
         );
         return response.data;
     } catch (error) {
