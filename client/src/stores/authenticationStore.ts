@@ -294,10 +294,25 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                 },
 
                 //auth helpers (simplified for cookie-based auth)
+                // initializeAuth: async () => {
+                //     const isRemembered = localStorage.getItem('rememberUser')
+                //     if (isRemembered && get().isAuthenticated) {
+                //         await get().fetchUserProfile()
+                //     }
+                // },
                 initializeAuth: async () => {
-                    const isRemembered = localStorage.getItem('rememberUser')
-                    if (isRemembered && get().isAuthenticated) {
+                    try {
                         await get().fetchUserProfile()
+                        const { user } = get()
+                        if (user) {
+                            set({ isAuthenticated: true })
+                        }
+                    } catch (error) {
+                        console.log(error)
+                        set({ 
+                            user: null, 
+                            isAuthenticated: false 
+                        })
                     }
                 },
 

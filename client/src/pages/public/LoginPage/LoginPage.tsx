@@ -33,10 +33,10 @@ const LoginPage = () => {
     //redirect if already authenticated
     useEffect(() => {
         if (user) {
-            const userRole = user.role
-            if (userRole === 'User') {
+            const userRole = user.userType
+            if (userRole === 'user') {
                 navigate('/user/appointments')
-            } else if (userRole === 'Doctor' || userRole === 'Staff') {
+            } else if (userRole === 'admin') {
                 navigate('/admin/dashboard')
             } else {
                 navigate('/')

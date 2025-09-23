@@ -15,6 +15,7 @@ export interface User {
     fatherInfo?: ParentInfo;
     religion?: string;
     role: string;
+    userType: string
 }
 
 export interface UserFormData {

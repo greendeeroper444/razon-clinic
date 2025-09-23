@@ -2,9 +2,9 @@ import { HomePage, LoginPage, SignupPage, ForgotPasswordPage, TermsAndConditionP
 import { RouteType } from '../types';
 
 export const publicRoutes: RouteType[] = [
-    { path: '/', component: HomePage, layout: 'user' },
-    { path: '/login', component: LoginPage, layout: 'user' },
-    { path: '/signup', component: SignupPage, layout: 'user' },
-    { path: '/forgot-password', component: ForgotPasswordPage, layout: 'user' },
-    { path: '/terms-and-conditions', component: TermsAndConditionPage, layout: 'user' },
+    { path: '/', component: HomePage, layout: 'public', requireAuth: false, redirectOnAuth: true },
+    { path: '/login', component: LoginPage, layout: 'public', requireAuth: false },
+    { path: '/signup', component: SignupPage, layout: 'public', requireAuth: false },
+    { path: '/forgot-password', component: ForgotPasswordPage, layout: 'public', requireAuth: false },
+    { path: '/terms-and-conditions', component: TermsAndConditionPage, layout: 'public', requireAuth: false },
 ];

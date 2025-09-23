@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
 import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, PatientFormData, FormDataType, ModalType, BillingFormData } from './types'
-import { Layout, Modal, PageTitle } from './components'
+import { Layout, Modal, PageTitle, ProtectedRoute, RootRedirect} from './components'
 import { addAppointment, addBilling, addInventoryItem, addMedicalRecord, addPatient } from './services'
 import { routes } from './routes'
 import './services/httpClient'
@@ -17,8 +17,8 @@ function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   
   //initialize authentication on app load
-  const initializeAuth = useAuthenticationStore(state => state.initializeAuth)
-  
+  const initializeAuth = useAuthenticationStore(state => state.initializeAuth);
+
   useEffect(() => {
     initializeAuth()
   }, [initializeAuth])
@@ -54,8 +54,6 @@ function App() {
 
     //handle delete operations (when formData is a string ID)
     if (typeof formData === 'string') {
-      //handle delete logic here
-      console.log('Deleting item with ID:', formData);
       toast.success('Item deleted successfully');
       closeModal();
       return;
@@ -68,7 +66,6 @@ function App() {
           await addAppointment(formData as AppointmentFormData);
           
           toast.success('Appointment added successfully');
-          // window.dispatchEvent(new CustomEvent('appointment-refresh'));
         } catch (error) {
           console.error('Error adding appointment:', error);
         }
@@ -77,20 +74,17 @@ function App() {
         await addPatient(formData as PatientFormData);
           
         toast.success('Personal patient added successfully');
-        // window.dispatchEvent(new CustomEvent('patient-refresh'));
         break;
       case 'item':
           await addInventoryItem(formData as InventoryItemFormData);
           
           toast.success('Inventory item added successfully');
-          // window.dispatchEvent(new CustomEvent('inventory-refresh'));
         break;
       case 'medical':
         try {
           await addMedicalRecord(formData as MedicalRecordFormData);
           
           toast.success('Medical record added successfully');
-          // window.dispatchEvent(new CustomEvent('medical-refresh'));
         } catch (error) {
           console.error('Error adding medical:', error);
         }
@@ -100,7 +94,6 @@ function App() {
           await addBilling(formData as BillingFormData);
           
           toast.success('Billings added successfully');
-          // window.dispatchEvent(new CustomEvent('billing-refresh'));
         } catch (error) {
           console.error('Error adding billing:', error);
         }
@@ -123,8 +116,54 @@ function App() {
           <Toaster position="top-center" richColors />
           <PageTitle />
           <Routes>
+            {/* special handling for root path */}
+            <Route path="/" element={<RootRedirect />} />
+            
+            {/* admin routes - require admin user type */}
             {
-              routes.map((route) => (
+              routes.filter(route => route.layout === 'admin').map((route) => (
+                <Route 
+                  key={route.path}
+                  path={route.path} 
+                  element={
+                    <ProtectedRoute allowedUserTypes={['admin']}>
+                      <Layout
+                        type={route.layout}
+                        sidebarCollapsed={sidebarCollapsed}
+                        toggleSidebar={toggleSidebar}
+                      >
+                        <route.component openModal={openModal} />
+                      </Layout>
+                    </ProtectedRoute>
+                  } 
+                />
+              ))
+            }
+
+            {/* user routes - require user user type */}
+            {
+              routes.filter(route => route.layout === 'user').map((route) => (
+                <Route 
+                  key={route.path}
+                  path={route.path} 
+                  element={
+                    <ProtectedRoute allowedUserTypes={['user']}>
+                      <Layout
+                        type={route.layout}
+                        sidebarCollapsed={sidebarCollapsed}
+                        toggleSidebar={toggleSidebar}
+                      >
+                        <route.component openModal={openModal} />
+                      </Layout>
+                    </ProtectedRoute>
+                  } 
+                />
+              ))
+            }
+
+            {/* public routes - no authentication required */}
+            {
+              routes.filter(route => route.layout === 'public' && route.path !== '/').map((route) => (
                 <Route 
                   key={route.path}
                   path={route.path} 

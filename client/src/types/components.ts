@@ -1,7 +1,7 @@
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { ModalType } from "./modal";
 import { ActionButton } from "./action";
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 
 //navbar
 export interface NavbarProps {
@@ -67,4 +67,11 @@ export interface SubmitLoadingProps {
     size?: 'small' | 'medium' | 'large'
     variant?: 'overlay' | 'inline' | 'button'
     className?: string
+}
+
+export interface ProtectedRouteProps {
+    children: ReactElement;
+    requireAuth?: boolean;
+    redirectTo?: string;
+    allowedUserTypes?: string[];
 }

@@ -2,8 +2,8 @@ import { UserAppointmentPage, UserAppointmentDetailsPage, UserMedicalRecordsPage
 import { RouteType } from '../types';
 
 export const userRoutes: RouteType[] = [
-    { path: '/user/appointments', component: UserAppointmentPage, layout: 'user' },
-    { path: '/user/appointments/details/:appointmentId', component: UserAppointmentDetailsPage, layout: 'user' },
-    { path: '/user/medical-records', component: UserMedicalRecordsPage, layout: 'user' },
-    { path: '/user/medical-records/details/:medicalRecordId', component: UserMedicalRecordDetailsPage, layout: 'user' },
+    { path: '/user/appointments', component: UserAppointmentPage, layout: 'user', requireAuth: true, allowedUserTypes: ['user'] },
+    { path: '/user/appointments/details/:appointmentId', component: UserAppointmentDetailsPage, layout: 'user', requireAuth: true, allowedUserTypes: ['user'] },
+    { path: '/user/medical-records', component: UserMedicalRecordsPage, layout: 'user', requireAuth: true, allowedUserTypes: ['user'] },
+    { path: '/user/medical-records/details/:medicalRecordId', component: UserMedicalRecordDetailsPage, layout: 'user', requireAuth: true, allowedUserTypes: ['user'] },
 ];
