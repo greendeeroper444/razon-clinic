@@ -24,12 +24,16 @@ const inventoryItemSchema = new mongoose.Schema(
         },
         quantityUsed: {
             type: Number,
-            required: true,
+            default: 0,
             min: 0
         },
         expiryDate: {
             type: Date,
             required: true
+        },
+        isArchived: {
+            type: Boolean,
+            default: false
         }
     },
     {
@@ -44,6 +48,18 @@ const inventoryItemSchema = new mongoose.Schema(
         }
     }
 );
+
+//virtual for remaining quantity
+inventoryItemSchema.virtual('quantityRemaining').get(function() {
+    return this.quantityInStock - this.quantityUsed;
+});
+
+//static to find soon-to-expire items
+inventoryItemSchema.statics.findExpiringSoon = function(days = 30) {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() + days);
+    return this.find({ expiryDate: { $lte: cutoff } });
+};
 
 const InventoryItem = mongoose.model('InventoryItem', inventoryItemSchema);
 

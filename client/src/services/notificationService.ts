@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from './httpClient'
 import API_BASE_URL from '../ApiBaseUrl'
 import { Notification, NotificationResponse } from '../types';
 

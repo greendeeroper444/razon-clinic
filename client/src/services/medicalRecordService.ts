@@ -21,9 +21,6 @@ export const addMedicalRecord = async (medicalRecordData: MedicalRecordFormData)
     }
 };
 
-
-
-//get all medical records
 export const getMedicalRecords = async (params = {}) => {
     try {
 
@@ -33,7 +30,7 @@ export const getMedicalRecords = async (params = {}) => {
             search: ''
         };
 
-        const queryParams = { ...defaultParams, params };
+        const queryParams = { ...defaultParams, ...params };
 
         const response  =  await axios.get(
             `${API_BASE_URL}/api/medicalRecords/getMedicalRecords`,
@@ -67,12 +64,7 @@ export const getMedicalRecordById = async (medicalRecordId: string) => {
     }
 };
 
-
-//update medical record
-export const updateMedicalRecord = async (
-    medicalRecordId: string, 
-    medicalRecordData: Partial<MedicalRecordFormData>
-) => {
+export const updateMedicalRecord = async (medicalRecordId: string, medicalRecordData: Partial<MedicalRecordFormData>) => {
     try {
         //transform form data to nested structure if needed
         const transformedData = transformFormDataToApiFormat(medicalRecordData as MedicalRecordFormData);
@@ -93,9 +85,6 @@ export const updateMedicalRecord = async (
     }
 };
 
-
-
-//delete medical record
 export const deleteMedicalRecord = async (medicalRecordId: string) => {
     try {
         const response = await axios.delete(`${API_BASE_URL}/api/medicalRecords/deleteMedicalRecord/${medicalRecordId}`);

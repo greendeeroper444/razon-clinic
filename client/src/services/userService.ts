@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from './httpClient'
 import { UserResponse, UsersResponse, UserDetailed } from "../types";
 import API_BASE_URL from "../ApiBaseUrl";
 

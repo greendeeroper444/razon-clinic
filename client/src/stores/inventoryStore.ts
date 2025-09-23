@@ -58,7 +58,6 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     const response = await getInventoryItems(params);
                     const inventoryItems = response.data.inventoryItems || [];
                     const pagination = response.data.pagination || {};
-                    console.log('Pagination Data:', pagination);
 
                     set({ 
                         inventoryItems,

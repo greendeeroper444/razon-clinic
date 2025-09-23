@@ -4,31 +4,39 @@ const mongoose = require('mongoose');
 class PatientService {
 
     async createPatient(patientData) {
-        const processedData = {
-            firstName: patientData.firstName,
-            lastName: patientData.lastName,
-            middleName: patientData.middleName,
-            email: patientData.email,
-            contactNumber: patientData.contactNumber,
-            birthdate: patientData.birthdate,
-            sex: patientData.sex,
-            address: patientData.address,
-            motherInfo: {
-                name: patientData.motherInfo?.name || '',
-                age: patientData.motherInfo?.age || null,
-                occupation: patientData.motherInfo?.occupation || ''
-            },
-            fatherInfo: {
-                name: patientData.fatherInfo?.name || '',
-                age: patientData.fatherInfo?.age || null,
-                occupation: patientData.fatherInfo?.occupation || ''
-            },
-            religion: patientData.religion || ''
-        };
-
-        const patient = new Patient(processedData);
-        return await patient.save();
+        try {
+            const patient = new Patient(patientData);
+            return await patient.save();
+        } catch (error) {
+            throw error;
+        }
     }
+    // async createPatient(patientData) {
+    //     const processedData = {
+    //         firstName: patientData.firstName,
+    //         lastName: patientData.lastName,
+    //         middleName: patientData.middleName,
+    //         email: patientData.email,
+    //         contactNumber: patientData.contactNumber,
+    //         birthdate: patientData.birthdate,
+    //         sex: patientData.sex,
+    //         address: patientData.address,
+    //         motherInfo: {
+    //             name: patientData.motherInfo?.name || '',
+    //             age: patientData.motherInfo?.age || null,
+    //             occupation: patientData.motherInfo?.occupation || ''
+    //         },
+    //         fatherInfo: {
+    //             name: patientData.fatherInfo?.name || '',
+    //             age: patientData.fatherInfo?.age || null,
+    //             occupation: patientData.fatherInfo?.occupation || ''
+    //         },
+    //         religion: patientData.religion || ''
+    //     };
+
+    //     const patient = new Patient(processedData);
+    //     return await patient.save();
+    // }
 
     async getPatients(queryParams) {
         const { 

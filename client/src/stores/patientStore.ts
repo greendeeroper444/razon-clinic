@@ -27,9 +27,25 @@ export const usePatientStore = create<PatientState>()(
 
                     const response = await getPatients();
                     const patients = response.data.patients || [];
+                    const pagination = response.data.pagination || {};
 
                     set({ 
                         patients,
+                        pagination: {
+                            currentPage: pagination.currentPage || 1,
+                            totalPages: pagination.totalPages || 1,
+                            totalItems: pagination.totalItems || 0,
+                            itemsPerPage: pagination.itemsPerPage || 10,
+                            hasNextPage: pagination.hasNextPage || false,
+                            hasPreviousPage: pagination.hasPreviousPage || false,
+                            startIndex: pagination.startIndex || 1,
+                            endIndex: pagination.endIndex || 0,
+                            isUnlimited: pagination.isUnlimited || false,
+                            nextPage: pagination.nextPage,
+                            previousPage: pagination.previousPage,
+                            remainingItems: pagination.remainingItems || 0,
+                            searchTerm: pagination.searchTerm || null
+                        },
                         loading: false,
                         fetchLoading: false
                     });

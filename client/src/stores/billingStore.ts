@@ -31,52 +31,49 @@ export const useBillingStore = create<BillingState>()(
 
 
             //fetch billings with pagination and filters
-            fetchBillings: async (page?: number, search?: string, status?: string) => {
+            fetchBillings: async () => {
                 try {
-                    const currentState = get();
-                    const pageToFetch = page ?? currentState.currentPage;
-                    const searchToUse = search ?? currentState.searchTerm;
-                    const statusToUse = status ?? currentState.filterStatus;
-                    
-                    set({ fetchLoading: true, loading: true, error: null });
+                    set({ fetchLoading: true, loading: true, error: null,});
 
-                    const params: any = {
-                        page: pageToFetch,
-                        limit: currentState.limit
-                    };
-                    
-                    if (searchToUse.trim()) {
-                        params.patientName = searchToUse.trim();
-                    }
-                    
-                    if (statusToUse !== 'All') {
-                        params.paymentStatus = statusToUse;
-                    }
+                    const response = await getAllBillings();
 
-                    const response = await getAllBillings(params);
+                    const billings = response.data.billings || [];
+                    const pagination = response.data.pagination || {};
                     
-                    if (response.data.success) {
+                    if (response.success) {
                         set({
-                            billings: response.data.data,
-                            currentPage: response.data.pagination.currentPage,
-                            totalPages: response.data.pagination.totalPages,
-                            totalRecords: response.data.pagination.totalRecords,
+                            billings,
+                            pagination: {
+                                currentPage: pagination.currentPage || 1,
+                                totalPages: pagination.totalPages || 1,
+                                totalItems: pagination.totalItems || 0,
+                                itemsPerPage: pagination.itemsPerPage || 10,
+                                hasNextPage: pagination.hasNextPage || false,
+                                hasPreviousPage: pagination.hasPreviousPage || false,
+                                startIndex: pagination.startIndex || 1,
+                                endIndex: pagination.endIndex || 0,
+                                isUnlimited: pagination.isUnlimited || false,
+                                nextPage: pagination.nextPage,
+                                previousPage: pagination.previousPage,
+                                remainingItems: pagination.remainingItems || 0,
+                                searchTerm: pagination.searchTerm || null
+                            },
                             loading: false,
                             fetchLoading: false
                         });
                     } else {
                         set({
-                            error: 'Failed to fetch billing data',
+                             error: response.message || 'Failed to fetch billings',
                             loading: false,
                             fetchLoading: false
                         });
                     }
                 } catch (error) {
-                    console.error('Error fetching billings:', error);
-                    set({
-                        error: 'Failed to load billing data. Please try again.',
-                        loading: false,
-                        fetchLoading: false
+                    console.error('Error fetching appointments:', error);
+                    set({ 
+                        fetchLoading: false,
+                        error: 'An error occurred while fetching billings', 
+                        loading: false 
                     });
                 }
             },

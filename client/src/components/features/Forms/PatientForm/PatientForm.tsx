@@ -67,6 +67,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
         <div className={styles.formRow}>
             <Input
                 type='date'
+                label='Birthday'
                 name='birthdate'
                 placeholder={formData.birthdate ? undefined : 'Select your birthdate'}
                 leftIcon='calendar'
@@ -80,6 +81,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
 
             <Select
                 name='sex'
+                label='Gender'
                 title='Select Gender'
                 leftIcon='users'
                 placeholder='Select Gender'

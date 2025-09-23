@@ -1,119 +1,118 @@
-import axios from 'axios'
-import { BillingFormData, BillingResponse, InventoryItemOption, MedicalRecordOption } from '../types'
+import axios from './httpClient'
+import { BillingFormData } from '../types'
 import API_BASE_URL from '../ApiBaseUrl'
 
 export const addBilling = async (billingData: BillingFormData) => {
-    return await axios.post<{
-        success: boolean;
-        message: string;
-        data: BillingResponse;
-    }>(
-        `${API_BASE_URL}/api/billings/addBilling`,
-        billingData,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+    try {
+        const response = await axios.post(
+            `${API_BASE_URL}/api/billings/addBilling`,
+            billingData
+        );
+    
+        return response.data;
+    } catch (error) {
+        console.error('Error adding billing:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
 };
 
-//get all billing records with pagination and filters
-export const getAllBillings = async (params?: {
-    page?: number;
-    limit?: number;
-    paymentStatus?: string;
-    patientName?: string;
-}) => {
-    const queryParams = new URLSearchParams();
-    if (params?.page) queryParams.append('page', params.page.toString());
-    if (params?.limit) queryParams.append('limit', params.limit.toString());
-    if (params?.paymentStatus) queryParams.append('paymentStatus', params.paymentStatus);
-    if (params?.patientName) queryParams.append('patientName', params.patientName);
+export const getAllBillings = async (params = {}) => {
+    try {
+        const defaultParams = {
+            page: 1,
+            limit: 10,
+            search: ''
+        };
 
-    return await axios.get<{
-        success: boolean;
-        message: string;
-        data: BillingResponse[];
-        pagination: {
-            currentPage: number;
-            totalPages: number;
-            totalRecords: number;
-            hasNext: boolean;
-            hasPrev: boolean;
+        const queryParams = { ...defaultParams, ...params };
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/billings/getBillings`,
+            { params: queryParams }
+        );
+
+        return response.data
+    } catch (error) {
+        console.error('Error fetching billings:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    }>(
-        `${API_BASE_URL}/api/billings/getBillings?${queryParams.toString()}`,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        }
-    );
+
+        throw error;
+    }
 };
 
-//get billing by ID
 export const getBillingById = async (billingId: string) => {
-    return await axios.get<{
-        success: boolean;
-        message: string;
-        data: BillingResponse;
-    }>(
-        `${API_BASE_URL}/api/billings/${billingId}`,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/api/billings/${billingId}`,
+        );
+    
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching billing:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
 };
 
-//update billing record
 export const updateBilling = async (billingId: string, billingData: Partial<BillingFormData>) => {
-    return await axios.put<{
-        success: boolean;
-        message: string;
-        data: BillingResponse;
-    }>(
-        `${API_BASE_URL}/api/billings/${billingId}`,
-        billingData,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+    try {
+        const response = await axios.put(
+            `${API_BASE_URL}/api/billings/${billingId}`,
+            billingData
+        );
+    
+        return response.data;
+    } catch (error) {
+        console.error('Error updating billing:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
 };
 
 //get medical records for dropdown
 export const getMedicalRecordsForBilling = async () => {
-    return await axios.get<{
-        success: boolean;
-        message: string;
-        data: MedicalRecordOption[];
-    }>(
-        `${API_BASE_URL}/api/billings/getMedicalRecords`,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/api/billings/getMedicalRecords`
+        );
+    
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching medical record for billing:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
 };
 
 
 export const deleteBilling = async (billingId: string) => {
-    return await axios.delete<{
-        success: boolean;
-        message: string;
-    }>(
-        `${API_BASE_URL}/api/billings/deleteBilling/${billingId}`,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+    try {
+        const response = await axios.delete(
+            `${API_BASE_URL}/api/billings/deleteBilling/${billingId}`,
+        );
+    
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting billing:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
 }
