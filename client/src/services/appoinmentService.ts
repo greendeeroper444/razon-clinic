@@ -1,48 +1,47 @@
-import axios from 'axios'
-import { AppointmentFilters, AppointmentFormData, AppointmentResponse } from '../types'
+import axios from './axiosConfig'
+import { AppointmentFormData, AppointmentResponse } from '../types'
 import API_BASE_URL from '../ApiBaseUrl'
 import { cleanObject, convertTo24Hour, createParentInfo, generateTimeSlots, processPatient } from '../utils';
 
 
 export const addAppointment = async (appointmentData: AppointmentFormData) => {
-    const { patients = [], ...otherData } = appointmentData;
-    
-    const processedData = cleanObject({
-        ...otherData,
-        preferredTime: convertTo24Hour(String(appointmentData.preferredTime)),
-        motherAge: appointmentData.motherAge ? Number(appointmentData.motherAge) : undefined,
-        fatherAge: appointmentData.fatherAge ? Number(appointmentData.fatherAge) : undefined,
-        motherName: appointmentData.motherName?.trim(),
-        motherOccupation: appointmentData.motherOccupation?.trim(),
-        fatherName: appointmentData.fatherName?.trim(),
-        fatherOccupation: appointmentData.fatherOccupation?.trim(),
-        patients: patients.length > 0 
-        ? patients.map(processPatient)
-        : [processPatient(appointmentData)]
-    });
-    
-    return await axios.post<{
-        success: boolean;
-        message: string;
-        data: AppointmentResponse[];
-        appointmentCount: number;
-    }>(
-        `${API_BASE_URL}/api/appointments/addAppointment`,
-        processedData,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+    try {
+        const { patients = [], ...otherData } = appointmentData;
+        
+        const processedData = cleanObject({
+            ...otherData,
+            preferredTime: convertTo24Hour(String(appointmentData.preferredTime)),
+            motherAge: appointmentData.motherAge ? Number(appointmentData.motherAge) : undefined,
+            fatherAge: appointmentData.fatherAge ? Number(appointmentData.fatherAge) : undefined,
+            motherName: appointmentData.motherName?.trim(),
+            motherOccupation: appointmentData.motherOccupation?.trim(),
+            fatherName: appointmentData.fatherName?.trim(),
+            fatherOccupation: appointmentData.fatherOccupation?.trim(),
+            patients: patients.length > 0 
+            ? patients.map(processPatient)
+            : [processPatient(appointmentData)]
+        });
+        
+        const response = await axios.post(
+            `${API_BASE_URL}/api/appointments/addAppointment`,
+            processedData
+        )
+
+        return response.data;
+    } catch (error) {
+        console.error('Error adding appointment:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
 };
 
 
 
 export const getAppointments = async (params = {}) => {
     try {
-        //set default parameters if not provided
         const defaultParams = {
             page: 1,
             limit: 10,
@@ -69,7 +68,6 @@ export const getAppointments = async (params = {}) => {
 
 export const getMyAppointments = async (params = {}) => {
     try {
-        //set default parameters if not provided
         const defaultParams = {
             page: 1,
             limit: 10,
@@ -96,23 +94,18 @@ export const getMyAppointments = async (params = {}) => {
 
 
 export const getAppointmentsByDate = async (date: string) => {
-    const url = `${API_BASE_URL}/api/appointments/getAllTimePerDate?date=${date}`;
-    
-    return await axios.get<{
-        success: boolean,
-        date: string,
-        totalAppointments: number,
-        availableTimeSlots: string[],
-        timeSlots: {[key: string]: AppointmentResponse[]},
-        appointments: AppointmentResponse[]
-    }>(
-        url,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/appointments/getAllTimePerDate?date=${date}`);
+
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching appointment by date:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
 };
 
 
@@ -171,14 +164,9 @@ export const getAvailableTimeSlots = async (date: string) => {
 
 export const getAppointmentById = async (appointmentId: string) => {
     try {
-        return await axios.get(
-            `${API_BASE_URL}/api/appointments/getAppointmentById/${appointmentId}`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }
-        );
+        const response = await axios.get(`${API_BASE_URL}/api/appointments/getAppointmentById/${appointmentId}`);
+
+        return response.data;
     } catch (error) {
         console.error("Error fetching appointment details:", error);
         throw error;
@@ -187,59 +175,70 @@ export const getAppointmentById = async (appointmentId: string) => {
 
 
 
-
 export const updateAppointment = async (appointmentId: string, appointmentData: AppointmentFormData) => {
-    const {
-        motherName, motherAge, motherOccupation,
-        fatherName, fatherAge, fatherOccupation,
-        ...otherData
-    } = appointmentData;
-    
-    const processedData = cleanObject({
-        ...otherData,
-        preferredTime: appointmentData.preferredTime ? convertTo24Hour(String(appointmentData.preferredTime)) : undefined,
-        motherInfo: createParentInfo(motherName, motherAge, motherOccupation),
-        fatherInfo: createParentInfo(fatherName, fatherAge, fatherOccupation)
-    });
-    
-    return await axios.put<{
-        success: boolean;
-        message: string;
-        data: AppointmentResponse;
-    }>(
-        `${API_BASE_URL}/api/appointments/updateAppointment/${appointmentId}`,
-        processedData,
-        {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+    try {
+        const {
+            motherName, motherAge, motherOccupation,
+            fatherName, fatherAge, fatherOccupation,
+            ...otherData
+        } = appointmentData;
+        
+        const processedData = cleanObject({
+            ...otherData,
+            preferredTime: appointmentData.preferredTime ? convertTo24Hour(String(appointmentData.preferredTime)) : undefined,
+            motherInfo: createParentInfo(motherName, motherAge, motherOccupation),
+            fatherInfo: createParentInfo(fatherName, fatherAge, fatherOccupation)
+        });
+        
+        const response = await axios.put(
+            `${API_BASE_URL}/api/appointments/updateAppointment/${appointmentId}`,
+            processedData
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating appointment:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-        }
-    );
+
+        throw error;
+    }
 };
 
 export const updateAppointmentStatus = async (appointmentId: string, status: string) => {
-    return await axios.patch<{success: boolean, message: string, data: AppointmentResponse}>(
-        `${API_BASE_URL}/api/appointments/updateAppointment/${appointmentId}/status`,
-        { status },
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+    try {
+        const response = await axios.patch(
+            `${API_BASE_URL}/api/appointments/updateAppointment/${appointmentId}/status`,
+            { status }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating appointment status:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
 };
 
 
 
 export const deleteAppointment = async (appointmentId: string) => {
-    return await axios.delete<{success: boolean, message: string}>(
-        `${API_BASE_URL}/api/appointments/deleteAppointment/${appointmentId}`,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+    try {
+        const response = await axios.delete(
+            `${API_BASE_URL}/api/appointments/deleteAppointment/${appointmentId}`,
+        );
+    
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting appointment:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
 };

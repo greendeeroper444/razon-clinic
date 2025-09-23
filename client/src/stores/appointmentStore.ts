@@ -172,9 +172,9 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     
                     const response = await getAppointmentById(appointmentId);
                     
-                    if (response.data.success) {
+                    if (response.success) {
                         set({ 
-                            currentAppointment: response.data.data,
+                            currentAppointment: response.data,
                             loading: false 
                         })
                     } else {

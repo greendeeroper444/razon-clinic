@@ -282,6 +282,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
                     <Input
                         type='date'
+                        label='Birthday'
                         name={`${fieldPrefix}birthdate`}
                         placeholder={patientData.birthdate ? undefined : 'Select your birthdate'}
                         leftIcon='calendar'
@@ -294,6 +295,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     />
 
                     <Select
+                        label='Gender'
                         name={`${fieldPrefix}sex`}
                         title='Select Gender'
                         leftIcon='users'
@@ -309,7 +311,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 </div>
 
                 <div className={styles.formRow}>
-                   <Input
+                    <Input
                         type='number'
                         label='Height (cm)'
                         name={`${fieldPrefix}height`}

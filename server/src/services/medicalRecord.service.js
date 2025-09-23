@@ -174,39 +174,136 @@ class MedicalRecordService {
     }
 
     async getMedicalRecords(queryParams) {
-        const { page = 1, limit = 10, search } = queryParams;
-        const skip = (page - 1) * limit;
+        try {
+            const {
+                search,
+                page,
+                limit,
+                fullName,
+                phone,
+                email,
+                gender,
+                bloodType,
+                chiefComplaint,
+                diagnosis,
+                fromDate,
+                toDate,
+                sortBy = 'createdAt',
+                sortOrder = 'desc'
+            } = queryParams;
 
-        let query = {};
-        if (search) {
-            query = {
-                $or: [
+            const filter = {};
+
+            if (fromDate || toDate) {
+                filter.createdAt = {};
+                if (fromDate) filter.createdAt.$gte = new Date(fromDate);
+                if (toDate) filter.createdAt.$lte = new Date(toDate);
+            }
+
+            //search functionality - search across multiple fields
+            if (search) {
+                filter.$or = [
                     { 'personalDetails.fullName': { $regex: search, $options: 'i' } },
                     { 'personalDetails.phone': { $regex: search, $options: 'i' } },
-                    { 'personalDetails.email': { $regex: search, $options: 'i' } }
-                ]
-            };
-        }
-
-        const medicalRecords = await MedicalRecord.find(query)
-            .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(parseInt(limit));
-
-        const total = await MedicalRecord.countDocuments(query);
-        const totalPages = Math.ceil(total / limit);
-
-        return {
-            medicalRecords,
-            pagination: {
-                currentPage: parseInt(page),
-                totalPages,
-                totalItems: total,
-                itemsPerPage: parseInt(limit),
-                hasNextPage: parseInt(page) < totalPages,
-                hasPrevPage: parseInt(page) > 1
+                    { 'personalDetails.email': { $regex: search, $options: 'i' } },
+                    { 'personalDetails.address': { $regex: search, $options: 'i' } },
+                    { 'currentSymptoms.chiefComplaint': { $regex: search, $options: 'i' } },
+                    { 'currentSymptoms.symptomsDescription': { $regex: search, $options: 'i' } },
+                    { diagnosis: { $regex: search, $options: 'i' } },
+                    { treatmentPlan: { $regex: search, $options: 'i' } },
+                    { consultationNotes: { $regex: search, $options: 'i' } }
+                ];
             }
-        };
+
+            //individual field filters
+            if (fullName) {
+                filter['personalDetails.fullName'] = { $regex: fullName, $options: 'i' };
+            }
+            if (phone) {
+                filter['personalDetails.phone'] = { $regex: phone, $options: 'i' };
+            }
+            if (email) {
+                filter['personalDetails.email'] = { $regex: email, $options: 'i' };
+            }
+            if (gender) {
+                filter['personalDetails.gender'] = gender;
+            }
+            if (bloodType) {
+                filter['personalDetails.bloodType'] = bloodType;
+            }
+            if (chiefComplaint) {
+                filter['currentSymptoms.chiefComplaint'] = { $regex: chiefComplaint, $options: 'i' };
+            }
+            if (diagnosis) {
+                filter.diagnosis = { $regex: diagnosis, $options: 'i' };
+            }
+
+            const sort = {};
+            sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+
+            const totalItems = await MedicalRecord.countDocuments(filter);
+
+            const searchTerm = search || fullName || phone || email || chiefComplaint || diagnosis || null;
+
+            let medicalRecords;
+            let pagination;
+
+            if (limit && parseInt(limit) > 0) {
+                const currentPage = parseInt(page) || 1;
+                const itemsPerPage = parseInt(limit);
+                const skip = (currentPage - 1) * itemsPerPage;
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                
+                medicalRecords = await MedicalRecord.find(filter)
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(itemsPerPage);
+
+                const startIndex = totalItems > 0 ? skip + 1 : 0;
+                const endIndex = Math.min(skip + itemsPerPage, totalItems);
+
+                pagination = {
+                    currentPage: currentPage,
+                    totalPages: totalPages,
+                    totalItems: totalItems,
+                    itemsPerPage: itemsPerPage,
+                    hasNextPage: currentPage < totalPages,
+                    hasPreviousPage: currentPage > 1,
+                    startIndex: startIndex,
+                    endIndex: endIndex,
+                    isUnlimited: false,
+                    nextPage: currentPage < totalPages ? currentPage + 1 : null,
+                    previousPage: currentPage > 1 ? currentPage - 1 : null,
+                    remainingItems: Math.max(0, totalItems - endIndex),
+                    searchTerm: searchTerm
+                };
+            } else {
+                medicalRecords = await MedicalRecord.find(filter).sort(sort);
+
+                pagination = {
+                    currentPage: 1,
+                    totalPages: 1,
+                    totalItems: totalItems,
+                    itemsPerPage: totalItems,
+                    hasNextPage: false,
+                    hasPreviousPage: false,
+                    startIndex: totalItems > 0 ? 1 : 0,
+                    endIndex: totalItems,
+                    isUnlimited: true,
+                    nextPage: null,
+                    previousPage: null,
+                    remainingItems: 0,
+                    searchTerm: searchTerm
+                };
+            }
+
+            return {
+                medicalRecords,
+                pagination
+            };
+        } catch (error) {
+            throw error;
+        }
     }
 
     async getMedicalRecordById(medicalRecordId) {

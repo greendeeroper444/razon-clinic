@@ -8,6 +8,7 @@ export const addInventoryItem = async (inventoryData: InventoryItemFormData) => 
             `${API_BASE_URL}/api/inventoryItems/addInventoryItem`,
             inventoryData
         );
+
         return response.data;
     } catch (error) {
         console.error('Error adding inventory item:', error);
@@ -19,26 +20,8 @@ export const addInventoryItem = async (inventoryData: InventoryItemFormData) => 
     }
 };
 
-// export const getInventoryItems = async (params = {}) => {
-//     try {
-//         const response = await axios.get(
-//             `${API_BASE_URL}/api/inventoryItems/getInventoryItems`,
-//             { params }
-//         );
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error fetching inventory items:', error);
-//         if (axios.isAxiosError(error)) {
-//             throw error.response?.data || error.message;
-//         }
-
-//         throw error;
-//     }
-// };
-
 export const getInventoryItems = async (params = {}) => {
     try {
-        //set default parameters if not provided
         const defaultParams = {
             page: 1,
             limit: 10,
@@ -98,9 +81,20 @@ export const updateInventoryItem = async (inventoryItemId: string, updateData: P
 };
 
 export const deleteInventoryItem = async (inventoryItemId: string) => {
-    return await axios.delete<{success: boolean, message: string}>(
-        `${API_BASE_URL}/api/inventoryItems/deleteInventoryItem/${inventoryItemId}`
-    );
+    try {
+        const response = await axios.delete<{success: boolean, message: string}>(
+            `${API_BASE_URL}/api/inventoryItems/deleteInventoryItem/${inventoryItemId}`
+        );
+    
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting inventory item:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+
+        throw error;
+    }
 };
 
 export const getLowStockItems = async (threshold = 10) => {

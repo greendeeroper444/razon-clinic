@@ -57,7 +57,6 @@ class AppointmentController {
             const isMyAppointmentsRoute = req.route.path === '/getMyAppointments';
             let queryParams = { ...req.query };
             
-            //if it's getMyAppointments route, enforce userId filter
             if (isMyAppointmentsRoute) {
                 const userId = req.user.id;
                 if (!userId) {
