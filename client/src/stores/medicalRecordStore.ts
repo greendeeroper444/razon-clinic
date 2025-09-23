@@ -32,6 +32,41 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
             showDetails: false,
             selectedRecord: null,
 
+            //add new medical record
+            addMedicalRecord: async (data: MedicalRecordFormData) => {
+                try {
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
+                    
+                    await addMedicalRecord(data);
+                    
+                    //refresh data
+                    await get().fetchMedicalRecords();
+                    
+                    toast.success('Medical record created successfully!');
+                    set({ isModalOpen: false, selectedMedicalRecord: null });
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false, 
+                            isProcessing: false,
+                            currentOperation: null
+                        });
+                    }, 500);
+
+                } catch (error) {
+                    console.error('Error creating medical record:', error);
+                    toast.error('Failed to create medical record');
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        isModalOpen: false, 
+                        selectedMedicalRecord: null,
+                        currentOperation: null
+                    });
+                }
+            },
+
+            
             //fetch all medical records with pagination and search
             fetchMedicalRecords: async (page?: number, search?: string) => {
                 try {
@@ -43,8 +78,10 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     
                     const response = await getMedicalRecords(pageToFetch, currentState.recordsPerPage, searchToUse);
                     
-                    if (response.data.success) {
-                        const medicalRecords = response.data.data;
+                    if (response.success) {
+                        const medicalRecords = response.data.medicalRecords || [];
+                        const pagination = response.data.pagination || {};
+
                         //extract unique patients from medical records for the modal dropdown
                         const uniquePatients = Array.from(
                             new Map(
@@ -63,7 +100,21 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                         set({ 
                             medicalRecords,
                             patients: uniquePatients as Patient[],
-                            pagination: response.pagination,
+                            pagination: {
+                                currentPage: pagination.currentPage || 1,
+                                totalPages: pagination.totalPages || 1,
+                                totalItems: pagination.totalItems || 0,
+                                itemsPerPage: pagination.itemsPerPage || 10,
+                                hasNextPage: pagination.hasNextPage || false,
+                                hasPreviousPage: pagination.hasPreviousPage || false,
+                                startIndex: pagination.startIndex || 1,
+                                endIndex: pagination.endIndex || 0,
+                                isUnlimited: pagination.isUnlimited || false,
+                                nextPage: pagination.nextPage,
+                                previousPage: pagination.previousPage,
+                                remainingItems: pagination.remainingItems || 0,
+                                searchTerm: pagination.searchTerm || null
+                            },
                             currentPage: pageToFetch,
                             searchTerm: searchToUse,
                             fetchLoading: false,
@@ -115,40 +166,6 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                         fetchLoading: false,
                         error: 'An error occurred while fetching medical record', 
                         loading: false 
-                    });
-                }
-            },
-
-            //add new medical record
-            addMedicalRecord: async (data: MedicalRecordFormData) => {
-                try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
-                    
-                    await addMedicalRecord(data);
-                    
-                    //refresh data
-                    await get().fetchMedicalRecords();
-                    
-                    toast.success('Medical record created successfully!');
-                    set({ isModalOpen: false, selectedMedicalRecord: null });
-
-                    setTimeout(() => {
-                        set({ 
-                            submitLoading: false, 
-                            isProcessing: false,
-                            currentOperation: null
-                        });
-                    }, 500);
-
-                } catch (error) {
-                    console.error('Error creating medical record:', error);
-                    toast.error('Failed to create medical record');
-                    set({ 
-                        submitLoading: false, 
-                        isProcessing: false,
-                        isModalOpen: false, 
-                        selectedMedicalRecord: null,
-                        currentOperation: null
                     });
                 }
             },

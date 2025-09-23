@@ -1,4 +1,4 @@
-import axios from './axiosConfig';
+import axios from './httpClient';
 import { LoginFormData, LoginResponse, SignupFormData, SignupResponse } from '../types';
 import API_BASE_URL from '../ApiBaseUrl';
 

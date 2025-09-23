@@ -1,5 +1,5 @@
-import axios from './axiosConfig'
-import { AppointmentFormData, AppointmentResponse } from '../types'
+import axios from './httpClient'
+import { AppointmentFormData } from '../types'
 import API_BASE_URL from '../ApiBaseUrl'
 import { cleanObject, convertTo24Hour, createParentInfo, generateTimeSlots, processPatient } from '../utils';
 

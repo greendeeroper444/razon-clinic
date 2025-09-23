@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './httpClient'
 import API_BASE_URL from '../ApiBaseUrl';
 import { PatientFormData } from '../types';
 
@@ -6,17 +6,12 @@ export const addPatient = async (patientData: PatientFormData) => {
     try {
         const response = await axios.post(
             `${API_BASE_URL}/api/patients/addPatient`,
-            patientData,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }
+            patientData
         );
+
         return response.data;
     } catch (error) {
-        console.error('Error adding personal patient item:', error);
+        console.error('Error adding patient item:', error);
         if (axios.isAxiosError(error)) {
             throw error.response?.data || error.message;
         }
@@ -27,19 +22,22 @@ export const addPatient = async (patientData: PatientFormData) => {
 
 export const getPatients = async (params = {}) => {
     try {
+        const defaultParams = {
+            page: 1,
+            limit: 10,
+            search: ''
+        }
+
+        const queryParams = { ...defaultParams, ...params };
+
         const response = await axios.get(
             `${API_BASE_URL}/api/patients/getPatients`,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                params
-            }
+            { params: queryParams }
         );
+
         return response.data;
     } catch (error) {
-        console.error('Error fetching personal patient items:', error);
+        console.error('Error fetching patient items:', error);
         if (axios.isAxiosError(error)) {
             throw error.response?.data || error.message;
         }
@@ -50,18 +48,11 @@ export const getPatients = async (params = {}) => {
 
 export const getPatientById = async (patientId: string) => {
     try {
-        const response = await axios.get(
-            `${API_BASE_URL}/api/patients/getPatientById/${patientId}`,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }
-        );
+        const response = await axios.get(`${API_BASE_URL}/api/patients/getPatientById/${patientId}`);
+
         return response.data;
     } catch (error) {
-        console.error('Error fetching personal patient item:', error);
+        console.error('Error fetching patient item:', error);
         if (axios.isAxiosError(error)) {
             throw error.response?.data || error.message;
         }
@@ -74,17 +65,12 @@ export const updatePatient = async (patientId: string, updateData: Partial<Patie
     try {
         const response = await axios.put(
             `${API_BASE_URL}/api/patients/updatePatient/${patientId}`,
-            updateData,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }
+            updateData
         );
+
         return response.data;
     } catch (error) {
-        console.error('Error updating personal patient:', error);
+        console.error('Error updating patient:', error);
         if (axios.isAxiosError(error)) {
             throw error.response?.data || error.message;
         }
@@ -94,13 +80,16 @@ export const updatePatient = async (patientId: string, updateData: Partial<Patie
 };
 
 export const deletePatient = async (patientId: string) => {
-    return await axios.delete<{success: boolean, message: string}>(
-        `${API_BASE_URL}/api/patients/deletePatient/${patientId}`,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/api/patients/deletePatient/${patientId}`);
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting patient:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
 };

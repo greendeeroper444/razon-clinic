@@ -7,7 +7,7 @@ import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, Pati
 import { Layout, Modal, PageTitle } from './components'
 import { addAppointment, addBilling, addInventoryItem, addMedicalRecord, addPatient } from './services'
 import { routes } from './routes'
-import './services/axiosConfig'
+import './services/httpClient'
 import { useAuthenticationStore } from './stores'
 
 

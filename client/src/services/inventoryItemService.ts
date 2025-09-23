@@ -1,4 +1,4 @@
-import axios from './axiosConfig';
+import axios from './httpClient';
 import API_BASE_URL from '../ApiBaseUrl';
 import { InventoryItemFormData } from '../types';
 
