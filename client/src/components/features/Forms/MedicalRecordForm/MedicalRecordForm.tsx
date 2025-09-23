@@ -45,7 +45,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 setSearchLoading(true);
                 const response = await searchAppointmentsByName(value);
                 
-                const results = response.data || [];
+                const results = response.data?.appointments || [];
                 setSearchResults(results);
                 setShowSearchDropdown(true);
                 
@@ -73,7 +73,6 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
     const handleSelectAppointment = async (appointment: Appointment) => {
         try {
             setSearchLoading(true);
-            console.log('Selected appointment data:', appointment);
             
             //hide dropdown immediately
             setShowSearchDropdown(false);
@@ -86,7 +85,6 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 try {
                     const response = await getAppointmentForAutofill(String(appointment.id));
                     const autofillData = response.data;
-                    console.log('Autofill API response:', autofillData);
 
                     //call the parent's autofill function
                     onAutofill(autofillData);
@@ -96,7 +94,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 }
             }
             
-            //if autofill API fails or doesn't exist, update fields directly
+            //if autofill api fails or doesn't exist, update fields directly
             if (!autofillSuccessful) {
                 //format date properly for date input (YYYY-MM-DD)
                 let formattedDate = '';

@@ -1,32 +1,7 @@
 import { useEffect } from 'react'
 import styles from './MedicalRecordDetailsPage.module.css';
 import { useParams } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faCalendarAlt, 
-    faClock, 
-    faUser,
-    faPhone, 
-    faNotesMedical, 
-    faMapMarkerAlt, 
-    faBirthdayCake, 
-    faVenusMars,
-    faArrowLeft,
-    faEdit,
-    faCheckCircle,
-    faRulerVertical,
-    faWeight,
-    faUsers,
-    faDroplet,
-    faEnvelope,
-    faExclamationTriangle,
-    faStethoscope,
-    faPills,
-    faClipboardList,
-    faCalendarCheck,
-    faCalculator,
-    faHistory
-} from '@fortawesome/free-solid-svg-icons';
+import { Calendar, Clock, User, Phone, FileText, MapPin, Cake, Venus, ArrowLeft, Edit, Ruler, Weight, Users, Droplet, Mail, AlertTriangle, Stethoscope, Pill, ClipboardList, CalendarCheck2, Calculator, History } from 'lucide-react';
 import { formatBirthdate, formatDate, getLoadingText } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { MedicalRecordFormData, FormDataType } from '../../../types';
@@ -48,7 +23,7 @@ const MedicalRecordDetailsPage = () => {
         updateMedicalRecordData,
         openUpdateModal,
         closeUpdateModal,
-        openStatusModal,
+        clearCurrentMedicalRecord,
         currentOperation
     } = useMedicalRecordStore();
 
@@ -64,13 +39,13 @@ const MedicalRecordDetailsPage = () => {
         if (medicalRecordId) {
             fetchMedicalRecordById(medicalRecordId)
         }
-    }, [medicalRecordId, fetchMedicalRecordById])
 
-    const handleUpdateStatusClick = () => {
-        if (currentMedicalRecord) {
-            openStatusModal(currentMedicalRecord);
+        //cleanup when component unmounts
+        return () => {
+            clearCurrentMedicalRecord()
         }
-    };
+
+    }, [medicalRecordId])
 
     const handleMedicalRecordUpdateClick = () => {
         if (currentMedicalRecord) {
@@ -99,20 +74,14 @@ const MedicalRecordDetailsPage = () => {
     const headerActions = [
         {
             label: 'Edit',
-            icon: faEdit,
+            icon: <Edit />,
             onClick: handleMedicalRecordUpdateClick,
             type: 'primary' as const
         },
-        {
-            label: 'Status',
-            icon: faCheckCircle,
-            onClick: handleUpdateStatusClick,
-            type: 'outline' as const
-        }
     ];
 
     const backButton = {
-        icon: faArrowLeft,
+        icon: <ArrowLeft />,
         onClick: () => window.history.back()
     };
 
@@ -133,7 +102,7 @@ const MedicalRecordDetailsPage = () => {
         {/* personal details section*/}
         <div className={styles.detailsCard}>
             <div className={styles.cardHeader}>
-                <FontAwesomeIcon icon={faUser} className={styles.cardIcon} />
+                <User className={styles.cardIcon} />
                 <h2>Personal Information</h2>
             </div>
             <div className={styles.cardContent}>
@@ -141,13 +110,13 @@ const MedicalRecordDetailsPage = () => {
                     <div className={styles.tableSection}>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faUser} /> Full Name:
+                                <User /> Full Name:
                             </span>
                             <span className={styles.tableValue}>{currentMedicalRecord.personalDetails?.fullName}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faBirthdayCake} /> Date of Birth:
+                                <Cake /> Date of Birth:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.personalDetails?.dateOfBirth ? 
@@ -161,13 +130,13 @@ const MedicalRecordDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faVenusMars} /> Gender:
+                                <Venus /> Gender:
                             </span>
                             <span className={styles.tableValue}>{currentMedicalRecord.personalDetails?.gender}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faDroplet} /> Blood Type:
+                                <Droplet /> Blood Type:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.personalDetails?.bloodType || 'Not specified'}
@@ -175,13 +144,13 @@ const MedicalRecordDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faPhone} /> Phone:
+                                <Phone /> Phone:
                             </span>
                             <span className={styles.tableValue}>{currentMedicalRecord.personalDetails?.phone}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faEnvelope} /> Email:
+                                <Mail /> Email:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.personalDetails?.email || 'Not provided'}
@@ -189,7 +158,7 @@ const MedicalRecordDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faMapMarkerAlt} /> Address:
+                                <MapPin /> Address:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.personalDetails?.address || 'Not provided'}
@@ -197,7 +166,7 @@ const MedicalRecordDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faExclamationTriangle} /> Emergency Contact:
+                                <AlertTriangle /> Emergency Contact:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.personalDetails?.emergencyContact || 'Not provided'}
@@ -211,7 +180,7 @@ const MedicalRecordDetailsPage = () => {
         {/* medical history section */}
         <div className={styles.detailsCard}>
             <div className={styles.cardHeader}>
-                <FontAwesomeIcon icon={faHistory} className={styles.cardIcon} />
+                <History className={styles.cardIcon} />
                 <h2>Medical History</h2>
             </div>
             <div className={styles.cardContent}>
@@ -219,7 +188,7 @@ const MedicalRecordDetailsPage = () => {
                     <div className={styles.tableSection}>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faExclamationTriangle} /> Allergies:
+                                <AlertTriangle /> Allergies:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.medicalHistory?.allergies || 'None reported'}
@@ -227,7 +196,7 @@ const MedicalRecordDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faNotesMedical} /> Chronic Conditions:
+                                <FileText /> Chronic Conditions:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.medicalHistory?.chronicConditions || 'None reported'}
@@ -235,7 +204,7 @@ const MedicalRecordDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faStethoscope} /> Previous Surgeries:
+                                <Stethoscope /> Previous Surgeries:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.medicalHistory?.previousSurgeries || 'None reported'}
@@ -243,7 +212,7 @@ const MedicalRecordDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faUsers} /> Family History:
+                                <Users/> Family History:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.medicalHistory?.familyHistory || 'Not provided'}
@@ -265,7 +234,7 @@ const MedicalRecordDetailsPage = () => {
         {/* growth milestone section */}
         <div className={styles.detailsCard}>
             <div className={styles.cardHeader}>
-                <FontAwesomeIcon icon={faRulerVertical} className={styles.cardIcon} />
+                <Ruler className={styles.cardIcon} />
                 <h2>Growth Milestones</h2>
             </div>
             <div className={styles.cardContent}>
@@ -273,7 +242,7 @@ const MedicalRecordDetailsPage = () => {
                     <div className={styles.tableSection}>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faRulerVertical} /> Height:
+                                <Ruler /> Height:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.growthMilestones?.height ? 
@@ -282,7 +251,7 @@ const MedicalRecordDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faWeight} /> Weight:
+                                <Weight /> Weight:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.growthMilestones?.weight ? 
@@ -291,7 +260,7 @@ const MedicalRecordDetailsPage = () => {
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faCalculator} /> BMI:
+                                <Calculator /> BMI:
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.growthMilestones?.bmi || 'Not calculated'}
@@ -323,7 +292,7 @@ const MedicalRecordDetailsPage = () => {
             currentMedicalRecord.vaccinationHistory && (
                 <div className={styles.detailsCard}>
                     <div className={styles.cardHeader}>
-                        <FontAwesomeIcon icon={faStethoscope} className={styles.cardIcon} />
+                        <Stethoscope className={styles.cardIcon} />
                         <h2>Vaccination History</h2>
                     </div>
                     <div className={styles.cardContent}>
@@ -342,7 +311,7 @@ const MedicalRecordDetailsPage = () => {
         {/*current syntoms section */}
         <div className={styles.detailsCard}>
             <div className={styles.cardHeader}>
-                <FontAwesomeIcon icon={faNotesMedical} className={styles.cardIcon} />
+                <FileText className={styles.cardIcon} />
                 <h2>Current Symptoms</h2>
             </div>
             <div className={styles.cardContent}>
@@ -350,13 +319,13 @@ const MedicalRecordDetailsPage = () => {
                     <div className={styles.tableSection}>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faExclamationTriangle} /> Chief Complaint:
+                                <AlertTriangle /> Chief Complaint:
                             </span>
                             <span className={styles.tableValue}>{currentMedicalRecord.currentSymptoms?.chiefComplaint}</span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <FontAwesomeIcon icon={faNotesMedical} /> Symptoms Description:
+                                <FileText /> Symptoms Description:
                             </span>
                             <span className={styles.tableValue}>{currentMedicalRecord.currentSymptoms?.symptomsDescription}</span>
                         </div>
@@ -364,7 +333,7 @@ const MedicalRecordDetailsPage = () => {
                             currentMedicalRecord.currentSymptoms?.symptomsDuration && (
                                 <div className={styles.tableRow}>
                                     <span className={styles.tableLabel}>
-                                        <FontAwesomeIcon icon={faClock} /> Duration:
+                                        <Clock /> Duration:
                                     </span>
                                     <span className={styles.tableValue}>{currentMedicalRecord.currentSymptoms.symptomsDuration}</span>
                                 </div>
@@ -394,7 +363,7 @@ const MedicalRecordDetailsPage = () => {
         {/* clinical information section */}
         <div className={styles.detailsCard}>
             <div className={styles.cardHeader}>
-                <FontAwesomeIcon icon={faStethoscope} className={styles.cardIcon} />
+                <Stethoscope className={styles.cardIcon} />
                 <h2>Clinical Information</h2>
             </div>
             <div className={styles.cardContent}>
@@ -404,7 +373,7 @@ const MedicalRecordDetailsPage = () => {
                             currentMedicalRecord.diagnosis && (
                                 <div className={styles.tableRow}>
                                     <span className={styles.tableLabel}>
-                                        <FontAwesomeIcon icon={faClipboardList} /> Diagnosis:
+                                        <ClipboardList /> Diagnosis:
                                     </span>
                                     <span className={styles.tableValue}>{currentMedicalRecord.diagnosis}</span>
                                 </div>
@@ -414,7 +383,7 @@ const MedicalRecordDetailsPage = () => {
                             currentMedicalRecord.treatmentPlan && (
                                 <div className={styles.tableRow}>
                                     <span className={styles.tableLabel}>
-                                        <FontAwesomeIcon icon={faNotesMedical} /> Treatment Plan:
+                                        <FileText /> Treatment Plan:
                                     </span>
                                     <span className={styles.tableValue}>{currentMedicalRecord.treatmentPlan}</span>
                                 </div>
@@ -424,7 +393,7 @@ const MedicalRecordDetailsPage = () => {
                             currentMedicalRecord.prescribedMedications && (
                                 <div className={styles.tableRow}>
                                     <span className={styles.tableLabel}>
-                                        <FontAwesomeIcon icon={faPills} /> Prescribed Medications:
+                                        <Pill /> Prescribed Medications:
                                     </span>
                                     <span className={styles.tableValue}>{currentMedicalRecord.prescribedMedications}</span>
                                 </div>
@@ -434,7 +403,7 @@ const MedicalRecordDetailsPage = () => {
                             currentMedicalRecord.consultationNotes && (
                                 <div className={styles.tableRow}>
                                     <span className={styles.tableLabel}>
-                                        <FontAwesomeIcon icon={faNotesMedical} /> Consultation Notes:
+                                        <FileText /> Consultation Notes:
                                     </span>
                                     <span className={styles.tableValue}>{currentMedicalRecord.consultationNotes}</span>
                                 </div>
@@ -444,7 +413,7 @@ const MedicalRecordDetailsPage = () => {
                             currentMedicalRecord.followUpDate && (
                                 <div className={styles.tableRow}>
                                     <span className={styles.tableLabel}>
-                                        <FontAwesomeIcon icon={faCalendarCheck} /> Follow-up Date:
+                                        <CalendarCheck2 /> Follow-up Date:
                                     </span>
                                     <span className={styles.tableValue}>
                                         {formatDate(currentMedicalRecord.followUpDate)}
@@ -460,7 +429,7 @@ const MedicalRecordDetailsPage = () => {
         {/* record metadata section*/}
         <div className={styles.detailsCard}>
             <div className={styles.cardHeader}>
-                <FontAwesomeIcon icon={faCalendarAlt} className={styles.cardIcon} />
+                <Calendar className={styles.cardIcon} />
                 <h2>Record Information</h2>
             </div>
             <div className={styles.cardContent}>

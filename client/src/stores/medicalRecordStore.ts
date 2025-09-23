@@ -148,7 +148,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     if (response.success) {
                         set({ 
                             currentMedicalRecord: response.data,
-                            selectedRecord: response.data,
+                            selectedRecord: response.data.data,
                             fetchLoading: false,
                             loading: false,
                             error: null

@@ -35,7 +35,6 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     if (response.success) {
                         const appointments = response.data.appointments || [];
                         const pagination = response.data.pagination || {};
-                        console.log('Pagination Data:', pagination);
                         
                         //extract unique patients from appointments
                         const uniquePatients = Array.from(
@@ -104,7 +103,6 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     if (response.success) {
                         const appointments = response.data.appointments || [];
                         const pagination = response.data.pagination || {};
-                        console.log('Pagination Data:', pagination);
                         
                         //extract unique patients from appointments
                         const uniquePatients = Array.from(

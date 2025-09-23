@@ -33,7 +33,14 @@ const AppointmentDetailsPage = () => {
     } = useAppointmentStore();
 
     
-     useEffect(() => {
+    console.log('Current state:', {
+        currentAppointment,
+        loading,
+        error,
+        appointmentId
+    });
+
+    useEffect(() => {
         if (appointmentId) {
             fetchAppointmentById(appointmentId);
             fetchMyAppointments(); //for patient dropdown in modal
