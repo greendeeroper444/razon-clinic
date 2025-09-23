@@ -9,11 +9,3 @@ export interface ActionButton {
     disabled?: boolean;
     type?: 'primary' | 'outline' | 'danger';
 }
-
-export interface PaginationInfo {
-    currentPage: number;
-    totalPages: number;
-    totalRecords: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-}

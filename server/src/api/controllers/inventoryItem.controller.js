@@ -34,13 +34,6 @@ class InventoryItemController {
                 data: inventoryItem
             });
         } catch (error) {
-            if (error.message.includes('required fields') || 
-                error.message.includes('cannot be negative')) {
-                return res.status(400).json({
-                    success: false,
-                    message: error.message
-                });
-            }
             next(error);
         }
     }
@@ -70,18 +63,6 @@ class InventoryItemController {
                 data: inventoryItem
             });
         } catch (error) {
-            if (error.message === 'Inventory item not found') {
-                return res.status(404).json({
-                    success: false,
-                    message: error.message
-                });
-            }
-            if (error.message === 'Invalid inventory item ID format') {
-                return res.status(400).json({
-                    success: false,
-                    message: error.message
-                });
-            }
             next(error);
         }
     }
@@ -99,18 +80,6 @@ class InventoryItemController {
                 data: inventoryItem
             });
         } catch (error) {
-            if (error.message === 'Inventory item not found') {
-                return res.status(404).json({
-                    success: false,
-                    message: error.message
-                });
-            }
-            if (error.message === 'Invalid inventory item ID format') {
-                return res.status(400).json({
-                    success: false,
-                    message: error.message
-                });
-            }
             next(error);
         }
     }
@@ -126,18 +95,6 @@ class InventoryItemController {
                 data: inventoryItem
             });
         } catch (error) {
-            if (error.message === 'Inventory item not found') {
-                return res.status(404).json({
-                    success: false,
-                    message: error.message
-                });
-            }
-            if (error.message.includes('Invalid inventory item ID')) {
-                return res.status(400).json({
-                    success: false,
-                    message: error.message
-                });
-            }
             next(error);
         }
     }
@@ -199,25 +156,6 @@ class InventoryItemController {
                 data: inventoryItem
             });
         } catch (error) {
-            if (error.message === 'Inventory item not found') {
-                return res.status(404).json({
-                    success: false,
-                    message: error.message
-                });
-            }
-            if (error.message === 'Insufficient stock available' || 
-                error.message === 'Invalid operation. Use "use" or "restock"') {
-                return res.status(400).json({
-                    success: false,
-                    message: error.message
-                });
-            }
-            if (error.message === 'Invalid inventory item ID format') {
-                return res.status(400).json({
-                    success: false,
-                    message: error.message
-                });
-            }
             next(error);
         }
     }

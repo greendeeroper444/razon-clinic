@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { getAppointments, getMyAppointment, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus } from '../services'
+import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus } from '../services'
 import { AppointmentFormData, Patient, AppointmentStatus, ExtendedAppointmentState, OperationType } from '../types'
 import { toast } from 'sonner'
 
@@ -28,90 +28,138 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
             //fetch all appointments with patient extraction (admin view)
             fetchAppointments: async () => {
                 try {
-                    // set({ loading: true, error: null });
                     set({ fetchLoading: true, loading: true, error: null, viewMode: 'admin' });
                     
                     const response = await getAppointments();
                     
-                    if (response.data.success) {
-                        const appointments = response.data.data;
+                    if (response.success) {
+                        const appointments = response.data.appointments || [];
+                        const pagination = response.data.pagination || {};
+                        console.log('Pagination Data:', pagination);
                         
                         //extract unique patients from appointments
                         const uniquePatients = Array.from(
                             new Map(
                                 appointments
-                                .filter(appointment => appointment?.id)
-                                .map(appointment => [
-                                    appointment.id,
-                                    {
-                                        id: appointment.id,
-                                        firstName: appointment.firstName || 'N/A',
-                                        patientNumber: appointment.appointmentNumber || 'N/A'
-                                    }
-                                ])
+                                    .filter((appointment: AppointmentFormData) => appointment?.id)
+                                    .map((appointment: AppointmentFormData) => [
+                                        appointment.id,
+                                        {
+                                            id: appointment.id,
+                                            firstName: appointment.firstName || 'N/A',
+                                            lastName: appointment.lastName || 'N/A',
+                                            middleName: appointment.middleName || '',
+                                            patientNumber: appointment.appointmentNumber || 'N/A',
+                                            fullName: `${appointment.firstName || ''} ${appointment.middleName || ''} ${appointment.lastName || ''}`.trim()
+                                        }
+                                    ])
                             ).values()
-                        )
+                        );
                         
                         set({ 
                             appointments,
                             patients: uniquePatients as Patient[],
+                            pagination: {
+                                currentPage: pagination.currentPage || 1,
+                                totalPages: pagination.totalPages || 1,
+                                totalItems: pagination.totalItems || 0,
+                                itemsPerPage: pagination.itemsPerPage || 10,
+                                hasNextPage: pagination.hasNextPage || false,
+                                hasPreviousPage: pagination.hasPreviousPage || false,
+                                startIndex: pagination.startIndex || 1,
+                                endIndex: pagination.endIndex || 0,
+                                isUnlimited: pagination.isUnlimited || false,
+                                nextPage: pagination.nextPage,
+                                previousPage: pagination.previousPage,
+                                remainingItems: pagination.remainingItems || 0,
+                                searchTerm: pagination.searchTerm || null
+                            },
+                            fetchLoading: false,
                             loading: false 
-                        })
+                        });
                     } else {
-                        set({ error: 'Failed to fetch appointments', loading: false })
+                        set({ 
+                            error: response.message || 'Failed to fetch appointments', 
+                            fetchLoading: false,
+                            loading: false 
+                        });
                     }
                 } catch (error) {
-                    console.error('Error fetching appointments:', error)
+                    console.error('Error fetching appointments:', error);
                     set({ 
                         fetchLoading: false,
                         error: 'An error occurred while fetching appointments', 
                         loading: false 
-                    })
+                    });
                 }
             },
 
             //fetch only current user's appointments
             fetchMyAppointments: async () => {
                 try {
-                    // set({ loading: true, error: null });
                     set({ fetchLoading: true, loading: true, error: null, viewMode: 'user' });
                     
-                    const response = await getMyAppointment();
+                    const response = await getMyAppointments();
                     
-                    if (response.data.success) {
-                        const appointments = response.data.data;
+                    if (response.success) {
+                        const appointments = response.data.appointments || [];
+                        const pagination = response.data.pagination || {};
+                        console.log('Pagination Data:', pagination);
                         
-                        //extract unique patients from appointments (usually just the current user)
+                        //extract unique patients from appointments
                         const uniquePatients = Array.from(
                             new Map(
                                 appointments
-                                .filter(appointment => appointment?.id)
-                                .map(appointment => [
-                                    appointment.id,
-                                    {
-                                        id: appointment.id,
-                                        firstName: appointment.firstName || 'N/A',
-                                        patientNumber: appointment.appointmentNumber || 'N/A'
-                                    }
-                                ])
+                                    .filter((appointment: AppointmentFormData) => appointment?.id)
+                                    .map((appointment: AppointmentFormData) => [
+                                        appointment.id,
+                                        {
+                                            id: appointment.id,
+                                            firstName: appointment.firstName || 'N/A',
+                                            lastName: appointment.lastName || 'N/A',
+                                            middleName: appointment.middleName || '',
+                                            patientNumber: appointment.appointmentNumber || 'N/A',
+                                            fullName: `${appointment.firstName || ''} ${appointment.middleName || ''} ${appointment.lastName || ''}`.trim()
+                                        }
+                                    ])
                             ).values()
-                        )
+                        );
                         
                         set({ 
                             appointments,
                             patients: uniquePatients as Patient[],
+                            pagination: {
+                                currentPage: pagination.currentPage || 1,
+                                totalPages: pagination.totalPages || 1,
+                                totalItems: pagination.totalItems || 0,
+                                itemsPerPage: pagination.itemsPerPage || 10,
+                                hasNextPage: pagination.hasNextPage || false,
+                                hasPreviousPage: pagination.hasPreviousPage || false,
+                                startIndex: pagination.startIndex || 1,
+                                endIndex: pagination.endIndex || 0,
+                                isUnlimited: pagination.isUnlimited || false,
+                                nextPage: pagination.nextPage,
+                                previousPage: pagination.previousPage,
+                                remainingItems: pagination.remainingItems || 0,
+                                searchTerm: pagination.searchTerm || null
+                            },
+                            fetchLoading: false,
                             loading: false 
-                        })
+                        });
                     } else {
-                        set({ error: 'Failed to fetch your appointments', loading: false })
+                        set({ 
+                            error: response.message || 'Failed to fetch appointments', 
+                            fetchLoading: false,
+                            loading: false 
+                        });
                     }
                 } catch (error) {
-                    console.error('Error fetching my appointments:', error)
+                    console.error('Error fetching my appointments:', error);
                     set({ 
                         fetchLoading: false,
-                        error: 'An error occurred while fetching your appointments', 
+                        error: 'An error occurred while fetching my appointments', 
                         loading: false 
-                    })
+                    });
                 }
             },
 

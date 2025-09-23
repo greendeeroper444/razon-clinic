@@ -1,10 +1,10 @@
-import { PaginationInfo } from "./action";
 import { AppointmentFormData, AppointmentResponse } from "./appointment"
 import { LoginFormData, SignupFormData, ValidationErrors } from "./auth";
 import { BillingFormData, BillingResponse } from "./billing";
 import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
 import { MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
+import { Pagination } from "./pagination";
 import { Patient, PatientFormData } from "./patient"
 import { User } from "./user";
 
@@ -14,6 +14,7 @@ export interface AppointmentState {
     //state
     appointments: AppointmentResponse[];
     patients: Patient[];
+    pagination: Pagination | null;
     loading: boolean;
     error: string | null;
     isProcessing: boolean;
@@ -70,6 +71,7 @@ export interface ExtendedAppointmentState extends AppointmentState {
 export interface InventoryState {
     //state
     inventoryItems: InventoryItemFormData[];
+    pagination: Pagination | null;
     loading: boolean;
     error: string | null;
     isProcessing: boolean;
@@ -125,6 +127,7 @@ export interface MedicalRecordState {
     //state
     medicalRecords: MedicalRecordResponse[] | any[];
     patients: Patient[];
+    pagination: Pagination | null;
     loading: boolean;
     error: string | null;
     isProcessing: boolean;
@@ -144,7 +147,6 @@ export interface MedicalRecordState {
     searchTerm: string;
     currentPage: number;
     recordsPerPage: number;
-    pagination: PaginationInfo | null;
     
     //view state
     showDetails: boolean;
@@ -195,6 +197,7 @@ export interface ExtendedMedicalRecordState extends MedicalRecordState {
 export interface BillingState {
     //state
     billings: BillingResponse[];
+    pagination: Pagination | null;
     loading: boolean;
     fetchLoading: boolean;
     submitLoading: boolean;
@@ -256,6 +259,7 @@ export interface BillingState {
 export interface PatientState {
     //state
     patients: PatientFormData[];
+    pagination: Pagination | null;
     loading: boolean;
     fetchLoading: boolean;
     submitLoading: boolean;

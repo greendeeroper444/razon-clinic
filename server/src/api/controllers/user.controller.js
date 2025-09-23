@@ -11,7 +11,8 @@ class UserController {
             
             //return users list
             res.status(200).json({
-                status: 'success',
+                success: true,
+                message: 'All users retrieved successfully',
                 results: users.length,
                 data: {
                     users
@@ -39,7 +40,8 @@ class UserController {
             
             //return users list
             res.status(200).json({
-                status: 'success',
+                success: true,
+                message: 'Users retrieved successfully',
                 results: formattedUsers.length,
                 data: {
                     users: formattedUsers
@@ -63,7 +65,8 @@ class UserController {
             
             //return user data
             res.status(200).json({
-                status: 'success',
+                success: true,
+                message: 'User retrieved successfully',
                 data: {
                     user: {
                         id: user._id,

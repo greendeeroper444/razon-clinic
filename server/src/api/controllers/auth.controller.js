@@ -37,7 +37,7 @@ class AuthController {
             TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
             
             res.status(201).json({
-                status: 'success',
+                success: true,
                 message: 'User registered successfully',
                 data: {
                     user: result.user,
@@ -64,7 +64,7 @@ class AuthController {
             const isUser = TokenHelper.isUser(decoded);
             
             const responseData = {
-                user: result.user,
+                // user: result.user,
                 tokens: tokens,
                 userType: isAdmin ? 'admin' : 'user',
                 role: decoded.role
@@ -81,7 +81,7 @@ class AuthController {
             }
             
             res.status(200).json({
-                status: 'success',
+                success: true,
                 message: 'Login successful',
                 data: responseData
             });
@@ -98,7 +98,8 @@ class AuthController {
             const result = await AuthService.getUserProfile(userId, userType);
             
             res.status(200).json({
-                status: 'success',
+                success: true,
+                message: 'Profile retrieved successfully',
                 data: result
             });
         } catch (error) {
@@ -115,7 +116,7 @@ class AuthController {
             const result = await AuthService.updateUserProfile(userId, userType, updateData);
             
             res.status(200).json({
-                status: 'success',
+                success: true,
                 message: 'Profile updated successfully',
                 data: result
             });
@@ -149,7 +150,7 @@ class AuthController {
             const result = await AuthService.changePassword(userId, userType, currentPassword, newPassword);
             
             res.status(200).json({
-                status: 'success',
+                success: true,
                 message: result.message
             });
         } catch (error) {
@@ -171,7 +172,7 @@ class AuthController {
             const formattedResult = AuthService.formatUserResponse(rawUserData, userType);
             
             res.status(200).json({
-                status: 'success',
+                success: true,
                 message: 'Token refreshed successfully',
                 data: {
                     tokens: tokens,
@@ -189,7 +190,7 @@ class AuthController {
             
             if (!token) {
                 return res.status(200).json({
-                    status: 'success',
+                    success: true,
                     message: 'No token found',
                     data: {
                         isValid: false,
@@ -205,7 +206,7 @@ class AuthController {
             const expiration = TokenHelper.getTokenExpiration(token);
             
             res.status(200).json({
-                status: 'success',
+                success: true,
                 message: 'Token is valid',
                 data: {
                     decoded: user,
@@ -219,7 +220,7 @@ class AuthController {
         } catch (error) {
             if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
                 return res.status(200).json({
-                    status: 'success',
+                    success: true,
                     message: 'Token verification result',
                     data: {
                         isValid: false,
@@ -237,7 +238,7 @@ class AuthController {
             TokenHelper.clearAuthCookies(res);
             
             res.status(200).json({
-                status: 'success',
+                success: true,
                 message: 'Successfully logged out'
             });
         } catch (error) {
@@ -254,7 +255,7 @@ class AuthController {
             }
             
             res.status(200).json({
-                status: 'success',
+                success: true,
                 message: 'Password reset instructions sent successfully'
             });
         } catch (error) {
@@ -279,7 +280,7 @@ class AuthController {
             }
             
             res.status(200).json({
-                status: 'success',
+                success: true,
                 message: 'Password reset successfully'
             });
         } catch (error) {

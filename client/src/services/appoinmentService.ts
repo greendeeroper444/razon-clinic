@@ -40,25 +40,58 @@ export const addAppointment = async (appointmentData: AppointmentFormData) => {
 
 
 
-export const getAppointments = async (filters?: AppointmentFilters) => {
-    const params = new URLSearchParams();
-    
-    if (filters?.userId) params.append('userId', filters.userId);
-    if (filters?.status) params.append('status', filters.status);
-    if (filters?.fromDate) params.append('fromDate', filters.fromDate);
-    if (filters?.toDate) params.append('toDate', filters.toDate);
-    
-    const queryString = params.toString();
-    const url = `${API_BASE_URL}/api/appointments/getAppointment${queryString ? `?${queryString}` : ''}`;
-    
-    return await axios.get<{success: boolean, count: number, data: AppointmentResponse[]}>(
-        url,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+export const getAppointments = async (params = {}) => {
+    try {
+        //set default parameters if not provided
+        const defaultParams = {
+            page: 1,
+            limit: 10,
+            search: ''
+        };
+
+        const queryParams = { ...defaultParams, ...params };
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/appointments/getAppointments`,
+            { params: queryParams }
+        );
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching appointments:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
         }
-    );
+
+        throw error;
+    }
+};
+
+export const getMyAppointments = async (params = {}) => {
+    try {
+        //set default parameters if not provided
+        const defaultParams = {
+            page: 1,
+            limit: 10,
+            search: ''
+        };
+
+        const queryParams = { ...defaultParams, ...params };
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/appointments/getMyAppointments`,
+            { params: queryParams }
+        );
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching appointments:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+
+        throw error;
+    }
 };
 
 
@@ -154,25 +187,6 @@ export const getAppointmentById = async (appointmentId: string) => {
 
 
 
-export const getMyAppointment = async (filters?: Omit<AppointmentFilters, 'userId'>) => {
-    const params = new URLSearchParams();
-    
-    if (filters?.status) params.append('status', filters.status);
-    if (filters?.fromDate) params.append('fromDate', filters.fromDate);
-    if (filters?.toDate) params.append('toDate', filters.toDate);
-    
-    const queryString = params.toString();
-    const url = `${API_BASE_URL}/api/appointments/getMyAppointment${queryString ? `?${queryString}` : ''}`;
-    
-    return await axios.get<{success: boolean, count: number, data: AppointmentResponse[]}>(
-        url,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        }
-    );
-};
 
 export const updateAppointment = async (appointmentId: string, appointmentData: AppointmentFormData) => {
     const {

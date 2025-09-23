@@ -8738,3 +8738,653 @@ Use mongoose.model(name, schema)
     at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
     at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
     at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-22 00:26:05 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-22 00:26:05 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-22 00:26:05 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-22 00:26:06 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-22 00:26:06 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-22 00:26:06 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-22 00:35:59 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-22 00:45:31 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-22 08:25:17 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-22 08:57:37 [ERROR]: Error: Resource not found: /favicon.ico ApiError: Resource not found: /favicon.ico
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at logger (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\morgan\index.js:144:5)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+2025-09-22 09:33:39 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-22 09:33:49 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-22 09:33:49 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-22 09:33:49 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-22 09:33:49 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-22 09:33:49 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-22 09:33:49 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:15:47 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:15:47 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:15:48 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 07:15:48 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:15:48 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:15:48 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 07:31:17 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 07:31:25 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:31:25 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:31:25 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 07:31:26 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:31:26 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:31:26 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 07:31:26 [ERROR]: Error: itemName is not defined ReferenceError: itemName is not defined
+    at PatientService.getPatients (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\patient.service.js:67:38)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getPatients (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\patient.controller.js:22:28)
+2025-09-23 07:31:26 [ERROR]: Error: itemName is not defined ReferenceError: itemName is not defined
+    at PatientService.getPatients (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\patient.service.js:67:38)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getPatients (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\patient.controller.js:22:28)
+2025-09-23 07:31:27 [ERROR]: Error: itemName is not defined ReferenceError: itemName is not defined
+    at PatientService.getPatients (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\services\patient.service.js:67:38)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getPatients (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\controllers\patient.controller.js:22:28)
+2025-09-23 07:48:19 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:48:19 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 07:48:19 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:48:19 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:48:19 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 07:48:19 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 07:48:20 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 07:48:20 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 07:56:10 [ERROR]: Error: Resource not found: /api/appointments/getAppointment ApiError: Resource not found: /api/appointments/getAppointment
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-23 07:56:48 [ERROR]: Error: Resource not found: /api/appointments/getAppointment ApiError: Resource not found: /api/appointments/getAppointment
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-23 07:56:53 [ERROR]: Error: Resource not found: /api/appointments/getAppointment ApiError: Resource not found: /api/appointments/getAppointment
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-23 08:03:28 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 08:03:35 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 08:03:35 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 08:03:35 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 08:03:35 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 08:03:35 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 08:03:35 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 08:18:49 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 08:36:26 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+2025-09-23 08:36:26 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at param (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:600:14)
+    at param (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:610:14)
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:664:3)
+2025-09-23 08:36:26 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 08:36:26 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at param (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:600:14)
+    at param (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:610:14)
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:664:3)
+2025-09-23 08:36:26 [ERROR]: Error: Authentication required - Please login ApiError: Authentication required - Please login
+    at authenticate (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\middlewares\auth.middleware.js:9:19)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:295:15
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+2025-09-23 08:44:17 [ERROR]: Error: Resource not found: /api/appointments/getMyAppointment ApiError: Resource not found: /api/appointments/getMyAppointment
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-23 08:44:26 [ERROR]: Error: Resource not found: /api/appointments/getMyAppointment ApiError: Resource not found: /api/appointments/getMyAppointment
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-23 08:47:44 [ERROR]: Error: Resource not found: /api/appointments/getMyAppointment ApiError: Resource not found: /api/appointments/getMyAppointment
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)
+2025-09-23 08:47:45 [ERROR]: Error: Resource not found: /api/appointments/getMyAppointment ApiError: Resource not found: /api/appointments/getMyAppointment
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\src\api\routes\index.js:23:13
+    at Layer.handleRequest (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:342:13)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:297:9
+    at processParams (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:582:12)
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:291:5)
+    at C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:688:15
+    at next (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:276:14)
+    at Function.handle (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:186:3)
+    at router (C:\Users\ASUS\Desktop\razon-pediatric-clinic\server\node_modules\router\index.js:60:12)

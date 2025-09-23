@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import styles from './PatientsPage.module.css';
+import styles from './PatientPage.module.css';
 import { Plus, IdCard, Cake, Phone, MapPin, ArrowLeft, UserRound } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Main, Header, Modal, SubmitLoading, Loading } from '../../../components';
@@ -8,7 +8,7 @@ import { calculateAge2, generateInitials, getLoadingText, openModalWithRefresh }
 import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
 import { usePatientStore } from '../../../stores';
 
-const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
+const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [activeTab, setActiveTab] = useState('overview');
     const [showPatientDetail, setShowPatientDetail] = useState<boolean>(false);
     const [selectedPatient, setSelectedPatient] = useState<PatientDisplayData | null>(null);
@@ -436,4 +436,4 @@ const PatientsPage: React.FC<OpenModalProps> = ({openModal}) => {
   )
 }
 
-export default PatientsPage
+export default PatientPage

@@ -11,7 +11,8 @@ export { default as NotFoundPage } from './public/NotFoundPage/NotFoundPage';
 //admin pages
 export { default as DashboardPage } from './admin/DashboardPage/DashboardPage';
 export { default as AppointmentPage } from './admin/AppointmentPage/AppointmentPage';
-export { default as PatientsPage } from './admin/PatientsPage/PatientsPage';
+export { default as PatientPage } from './admin/PatientPage/PatientPage';
+export { default as PatientDetailsPage } from './admin/PatientDetailsPage/PatientDetailsPage';
 export { default as InventoryPage } from './admin/InventoryPage/InventoryPage';
 export { default as ArchivePage } from './admin/ArchivePage/ArchivePage';
 export { default as AppointmentDetailsPage } from './admin/AppointmentDetailsPage/AppointmentDetailsPage';

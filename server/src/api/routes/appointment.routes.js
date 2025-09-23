@@ -14,9 +14,16 @@ router.post(
 
 //get all appointments (with optional query filters)
 router.get(
-    '/getAppointment', 
+    '/getAppointments', 
     authenticate, 
-    AppointmentController.getAppointment
+    AppointmentController.getAppointments
+);
+
+
+router.get(
+    '/getMyAppointments', 
+    authenticate,
+    AppointmentController.getAppointments
 );
 
 router.get(
@@ -34,11 +41,6 @@ router.get(
     AppointmentController.getAppointmentById
 );
 
-router.get(
-    '/getMyAppointment', 
-    authenticate,
-    AppointmentController.getMyAppointment
-);
 
 //update an appointment
 router.put(

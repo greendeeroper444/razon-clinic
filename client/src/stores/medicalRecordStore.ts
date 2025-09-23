@@ -43,11 +43,12 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     
                     const response = await getMedicalRecords(pageToFetch, currentState.recordsPerPage, searchToUse);
                     
-                    if (response.success) {
+                    if (response.data.success) {
+                        const medicalRecords = response.data.data;
                         //extract unique patients from medical records for the modal dropdown
                         const uniquePatients = Array.from(
                             new Map(
-                                response.data
+                                medicalRecords
                                     .filter((record: MedicalRecord) => record?.id) 
                                     .map((record: MedicalRecord) => [
                                         record.id,
@@ -60,7 +61,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                         );
 
                         set({ 
-                            medicalRecords: response.data,
+                            medicalRecords,
                             patients: uniquePatients as Patient[],
                             pagination: response.pagination,
                             currentPage: pageToFetch,

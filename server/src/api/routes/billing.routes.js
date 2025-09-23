@@ -3,49 +3,47 @@ const router = express.Router();
 const BillingController = require('../controllers/billing.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 
-const billingController = new BillingController();
-
 router.post(
     '/addBilling', 
     authenticate, 
-    billingController.addBilling
+    BillingController.addBilling
 );
 
 router.get(
     '/getBillings', 
     authenticate, 
-    billingController.getAllBillings
+    BillingController.getBillings
 );
 
 router.get(
     '/getBillingById/:billingId', 
     authenticate, 
-    billingController.getBillingById
+    BillingController.getBillingById
 );
 
 router.put(
     '/updateBilling/:billingId', 
     authenticate, 
-    billingController.updateBilling
+    BillingController.updateBilling
 );
 
 router.delete(
     '/deleteBilling/:billingId', 
     authenticate, 
-    billingController.deleteBilling
+    BillingController.deleteBilling
 );
 
 //additional routes for supporting data
 router.get(
     '/getMedicalRecords', 
     authenticate, 
-    billingController.getMedicalRecordsForBilling
+    BillingController.getMedicalRecordsForBilling
 );
 
 router.get(
     '/getInventoryItems', 
     authenticate, 
-    billingController.getInventoryItemsForBilling
+    BillingController.getInventoryItemsForBilling
 );
 
 module.exports = router;
