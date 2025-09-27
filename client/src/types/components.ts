@@ -75,3 +75,17 @@ export interface ProtectedRouteProps {
     redirectTo?: string;
     allowedUserTypes?: string[];
 }
+
+export interface PaginationProps {
+    currentPage: number;
+    totalPages: number;
+    totalItems?: number;
+    itemsPerPage?: number;
+    onPageChange: (page: number) => void;
+    showFirstLast?: boolean;
+    showPageNumbers?: boolean;
+    maxVisiblePages?: number;
+    disabled?: boolean;
+    className?: string;
+    showItemsInfo?: boolean;
+}

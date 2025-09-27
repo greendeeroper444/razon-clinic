@@ -1,20 +1,7 @@
 import React from 'react'
 import styles from './Pagination.module.css'
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
-
-interface PaginationProps {
-    currentPage: number;
-    totalPages: number;
-    totalItems?: number;
-    itemsPerPage?: number;
-    onPageChange: (page: number) => void;
-    showFirstLast?: boolean;
-    showPageNumbers?: boolean;
-    maxVisiblePages?: number;
-    disabled?: boolean;
-    className?: string;
-    showItemsInfo?: boolean;
-}
+import { PaginationProps } from '../../../types';
 
 const Pagination: React.FC<PaginationProps> = ({
     currentPage,
