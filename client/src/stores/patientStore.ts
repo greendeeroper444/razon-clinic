@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { toast } from 'sonner';
-import { OperationType, PatientFormData, PatientState } from '../types';
+import { FetchParams, OperationType, PatientFormData, PatientState } from '../types';
 import { addPatient, deletePatient, getPatients, updatePatient } from '../services';
 
 export const usePatientStore = create<PatientState>()(
@@ -18,14 +18,43 @@ export const usePatientStore = create<PatientState>()(
             isModalOpen: false,
             isDeleteModalOpen: false,
             deletePatientData: null,
+            summaryStats: {
+                total: 0,
+                active: 0,
+                archived: 0,
+                thisMonth: 0
+            },
             currentOperation: null as OperationType,
+            pagination: {
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: 0,
+                itemsPerPage: 10,
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startIndex: 1,
+                endIndex: 0,
+                isUnlimited: false,
+                nextPage: null,
+                previousPage: null,
+                remainingItems: 0,
+                searchTerm: null
+            },
 
             //fetch patients
-            fetchPatients: async () => {
+            fetchPatients: async (params: FetchParams) => {
+                const currentState = get();
+                
+                //prevent multiple simultaneous fetches
+                if (currentState.fetchLoading) {
+                    console.log('Fetch already in progress, skipping...');
+                    return;
+                }
+
                 try {
                     set({ fetchLoading: true, loading: true, error: null });
 
-                    const response = await getPatients();
+                    const response = await getPatients(params);
                     const patients = response.data.patients || [];
                     const pagination = response.data.pagination || {};
 
@@ -49,6 +78,10 @@ export const usePatientStore = create<PatientState>()(
                         loading: false,
                         fetchLoading: false
                     });
+
+                    if (!params.search && params.page === 1) {
+                        get().fetchSummaryStats();
+                    }
                     
                 } catch (error) {
                     console.error('Error fetching patients:', error);
@@ -57,6 +90,40 @@ export const usePatientStore = create<PatientState>()(
                         loading: false,
                         fetchLoading: false
                     });
+                }
+            },
+
+
+            fetchSummaryStats: async () => {
+                try {
+                    const { patients } = get();
+                    
+                    const currentDate = new Date();
+                    const currentMonth = currentDate.getMonth();
+                    const currentYear = currentDate.getFullYear();
+
+                    //calculate summary statistics
+                    const total = patients.length;
+                    const active = patients.filter(p => !p.isArchive).length;
+                    const archived = patients.filter(p => p.isArchive).length;
+                    const thisMonth = patients.filter(p => {
+                        if (!p.birthdate) return false;
+                        const patientDate = new Date(p.birthdate);
+                        return patientDate.getMonth() === currentMonth && 
+                               patientDate.getFullYear() === currentYear;
+                    }).length;
+
+                    set({
+                        summaryStats: {
+                            total,
+                            active,
+                            archived,
+                            thisMonth
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error fetching patient summary stats:', error);
+                    set({ error: 'An error occurred while fetching summary stats' });
                 }
             },
 
@@ -232,7 +299,7 @@ export const usePatientStore = create<PatientState>()(
             setError: (error: string | null) => set({ error }),
         }),
         {
-            name: 'patient-store' //for Redux DevTools
+            name: 'patient-store'
         }
     )
 )

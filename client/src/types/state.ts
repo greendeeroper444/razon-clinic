@@ -279,9 +279,17 @@ export interface PatientState {
     isModalOpen: boolean;
     isDeleteModalOpen: boolean;
     deletePatientData: { id: string, itemName: string, itemType: string } | null;
+    //summary stats state
+    summaryStats: {
+        total: number;
+        active: number;
+        archived: number;
+        thisMonth: number;
+    };
 
     //actions
-    fetchPatients: () => Promise<void>;
+    fetchPatients: (params?: FetchParams) => Promise<void>;
+    fetchSummaryStats: () => Promise<void>;
     addPatient: (data: PatientFormData) => Promise<void>;
     updatePatientData: (id: string, data: PatientFormData) => Promise<void>;
     deletePatient: (id: string) => Promise<void>;

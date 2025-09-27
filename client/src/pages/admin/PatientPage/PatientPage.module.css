@@ -359,8 +359,6 @@
 }
 
 
-
-.inventoryTableContainer,
 .patientTableContainer {
     background: white;
     border-radius: var(--border-radius);
@@ -368,22 +366,79 @@
     overflow: hidden;
 }
   
-.inventoryTableHeader,
 .patientTableHeader {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
     border-bottom: 1px solid var(--gray-light);
 }
   
-.inventoryTableTitle,
 .patientTableTitle {
     font-size: 1.1rem;
     font-weight: 600;
+    color: #333;
+}
+
+
+.patientControls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.searchbar {
+    flex: 1;
+    min-width: 250px;
+    max-width: 400px;
+}
+
+.itemsPerPageControl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.itemsPerPageControl label {
+    font-size: 14px;
+    color: var(--gray, #64748b);
+    font-weight: 500;
+}
+
+.itemsPerPageSelect {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-light, #e2e8f0);
+    border-radius: var(--border-radius, 6px);
+    background: white;
+    color: #333;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition, all 0.2s ease);
+    min-width: 80px;
+}
+
+.itemsPerPageSelect:hover {
+    border-color: var(--gray, #cbd5e0);
+}
+
+.itemsPerPageSelect:focus {
+    outline: none;
+    border-color: var(--primary, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb, 59, 130, 246), 0.1);
+}
+
+.itemsPerPageSelect:disabled {
+    background: #f8fafc;
+    color: var(--gray, #94a3b8);
+    cursor: not-allowed;
+    opacity: 0.6;
 }
   
-.inventoryTableActions,
 .patientTableActions {
     display: flex;
     gap: 10px;

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import styles from './PatientPage.module.css';
 import { Plus, IdCard, Cake, Phone, MapPin, ArrowLeft, UserRound } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
-import { Main, Header, Modal, SubmitLoading, Loading } from '../../../components';
+import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination } from '../../../components';
 import { FormDataType, PatientDisplayData, PatientFormData } from '../../../types';
 import { calculateAge2, generateInitials, getLoadingText, openModalWithRefresh } from '../../../utils';
 import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
@@ -11,7 +11,9 @@ import { usePatientStore } from '../../../stores';
 const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [activeTab, setActiveTab] = useState('overview');
     const [showPatientDetail, setShowPatientDetail] = useState<boolean>(false);
-    const [selectedPatient, setSelectedPatient] = useState<PatientDisplayData | null>(null);
+    const [setSelectedPatient] = useState<PatientDisplayData | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
     //zustand store selectors
     const {
@@ -19,10 +21,14 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
         submitLoading,
         loading,
         error,
+        isProcessing,
         isModalOpen,
         isDeleteModalOpen,
-        selectedPatient: editData,
+        selectedPatient,
         deletePatientData,
+        addPatient,
+        pagination: storePagination,
+        summaryStats,
         fetchPatients,
         openUpdateModal,
         openDeleteModal,
@@ -34,30 +40,38 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
     } = usePatientStore();
 
     //calculate summary stats using useMemo for performance
-    const summaryStats = useMemo(() => {
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth();
-        const currentYear = currentDate.getFullYear();
+    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
+        try {
+            await fetchPatients({ page, limit, search });
+        } catch (error) {
+            console.error('Error fetching patients:', error);
+        }
+    }, [fetchPatients]);
 
-        return {
-            total: patients.length,
-            active: patients.filter(p => !p.isArchive).length,
-            archived: patients.filter(p => p.isArchive).length,
-            thisMonth: patients.filter(p => {
-                const patientDate = new Date(p.birthdate);
-                return patientDate.getMonth() === currentMonth && 
-                       patientDate.getFullYear() === currentYear;
-            }).length
-        };
-    }, [patients]);
+    useEffect(() => {
+        if (isInitialLoad) {
+            fetchData(1, 10, '');
+            setIsInitialLoad(false);
+        }
+    }, [isInitialLoad, fetchData]);
 
-    //get summary cards using the reusable function
-    const summaryCards = useMemo(() => 
-        getPatientSummaryCards(summaryStats), 
-        [summaryStats]
-    );
+    //handle search
+    const handleSearch = useCallback((term: string) => {
+        setSearchTerm(term);
+        fetchData(1, storePagination?.itemsPerPage || 10, term);
+    }, [fetchData, storePagination?.itemsPerPage]);
 
-    //transform API data to display format
+    //handle page change
+    const handlePageChange = useCallback((page: number) => {
+        fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
+
+    //handle items per page change
+    const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
+        fetchData(1, itemsPerPage, searchTerm);
+    }, [fetchData, searchTerm]);
+
+    //transform api data to display format
     const transformPatientData = (apiData: PatientFormData[]): PatientDisplayData[] => {
         return apiData.map(patient => ({
             ...patient,
@@ -76,45 +90,61 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
         fetchPatients();
     }, [fetchPatients]);
 
-    const handleOpenModal = () => {
+    const handleOpenModal = useCallback(() => {
         openModalWithRefresh({
             modalType: 'patient',
             openModal,
-            onRefresh: fetchPatients
+            onRefresh: () => fetchData(
+                storePagination?.currentPage || 1, 
+                storePagination?.itemsPerPage || 10, 
+                searchTerm
+            ),
         });
-    };
+    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     //handle view patient details
-    const handleViewPatient = (patient: PatientDisplayData) => {
-        setSelectedPatient(patient);
-        setShowPatientDetail(true);
-    };
+    // const handleViewClick = useCallback((patient: PatientDisplayData) => {
+    //     setSelectedPatient(patient);
+    //     setShowPatientDetail(true);
+    // }, []);
 
-    const handleUpdatePatient = (patient: PatientFormData) => {
+    const handleUpdateClick = useCallback((patient: PatientFormData) => {
         openUpdateModal(patient);
-    };
+    }, [openUpdateModal]);
 
-    const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
-        if (typeof data === 'string' || !editData || !editData.id) {
+    //handle archive/delete patient
+    const handleDeleteClick = useCallback((patient: PatientFormData) => {
+        openDeleteModal(patient);
+    },[ openDeleteModal]);
+
+    const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string' || !selectedPatient || !selectedPatient.id) {
             console.error('Invalid data or missing patient ID');
             return;
         }
         const patientData = data as PatientFormData;
 
         try {
-            await updatePatientData(editData.id, patientData);
+            if (selectedPatient && selectedPatient.id) {
+                await updatePatientData(selectedPatient.id, patientData);
+            } else {
+                await addPatient(patientData);
+            }
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+            }, 600);
         } catch (error) {
             console.error('Error updating patient:', error);
         }
-    };
-
-    //handle archive/delete patient
-    const handleDeletePatient = (patient: PatientFormData) => {
-        openDeleteModal(patient);
-    };
+    }, [selectedPatient, updatePatientData, addPatient, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     //handle delete confirmation
-    const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
+    const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {
             console.error('Invalid patient ID');
             return;
@@ -122,14 +152,26 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         try {
             await deletePatient(data);
+
+            //refresh after operation completes
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+            }, 600);
+
         } catch (error) {
             console.error('Error deleting patient:', error);
         }
-    };
+    }, [deletePatient, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     const handleTabChange = (tab: string) => {
         setActiveTab(tab);
     };
+
+    const summaryCards = getPatientSummaryCards(summaryStats);
 
     const headerActions = [
         {
@@ -174,6 +216,32 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                 <div className={styles.patientTableContainer}>
                     <div className={styles.patientTableHeader}>
                         <div className={styles.patientTableTitle}>Patient Records</div>
+
+                        {/* search and items per page controls */}
+                        <div className={styles.patientControls}>
+                            <Searchbar
+                                onSearch={handleSearch}
+                                placeholder="Search medicines..."
+                                disabled={loading}
+                                className={styles.searchbar}
+                            />
+                            
+                            <div className={styles.itemsPerPageControl}>
+                                <label htmlFor="itemsPerPage">Items per page:</label>
+                                <select
+                                    id="itemsPerPage"
+                                    value={storePagination?.itemsPerPage || 10}
+                                    onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                                    disabled={loading}
+                                    className={styles.itemsPerPageSelect}
+                                >
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={20}>20</option>
+                                    <option value={50}>50</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     {
@@ -188,76 +256,92 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 />
                             </div>
                         ) : (
-                            <div className={styles.tableResponsive}>
-                                <table className={styles.patientTable}>
-                                    <thead>
-                                        <tr>
-                                            <th>Patient</th>
-                                            <th>Gender</th>
-                                            <th>Age</th>
-                                            <th>Contact</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            displayPatients.length === 0 ? (
-                                                <tr>
-                                                    <td colSpan={6} style={{textAlign: 'center'}}>No patients found</td>
-                                                </tr>
-                                            ) : (
-                                                displayPatients.map((patient, index) => (
-                                                    <tr key={patient.id || index}>
-                                                        <td>
-                                                            <div className={styles.patientInfo}>
-                                                                <div className={styles.patientAvatar}>{patient.initials}</div>
-                                                                <div style={{ textAlign: 'start' }}>
-                                                                    <div className={styles.patientName}>{patient.firstName} {patient.lastName}</div>
-                                                                    <div className={styles.patientId}>#{patient.id}</div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span className={`${styles.patientGender} ${styles[patient.sex?.toLowerCase() || 'unknown']}`}>{patient.sex || 'N/A'}</span>
-                                                        </td>
-                                                        <td>{patient.age || 'N/A'}</td>
-                                                        <td>{patient.contactNumber || 'N/A'}</td>
-                                                        <td>
-                                                            <span className={`${styles.patientStatus} ${patient.isArchive ? styles.archived : styles.active}`}>
-                                                                {patient.isArchive ? 'Archived' : 'Active'}
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <button 
-                                                                type='button'
-                                                                className={`${styles.actionBtn} ${styles.primary}`} 
-                                                                onClick={() => handleViewPatient(patient)}
-                                                            >
-                                                                View
-                                                            </button>
-                                                            <button 
-                                                                type='button'
-                                                                className={`${styles.actionBtn} ${styles.update}`}
-                                                                onClick={() => handleUpdatePatient(patient)}
-                                                            >
-                                                                Update
-                                                            </button>
-                                                            <button 
-                                                                type='button'
-                                                                className={`${styles.actionBtn} ${styles.cancel}`} 
-                                                                onClick={() => handleDeletePatient(patient)}
-                                                            >
-                                                                Delete
-                                                            </button>
-                                                        </td>
+                            <>
+                                <div className={styles.tableResponsive}>
+                                    <table className={styles.patientTable}>
+                                        <thead>
+                                            <tr>
+                                                <th>Patient</th>
+                                                <th>Gender</th>
+                                                <th>Age</th>
+                                                <th>Contact</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                displayPatients.length === 0 ? (
+                                                    <tr>
+                                                        <td colSpan={6} style={{textAlign: 'center'}}>No patients found</td>
                                                     </tr>
-                                                ))
-                                            )
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                                                ) : (
+                                                    displayPatients.map((patient, index) => (
+                                                        <tr key={patient.id || index}>
+                                                            <td>
+                                                                <div className={styles.patientInfo}>
+                                                                    <div className={styles.patientAvatar}>{patient.initials}</div>
+                                                                    <div style={{ textAlign: 'start' }}>
+                                                                        <div className={styles.patientName}>{patient.firstName} {patient.lastName}</div>
+                                                                        <div className={styles.patientId}>#{patient.id}</div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <span className={`${styles.patientGender} ${styles[patient.sex?.toLowerCase() || 'unknown']}`}>{patient.sex || 'N/A'}</span>
+                                                            </td>
+                                                            <td>{patient.age || 'N/A'}</td>
+                                                            <td>{patient.contactNumber || 'N/A'}</td>
+                                                            <td>
+                                                                <span className={`${styles.patientStatus} ${patient.isArchive ? styles.archived : styles.active}`}>
+                                                                    {patient.isArchive ? 'Archived' : 'Active'}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                {/* <button 
+                                                                    type='button'
+                                                                    className={`${styles.actionBtn} ${styles.primary}`} 
+                                                                    onClick={() => handleViewClick(patient)}
+                                                                >
+                                                                    View
+                                                                </button> */}
+                                                                <button 
+                                                                    type='button'
+                                                                    className={`${styles.actionBtn} ${styles.update}`}
+                                                                    onClick={() => handleUpdateClick(patient)}
+                                                                >
+                                                                    Update
+                                                                </button>
+                                                                <button 
+                                                                    type='button'
+                                                                    className={`${styles.actionBtn} ${styles.cancel}`} 
+                                                                    onClick={() => handleDeleteClick(patient)}
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                )
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {
+                                    storePagination && storePagination.totalPages > 1 && (
+                                        <Pagination
+                                            currentPage={storePagination.currentPage}
+                                            totalPages={storePagination.totalPages}
+                                            totalItems={storePagination.totalItems}
+                                            itemsPerPage={storePagination.itemsPerPage}
+                                            onPageChange={handlePageChange}
+                                            disabled={loading || isProcessing}
+                                            className={styles.pagination}
+                                        />
+                                    )
+                                }
+                            </>
                         )
                     }
                 </div>
@@ -406,7 +490,7 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                     onClose={closeUpdateModal}
                     modalType='patient'
                     onSubmit={handleSubmitUpdate}
-                    editData={editData}
+                    editData={selectedPatient}
                     isProcessing={submitLoading}
                 />
             )
