@@ -2,11 +2,17 @@ import { AppointmentFormData, AppointmentResponse } from "./appointment"
 import { LoginFormData, SignupFormData, ValidationErrors } from "./auth";
 import { BillingFormData, BillingResponse } from "./billing";
 import { OperationType } from "./crud";
-import { FetchInventoryParams, InventoryItemFormData } from "./invetory";
+import { InventoryItemFormData } from "./invetory";
 import { MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
 import { Pagination } from "./pagination";
 import { Patient, PatientFormData } from "./patient"
 import { User } from "./user";
+
+export interface FetchParams {
+    page?: number;
+    limit?: number;
+    search?: string;
+}
 
 
 //appointment state
@@ -95,7 +101,7 @@ export interface InventoryState {
     isAddQuantityMode: boolean;
 
     //actions
-    fetchInventoryItems: (params?: FetchInventoryParams) => Promise<void>;
+    fetchInventoryItems: (params?: FetchParams) => Promise<void>;
     fetchSummaryStats: () => Promise<void>;
     addInventoryItem: (data: InventoryItemFormData) => Promise<void>;
     updateInventoryItemData: (id: string, data: InventoryItemFormData) => Promise<void>;

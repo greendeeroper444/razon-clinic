@@ -68,12 +68,6 @@ export interface InventoryItemQueryParams {
     sortOrder?: 'asc' | 'desc';
 }
 
-export interface FetchInventoryParams {
-    page?: number;
-    limit?: number;
-    search?: string;
-}
-
 export interface StockUpdateData {
     quantityUsed: number;
     operation: 'use' | 'restock';

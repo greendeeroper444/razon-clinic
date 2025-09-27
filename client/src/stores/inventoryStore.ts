@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { InventoryItemFormData, ExtendedInventoryState, OperationType, FetchInventoryParams } from '../types'
+import { InventoryItemFormData, ExtendedInventoryState, OperationType, FetchParams } from '../types'
 import { deleteInventoryItem, getInventoryItems, updateInventoryItem, addInventoryItem, getLowStockItems, getExpiringItems } from '../services';
 import { toast } from 'sonner';
 
@@ -43,7 +43,7 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 searchTerm: null
             },
 
-            fetchInventoryItems: async (params: FetchInventoryParams) => {
+            fetchInventoryItems: async (params: FetchParams) => {
                 const currentState = get();
                 
                 //prevent multiple simultaneous fetches
