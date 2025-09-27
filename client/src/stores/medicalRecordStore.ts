@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { MedicalRecordFormData, OperationType, MedicalRecord, ExtendedMedicalRecordState, Patient } from '../types'
+import { MedicalRecordFormData, OperationType, MedicalRecord, ExtendedMedicalRecordState, Patient, FetchParams } from '../types'
 import { deleteMedicalRecord, getMedicalRecordById, getMedicalRecords, updateMedicalRecord, addMedicalRecord } from '../services';
 import { toast } from 'sonner';
 
@@ -23,14 +23,21 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
             currentMedicalRecord: null,
             viewMode: 'user' as 'admin' | 'user',
             currentOperation: null as OperationType,
-                
-            //state for pagination and search
-            searchTerm: '',
-            currentPage: 1,
-            recordsPerPage: 10,
-            pagination: null,
-            showDetails: false,
-            selectedRecord: null,
+            pagination: {
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: 0,
+                itemsPerPage: 10,
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startIndex: 1,
+                endIndex: 0,
+                isUnlimited: false,
+                nextPage: null,
+                previousPage: null,
+                remainingItems: 0,
+                searchTerm: null
+            },
 
             //add new medical record
             addMedicalRecord: async (data: MedicalRecordFormData) => {
@@ -68,15 +75,19 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
 
             
             //fetch all medical records with pagination and search
-            fetchMedicalRecords: async (page?: number, search?: string) => {
+            fetchMedicalRecords: async (params: FetchParams) => {
+                const currentState = get();
+                
+                //prevent multiple simultaneous fetches
+                if (currentState.fetchLoading) {
+                    console.log('Fetch already in progress, skipping...');
+                    return;
+                }
+
                 try {
-                    const currentState = get();
-                    const pageToFetch = page ?? currentState.currentPage;
-                    const searchToUse = search ?? currentState.searchTerm;
-                    
                     set({ fetchLoading: true, loading: true, error: null });
                     
-                    const response = await getMedicalRecords(pageToFetch, currentState.recordsPerPage, searchToUse);
+                    const response = await getMedicalRecords(params);
                     
                     if (response.success) {
                         const medicalRecords = response.data.medicalRecords || [];
@@ -115,15 +126,13 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                                 remainingItems: pagination.remainingItems || 0,
                                 searchTerm: pagination.searchTerm || null
                             },
-                            currentPage: pageToFetch,
-                            searchTerm: searchToUse,
                             fetchLoading: false,
                             loading: false,
                             error: null
                         });
                     } else {
                         set({ 
-                            error: 'Failed to fetch medical records', 
+                            error: response.message || 'Failed to fetch medical records', 
                             fetchLoading: false,
                             loading: false 
                         });

@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styles from './MedicalRecordsPage.module.css';
-import { Plus, User, History, Ruler, Stethoscope, Activity, X, FileText, Download } from 'lucide-react';
+import { Plus, FileText, Download } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { FormDataType, MedicalRecordFormData, MedicalRecordResponse } from '../../../types';
-import { Header, Loading, Main, Modal, SubmitLoading } from '../../../components';
+import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading } from '../../../components';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
 import { calculateAge2, getLoadingText, openModalWithRefresh } from '../../../utils';
@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 
 const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
     //zustand store selectors
     const {
@@ -19,23 +21,18 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         submitLoading,
         loading,
         error,
-        searchTerm,
-        currentPage,
-        pagination,
-        showDetails,
+        isProcessing,
         selectedRecord,
         isModalOpen,
         isDeleteModalOpen,
         selectedMedicalRecord,
         deleteMedicalRecordData,
+        pagination: storePagination,
         fetchMedicalRecords,
-        viewMedicalRecord,
         openUpdateModal,
         openDeleteModal,
         closeUpdateModal,
         closeDeleteModal,
-        closeDetailsModal,
-        handlePageChange,
         updateMedicalRecordData,
         addMedicalRecord,
         deleteMedicalRecord,
@@ -44,27 +41,49 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     } = useMedicalRecordStore();
 
 
-    useEffect(() => {
-        fetchMedicalRecords();
+    //calculate summary stats using useMemo for performance
+    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
+        try {
+            await fetchMedicalRecords({ page, limit, search });
+        } catch (error) {
+            console.error('Error fetching medical records:', error);
+        }
     }, [fetchMedicalRecords]);
 
-    //handle search with debounce
     useEffect(() => {
-        // const delayedSearch = setTimeout(() => {
-        //     fetchMedicalRecords(1, searchTerm);
-        // }, 500);
+        if (isInitialLoad) {
+            fetchData(1, 10, '');
+            setIsInitialLoad(false);
+        }
+    }, [isInitialLoad, fetchData]);
 
-        // return () => clearTimeout(delayedSearch);
-        fetchMedicalRecords(1, searchTerm);
-    }, [fetchMedicalRecords, searchTerm]);
+    //handle search
+    const handleSearch = useCallback((term: string) => {
+        setSearchTerm(term);
+        fetchData(1, storePagination?.itemsPerPage || 10, term);
+    }, [fetchData, storePagination?.itemsPerPage]);
 
-    const handleOpenModal = () => {
+    //handle page change
+    const handlePageChange = useCallback((page: number) => {
+        fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
+
+    //handle items per page change
+    const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
+        fetchData(1, itemsPerPage, searchTerm);
+    }, [fetchData, searchTerm]);
+
+    const handleOpenModal = useCallback(() => {
         openModalWithRefresh({
             modalType: 'medical',
             openModal,
-            onRefresh: () => fetchMedicalRecords(),
+            onRefresh: () => fetchData(
+                storePagination?.currentPage || 1, 
+                storePagination?.itemsPerPage || 10, 
+                searchTerm
+            ),
         });
-    };
+    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     const handleReport = () => {
         console.log('Generate report');
@@ -74,11 +93,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         navigate(`/admin/medical-records/details/${record.id}`)
     }
 
-    const handleViewRecord = (record: MedicalRecordResponse) => {
-        viewMedicalRecord(record);
-    };
-
-    const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
+    const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
             console.error('Invalid data or missing medical ID');
             return;
@@ -92,12 +107,20 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             } else {
                 await addMedicalRecord(medicalData);
             }
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+            }, 600);
         } catch (error) {
             console.error('Error processing medical record:', error);
         }
-    };
+    }, [selectedMedicalRecord, updateMedicalRecordData, addMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
-    const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
+    const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {
             console.error('Invalid patient ID');
             return;
@@ -105,10 +128,18 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         try {
             await deleteMedicalRecord(data);
+
+             setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+            }, 600);
         } catch (error) {
             console.error('Error deleting medical record:', error);
         }
-    };
+    }, [deleteMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     const handleDownloadReceipt = () => {
         if (selectedRecord) {
@@ -145,230 +176,142 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             actions={headerActions}
         />
 
-        {/* search section */}
-        {/* <div className={styles.searchFilterSection}>
-            <div className={styles.searchBox}>
-                <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
-                <input
-                    type='text'
-                    placeholder='Search by patient name, phone, or email...'
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className={styles.searchInput}
-                />
-            </div>
-        </div> */}
+        <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+                <div className={styles.sectionTitle}>Patient Records</div>
 
-        {/* medical records table */}
-        {
-            loading ? (
-                <Loading
-                    type='skeleton'
-                    rows={7}
-                    message='Loading medical records data...'
-                    delay={0}
-                    minDuration={1000}
-                />
-            ) : (
-                <div className={styles.tableContainer}>
-                    <table className={styles.recordsTable}>
-                        <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>Date of Birth</th>
-                                <th>Age</th>
-                                <th>Gender</th>
-                                <th>Phone</th>
-                                <th>Date Recorded</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                medicalRecords.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={7} className={styles.noRecords}>
-                                            No medical records found
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    medicalRecords.map((record) => {
-                                        getStatusFromRecord(record);
-                                        return (
-                                            <tr key={record.id} className={styles.tableRow}>
-                                                <td className={styles.patientName}>
-                                                    {record.personalDetails.fullName}
-                                                </td>
-                                                <td>
-                                                    {new Date(record.personalDetails.dateOfBirth).toLocaleDateString()}
-                                                </td>
-                                                <td>{calculateAge2(record.personalDetails.dateOfBirth)}</td>
-                                                <td>{record.personalDetails.gender}</td>
-                                                <td>{record.personalDetails.phone}</td>
-                                                <td>
-                                                    {new Date(record.dateRecorded).toLocaleDateString()}
-                                                </td>
-                                                <td className={styles.actions}>
-                                                    <button
-                                                        type='button'
-                                                        className={`${styles.actionBtn} ${styles.view}`}
-                                                        onClick={() => handleViewClick(record)}
-                                                        title='View Details'
-                                                    >
-                                                        View
-                                                    </button>
-                                                    <button
-                                                        type='button' 
-                                                        className={`${styles.actionBtn} ${styles.update}`} 
-                                                        onClick={() => openUpdateModal(record)}
-                                                        title='Update'
-                                                    >
-                                                        Update
-                                                    </button>
-                                                    <button
-                                                        type='button' 
-                                                        className={`${styles.actionBtn} ${styles.delete}`} 
-                                                        onClick={() => openDeleteModal(record)}
-                                                        title='Delete'
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
-                                )
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            )
-        }
-
-        {/* pagination */}
-        {
-            pagination && pagination.totalPages > 1 && (
-                <div className={styles.pagination}>
-                    <button
-                        type='button'
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className={styles.paginationBtn}
-                    >
-                        Previous
-                    </button>
+                {/* search and items per page controls */}
+                <div className={styles.controls}>
+                    <Searchbar
+                        onSearch={handleSearch}
+                        placeholder="Search medicines..."
+                        disabled={loading}
+                        className={styles.searchbar}
+                    />
                     
-                    <span className={styles.paginationInfo}>
-                        Page {pagination.currentPage} of {pagination.totalPages} 
-                        ({pagination.totalRecords} total records)
-                    </span>
-                    
-                    <button
-                        type='button'
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === pagination.totalPages}
-                        className={styles.paginationBtn}
-                    >
-                        Next
-                    </button>
-                </div>
-            )
-        }
-
-        {/* record details modal */}
-        {
-            showDetails && selectedRecord && (
-                <div className={styles.modal}>
-                    <div className={styles.modalContent}>
-                        <div className={styles.modalHeader}>
-                            <h2>Medical Record Details</h2>
-                            <div className={styles.modalHeaderActions}>
-                                <button 
-                                    type='button'
-                                    onClick={handleDownloadReceipt} 
-                                    className={styles.downloadBtn}
-                                    title='Download Receipt'
-                                >
-                                    <Download /> Download Receipt
-                                </button>
-                                <button 
-                                    type='button'
-                                    title='Close'
-                                    onClick={closeDetailsModal} 
-                                    className={styles.closeBtn}
-                                >
-                                    <X />
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div className={styles.modalBody}>
-                            {/* personal details section */}
-                            <div className={styles.detailSection}>
-                                <h3><User /> Personal Details</h3>
-                                <div className={styles.detailGrid}>
-                                    <div><strong>Name:</strong> {selectedRecord.personalDetails.fullName}</div>
-                                    <div><strong>Date of Birth:</strong> {new Date(selectedRecord.personalDetails.dateOfBirth).toLocaleDateString()}</div>
-                                    <div><strong>Age:</strong> {calculateAge2(selectedRecord.personalDetails.dateOfBirth)} years</div>
-                                    <div><strong>Gender:</strong> {selectedRecord.personalDetails.gender}</div>
-                                    <div><strong>Blood Type:</strong> {selectedRecord.personalDetails.bloodType || 'Not specified'}</div>
-                                    <div><strong>Phone:</strong> {selectedRecord.personalDetails.phone}</div>
-                                    <div><strong>Email:</strong> {selectedRecord.personalDetails.email || 'Not provided'}</div>
-                                    <div><strong>Address:</strong> {selectedRecord.personalDetails.address || 'Not provided'}</div>
-                                    <div><strong>Emergency Contact:</strong> {selectedRecord.personalDetails.emergencyContact || 'Not provided'}</div>
-                                </div>
-                            </div>
-
-                            {/* current symptoms section */}
-                            <div className={styles.detailSection}>
-                                <h3><Stethoscope /> Current Symptoms</h3>
-                                <div className={styles.detailGrid}>
-                                    <div><strong>Chief Complaint:</strong> {selectedRecord.currentSymptoms.chiefComplaint}</div>
-                                    <div><strong>Symptoms Description:</strong> {selectedRecord.currentSymptoms.symptomsDescription}</div>
-                                    <div><strong>Duration:</strong> {selectedRecord.currentSymptoms.symptomsDuration || 'Not specified'}</div>
-                                    <div><strong>Pain Scale:</strong> {selectedRecord.currentSymptoms.painScale ? `${selectedRecord.currentSymptoms.painScale}/10` : 'Not specified'}</div>
-                                </div>
-                            </div>
-
-                            {/* medical history section */}
-                            <div className={styles.detailSection}>
-                                <h3><History /> Medical History</h3>
-                                <div className={styles.detailGrid}>
-                                    <div><strong>Allergies:</strong> {selectedRecord.medicalHistory.allergies || 'None reported'}</div>
-                                    <div><strong>Chronic Conditions:</strong> {selectedRecord.medicalHistory.chronicConditions || 'None reported'}</div>
-                                    <div><strong>Previous Surgeries:</strong> {selectedRecord.medicalHistory.previousSurgeries || 'None reported'}</div>
-                                    <div><strong>Family History:</strong> {selectedRecord.medicalHistory.familyHistory || 'Not provided'}</div>
-                                </div>
-                            </div>
-
-                            {/* growth milestones section */}
-                            <div className={styles.detailSection}>
-                                <h3><Ruler /> Growth Milestones</h3>
-                                <div className={styles.detailGrid}>
-                                    <div><strong>Height:</strong> {selectedRecord.growthMilestones.height ? `${selectedRecord.growthMilestones.height} cm` : 'Not measured'}</div>
-                                    <div><strong>Weight:</strong> {selectedRecord.growthMilestones.weight ? `${selectedRecord.growthMilestones.weight} kg` : 'Not measured'}</div>
-                                    <div><strong>BMI:</strong> {selectedRecord.growthMilestones.bmi || 'Not calculated'}</div>
-                                    <div><strong>Growth Notes:</strong> {selectedRecord.growthMilestones.growthNotes || 'No notes'}</div>
-                                </div>
-                            </div>
-
-                            {/* clinical information */}
-                            <div className={styles.detailSection}>
-                                <h3><Activity /> Clinical Information</h3>
-                                <div className={styles.detailGrid}>
-                                    <div><strong>Diagnosis:</strong> {selectedRecord.diagnosis || 'Pending'}</div>
-                                    <div><strong>Treatment Plan:</strong> {selectedRecord.treatmentPlan || 'Not specified'}</div>
-                                    <div><strong>Prescribed Medications:</strong> {selectedRecord.prescribedMedications || 'None prescribed'}</div>
-                                    <div><strong>Consultation Notes:</strong> {selectedRecord.consultationNotes || 'No notes'}</div>
-                                    <div><strong>Vaccination History:</strong> {selectedRecord.vaccinationHistory || 'Not provided'}</div>
-                                    <div><strong>Follow-up Date:</strong> {selectedRecord.followUpDate ? new Date(selectedRecord.followUpDate).toLocaleDateString() : 'Not scheduled'}</div>
-                                </div>
-                            </div>
-                        </div>
+                    <div className={styles.itemsPerPageControl}>
+                        <label htmlFor="itemsPerPage">Items per page:</label>
+                        <select
+                            id="itemsPerPage"
+                            value={storePagination?.itemsPerPage || 10}
+                            onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                            disabled={loading}
+                            className={styles.itemsPerPageSelect}
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
                     </div>
                 </div>
-            )
-        }
+            </div>
+
+            {
+                loading ? (
+                    <div className={styles.tableResponsive}>
+                        <Loading
+                            type='skeleton'
+                            rows={7}
+                            message='Loading medical records data...'
+                            delay={0}
+                            minDuration={1000}
+                        />
+                    </div>
+                ) : (
+                    <>
+                        <div className={styles.tableResponsive}>
+                            <table className={styles.recordsTable}>
+                                <thead>
+                                    <tr>
+                                        <th>Patient Name</th>
+                                        <th>Date of Birth</th>
+                                        <th>Age</th>
+                                        <th>Gender</th>
+                                        <th>Phone</th>
+                                        <th>Date Recorded</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        medicalRecords.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={7} className={styles.noRecords}>
+                                                    No medical records found
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            medicalRecords.map((record) => {
+                                                getStatusFromRecord(record);
+                                                return (
+                                                    <tr key={record.id} className={styles.tableRow}>
+                                                        <td className={styles.patientName}>
+                                                            {record.personalDetails.fullName}
+                                                        </td>
+                                                        <td>
+                                                            {new Date(record.personalDetails.dateOfBirth).toLocaleDateString()}
+                                                        </td>
+                                                        <td>{calculateAge2(record.personalDetails.dateOfBirth)}</td>
+                                                        <td>{record.personalDetails.gender}</td>
+                                                        <td>{record.personalDetails.phone}</td>
+                                                        <td>
+                                                            {new Date(record.dateRecorded).toLocaleDateString()}
+                                                        </td>
+                                                        <td className={styles.actions}>
+                                                            <button
+                                                                type='button'
+                                                                className={`${styles.actionBtn} ${styles.view}`}
+                                                                onClick={() => handleViewClick(record)}
+                                                                title='View Details'
+                                                            >
+                                                                View
+                                                            </button>
+                                                            <button
+                                                                type='button' 
+                                                                className={`${styles.actionBtn} ${styles.update}`} 
+                                                                onClick={() => openUpdateModal(record)}
+                                                                title='Update'
+                                                            >
+                                                                Update
+                                                            </button>
+                                                            <button
+                                                                type='button' 
+                                                                className={`${styles.actionBtn} ${styles.delete}`} 
+                                                                onClick={() => openDeleteModal(record)}
+                                                                title='Delete'
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        {
+                            storePagination && storePagination.totalPages > 1 && (
+                                <Pagination
+                                    currentPage={storePagination.currentPage}
+                                    totalPages={storePagination.totalPages}
+                                    totalItems={storePagination.totalItems}
+                                    itemsPerPage={storePagination.itemsPerPage}
+                                    onPageChange={handlePageChange}
+                                    disabled={loading || isProcessing}
+                                    className={styles.pagination}
+                                />
+                            )
+                        }
+
+                    </>
+                )
+            }
+        </div>
 
         {/* update medical record modal */}
         {
