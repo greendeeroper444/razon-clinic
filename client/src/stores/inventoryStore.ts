@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { InventoryItemFormData, ExtendedInventoryState, OperationType } from '../types'
+import { InventoryItemFormData, ExtendedInventoryState, OperationType, FetchInventoryParams } from '../types'
 import { deleteInventoryItem, getInventoryItems, updateInventoryItem, addInventoryItem, getLowStockItems, getExpiringItems } from '../services';
 import { toast } from 'sonner';
 
@@ -27,31 +27,31 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
             isRestockMode: false,
             isAddQuantityMode: false,
             currentOperation: null as OperationType,
+            pagination: {
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: 0,
+                itemsPerPage: 10,
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startIndex: 1,
+                endIndex: 0,
+                isUnlimited: false,
+                nextPage: null,
+                previousPage: null,
+                remainingItems: 0,
+                searchTerm: null
+            },
 
-            //fetch inventory items
-            // fetchInventoryItems: async () => {
-            //     try {
-            //         set({ fetchLoading: true, loading: true, error: null });
+            fetchInventoryItems: async (params: FetchInventoryParams) => {
+                const currentState = get();
+                
+                //prevent multiple simultaneous fetches
+                if (currentState.fetchLoading) {
+                    console.log('Fetch already in progress, skipping...');
+                    return;
+                }
 
-            //         const response = await getInventoryItems();
-            //         const inventoryItems = response.data.inventoryItems || [];
-
-            //         set({ 
-            //             inventoryItems,
-            //             loading: false 
-            //         });
-
-            //         await get().fetchSummaryStats();
-                    
-            //     } catch (error) {
-            //         console.error('Error fetching inventory items:', error);
-            //         set({ 
-            //             error: 'An error occurred while fetching items', 
-            //             loading: false 
-            //         });
-            //     }
-            // },
-            fetchInventoryItems: async (params = {}) => {
                 try {
                     set({ fetchLoading: true, loading: true, error: null });
 
@@ -62,6 +62,7 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     set({ 
                         inventoryItems,
                         loading: false,
+                        fetchLoading: false,
                         pagination: {
                             currentPage: pagination.currentPage || 1,
                             totalPages: pagination.totalPages || 1,
@@ -79,31 +80,29 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                         },
                     });
 
-                    //only fetch summary stats if no search term (to get overall stats)
-                    if (!params.search) {
-                        await get().fetchSummaryStats();
+                    //only fetch summary stats on initial load or non-search requests
+                    if (!params.search && params.page === 1) {
+                        get().fetchSummaryStats();
                     }
                     
                 } catch (error) {
                     console.error('Error fetching inventory items:', error);
                     set({ 
                         error: 'An error occurred while fetching items', 
-                        loading: false 
+                        loading: false,
+                        fetchLoading: false
                     });
                 }
             },
 
-            //fetch summary stats
             fetchSummaryStats: async () => {
                 try {
-                    const { inventoryItems } = get();
-                    
                     const [lowStockResponse, expiringResponse] = await Promise.all([
                         getLowStockItems(10),
                         getExpiringItems(30)
                     ]);
 
-                    //calculate recently added (items added in the last 30 days)
+                    const { inventoryItems } = get();
                     const thirtyDaysAgo = new Date();
                     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
                     
@@ -125,13 +124,11 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 }
             },
 
-            //add inventory item
             addInventoryItem: async (data: InventoryItemFormData) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
                     
                     await addInventoryItem(data);
-                    await get().fetchInventoryItems();
                     
                     toast.success('Item added successfully!');
                     set({ isModalOpen: false, selectedInventoryItem: null });
@@ -156,13 +153,11 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 }
             },
 
-            //update inventory item
             updateInventoryItemData: async (id: string, data: InventoryItemFormData) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'update' });
                     
                     await updateInventoryItem(id, data);
-                    await get().fetchInventoryItems();
 
                     toast.success('Item updated successfully!');
                     set({ 
@@ -192,13 +187,11 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 }
             },
 
-            //delete inventory item
             deleteInventoryItem: async (id: string) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
                     
                     await deleteInventoryItem(id);
-                    await get().fetchInventoryItems();
                     
                     toast.success('Item deleted successfully!');
                     set({ 
@@ -225,9 +218,6 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 }
             },
 
-
-            
-            //modal actions
             openAddModal: () => {
                 set({ 
                     selectedInventoryItem: null,
@@ -288,12 +278,11 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 });
             },
 
-            //utility actions
             setLoading: (loading: boolean) => set({ loading }),
             setError: (error: string | null) => set({ error }),
         }),
         {
-            name: 'inventory-store' //for Redux DevTools
+            name: 'inventory-store'
         }
     )
 

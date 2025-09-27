@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import styles from './InventoryPage.module.css';
 import { Plus, Edit, Trash } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
@@ -7,13 +7,6 @@ import { FormDataType, InventoryItemFormData } from '../../../types';
 import { formatDate, getExpiryStatus, getItemIcon, getLoadingText, getStockStatus, openModalWithRefresh } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
 import { useInventoryStore } from '../../../stores';
-
-interface PaginationState {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-}
 
 const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 
@@ -31,6 +24,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         deleteInventoryItemData,
         isRestockMode,
         isAddQuantityMode,
+        pagination: storePagination,
         fetchInventoryItems,
         addInventoryItem,
         updateInventoryItemData,
@@ -42,65 +36,64 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         currentOperation
     } = useInventoryStore();
 
-    //local state for search and pagination
+    //local state for search only
     const [searchTerm, setSearchTerm] = useState('');
-    const [pagination, setPagination] = useState<PaginationState>({
-        currentPage: 1,
-        totalPages: 1,
-        totalItems: 0,
-        itemsPerPage: 10
-    });
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-    //fetch inventory items with search and pagination parameters
-    const fetchInventoryItemsWithParams = async (page: number = 1, limit: number = 10, search: string = '') => {
+    //memoized fetch function to prevent recreation on every render
+    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
         try {
             await fetchInventoryItems({ page, limit, search });
         } catch (error) {
             console.error('Error fetching inventory items:', error);
         }
-    };
+    }, [fetchInventoryItems]);
 
+    //initial load only
     useEffect(() => {
-        fetchInventoryItemsWithParams(pagination.currentPage, pagination.itemsPerPage, searchTerm);
-    }, [pagination.currentPage, pagination.itemsPerPage, searchTerm]);
+        if (isInitialLoad) {
+            fetchData(1, 10, '');
+            setIsInitialLoad(false);
+        }
+    }, [isInitialLoad, fetchData]);
 
     //handle search
-    const handleSearch = (term: string) => {
+    const handleSearch = useCallback((term: string) => {
         setSearchTerm(term);
-        setPagination(prev => ({ ...prev, currentPage: 1 })); //reset to first page on search
-    };
+        fetchData(1, storePagination?.itemsPerPage || 10, term);
+    }, [fetchData, storePagination?.itemsPerPage]);
 
     //handle page change
-    const handlePageChange = (page: number) => {
-        setPagination(prev => ({ ...prev, currentPage: page }));
-    };
+    const handlePageChange = useCallback((page: number) => {
+        fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
 
     //handle items per page change
-    const handleItemsPerPageChange = (itemsPerPage: number) => {
-        setPagination(prev => ({
-            ...prev,
-            itemsPerPage,
-            currentPage: 1
-        }));
-    };
+    const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
+        fetchData(1, itemsPerPage, searchTerm);
+    }, [fetchData, searchTerm]);
 
-    const handleOpenModal = () => {
+    const handleOpenModal = useCallback(() => {
         openModalWithRefresh({
             modalType: 'item',
             openModal,
-            onRefresh: () => fetchInventoryItemsWithParams(pagination.currentPage, pagination.itemsPerPage, searchTerm),
+            onRefresh: () => fetchData(
+                storePagination?.currentPage || 1, 
+                storePagination?.itemsPerPage || 10, 
+                searchTerm
+            ),
         });
-    };
+    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
-    const handleUpdateClick = (item: InventoryItemFormData, restockMode: boolean = false, addQuantityMode: boolean = false) => {
+    const handleUpdateClick = useCallback((item: InventoryItemFormData, restockMode: boolean = false, addQuantityMode: boolean = false) => {
         openUpdateModal(item, restockMode, addQuantityMode);
-    };
+    }, [openUpdateModal]);
 
-    const handleDeleteClick = (item: InventoryItemFormData) => {
+    const handleDeleteClick = useCallback((item: InventoryItemFormData) => {
         openDeleteModal(item);
-    };
+    }, [openDeleteModal]);
 
-    const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
+    const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
             console.error('Invalid data or missing inventory ID');
             return;
@@ -110,20 +103,25 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         try {
             if (selectedInventoryItem && selectedInventoryItem.id) {
-                //update existing item
                 await updateInventoryItemData(selectedInventoryItem.id, inventoryData);
             } else {
-                //add new item
                 await addInventoryItem(inventoryData);
             }
-            //refresh the current page after update
-            await fetchInventoryItemsWithParams(pagination.currentPage, pagination.itemsPerPage, searchTerm);
+            
+            //refresh after operation completes
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+            }, 600);
         } catch (error) {
             console.error('Error saving inventory item:', error);
         }
-    };
+    }, [selectedInventoryItem, updateInventoryItemData, addInventoryItem, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
-    const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
+    const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {
             console.error('Invalid inventory ID');
             return;
@@ -131,12 +129,19 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         
         try {
             await deleteInventoryItem(data);
-            //refresh the current page after delete
-            await fetchInventoryItemsWithParams(pagination.currentPage, pagination.itemsPerPage, searchTerm);
+            
+            //refresh after operation completes
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+            }, 600);
         } catch (error) {
             console.error('Error deleting inventory item:', error);
         }
-    };
+    }, [deleteInventoryItem, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     const summaryCards = getInventorySummaryCards(summaryStats);
 
@@ -196,7 +201,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                         <label htmlFor="itemsPerPage">Items per page:</label>
                         <select
                             id="itemsPerPage"
-                            value={pagination.itemsPerPage}
+                            value={storePagination?.itemsPerPage || 10}
                             onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
                             disabled={loading}
                             className={styles.itemsPerPageSelect}
@@ -312,16 +317,20 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                             </table>
                         </div>
 
-                        {/* pagination */}
-                        <Pagination
-                            currentPage={pagination.currentPage}
-                            totalPages={pagination.totalPages}
-                            totalItems={pagination.totalItems}
-                            itemsPerPage={pagination.itemsPerPage}
-                            onPageChange={handlePageChange}
-                            disabled={loading || isProcessing}
-                            className={styles.pagination}
-                        />
+                        {/* pagination - only show if storePagination exists and has valid data */}
+                        {
+                            storePagination && storePagination.totalPages > 1 && (
+                                <Pagination
+                                    currentPage={storePagination.currentPage}
+                                    totalPages={storePagination.totalPages}
+                                    totalItems={storePagination.totalItems}
+                                    itemsPerPage={storePagination.itemsPerPage}
+                                    onPageChange={handlePageChange}
+                                    disabled={loading || isProcessing}
+                                    className={styles.pagination}
+                                />
+                            )
+                        }
                     </>
                 )
             }

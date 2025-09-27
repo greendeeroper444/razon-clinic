@@ -2,7 +2,7 @@ import { AppointmentFormData, AppointmentResponse } from "./appointment"
 import { LoginFormData, SignupFormData, ValidationErrors } from "./auth";
 import { BillingFormData, BillingResponse } from "./billing";
 import { OperationType } from "./crud";
-import { InventoryItemFormData } from "./invetory";
+import { FetchInventoryParams, InventoryItemFormData } from "./invetory";
 import { MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
 import { Pagination } from "./pagination";
 import { Patient, PatientFormData } from "./patient"
@@ -95,7 +95,7 @@ export interface InventoryState {
     isAddQuantityMode: boolean;
 
     //actions
-    fetchInventoryItems: () => Promise<void>;
+    fetchInventoryItems: (params?: FetchInventoryParams) => Promise<void>;
     fetchSummaryStats: () => Promise<void>;
     addInventoryItem: (data: InventoryItemFormData) => Promise<void>;
     updateInventoryItemData: (id: string, data: InventoryItemFormData) => Promise<void>;
