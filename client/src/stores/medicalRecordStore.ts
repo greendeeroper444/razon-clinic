@@ -362,24 +362,6 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 set({ showDetails: false, selectedRecord: null });
             },
 
-            //search and pagination actions
-            setSearchTerm: (searchTerm: string) => {
-                set({ searchTerm });
-                //reset to first page when searching
-                get().setCurrentPage(1);
-                //fetch with new search term
-                get().fetchMedicalRecords(1, searchTerm);
-            },
-
-            setCurrentPage: (page: number) => {
-                set({ currentPage: page });
-            },
-
-            handlePageChange: (newPage: number) => {
-                set({ currentPage: newPage });
-                get().fetchMedicalRecords(newPage);
-            },
-
             
             //utility actions
             setLoading: (loading: boolean) => set({ loading }),
