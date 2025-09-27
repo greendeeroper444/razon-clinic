@@ -1,0 +1,210 @@
+.appStatusBanner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--archive-light);
+    padding: 16px 24px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+
+.patientNumber {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.detailsCard {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid var(--gray-light);
+    margin-bottom: 24px;
+}
+
+.cardHeader {
+    background-color: var(--primary-light);
+    padding: 16px;
+    border-bottom: 1px solid var(--gray-light);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cardHeader h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.cardIcon {
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.cardContent {
+    padding: 20px;
+}
+
+
+.detailsTable {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.tableSection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sectionTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tableRow {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gray-light);
+    align-items: start;
+}
+
+.tableRow:last-child {
+    border-bottom: none;
+}
+
+.tableLabel {
+    font-size: 14px;
+    color: var(--gray);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tableValue {
+    font-size: 16px;
+    color: var(--dark);
+    font-weight: 400;
+    word-break: break-word;
+}
+
+.ageLabel {
+    margin-left: 8px;
+    font-size: 14px;
+    color: var(--gray);
+}
+
+.familySubSection {
+    margin-left: 16px;
+    padding-left: 16px;
+    border-left: 3px solid var(--primary-light);
+}
+
+.familyTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark-light);
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    gap: 16px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--primary-light);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.errorContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    gap: 16px;
+}
+
+.errorMessage {
+    color: var(--danger);
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+    .content {
+        padding: 16px;
+    }
+    
+    .contentHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .contentActions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .appStatusBanner {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    .tableRow {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .tableLabel {
+        font-weight: 600;
+        color: var(--dark-light);
+    }
+    
+    .familySubSection {
+        margin-left: 0;
+        padding-left: 12px;
+        border-left: 2px solid var(--primary-light);
+    }
+    
+    .cardContent {
+        padding: 16px;
+    }
+    
+    .detailsTable {
+        gap: 24px;
+    }
+}

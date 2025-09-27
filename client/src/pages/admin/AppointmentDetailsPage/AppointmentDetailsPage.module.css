@@ -46,7 +46,6 @@
     color: var(--warning);
 }
 
-/* Single table card styles */
 .detailsCard {
     background-color: white;
     border-radius: 8px;
@@ -81,7 +80,6 @@
     padding: 20px;
 }
 
-/* Table-style layout for appointment details */
 .detailsTable {
     display: flex;
     flex-direction: column;
@@ -141,7 +139,6 @@
     color: var(--gray);
 }
 
-/* Family information sub-sections */
 .familySubSection {
     margin-left: 16px;
     padding-left: 16px;
@@ -157,7 +154,6 @@
     letter-spacing: 0.5px;
 }
 
-/* Loading and Error states */
 .loadingContainer {
     display: flex;
     flex-direction: column;
@@ -197,7 +193,6 @@
     margin-bottom: 16px;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
     .content {
         padding: 16px;

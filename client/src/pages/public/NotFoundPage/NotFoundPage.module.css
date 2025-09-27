@@ -135,7 +135,7 @@
     margin: 0;
 }
 
-/* Mobile responsiveness */
+
 @media (max-width: 768px) {
     .notFoundContainer {
         padding: 10px;

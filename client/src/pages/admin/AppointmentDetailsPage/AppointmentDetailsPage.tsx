@@ -32,14 +32,6 @@ const AppointmentDetailsPage = () => {
         currentOperation
     } = useAppointmentStore();
 
-    
-    console.log('Current state:', {
-        currentAppointment,
-        loading,
-        error,
-        appointmentId
-    });
-
     useEffect(() => {
         if (appointmentId) {
             fetchAppointmentById(appointmentId);

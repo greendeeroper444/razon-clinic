@@ -27,13 +27,6 @@ const MedicalRecordDetailsPage = () => {
         currentOperation
     } = useMedicalRecordStore();
 
-    console.log('Current state:', {
-        currentMedicalRecord,
-        loading,
-        error,
-        medicalRecordId
-    });
-
     
     useEffect(() => {
         if (medicalRecordId) {
@@ -45,7 +38,7 @@ const MedicalRecordDetailsPage = () => {
             clearCurrentMedicalRecord()
         }
 
-    }, [medicalRecordId])
+    }, [medicalRecordId, fetchMedicalRecordById, clearCurrentMedicalRecord])
 
     const handleMedicalRecordUpdateClick = () => {
         if (currentMedicalRecord) {

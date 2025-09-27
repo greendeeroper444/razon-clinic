@@ -7,13 +7,12 @@ import { FormDataType, PatientDisplayData, PatientFormData } from '../../../type
 import { calculateAge2, generateInitials, getLoadingText, openModalWithRefresh } from '../../../utils';
 import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
 import { usePatientStore } from '../../../stores';
+import { useNavigate } from 'react-router-dom';
 
 const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
-    const [activeTab, setActiveTab] = useState('overview');
-    const [showPatientDetail, setShowPatientDetail] = useState<boolean>(false);
-    const [setSelectedPatient] = useState<PatientDisplayData | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const navigate = useNavigate();
 
     //zustand store selectors
     const {
@@ -103,10 +102,9 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
     }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     //handle view patient details
-    // const handleViewClick = useCallback((patient: PatientDisplayData) => {
-    //     setSelectedPatient(patient);
-    //     setShowPatientDetail(true);
-    // }, []);
+    const handleViewClick = (patient: PatientDisplayData) => {
+        navigate(`/admin/patients/details/${patient.id}`)
+    };
 
     const handleUpdateClick = useCallback((patient: PatientFormData) => {
         openUpdateModal(patient);
@@ -167,10 +165,6 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     }, [deletePatient, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
-    const handleTabChange = (tab: string) => {
-        setActiveTab(tab);
-    };
-
     const summaryCards = getPatientSummaryCards(summaryStats);
 
     const headerActions = [
@@ -211,276 +205,138 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
         </div>
 
         {/* patient table */}
-        {
-            !showPatientDetail && (
-                <div className={styles.patientTableContainer}>
-                    <div className={styles.patientTableHeader}>
-                        <div className={styles.patientTableTitle}>Patient Records</div>
+        <div className={styles.patientTableContainer}>
+            <div className={styles.patientTableHeader}>
+                <div className={styles.patientTableTitle}>Patient Records</div>
 
-                        {/* search and items per page controls */}
-                        <div className={styles.patientControls}>
-                            <Searchbar
-                                onSearch={handleSearch}
-                                placeholder="Search medicines..."
-                                disabled={loading}
-                                className={styles.searchbar}
-                            />
-                            
-                            <div className={styles.itemsPerPageControl}>
-                                <label htmlFor="itemsPerPage">Items per page:</label>
-                                <select
-                                    id="itemsPerPage"
-                                    value={storePagination?.itemsPerPage || 10}
-                                    onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                                    disabled={loading}
-                                    className={styles.itemsPerPageSelect}
-                                >
-                                    <option value={5}>5</option>
-                                    <option value={10}>10</option>
-                                    <option value={20}>20</option>
-                                    <option value={50}>50</option>
-                                </select>
-                            </div>
-                        </div>
+                {/* search and items per page controls */}
+                <div className={styles.patientControls}>
+                    <Searchbar
+                        onSearch={handleSearch}
+                        placeholder="Search medicines..."
+                        disabled={loading}
+                        className={styles.searchbar}
+                    />
+                    
+                    <div className={styles.itemsPerPageControl}>
+                        <label htmlFor="itemsPerPage">Items per page:</label>
+                        <select
+                            id="itemsPerPage"
+                            value={storePagination?.itemsPerPage || 10}
+                            onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                            disabled={loading}
+                            className={styles.itemsPerPageSelect}
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
                     </div>
+                </div>
+            </div>
 
-                    {
-                        loading ? (
-                            <div className={styles.tableResponsive}>
-                                <Loading
-                                    type='skeleton'
-                                    rows={7}
-                                    message='Loading patient data...'
-                                    delay={0}
-                                    minDuration={1000}
-                                />
-                            </div>
-                        ) : (
-                            <>
-                                <div className={styles.tableResponsive}>
-                                    <table className={styles.patientTable}>
-                                        <thead>
+            {
+                loading ? (
+                    <div className={styles.tableResponsive}>
+                        <Loading
+                            type='skeleton'
+                            rows={7}
+                            message='Loading patient data...'
+                            delay={0}
+                            minDuration={1000}
+                        />
+                    </div>
+                ) : (
+                    <>
+                        <div className={styles.tableResponsive}>
+                            <table className={styles.patientTable}>
+                                <thead>
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>Gender</th>
+                                        <th>Age</th>
+                                        <th>Contact</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        displayPatients.length === 0 ? (
                                             <tr>
-                                                <th>Patient</th>
-                                                <th>Gender</th>
-                                                <th>Age</th>
-                                                <th>Contact</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
+                                                <td colSpan={6} style={{textAlign: 'center'}}>No patients found</td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                displayPatients.length === 0 ? (
-                                                    <tr>
-                                                        <td colSpan={6} style={{textAlign: 'center'}}>No patients found</td>
-                                                    </tr>
-                                                ) : (
-                                                    displayPatients.map((patient, index) => (
-                                                        <tr key={patient.id || index}>
-                                                            <td>
-                                                                <div className={styles.patientInfo}>
-                                                                    <div className={styles.patientAvatar}>{patient.initials}</div>
-                                                                    <div style={{ textAlign: 'start' }}>
-                                                                        <div className={styles.patientName}>{patient.firstName} {patient.lastName}</div>
-                                                                        <div className={styles.patientId}>#{patient.id}</div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <span className={`${styles.patientGender} ${styles[patient.sex?.toLowerCase() || 'unknown']}`}>{patient.sex || 'N/A'}</span>
-                                                            </td>
-                                                            <td>{patient.age || 'N/A'}</td>
-                                                            <td>{patient.contactNumber || 'N/A'}</td>
-                                                            <td>
-                                                                <span className={`${styles.patientStatus} ${patient.isArchive ? styles.archived : styles.active}`}>
-                                                                    {patient.isArchive ? 'Archived' : 'Active'}
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                {/* <button 
-                                                                    type='button'
-                                                                    className={`${styles.actionBtn} ${styles.primary}`} 
-                                                                    onClick={() => handleViewClick(patient)}
-                                                                >
-                                                                    View
-                                                                </button> */}
-                                                                <button 
-                                                                    type='button'
-                                                                    className={`${styles.actionBtn} ${styles.update}`}
-                                                                    onClick={() => handleUpdateClick(patient)}
-                                                                >
-                                                                    Update
-                                                                </button>
-                                                                <button 
-                                                                    type='button'
-                                                                    className={`${styles.actionBtn} ${styles.cancel}`} 
-                                                                    onClick={() => handleDeleteClick(patient)}
-                                                                >
-                                                                    Delete
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                                )
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                {
-                                    storePagination && storePagination.totalPages > 1 && (
-                                        <Pagination
-                                            currentPage={storePagination.currentPage}
-                                            totalPages={storePagination.totalPages}
-                                            totalItems={storePagination.totalItems}
-                                            itemsPerPage={storePagination.itemsPerPage}
-                                            onPageChange={handlePageChange}
-                                            disabled={loading || isProcessing}
-                                            className={styles.pagination}
-                                        />
-                                    )
-                                }
-                            </>
-                        )
-                    }
-                </div>
-            )
-        }
-
-        {/* patient detail view */}
-        {
-            showPatientDetail && selectedPatient && (
-                <div className={styles.patientDetailContainer}>
-                    <button type='button' title='Back' className={styles.btnBack} onClick={() => setShowPatientDetail(false)}>
-                        <ArrowLeft />
-                    </button>
-                    <div className={styles.patientHeader}>
-                        <div className={styles.patientAvatarLg}>{selectedPatient.initials}</div>
-                        <div className={styles.patientHeaderInfo}>
-                            <div className={styles.patientNameLg}>{selectedPatient.firstName || 'Unknown Patient'}</div>
-                            <div className={styles.patientMeta}>
-                                <div className={styles.patientMetaItem}>
-                                    <IdCard />
-                                    <span>#{selectedPatient.id}</span>
-                                </div>
-                                <div className={styles.patientMetaItem}>
-                                    <UserRound />
-                                    <span>{selectedPatient.sex || 'N/A'}</span>
-                                </div>
-                                <div className={styles.patientMetaItem}>
-                                    <Cake />
-                                    <span>{selectedPatient.age || 'N/A'} years ({selectedPatient.birthdate || 'N/A'})</span>
-                                </div>
-                                <div className={styles.patientMetaItem}>
-                                    <Phone />
-                                    <span>{selectedPatient.contactNumber || 'N/A'}</span>
-                                </div>
-                            </div>
-                            <div className={styles.patientMetaItem}>
-                                <MapPin />
-                                <span>{selectedPatient.address || 'N/A'}</span>
-                            </div>
+                                        ) : (
+                                            displayPatients.map((patient, index) => (
+                                                <tr key={patient.id || index}>
+                                                    <td>
+                                                        <div className={styles.patientInfo}>
+                                                            <div className={styles.patientAvatar}>{patient.initials}</div>
+                                                            <div style={{ textAlign: 'start' }}>
+                                                                <div className={styles.patientName}>{patient.firstName} {patient.lastName}</div>
+                                                                <div className={styles.patientId}>#{patient.id}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className={`${styles.patientGender} ${styles[patient.sex?.toLowerCase() || 'unknown']}`}>{patient.sex || 'N/A'}</span>
+                                                    </td>
+                                                    <td>{patient.age || 'N/A'}</td>
+                                                    <td>{patient.contactNumber || 'N/A'}</td>
+                                                    <td>
+                                                        <span className={`${styles.patientStatus} ${patient.isArchive ? styles.archived : styles.active}`}>
+                                                            {patient.isArchive ? 'Archived' : 'Active'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button 
+                                                            type='button'
+                                                            className={`${styles.actionBtn} ${styles.primary}`} 
+                                                            onClick={() => handleViewClick(patient)}
+                                                        >
+                                                            View
+                                                        </button>
+                                                        <button 
+                                                            type='button'
+                                                            className={`${styles.actionBtn} ${styles.update}`}
+                                                            onClick={() => handleUpdateClick(patient)}
+                                                        >
+                                                            Update
+                                                        </button>
+                                                        <button 
+                                                            type='button'
+                                                            className={`${styles.actionBtn} ${styles.cancel}`} 
+                                                            onClick={() => handleDeleteClick(patient)}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )
+                                    }
+                                </tbody>
+                            </table>
                         </div>
-                        <div className={styles.patientActions}>
-                        </div>
-                    </div>
 
-                    <div className={styles.patientTabs}>
                         {
-                            ['overview', 'medical', 'appointments', 'billing', 'documents'].map((tab) => (
-                                <div 
-                                    key={tab}
-                                    className={`${styles.patientTab} ${activeTab === tab ? styles.active : ''}`} 
-                                    onClick={() => handleTabChange(tab)}
-                                >
-                                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                                </div>
-                            ))
-                        }
-                    </div>
-
-                    <div className={`${styles.patientTabContent} ${activeTab === 'overview' ? styles.active : ''}`}>
-                        <div className={styles.infoGrid}>
-                            <div className={styles.infoCard}>
-                                <div className={styles.infoCardTitle}>Email</div>
-                                <div className={styles.infoCardValue}>{selectedPatient.email || 'Not provided'}</div>
-                            </div>
-                            <div className={styles.infoCard}>
-                                <div className={styles.infoCardTitle}>Religion</div>
-                                <div className={styles.infoCardValue}>{selectedPatient.religion || 'Not specified'}</div>
-                            </div>
-                            <div className={styles.infoCard}>
-                                <div className={styles.infoCardTitle}>Status</div>
-                                <div className={styles.infoCardValue}>{selectedPatient.isArchive ? 'Archived' : 'Active'}</div>
-                            </div>
-                        </div>
-
-                        {/* mother's Information */}
-                        {
-                            selectedPatient.motherInfo && (
-                                <>
-                                    <h3 className={styles.sectionTitle}>Mother's Information</h3>
-                                    <div className={styles.infoGrid}>
-                                        <div className={styles.infoCard}>
-                                            <div className={styles.infoCardTitle}>Name</div>
-                                            <div className={styles.infoCardValue}>{selectedPatient.motherInfo.name || 'Not provided'}</div>
-                                        </div>
-                                        <div className={styles.infoCard}>
-                                            <div className={styles.infoCardTitle}>Age</div>
-                                            <div className={styles.infoCardValue}>{selectedPatient.motherInfo.age || 'Not provided'}</div>
-                                        </div>
-                                        <div className={styles.infoCard}>
-                                            <div className={styles.infoCardTitle}>Occupation</div>
-                                            <div className={styles.infoCardValue}>{selectedPatient.motherInfo.occupation || 'Not provided'}</div>
-                                        </div>
-                                    </div>
-                                </>
+                            storePagination && storePagination.totalPages > 1 && (
+                                <Pagination
+                                    currentPage={storePagination.currentPage}
+                                    totalPages={storePagination.totalPages}
+                                    totalItems={storePagination.totalItems}
+                                    itemsPerPage={storePagination.itemsPerPage}
+                                    onPageChange={handlePageChange}
+                                    disabled={loading || isProcessing}
+                                    className={styles.pagination}
+                                />
                             )
                         }
-
-                        {/* father's Information */}
-                        {
-                            selectedPatient.fatherInfo && (
-                                <>
-                                    <h3 className={styles.sectionTitle}>Father's Information</h3>
-                                    <div className={styles.infoGrid}>
-                                        <div className={styles.infoCard}>
-                                            <div className={styles.infoCardTitle}>Name</div>
-                                            <div className={styles.infoCardValue}>{selectedPatient.fatherInfo.name || 'Not provided'}</div>
-                                        </div>
-                                        <div className={styles.infoCard}>
-                                            <div className={styles.infoCardTitle}>Age</div>
-                                            <div className={styles.infoCardValue}>{selectedPatient.fatherInfo.age || 'Not provided'}</div>
-                                        </div>
-                                        <div className={styles.infoCard}>
-                                            <div className={styles.infoCardTitle}>Occupation</div>
-                                            <div className={styles.infoCardValue}>{selectedPatient.fatherInfo.occupation || 'Not provided'}</div>
-                                        </div>
-                                    </div>
-                                </>
-                            )
-                        }
-                    </div>
-
-                    <div className={`${styles.patientTabContent} ${activeTab === 'medical' ? styles.active : ''}`}>
-                        <p>Medical history and records would be displayed here.</p>
-                    </div>
-
-                    <div className={`${styles.patientTabContent} ${activeTab === 'appointments' ? styles.active : ''}`}>
-                        <p>Appointment history would be displayed here.</p>
-                    </div>
-
-                    <div className={`${styles.patientTabContent} ${activeTab === 'billing' ? styles.active : ''}`}>
-                        <p>Billing and insurance information would be displayed here.</p>
-                    </div>
-
-                    <div className={`${styles.patientTabContent} ${activeTab === 'documents' ? styles.active : ''}`}>
-                        <p>Patient documents and files would be displayed here.</p>
-                    </div>
-                </div>
-            )
-        }
+                    </>
+                )
+            }
+        </div>
 
         {/* update patient modal */}
         {

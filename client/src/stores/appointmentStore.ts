@@ -162,7 +162,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
             },
 
 
-             //fetch appointment by ID for details page
+            //fetch appointment by id for details page
             fetchAppointmentById: async (appointmentId: string) => {
                 try {
                     // set({ loading: true, error: null });

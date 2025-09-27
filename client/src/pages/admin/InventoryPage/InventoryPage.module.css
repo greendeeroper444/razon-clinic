@@ -400,7 +400,7 @@
     background-color: #a7f3d0;
 }
 
-/* Responsive design */
+
 @media (max-width: 768px) {
     .content {
         padding: 15px;
@@ -467,7 +467,6 @@
         height: 14px;
     }
 
-    /* Stack action buttons on very small screens */
     .inventoryTable td:last-child {
         white-space: nowrap;
     }
@@ -527,7 +526,6 @@
     }
 }
 
-/* Loading states */
 .inventoryTableContainer.loading {
     opacity: 0.7;
     pointer-events: none;
@@ -537,7 +535,6 @@
     filter: blur(1px);
 }
 
-/* Smooth transitions for dynamic content */
 .inventoryTable tbody {
     transition: opacity 0.2s ease;
 }

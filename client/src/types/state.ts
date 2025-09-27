@@ -5,7 +5,7 @@ import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
 import { MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
 import { Pagination } from "./pagination";
-import { Patient, PatientFormData } from "./patient"
+import { Patient, PatientFormData, PatientResponse } from "./patient"
 import { User } from "./user";
 
 export interface FetchParams {
@@ -279,6 +279,9 @@ export interface PatientState {
     isModalOpen: boolean;
     isDeleteModalOpen: boolean;
     deletePatientData: { id: string, itemName: string, itemType: string } | null;
+
+    currentPatient: PatientResponse | null;
+
     //summary stats state
     summaryStats: {
         total: number;
@@ -293,6 +296,8 @@ export interface PatientState {
     addPatient: (data: PatientFormData) => Promise<void>;
     updatePatientData: (id: string, data: PatientFormData) => Promise<void>;
     deletePatient: (id: string) => Promise<void>;
+    fetchPatientById: (patientId: string) => Promise<void>;
+    clearCurrentPatient: () => void;
 
     //modal actions
     openAddModal: () => void;

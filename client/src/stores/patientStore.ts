@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { toast } from 'sonner';
 import { FetchParams, OperationType, PatientFormData, PatientState } from '../types';
-import { addPatient, deletePatient, getPatients, updatePatient } from '../services';
+import { addPatient, deletePatient, getPatients, updatePatient, getPatientById } from '../services';
 
 export const usePatientStore = create<PatientState>()(
     devtools(
@@ -18,6 +18,7 @@ export const usePatientStore = create<PatientState>()(
             isModalOpen: false,
             isDeleteModalOpen: false,
             deletePatientData: null,
+            currentPatient: null,
             summaryStats: {
                 total: 0,
                 active: 0,
@@ -158,6 +159,35 @@ export const usePatientStore = create<PatientState>()(
                 }
             },
 
+
+            fetchPatientById: async (patientId: string) => {
+                try {
+                    // set({ loading: true, error: null });
+                    set({ fetchLoading: true, loading: true, error: null });
+                    
+                    const response = await getPatientById(patientId);
+                    
+                    if (response.success) {
+                        set({ 
+                            currentPatient: response.data,
+                            loading: false 
+                        })
+                    } else {
+                        set({ 
+                            error: 'Failed to load patient details', 
+                            loading: false 
+                        })
+                    }
+                } catch (error) {
+                    console.error('Error fetching patients:', error)
+                    set({ 
+                        fetchLoading: false,
+                        error: 'An error occurred while fetching patients', 
+                        loading: false 
+                    })
+                }
+            },
+
             //update patient
             updatePatientData: async (id: string, data: PatientFormData) => {
                 try {
@@ -165,6 +195,8 @@ export const usePatientStore = create<PatientState>()(
                     
                     await updatePatient(id, data);
                     await get().fetchPatients();
+
+                    await get().fetchPatientById(id);
 
                     toast.success('Patient updated successfully!');
                     set({ 
@@ -297,6 +329,7 @@ export const usePatientStore = create<PatientState>()(
             //utility actions
             setLoading: (loading: boolean) => set({ loading }),
             setError: (error: string | null) => set({ error }),
+            clearCurrentPatient: () => set({ currentPatient: null })
         }),
         {
             name: 'patient-store'

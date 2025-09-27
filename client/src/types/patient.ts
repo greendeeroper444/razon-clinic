@@ -7,6 +7,7 @@ export interface PatientFormProps {
 
 export interface PatientFormData {
     id?: string;
+    patientNumber?: number;
     firstName: string;
     lastName: string;
     middleName?: string | null;
@@ -65,7 +66,7 @@ export interface GetPatientsResponse {
     };
 }
 
-export interface PatientResponse {
+export interface PatientResponse extends PatientFormData {
     success: boolean;
     message: string;
     data: {
