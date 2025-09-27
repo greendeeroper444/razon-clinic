@@ -1,16 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styles from './AppointmentPage.module.css'
-import { ChevronRight, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { OpenModalProps } from '../../../hooks/hook'
 import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass, getLoadingText } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType } from '../../../types'
-import { Main, Header, Modal, SubmitLoading, Loading } from '../../../components'
+import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination } from '../../../components'
 import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore } from '../../../stores'
 
 const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const navigate = useNavigate();
-    
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
+
     //zustand store selectors
     const {
         appointments,
@@ -18,6 +20,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         submitLoading,
         loading,
         error,
+        isProcessing,
         selectedAppointment,
         isModalOpen,
         isDeleteModalOpen,
@@ -25,6 +28,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         fetchAppointments,
         updateAppointmentData,
         deleteAppointment,
+        pagination: storePagination,
         openUpdateModal,
         openDeleteModal,
         closeUpdateModal,
@@ -32,23 +36,56 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         currentOperation
     } = useAppointmentStore();
 
-    useEffect(() => {
-        fetchAppointments()
-    }, [])
+    //calculate summary stats using useMemo for performance
+    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
+        try {
+            await fetchAppointments({ page, limit, search });
+        } catch (error) {
+            console.error('Error fetching appointments:', error);
+        }
+    }, [fetchAppointments]);
 
-    const handleOpenModal = () => {
+    useEffect(() => {
+        if (isInitialLoad) {
+            fetchData(1, 10, '');
+            setIsInitialLoad(false);
+        }
+    }, [isInitialLoad, fetchData]);
+
+    //handle search
+    const handleSearch = useCallback((term: string) => {
+        setSearchTerm(term);
+        fetchData(1, storePagination?.itemsPerPage || 10, term);
+    }, [fetchData, storePagination?.itemsPerPage]);
+
+    //handle page change
+    const handlePageChange = useCallback((page: number) => {
+        fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
+
+    //handle items per page change
+    const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
+        fetchData(1, itemsPerPage, searchTerm);
+    }, [fetchData, searchTerm]);
+
+
+    const handleOpenModal = useCallback(() => {
         openModalWithRefresh({
             modalType: 'appointment',
             openModal,
-            onRefresh: fetchAppointments,
+            onRefresh: () => fetchData(
+                storePagination?.currentPage || 1, 
+                storePagination?.itemsPerPage || 10, 
+                searchTerm
+            ),
         })
-    }
+    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     const handleViewClick = (appointment: AppointmentResponse) => {
         navigate(`/admin/appointments/details/${appointment.id}`)
     }
 
-    const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
+    const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !selectedAppointment?.id) {
             console.error('Invalid data or missing appointment ID')
             return
@@ -57,17 +94,44 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         //assertion since we know it's AppointmentFormData in this context
         const appointmentData = data as AppointmentFormData;
 
-        await updateAppointmentData(selectedAppointment.id, appointmentData)
-    }
+        try {
+            await updateAppointmentData(selectedAppointment.id, appointmentData)
 
-    const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
-        if (typeof data !== 'string') {
-            console.error('Invalid appointment ID')
-            return
+             setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+            }, 600);
+            
+        } catch (error) {
+            console.error('Error updating appointment:', error);
+        }
+    }, [selectedAppointment, updateAppointmentData, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm])
+
+    const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
+         if (typeof data !== 'string') {
+            console.error('Invalid appointment ID');
+            return;
         }
 
-        await deleteAppointment(data)
-    }
+        try {
+            await deleteAppointment(data);
+
+            //refresh after operation completes
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+            }, 600);
+
+        } catch (error) {
+            console.error('Error deleting appointment:', error);
+        }
+    }, [deleteAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     const headerActions = [
         {
@@ -87,16 +151,34 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         />
 
         {/* appointments */}
-        <div className={styles.appointmentsSection}>
+        <div className={styles.section}>
             <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>
-                    Appointments ({loading ? '...' : appointments.length})
-                </h3>
-                <div className={styles.sectionActions}>
-                    <a href="#">
-                        <span>View All</span>
-                        <ChevronRight />
-                    </a>
+                <div className={styles.sectionTitle}> Appointments ({loading ? '...' : appointments.length}) </div>
+
+                {/* search and items per page controls */}
+                <div className={styles.controls}>
+                    <Searchbar
+                        onSearch={handleSearch}
+                        placeholder="Search medicines..."
+                        disabled={loading}
+                        className={styles.searchbar}
+                    />
+                    
+                    <div className={styles.itemsPerPageControl}>
+                        <label htmlFor="itemsPerPage">Items per page:</label>
+                        <select
+                            id="itemsPerPage"
+                            value={storePagination?.itemsPerPage || 10}
+                            onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                            disabled={loading}
+                            className={styles.itemsPerPageSelect}
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -113,95 +195,110 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                         />
                     </div>
                 ) : (
-                    <div className={styles.tableResponsive}>
-                        <table className={styles.appointmentsTable}>
-                            <thead>
-                                <tr>
-                                    <th>Patient Name</th>
-                                    <th>Preferred Date</th>
-                                    <th>Preferred Time</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    appointments.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={5} className={styles.noData}>
-                                                No appointments found. Create your first appointment using the "New Appointment" button.
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        appointments.map((appointment) => (
-                                            <tr key={appointment.id}>
-                                                <td>
-                                                    <div className={styles.patientInfo}>
-                                                        <div className={styles.patientAvatar}>
-                                                            {
-                                                                (() => {
-                                                                    const firstName = appointment.firstName
-                                                                    return firstName 
-                                                                    ? getFirstLetterOfFirstAndLastName(firstName)
-                                                                    : 'N/A'
-                                                                })()
-                                                            }
-                                                        </div>
-                                                        <div>
-                                                            <div className={styles.patientName}>
-                                                                {appointment.firstName}
-                                                            </div>
-                                                            <div className={styles.patientId}>
-                                                                APT-ID: {appointment.appointmentNumber || 'Walk-in'}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div className={styles.appointmentDate}>
-                                                        {formatDate(appointment.preferredDate)}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div className={styles.appointmentTime}>
-                                                        {formatTime(appointment.preferredTime)}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
-                                                        {appointment.status}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <button 
-                                                        type='button' 
-                                                        className={`${styles.actionBtn} ${styles.view}`}
-                                                        onClick={() => handleViewClick(appointment)}
-                                                    >
-                                                        View
-                                                    </button>
-                                                    <button 
-                                                        type='button' 
-                                                        className={`${styles.actionBtn} ${styles.update}`}
-                                                        onClick={() => openUpdateModal(appointment)}
-                                                    >
-                                                        Update
-                                                    </button>
-                                                    <button 
-                                                        type='button' 
-                                                        className={`${styles.actionBtn} ${styles.delete}`}
-                                                        onClick={() => openDeleteModal(appointment)}
-                                                    >
-                                                        Delete
-                                                    </button>
+                    <>
+                        <div className={styles.tableResponsive}>
+                            <table className={styles.appointmentsTable}>
+                                <thead>
+                                    <tr>
+                                        <th>Patient Name</th>
+                                        <th>Preferred Date</th>
+                                        <th>Preferred Time</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        appointments.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={5} className={styles.noData}>
+                                                    No appointments found. Create your first appointment using the "New Appointment" button.
                                                 </td>
                                             </tr>
-                                        ))
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                        ) : (
+                                            appointments.map((appointment) => (
+                                                <tr key={appointment.id}>
+                                                    <td>
+                                                        <div className={styles.patientInfo}>
+                                                            <div className={styles.patientAvatar}>
+                                                                {
+                                                                    (() => {
+                                                                        const firstName = appointment.firstName
+                                                                        return firstName 
+                                                                        ? getFirstLetterOfFirstAndLastName(firstName)
+                                                                        : 'N/A'
+                                                                    })()
+                                                                }
+                                                            </div>
+                                                            <div>
+                                                                <div className={styles.patientName}>
+                                                                    {appointment.firstName}
+                                                                </div>
+                                                                <div className={styles.patientId}>
+                                                                    APT-ID: {appointment.appointmentNumber || 'Walk-in'}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={styles.appointmentDate}>
+                                                            {formatDate(appointment.preferredDate)}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={styles.appointmentTime}>
+                                                            {formatTime(appointment.preferredTime)}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
+                                                            {appointment.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button 
+                                                            type='button' 
+                                                            className={`${styles.actionBtn} ${styles.view}`}
+                                                            onClick={() => handleViewClick(appointment)}
+                                                        >
+                                                            View
+                                                        </button>
+                                                        <button 
+                                                            type='button' 
+                                                            className={`${styles.actionBtn} ${styles.update}`}
+                                                            onClick={() => openUpdateModal(appointment)}
+                                                        >
+                                                            Update
+                                                        </button>
+                                                        <button 
+                                                            type='button' 
+                                                            className={`${styles.actionBtn} ${styles.delete}`}
+                                                            onClick={() => openDeleteModal(appointment)}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        {
+                            storePagination && storePagination.totalPages > 1 && (
+                                <Pagination
+                                    currentPage={storePagination.currentPage}
+                                    totalPages={storePagination.totalPages}
+                                    totalItems={storePagination.totalItems}
+                                    itemsPerPage={storePagination.itemsPerPage}
+                                    onPageChange={handlePageChange}
+                                    disabled={loading || isProcessing}
+                                    className={styles.pagination}
+                                />
+                            )
+                        }
+                    </>
                 )
             }
         </div>

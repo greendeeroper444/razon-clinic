@@ -184,12 +184,12 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         </div>
 
         {/* inventory table */}
-        <div className={styles.inventoryTableContainer}>
-            <div className={styles.inventoryTableHeader}>
-                <div className={styles.inventoryTableTitle}>Medicine Inventory</div>
+        <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+                <div className={styles.sectionTitle}>Medicine Inventory</div>
                 
                 {/* search and items per page controls */}
-                <div className={styles.inventoryControls}>
+                <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}
                         placeholder="Search medicines..."

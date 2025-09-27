@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import styles from './PatientPage.module.css';
-import { Plus, IdCard, Cake, Phone, MapPin, ArrowLeft, UserRound } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination } from '../../../components';
 import { FormDataType, PatientDisplayData, PatientFormData } from '../../../types';
@@ -205,12 +205,12 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
         </div>
 
         {/* patient table */}
-        <div className={styles.patientTableContainer}>
-            <div className={styles.patientTableHeader}>
-                <div className={styles.patientTableTitle}>Patient Records</div>
+        <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+                <div className={styles.sectionTitle}>Patient Records</div>
 
                 {/* search and items per page controls */}
-                <div className={styles.patientControls}>
+                <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}
                         placeholder="Search medicines..."

@@ -201,13 +201,33 @@ class AppointmentService {
 
             //search functionality - search across multiple fields
             if (search) {
-                filter.$or = [
+                const searchConditions = [
                     { firstName: { $regex: search, $options: 'i' } },
                     { lastName: { $regex: search, $options: 'i' } },
                     { reasonForVisit: { $regex: search, $options: 'i' } },
-                    { contactNumber: { $regex: search, $options: 'i' } },
                     { address: { $regex: search, $options: 'i' } }
                 ];
+
+                //handle numeric search for contactNumber
+                const numericSearch = parseInt(search);
+                if (!isNaN(numericSearch)) {
+                    //if search is numeric, search for exact match or numbers that start with the search term
+                    searchConditions.push({ contactNumber: numericSearch });
+                    
+                    //also search for numbers that start with the search term (convert to string comparison)
+                    const searchStr = search.toString();
+                    searchConditions.push({
+                        $expr: {
+                            $regexMatch: {
+                                input: { $toString: "$contactNumber" },
+                                regex: `^${searchStr}`,
+                                options: "i"
+                            }
+                        }
+                    });
+                }
+
+                filter.$or = searchConditions;
             }
 
             if (firstName) {

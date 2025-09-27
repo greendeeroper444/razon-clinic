@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus } from '../services'
-import { AppointmentFormData, Patient, AppointmentStatus, ExtendedAppointmentState, OperationType } from '../types'
+import { AppointmentFormData, Patient, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
 import { toast } from 'sonner'
 
 
@@ -24,13 +24,36 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
             currentAppointment: null,
             viewMode: 'user' as 'admin' | 'user',
             currentOperation: null as OperationType,
+            pagination: {
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: 0,
+                itemsPerPage: 10,
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startIndex: 1,
+                endIndex: 0,
+                isUnlimited: false,
+                nextPage: null,
+                previousPage: null,
+                remainingItems: 0,
+                searchTerm: null
+            },
 
             //fetch all appointments with patient extraction (admin view)
-            fetchAppointments: async () => {
+            fetchAppointments: async (params: FetchParams) => {
+                const currentState = get();
+                
+                //prevent multiple simultaneous fetches
+                if (currentState.fetchLoading) {
+                    console.log('Fetch already in progress, skipping...');
+                    return;
+                }
+
                 try {
                     set({ fetchLoading: true, loading: true, error: null, viewMode: 'admin' });
                     
-                    const response = await getAppointments();
+                    const response = await getAppointments(params);
                     
                     if (response.success) {
                         const appointments = response.data.appointments || [];
@@ -436,7 +459,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
             clearCurrentAppointment: () => set({ currentAppointment: null })
         }),
         {
-            name: 'appointment-store' //for Redux DevTools
+            name: 'appointment-store'
         }
     )
 )

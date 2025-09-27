@@ -37,8 +37,8 @@ export interface AppointmentState {
     currentAppointment: AppointmentResponse | null;
 
     //actions
-    fetchAppointments: () => Promise<void>;
-    fetchMyAppointments: () => Promise<void>;
+    fetchAppointments: (params?: FetchParams) => Promise<void>;
+    fetchMyAppointments: (params?: FetchParams) => Promise<void>;
     //actions for appointment details
     fetchAppointmentById: (appointmentId: string) => Promise<void>;
     // updateCurrentAppointment: (id: string, data: AppointmentFormData) => Promise<void>;

@@ -1,26 +1,3 @@
-.content {
-    padding: 20px;
-}
-  
-.contentHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-}
-  
-.contentTitle {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-}
-  
-.contentActions {
-    display: flex;
-    gap: 10px;
-}
-  
 .btnPrimary {
     background-color: var(--primary);
     color: white;
@@ -63,13 +40,6 @@
 
 .cancel:hover {
     background-color: #fecaca;
-}
-
-.sectionTitle {
-    margin: 25px 0 15px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #374151;
 }
 
 .inventoryCards {
@@ -142,14 +112,14 @@
     color: var(--gray);
 }
 
-.inventoryTableContainer {
+.section {
     background: white;
     border-radius: var(--border-radius);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
   
-.inventoryTableHeader {
+.sectionHeader {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -157,13 +127,13 @@
     border-bottom: 1px solid var(--gray-light);
 }
   
-.inventoryTableTitle {
+.sectionTitle {
     font-size: 1.1rem;
     font-weight: 600;
     color: #333;
 }
 
-.inventoryControls {
+.controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
