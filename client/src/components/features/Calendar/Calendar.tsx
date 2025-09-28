@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import styles from './Calendar.module.css'
-import { getAppointments } from '../../../services'
-import { Appointment, AppointmentCounts, AppointmentFilters } from '../../../types'
-
+import { getCalendarAppointments } from '../../../services'
+import { Appointment, AppointmentCounts } from '../../../types'
 
 const Calendar: React.FC = () => {
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -22,14 +21,6 @@ const Calendar: React.FC = () => {
 
     useEffect(() => {
         fetchAppointments();
-
-        //polling every 10 seconds
-        // const interval = setInterval(() => {
-        //     fetchAppointments();
-        // }, 10000); //10 seconds
-
-        // //cleanup interval on unmount or when currentDate changes
-        // return () => clearInterval(interval);
     }, [currentDate]);
 
     const fetchAppointments = async (): Promise<void> => {
@@ -38,16 +29,15 @@ const Calendar: React.FC = () => {
             const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
             
-            const filters: AppointmentFilters = {
-                fromDate: startOfMonth.toISOString().split('T')[0],
-                toDate: endOfMonth.toISOString().split('T')[0]
-            };
+            const fromDate = startOfMonth.toISOString().split('T')[0];
+            const toDate = endOfMonth.toISOString().split('T')[0];
 
-            const response = await getAppointments(filters);
+            const response = await getCalendarAppointments(fromDate, toDate);
             
-            if (response.data.success) {
-                setAppointments(response.data.data);
-                calculateAppointmentCounts(response.data.data);
+            if (response.success) {
+                const appointmentData = response.data.appointments || [];
+                setAppointments(appointmentData);
+                calculateAppointmentCounts(appointmentData);
             }
         } catch (error) {
             console.error('Error fetching appointments:', error);
@@ -60,7 +50,6 @@ const Calendar: React.FC = () => {
         const counts: AppointmentCounts = {};
         
         appointmentData.forEach(appointment => {
-            //extract just the date part from the ISO string to avoid timezone issues
             const dateString = String(appointment.preferredDate).split('T')[0];
           
             if (counts[dateString]) {
@@ -70,7 +59,6 @@ const Calendar: React.FC = () => {
             }
         });
         
-        console.log('Final appointment counts:', counts);
         setAppointmentCounts(counts);
     };
 
@@ -82,17 +70,17 @@ const Calendar: React.FC = () => {
         const daysInMonth = lastDay.getDate();
         
         //get the day of the week for the first day (0 = Sunday, 1 = Monday, etc.)
-        //convert to Monday = 0, Sunday = 6
+        // convert to Monday = 0, Sunday = 6
         const firstDayOfWeek = (firstDay.getDay() + 6) % 7;
         
         const days: (number | null)[] = [];
         
-        // add empty cells for days before the first day of the month
+        //empty cells for days before the first day of the month
         for (let i = 0; i < firstDayOfWeek; i++) {
             days.push(null);
         }
         
-        //add days of the month
+        //days of the month
         for (let day = 1; day <= daysInMonth; day++) {
             days.push(day);
         }
@@ -114,7 +102,7 @@ const Calendar: React.FC = () => {
         const month = currentDate.getMonth();
         const date = new Date(year, month, day);
         
-        //format as YYYY-MM-DD
+        //format as yyyy-mm-dd
         const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         
         return dateKey;
@@ -130,123 +118,116 @@ const Calendar: React.FC = () => {
         return dateKey ? appointmentCounts[dateKey] || 0 : 0;
     };
 
-    //handle date click to navigate to details page
     const handleDateClick = (day: number | null): void => {
         if (!day) return;
         
-        //create date and format manually to avoid timezone issues
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        
-        console.log(`Clicked day ${day}, navigating to date:`, dateString);
         
         navigate(`/admin/calendar-date-details?date=${dateString}`);
     };
 
     const days = getDaysInMonth(currentDate);
 
-  return (
-    <div className={styles.calendarContainer}>
-        <div className={styles.calendarTitle}>
-            Appointment Calendar
-        </div>
-        
-        <div className={styles.calendarHeader}>
-            <button
-                onClick={() => navigateMonth(-1)}
-                className={styles.navButton}
-                disabled={loading}
-                type="button"
-                title='Prev Button'
-            >
-                <ChevronLeft size={16} />
-            </button>
+    return (
+        <div className={styles.calendarContainer}>
+            <div className={styles.calendarTitle}>
+                Appointment Calendar
+            </div>
             
-            <h2 className={styles.monthTitle}>
-                {months[currentDate.getMonth()]} {currentDate.getFullYear()}
-            </h2>
-            
-            <button
-                onClick={() => navigateMonth(1)}
-                className={styles.navButton}
-                disabled={loading}
-                type="button"
-                title='Next Button'
-            >
-                <ChevronRight size={16} />
-            </button>
-        </div>
+            <div className={styles.calendarHeader}>
+                <button
+                    onClick={() => navigateMonth(-1)}
+                    className={styles.navButton}
+                    disabled={loading}
+                    type="button"
+                    title='Prev Button'
+                >
+                    <ChevronLeft size={16} />
+                </button>
+                
+                <h2 className={styles.monthTitle}>
+                    {months[currentDate.getMonth()]} {currentDate.getFullYear()}
+                </h2>
+                
+                <button
+                    onClick={() => navigateMonth(1)}
+                    className={styles.navButton}
+                    disabled={loading}
+                    type="button"
+                    title='Next Button'
+                >
+                    <ChevronRight size={16} />
+                </button>
+            </div>
 
-        {/* weekday headers */}
-        <div className={styles.weekdayGrid}>
-            {
-                weekdays.map((day) => (
-                    <div key={day} className={styles.weekdayCell}>
-                        {day}
-                    </div>
-                ))
-            }
-        </div>
-
-        {/* calendar grid */}
-        <div className={styles.calendarGrid}>
-            {
-                days.map((day, index) => {
-                    const appointmentCount = getAppointmentCount(day);
-                    const hasAppointment = hasAppointments(day);
-                    
-                    return (
-                        <div
-                            key={index}
-                            className={`${styles.dayCell} ${
-                                !day 
-                                    ? styles.emptyCell 
-                                    : hasAppointment
-                                        ? styles.appointmentDay
-                                        : styles.normalDay
-                            } ${day ? styles.clickableDay : ''}`}
-                            onClick={() => handleDateClick(day)}
-                            style={{ cursor: day ? 'pointer' : 'default' }}
-                            role={day ? 'button' : undefined}
-                            tabIndex={day ? 0 : undefined}
-                            onKeyDown={(e) => {
-                                if (day && (e.key === 'Enter' || e.key === ' ')) {
-                                    e.preventDefault();
-                                    handleDateClick(day);
-                                }
-                            }}
-                        >
-                            {
-                                day && (
-                                    <>
-                                        <span className={styles.dayNumber}>{day}</span>
-                                        {
-                                            appointmentCount > 0 && (
-                                                <div className={styles.appointmentCount}>
-                                                    {appointmentCount}
-                                                </div>
-                                            )
-                                        }
-                                    </>
-                                )
-                            }
+            <div className={styles.weekdayGrid}>
+                {
+                    weekdays.map((day) => (
+                        <div key={day} className={styles.weekdayCell}>
+                            {day}
                         </div>
-                    );
-                })
+                    ))
+                }
+            </div>
+
+            <div className={styles.calendarGrid}>
+                {
+                    days.map((day, index) => {
+                        const appointmentCount = getAppointmentCount(day);
+                        const hasAppointment = hasAppointments(day);
+                        
+                        return (
+                            <div
+                                key={index}
+                                className={`${styles.dayCell} ${
+                                    !day 
+                                        ? styles.emptyCell 
+                                        : hasAppointment
+                                            ? styles.appointmentDay
+                                            : styles.normalDay
+                                } ${day ? styles.clickableDay : ''}`}
+                                onClick={() => handleDateClick(day)}
+                                style={{ cursor: day ? 'pointer' : 'default' }}
+                                role={day ? 'button' : undefined}
+                                tabIndex={day ? 0 : undefined}
+                                onKeyDown={(e) => {
+                                    if (day && (e.key === 'Enter' || e.key === ' ')) {
+                                        e.preventDefault();
+                                        handleDateClick(day);
+                                    }
+                                }}
+                            >
+                                {
+                                    day && (
+                                        <>
+                                            <span className={styles.dayNumber}>{day}</span>
+                                            {
+                                                appointmentCount > 0 && (
+                                                    <div className={styles.appointmentCount}>
+                                                        {appointmentCount}
+                                                    </div>
+                                                )
+                                            }
+                                        </>
+                                    )
+                                }
+                            </div>
+                        );
+                    })
+                }
+            </div>
+
+            {
+                loading && (
+                    <div className={styles.loadingState}>
+                        Loading...
+                    </div>
+                )
             }
         </div>
-
-        {/* loading state*/}
-        {
-            loading && (
-                <div className={styles.loadingState}>
-                    Loading...
-                </div>
-            )
-        }
-    </div>
-  )
+    )
 }
 
 export default Calendar

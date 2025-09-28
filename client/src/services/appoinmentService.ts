@@ -93,6 +93,32 @@ export const getMyAppointments = async (params = {}) => {
 };
 
 
+export const getCalendarAppointments = async (fromDate: string, toDate: string) => {
+    try {
+        const params = {
+            fromDate,
+            toDate,
+            page: 1,
+            limit: 10000,
+            search: ''
+        };
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/appointments/getAppointments`,
+            { params }
+        );
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching calendar appointments:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+        throw error;
+    }
+};
+
+
 export const getAppointmentsByDate = async (date: string) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/api/appointments/getAllTimePerDate?date=${date}`);
