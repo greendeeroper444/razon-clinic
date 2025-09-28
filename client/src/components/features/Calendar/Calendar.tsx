@@ -69,8 +69,8 @@ const Calendar: React.FC = () => {
         const lastDay = new Date(year, month + 1, 0);
         const daysInMonth = lastDay.getDate();
         
-        //get the day of the week for the first day (0 = Sunday, 1 = Monday, etc.)
-        // convert to Monday = 0, Sunday = 6
+        //get the day of the week for the first day (0 = sunday, 1 = monday, etc.)
+        // convert to monday = 0, sunday = 6
         const firstDayOfWeek = (firstDay.getDay() + 6) % 7;
         
         const days: (number | null)[] = [];
