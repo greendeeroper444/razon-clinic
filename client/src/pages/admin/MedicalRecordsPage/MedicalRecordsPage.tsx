@@ -237,8 +237,12 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                                     {
                                         medicalRecords.length === 0 ? (
                                             <tr>
-                                                <td colSpan={7} className={styles.noRecords}>
-                                                    No medical records found
+                                                <td colSpan={7} className={styles.emptyState}>
+                                                    {
+                                                        searchTerm ? 
+                                                        `No medical records found matching "${searchTerm}". Try a different search term.` : 
+                                                        'No medical records found. Click "New Item" to get started.'
+                                                    }
                                                 </td>
                                             </tr>
                                         ) : (

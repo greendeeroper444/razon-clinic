@@ -229,7 +229,7 @@ export interface BillingState {
     filterStatus: string;
 
     //actions
-    fetchBillings: (page?: number, search?: string, status?: string) => Promise<void>;
+    fetchBillings:(params?: FetchParams) => Promise<void>;
     addBilling: (data: BillingFormData) => Promise<void>;
     updateBillingData: (id: string, data: BillingFormData) => Promise<void>;
     deleteBilling: (id: string) => Promise<void>;

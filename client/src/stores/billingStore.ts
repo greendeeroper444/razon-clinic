@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { toast } from 'sonner';
-import { BillingState, OperationType, BillingFormData } from '../types';
+import { BillingState, OperationType, BillingFormData, FetchParams } from '../types';
 import { getAllBillings, addBilling, updateBilling, deleteBilling } from '../services';
 
 export const useBillingStore = create<BillingState>()(
@@ -19,28 +19,34 @@ export const useBillingStore = create<BillingState>()(
             isDeleteModalOpen: false,
             deleteBillingData: null,
             currentOperation: null as OperationType,
-
-            //pagination state
-            currentPage: 1,
-            totalPages: 1,
-            totalRecords: 0,
-            limit: 10,
-            //filter state
-            searchTerm: '',
-            filterStatus: 'All',
+            pagination: {
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: 0,
+                itemsPerPage: 10,
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startIndex: 1,
+                endIndex: 0,
+                isUnlimited: false,
+                nextPage: null,
+                previousPage: null,
+                remainingItems: 0,
+                searchTerm: null
+            },
 
 
             //fetch billings with pagination and filters
-            fetchBillings: async () => {
+            fetchBillings: async (params: FetchParams) => {
                 try {
                     set({ fetchLoading: true, loading: true, error: null,});
 
-                    const response = await getAllBillings();
-
-                    const billings = response.data.billings || [];
-                    const pagination = response.data.pagination || {};
+                    const response = await getAllBillings(params);
                     
                     if (response.success) {
+                        const billings = response.data.billings || [];
+                        const pagination = response.data.pagination || {};
+                        
                         set({
                             billings,
                             pagination: {
@@ -177,29 +183,6 @@ export const useBillingStore = create<BillingState>()(
                 }
             },
 
-
-
-
-            //pagination actions
-            setCurrentPage: (page: number) => {
-                set({ currentPage: page });
-                get().fetchBillings(page);
-            },
-
-            //filter actions
-            setSearchTerm: (term: string) => {
-                set({ searchTerm: term, currentPage: 1 });
-            },
-
-            setFilterStatus: (status: string) => {
-                set({ filterStatus: status, currentPage: 1 });
-            },
-
-            //apply filters (with debounce logic)
-            applyFilters: async () => {
-                const { searchTerm, filterStatus } = get();
-                await get().fetchBillings(1, searchTerm, filterStatus);
-            },
 
             //modal actions
             openAddModal: () => {

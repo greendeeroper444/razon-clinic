@@ -1,16 +1,18 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import styles from './BillingsPaymentPage.module.css'
-import { Plus, Search, Download, CreditCard, Check, AlertTriangle, X, User, Calendar, Eye } from 'lucide-react';
-import { BillingFormData, BillingResponse, FormDataType } from '../../../types'
-import { Header, Loading, Main, Modal, SubmitLoading } from '../../../components'
+import { Plus, Download, CreditCard, Check, AlertTriangle, User, Calendar, Eye } from 'lucide-react';
+import { BillingFormData, FormDataType } from '../../../types'
+import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
 import { formatDate, getLoadingText, getMedicalRecordId, getPaymentStatusClass, getStatusIcon, openModalWithRefresh } from '../../../utils'
 import { useBillingStore } from '../../../stores'
+import { useNavigate } from 'react-router-dom';
 
 const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
-    const [showModal, setShowModal] = useState(false);
-    const [selectedBill, setSelectedBill] = useState<BillingResponse | null>(null);
-    
+    const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
+
     //zustand store selectors
     const {
         billings,
@@ -21,18 +23,9 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         isDeleteModalOpen,
         selectedBilling,
         deleteBillingData,
+        pagination: storePagination,
         isProcessing,
-        currentPage,
-        totalPages,
-        totalRecords,
-        searchTerm,
-        filterStatus,
         fetchBillings,
-        setSearchTerm,
-        setFilterStatus,
-        applyFilters,
-        setCurrentPage,
-        // openDeleteModal,
         closeUpdateModal,
         closeDeleteModal,
         addBilling,
@@ -43,40 +36,55 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         currentOperation
     } = useBillingStore();
 
-    //debounce search and filter changes
-    useEffect(() => {
-        // const timeoutId = setTimeout(() => {
-        //     applyFilters();
-        // }, 500); //debounce search
-
-        // return () => clearTimeout(timeoutId);
-        applyFilters();
-    }, [searchTerm, filterStatus, applyFilters]);
-
-    useEffect(() => {
-        fetchBillings();
+    //calculate summary stats using useMemo for performance
+    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
+        try {
+            await fetchBillings({ page, limit, search });
+        } catch (error) {
+            console.error('Error fetching appointments:', error);
+        }
     }, [fetchBillings]);
 
-    // const handleOpenModal = () => {
-    //     if (openModal) {
-    //         openModal('billing');
-    //     } else {
-    //         openAddModal();
-    //     }
-    // };
-    const handleOpenModal = () => {
+    useEffect(() => {
+        if (isInitialLoad) {
+            fetchData(1, 10, '');
+            setIsInitialLoad(false);
+        }
+    }, [isInitialLoad, fetchData]);
+
+    //handle search
+    const handleSearch = useCallback((term: string) => {
+        setSearchTerm(term);
+        fetchData(1, storePagination?.itemsPerPage || 10, term);
+    }, [fetchData, storePagination?.itemsPerPage]);
+
+    //handle page change
+    const handlePageChange = useCallback((page: number) => {
+        fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
+
+    //handle items per page change
+    const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
+        fetchData(1, itemsPerPage, searchTerm);
+    }, [fetchData, searchTerm]);
+
+    const handleOpenModal = useCallback(() => {
         openModalWithRefresh({
             modalType: 'billing',
             openModal,
-            onRefresh: () => fetchBillings(currentPage, searchTerm, filterStatus),
+            onRefresh: () => fetchData(
+                storePagination?.currentPage || 1, 
+                storePagination?.itemsPerPage || 10, 
+                searchTerm
+            ),
         });
-    };
+    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
     
     const handleExport = async () => {
         await exportBillings();
     };
 
-    const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
+    const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
             console.error('Invalid data or missing billing ID');
             return;
@@ -85,42 +93,33 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         const billingData = data as BillingFormData;
 
         try {
-            if (selectedBill?.id) {
-                await updateBillingData(selectedBill.id, billingData);
+            if (selectedBilling?.id) {
+                await updateBillingData(selectedBilling.id, billingData);
             } else {
                 await addBilling(billingData);
             }
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+            }, 600);
         } catch (error) {
             console.error('Error updating billing:', error);
         }
-    };
+    }, [selectedBilling, updateBillingData, addBilling, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     const handleProcessPayment = async (billId: string) => {
         await processPayment(billId);
     };
 
-    const handleViewDetails = (billId: string) => {
-        const bill = billings.find(b => b.id === billId);
-        setSelectedBill(bill || null);
-        setShowModal(true);
+    const handleViewClick = (billId: string) => {
+        console.log("This is view billing: ",billId)
     };
 
-    const closeModal = () => {
-        setShowModal(false);
-        setSelectedBill(null);
-    };
-
-    const handlePageChange = (page: number) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
-
-    // const handleDeleteBilling = (billing: BillingResponse) => {
-    //     openDeleteModal(billing);
-    // };
-
-    const handleConfirmDelete = async (data: FormDataType | string): Promise<void> => {
+    const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {
             console.error('Invalid billing ID');
             return;
@@ -128,10 +127,18 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         try {
             await deleteBilling(data);
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+            }, 600);
         } catch (error) {
             console.error('Error deleting billing:', error);
         }
-    };
+    }, [deleteBilling, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     
 
@@ -197,39 +204,38 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                 </div>
             </div>
         </div>
-
-        {/* search and filter section */}
-        <div className={styles.filtersSection}>
-            <div className={styles.searchBox}>
-                <Search className={styles.searchIcon} />
-                <input
-                    type="text"
-                    placeholder="Search by patient name..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className={styles.searchInput}
-                />
-            </div>
-            <div className={styles.filterControls}>
-                <select 
-                    title='Select Status'
-                    value={filterStatus} 
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    className={styles.filterSelect}
-                >
-                    <option value="All">All Status</option>
-                    <option value="Paid">Paid</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Unpaid">Unpaid</option>
-                </select>
-            </div>
-        </div>
         
         {/* billing table */}
 
-        <div className={styles.billingTableContainer}>
-            <div className={styles.billingTableHeader}>
-                <div className={styles.billingTableTitle}>Billing & Payments</div>
+        <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+                <div className={styles.sectionTitle}>Billing & Payments</div>
+
+                {/* search and items per page controls */}
+                <div className={styles.controls}>
+                    <Searchbar
+                        onSearch={handleSearch}
+                        placeholder="Search medicines..."
+                        disabled={loading}
+                        className={styles.searchbar}
+                    />
+                    
+                    <div className={styles.itemsPerPageControl}>
+                        <label htmlFor="itemsPerPage">Items per page:</label>
+                        <select
+                            id="itemsPerPage"
+                            value={storePagination?.itemsPerPage || 10}
+                            onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                            disabled={loading}
+                            className={styles.itemsPerPageSelect}
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             {
                 loading ? (
@@ -243,193 +249,118 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                         />
                     </div>
                 ) : (
-                    <div className={styles.tableResponsive}>
-                        <table className={styles.billingTable}>
-                            <thead>
-                                <tr>
-                                    <th>Patient Name</th>
-                                    <th>Medical Record</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Date Issued</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    billings.map((bill) => (
-                                        <tr key={bill.id}>
-                                            <td>
-                                                <div className={styles.patientInfo}>
-                                                    <User />
-                                                    <span>{bill.patientName}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span className={styles.medicalRecord}>
-                                                    {getMedicalRecordId(bill.medicalRecordId)}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span className={styles.amount}>
-                                                    ₱{(bill.amount || 0).toFixed(2)}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span className={`${styles.status} ${getPaymentStatusClass(bill.paymentStatus, styles)}`}>
+                    <>
+                        <div className={styles.tableResponsive}>
+                            <table className={styles.billingTable}>
+                                <thead>
+                                    <tr>
+                                        <th>Patient Name</th>
+                                        <th>Medical Record</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date Issued</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        billings.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={7} className={styles.emptyState}>
                                                     {
-                                                        (() => {
-                                                            const Icon = getStatusIcon(bill.paymentStatus);
-                                                            return <Icon className={styles.icon} />;
-                                                        })()
+                                                        searchTerm ? 
+                                                        `No billings found matching "${searchTerm}". Try a different search term.` : 
+                                                        'No billings found. Click "New Item" to get started.'
                                                     }
-                                                    {bill.paymentStatus}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div className={styles.dateInfo}>
-                                                    <Calendar />
-                                                    <span>{formatDate(bill.createdAt)}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className={styles.actionButtons}>
-                                                    <button
-                                                        type='button'
-                                                        onClick={() => handleViewDetails(bill.id)}
-                                                        className={styles.btnView}
-                                                        title="View Details"
-                                                    >
-                                                        <Eye />
-                                                    </button>
-                                                    {
-                                                        bill.paymentStatus !== 'Paid' && (
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            billings.map((bill) => (
+                                                <tr key={bill.id}>
+                                                    <td>
+                                                        <div className={styles.patientInfo}>
+                                                            <User />
+                                                            <span>{bill.patientName}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className={styles.medicalRecord}>
+                                                            {getMedicalRecordId(bill.medicalRecordId)}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className={styles.amount}>
+                                                            ₱{(bill.amount || 0).toFixed(2)}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className={`${styles.status} ${getPaymentStatusClass(bill.paymentStatus, styles)}`}>
+                                                            {
+                                                                (() => {
+                                                                    const Icon = getStatusIcon(bill.paymentStatus);
+                                                                    return <Icon className={styles.icon} />;
+                                                                })()
+                                                            }
+                                                            {bill.paymentStatus}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div className={styles.dateInfo}>
+                                                            <Calendar />
+                                                            <span>{formatDate(bill.createdAt)}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={styles.actionButtons}>
                                                             <button
                                                                 type='button'
-                                                                onClick={() => handleProcessPayment(bill.id)}
-                                                                className={styles.btnPay}
-                                                                title="Process Payment"
-                                                                disabled={isProcessing}
+                                                                onClick={() => handleViewClick(bill.id)}
+                                                                className={styles.btnView}
+                                                                title="View Details"
                                                             >
-                                                                <CreditCard />
+                                                                <Eye />
                                                             </button>
-                                                        )
-                                                    }
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                                            {
+                                                                bill.paymentStatus !== 'Paid' && (
+                                                                    <button
+                                                                        type='button'
+                                                                        onClick={() => handleProcessPayment(bill.id)}
+                                                                        className={styles.btnPay}
+                                                                        title="Process Payment"
+                                                                        disabled={isProcessing}
+                                                                    >
+                                                                        <CreditCard />
+                                                                    </button>
+                                                                )
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {
+                            storePagination && storePagination.totalPages > 1 && (
+                                <Pagination
+                                    currentPage={storePagination.currentPage}
+                                    totalPages={storePagination.totalPages}
+                                    totalItems={storePagination.totalItems}
+                                    itemsPerPage={storePagination.itemsPerPage}
+                                    onPageChange={handlePageChange}
+                                    disabled={loading || isProcessing}
+                                    className={styles.pagination}
+                                />
+                            )
+                        }
+                    </>
                 )
             }
 
         </div>
-        {/* pagination */}
-        {
-            !loading && billings.length > 0 && (
-                <div className={styles.pagination}>
-                    <button 
-                        type='button'
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className={styles.paginationBtn}
-                    >
-                        Previous
-                    </button>
-                    
-                    <span className={styles.paginationInfo}>
-                        Page {currentPage} of {totalPages} ({totalRecords} total records)
-                    </span>
-                    
-                    <button 
-                        type='button'
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className={styles.paginationBtn}
-                    >
-                        Next
-                    </button>
-                </div>
-            )
-        }
-
-        {/* empty state */}
-        {
-            !loading && !error && billings.length === 0 && (
-                <div className={styles.emptyState}>
-                    <CreditCard className={styles.emptyIcon} />
-                    <h3>No billing records found</h3>
-                    <p>Try adjusting your search criteria or create a new bill.</p>
-                </div>
-            )
-        }
-
-        {/* bill details modal */}
-        {
-            showModal && selectedBill && (
-                <div className={styles.modalOverlay} onClick={closeModal}>
-                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                        <div className={styles.modalHeader}>
-                            <h2>Bill Details</h2>
-                            <button type='button' title='Close' onClick={closeModal} className={styles.closeBtn}>
-                                <X />
-                            </button>
-                        </div>
-                        <div className={styles.modalBody}>
-                            <div className={styles.billDetails}>
-                                <div className={styles.detailRow}>
-                                    <strong>Bill ID:</strong> 
-                                    <span>{selectedBill.id?.slice(-8).toUpperCase()}</span>
-                                </div>
-                                <div className={styles.detailRow}>
-                                    <strong>Patient:</strong> 
-                                    <span>{selectedBill.patientName}</span>
-                                </div>
-                                <div className={styles.detailRow}>
-                                    <strong>Medical Record:</strong> 
-                                    <span>{getMedicalRecordId(selectedBill.medicalRecordId)}</span>
-                                </div>
-                                <div className={styles.detailRow}>
-                                    <strong>Amount:</strong> 
-                                    <span>₱{(selectedBill.amount || 0).toFixed(2)}</span>
-                                </div>
-                                <div className={styles.detailRow}>
-                                    <strong>Status:</strong> 
-                                    <span className={getPaymentStatusClass(selectedBill.paymentStatus, styles)}>
-                                        {selectedBill.paymentStatus}
-                                    </span>
-                                </div>
-                                <div className={styles.detailRow}>
-                                    <strong>Date Issued:</strong> 
-                                    <span>{formatDate(selectedBill.createdAt)}</span>
-                                </div>
-                                {
-                                    selectedBill.items && selectedBill.items.length > 0 && (
-                                        <div className={styles.itemsSection}>
-                                            <strong>Items:</strong>
-                                            <div className={styles.itemsList}>
-                                                {
-                                                    selectedBill.items.map((item, index) => (
-                                                        <div key={index} className={styles.itemRow}>
-                                                            <span>{item.itemName}</span>
-                                                            <span>Qty: {item.quantity}</span>
-                                                            <span>₱{(item.unitPrice * item.quantity).toFixed(2)}</span>
-                                                        </div>
-                                                    ))
-                                                }
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )
-        }
 
         {/* update billing modal */}
         {

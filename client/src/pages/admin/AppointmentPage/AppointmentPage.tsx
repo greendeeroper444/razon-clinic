@@ -97,14 +97,13 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         try {
             await updateAppointmentData(selectedAppointment.id, appointmentData)
 
-             setTimeout(() => {
+            setTimeout(() => {
                 fetchData(
                     storePagination?.currentPage || 1, 
                     storePagination?.itemsPerPage || 10, 
                     searchTerm
                 );
             }, 600);
-            
         } catch (error) {
             console.error('Error updating appointment:', error);
         }
@@ -211,8 +210,12 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                     {
                                         appointments.length === 0 ? (
                                             <tr>
-                                                <td colSpan={5} className={styles.noData}>
-                                                    No appointments found. Create your first appointment using the "New Appointment" button.
+                                                <td colSpan={7} className={styles.emptyState}>
+                                                   {
+                                                        searchTerm ? 
+                                                        `No appointments found matching "${searchTerm}". Try a different search term.` : 
+                                                        'No appointments found. Click "New Item" to get started.'
+                                                    }
                                                 </td>
                                             </tr>
                                         ) : (

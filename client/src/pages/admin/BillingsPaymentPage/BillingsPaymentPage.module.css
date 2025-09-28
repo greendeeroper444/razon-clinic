@@ -1,24 +1,4 @@
-.content {
-  padding: 20px;
-}
 
-.contentHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.contentTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--dark);
-}
-
-.contentActions {
-  display: flex;
-  gap: 10px;
-}
 
 .btnPrimary {
   background-color: var(--primary);
@@ -75,23 +55,6 @@
   transform: translateY(-1px);
 }
 
-.sectionTitle {
-  margin: 25px 0 15px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #374151;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sectionTitle::before {
-  content: '';
-  width: 4px;
-  height: 20px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  border-radius: 2px;
-}
 
 .btnSecondary {
   background: white;
@@ -207,90 +170,88 @@
   color: var(--danger);
 }
 
-/* filters action */
-.filtersSection {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  align-items: center;
-}
 
-.searchBox {
-  position: relative;
-  flex: 1;
-  min-width: 300px;
-}
 
-.searchIcon {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--gray);
-  font-size: 16px;
-}
 
-.searchInput {
-  width: 100%;
-  padding: 14px 16px 14px 48px;
-  border: 2px solid var(--gray-light);
-  border-radius: var(--border-radius);
-  font-size: 14px;
-  background-color: white;
-  transition: var(--transition);
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-light);
-}
-
-.filterControls {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.filterSelect {
-  padding: 14px 16px;
-  border: 2px solid var(--gray-light);
-  border-radius: var(--border-radius);
-  font-size: 14px;
-  background-color: white;
-  cursor: pointer;
-  min-width: 150px;
-  transition: var(--transition);
-}
-
-.filterSelect:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-light);
-}
-
-/* table styles */
-
-.billingTableContainer {
-  background: white;
-  border-radius: var(--border-radius);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+.section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
   
-.billingTableHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  border-bottom: 1px solid var(--gray-light);
+.sectionHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    border-bottom: 1px solid var(--gray-light);
 }
   
-.billingTableTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
 }
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.searchbar {
+    flex: 1;
+    min-width: 250px;
+    max-width: 400px;
+}
+
+.itemsPerPageControl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.itemsPerPageControl label {
+    font-size: 14px;
+    color: var(--gray, #64748b);
+    font-weight: 500;
+}
+
+.itemsPerPageSelect {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-light, #e2e8f0);
+    border-radius: var(--border-radius, 6px);
+    background: white;
+    color: #333;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition, all 0.2s ease);
+    min-width: 80px;
+}
+
+.itemsPerPageSelect:hover {
+    border-color: var(--gray, #cbd5e0);
+}
+
+.itemsPerPageSelect:focus {
+    outline: none;
+    border-color: var(--primary, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb, 59, 130, 246), 0.1);
+}
+
+.itemsPerPageSelect:disabled {
+    background: #f8fafc;
+    color: var(--gray, #94a3b8);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 
 
 .tableResponsive {
@@ -318,7 +279,14 @@
   vertical-align: middle;
   text-align: center;
 }
-/* buikd id */
+.emptyState {
+    padding: 60px 20px !important;
+    text-align: center !important;
+    color: var(--gray, #64748b);
+    font-size: 16px;
+    font-style: italic;
+}
+
 .billId {
   font-weight: 600;
   color: var(--primary);
@@ -329,23 +297,6 @@
   display: inline-block;
 }
 
-/* patient info */
-.patientInfo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: flex-start;
-}
-
-.patientInfo svg {
-  color: var(--primary);
-  font-size: 16px;
-}
-
-.patientInfo span {
-  font-weight: 500;
-  color: var(--dark);
-}
 
 /* medical record */
 .medicalRecord {

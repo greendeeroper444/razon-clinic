@@ -132,8 +132,12 @@
 .appointmentsTable tr:last-child td {
   border-bottom: none;
 }
-.noData {
-  text-align: center;
+.emptyState {
+    padding: 60px 20px !important;
+    text-align: center !important;
+    color: var(--gray, #64748b);
+    font-size: 16px;
+    font-style: italic;
 }
 .patientInfo,
 .medicineInfo {

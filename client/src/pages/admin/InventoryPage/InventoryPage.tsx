@@ -247,7 +247,8 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                                         inventoryItems.length === 0 ? (
                                             <tr>
                                                 <td colSpan={7} className={styles.emptyState}>
-                                                    {searchTerm ? 
+                                                    {
+                                                        searchTerm ? 
                                                         `No inventory items found matching "${searchTerm}". Try a different search term.` : 
                                                         'No inventory items found. Click "New Item" to get started.'
                                                     }

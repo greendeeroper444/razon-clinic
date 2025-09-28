@@ -265,7 +265,13 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                                     {
                                         displayPatients.length === 0 ? (
                                             <tr>
-                                                <td colSpan={6} style={{textAlign: 'center'}}>No patients found</td>
+                                                <td colSpan={6} className={styles.emptyState}>
+                                                    {
+                                                        searchTerm ? 
+                                                        `No patients found matching "${searchTerm}". Try a different search term.` : 
+                                                        'No patients found. Click "New Item" to get started.'
+                                                    }
+                                                </td>
                                             </tr>
                                         ) : (
                                             displayPatients.map((patient, index) => (
