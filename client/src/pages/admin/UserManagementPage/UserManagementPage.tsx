@@ -4,7 +4,7 @@ import styles from './UserManagementPage.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faCalendarAlt, faClock } from '@fortawesome/free-solid-svg-icons'
 import { useUserManagementStore } from '../../../stores/userManagementStore'
-import { Loading, Main, Pagination, Searchbar, SubmitLoading } from '../../../components'
+import { Header, Loading, Main, Pagination, Searchbar, SubmitLoading } from '../../../components'
 import { getLoadingText } from '../../../utils'
 
 const UserManagementPage = () => {
@@ -97,6 +97,10 @@ const UserManagementPage = () => {
 
   return (
     <Main error={error}>
+        <Header
+            title='User Management'
+        />
+
         <div className={styles.contentCards}>
             <div className={styles.statsCard}>
                 <div className={styles.statItem}>
@@ -147,7 +151,7 @@ const UserManagementPage = () => {
 
         <div className={styles.section}>
             <div className={styles.sectionHeader}>
-                <h1 className={styles.sectionTitle}>User Archive Management</h1>
+                <h1 className={styles.sectionTitle}>User Management</h1>
 
                 <div className={styles.controls}>
                     <Searchbar

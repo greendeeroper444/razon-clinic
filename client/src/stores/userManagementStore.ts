@@ -113,9 +113,9 @@ export const useUserManagementStore = create<UserManagementState>()(
                             loading: false
                         })
                         
-                        if (!params.search && params.page === 1) {
-                            get().fetchTotalCounts()
-                        }
+                        // if (!params.search && params.page === 1) {
+                        //     get().fetchTotalCounts()
+                        // }
                     } else {
                         set({ 
                             error: response.message || 'Failed to fetch users',
