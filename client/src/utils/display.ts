@@ -110,15 +110,18 @@ export const getLoadingText = (operation: OperationType, modalType: ModalType): 
             return `Creating ${modalType}...`;
         case 'fetch':
             return `Loading ${modalType}...`;
+        case 'archive':
+            return 'Archiving user...'
+        case 'unarchive':
+                return 'Unarchiving user...'
+        case 'archiveMultiple':
+                return 'Archiving users...'
+        case 'unarchiveMultiple':
+                return 'Unarchiving users...'
         default:
             return 'Processing...';
     }
 }
-
-
-
-
-
 
 
 

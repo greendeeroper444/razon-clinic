@@ -13,7 +13,8 @@ import {
     faBars,
     faChevronLeft,
     faFileMedical,
-    faCreditCard
+    faCreditCard,
+    faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'sonner';
 import { SidebarProps } from '../../../types';
@@ -186,12 +187,12 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     <span className={styles.menuText}>Billings</span>
                 </Link>
                 <Link
-                    to='/admin/archives'
-                    className={`${styles.menuItem} ${isActive('/admin/archives') ? styles.active : ''}`}
-                    title='Archive'
+                    to='/admin/users'
+                    className={`${styles.menuItem} ${isActive('/admin/users') ? styles.active : ''}`}
+                    title='Users'
                 >
-                    <FontAwesomeIcon icon={faArchive} color='#94a3b8' />
-                    <span className={styles.menuText}>Archive</span>
+                    <FontAwesomeIcon icon={faUser} color='#94a3b8' />
+                    <span className={styles.menuText}>User Management</span>
                 </Link>
 
                 <div

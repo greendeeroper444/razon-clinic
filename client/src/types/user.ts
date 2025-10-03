@@ -62,3 +62,7 @@ export interface UserResponse {
         user: UserDetailed;
     };
 }
+
+export interface UserTab {
+    tab: 'All' | 'Active' | 'Archive';
+}
