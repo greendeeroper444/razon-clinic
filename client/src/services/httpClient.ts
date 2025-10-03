@@ -53,7 +53,7 @@ axios.interceptors.response.use(
 
             try {
                 //attempt to refresh the token
-                await axios.post('/api/auth/refresh-token');
+                await axios.post('/api/auth/refreshToken');
                 
                 isRefreshing = false;
                 onRefreshed('refreshed');

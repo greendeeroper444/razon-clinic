@@ -14,16 +14,16 @@ const {
 
 router.post('/register', validator.validateRegistration, AuthController.register);
 router.post('/login', validator.validateLogin, AuthController.login);
-router.post('/verify-token', AuthController.verifyToken);
-router.post('/request-password-reset', AuthController.requestPasswordReset);
-router.post('/reset-password', AuthController.resetPassword);
+router.post('/verifyToken', AuthController.verifyToken);
+router.post('/requestPasswordReset', AuthController.requestPasswordReset);
+router.post('/resetPassword', AuthController.resetPassword);
 
 router.get('/me', authenticate, AuthController.getProfile);
-router.put('/update-profile', authenticate, AuthController.updateProfile);
-router.post('/change-password', authenticate, AuthController.changePassword);
+router.put('/updateProfile', authenticate, AuthController.updateProfile);
+router.post('/changePassword', authenticate, AuthController.changePassword);
 router.post('/logout', authenticate, AuthController.logout);
 
-router.post('/refresh-token', authenticateRefresh, AuthController.refreshToken);
+router.post('/refreshToken', authenticateRefresh, AuthController.refreshToken);
 
 router.get('/admin/profile', authenticate, requireAdmin, AuthController.getProfile);
 router.put('/admin/profile', authenticate, requireAdmin, AuthController.updateProfile);

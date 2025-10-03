@@ -91,6 +91,63 @@
     background-color: var(--gray-light);
 }
 
+/* Tabs */
+.tabsContainer {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--gray-light);
+    padding-bottom: 0;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: transparent;
+    color: var(--dark-light);
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    bottom: -2px;
+}
+
+.tab:hover {
+    color: var(--archive);
+    background-color: var(--archive-light);
+}
+
+.activeTab {
+    color: var(--archive);
+    border-bottom-color: var(--archive);
+    background-color: var(--archive-light);
+}
+
+.tabCount {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    background-color: var(--gray-light);
+    color: var(--dark);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.activeTab .tabCount {
+    background-color: var(--archive);
+    color: white;
+}
+
+/* Stats Cards */
 .contentCards {
     margin-bottom: 32px;
 }
@@ -126,6 +183,7 @@
     font-size: 0.9rem;
 }
 
+/* Table Container */
 .tableContainer {
     background-color: white;
     border-radius: var(--border-radius);
@@ -134,39 +192,34 @@
     margin-bottom: 24px;
 }
 
-.tableHeader {
+.bulkActionsBar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px 24px;
-    border-bottom: 1px solid var(--gray-light);
-    background-color: var(--light);
+    border-bottom: 1px solid #e0e0e0;
+    background-color: white;
 }
 
-.bulkActions {
+.selectAllLabel {
     display: flex;
     align-items: center;
     gap: 12px;
+    cursor: pointer;
+    margin: 0;
 }
 
 .selectAllCheckbox {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     cursor: pointer;
     margin: 0;
-    padding: 0;
 }
 
 .selectedCount {
     font-size: 0.9rem;
     color: var(--dark);
-    font-weight: 500;
-}
-
-.tableControls {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+    font-weight: 400;
 }
 
 .recordCount {
@@ -174,187 +227,155 @@
     color: var(--gray);
 }
 
-.tableWrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
+/* Table */
 .archiveTable {
     width: 100%;
     border-collapse: collapse;
-    table-layout: auto;
 }
 
-.tableHeaderRow {
-    background-color: var(--archive-light);
+.archiveTable thead {
+    background-color: #fafafa;
 }
 
-.tableHeaderRow th {
+.archiveTable thead tr {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.archiveTable th {
     text-align: left;
-    padding: 12px 15px;
-    font-size: 0.8rem;
-    color: var(--gray);
-    font-weight: 500;
-    border-bottom: 1px solid var(--gray-light);
+    padding: 14px 16px;
+    font-size: 0.75rem;
+    color: #9e9e9e;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
-.tableHeaderRow th.checkboxColumn {
-    padding: 0;
+.thCheckbox {
+    width: 60px;
+    padding-left: 24px !important;
 }
 
-.checkboxColumn {
-    width: 24px;
-    min-width: 24px;
-    text-align: center;
-    padding: 0;
+.thUser {
+    width: auto;
 }
 
-.patientColumn {
-    width: 35%;
-    min-width: 200px;
+.thDate {
+    width: auto;
 }
 
-.dateColumn {
-    width: 15%;
-    min-width: 140px;
-    text-align: center;
+.thReason {
+    width: auto;
 }
 
-.reasonColumn {
-    width: 25%;
-    min-width: 180px;
-    text-align: center;
+.thStatus {
+    width: auto;
+    text-align: right !important;
+    padding-right: 24px !important;
 }
 
-.tableRow {
-    border-bottom: 1px solid var(--gray-light);
-    transition: var(--transition);
+/* Table Body */
+.archiveTable tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
     cursor: pointer;
-    position: relative;
 }
 
 .tableRow:hover {
-    background-color: var(--archive-light);
-}
-
-.tableRow:last-child {
-    border-bottom: none;
+    background-color: #fafafa;
 }
 
 .selectedRow {
-    background-color: var(--primary-light);
+    background-color: #e3f2fd;
 }
 
-.selectedRow:hover {
-    background-color: var(--primary-light);
-}
-
-.tableRow::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 4px;
-    background-color: transparent;
-    transition: var(--transition);
-}
-
-.tableRow:hover::before {
-    background-color: var(--archive);
-}
-
-.selectedRow::before {
-    background-color: var(--primary);
-}
-
-.tableRow td {
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--gray-light);
-    font-size: 13px;
+.archiveTable td {
+    padding: 18px 16px;
+    font-size: 0.9rem;
     color: var(--dark-light);
-    word-wrap: break-word;
-    max-width: 200px;
     vertical-align: middle;
-    text-align: center;
 }
 
-.checkboxCell {
-    text-align: center;
-    padding: 0;
-    width: 24px;
-    min-width: 24px;
+.tdCheckbox {
+    width: 60px;
+    padding-left: 24px !important;
 }
 
-.rowCheckbox {
-    width: 16px;
-    height: 16px;
+.tdCheckbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
     cursor: pointer;
     margin: 0;
-    padding: 0;
-    display: block;
 }
 
-.patientCell {
-    font-weight: 500;
-    text-align: center;
+.tdUser {
+    padding-right: 16px !important;
 }
 
-.patientInfo {
+.userInfo {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.patientAvatar {
-    width: 36px;
-    height: 36px;
-    background-color: var(--archive-light);
-    color: var(--archive);
+.avatar {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
 }
 
-.patientName {
-    color: var(--dark);
-    font-weight: 500;
+.avatarArchived {
+    background-color: #e3f2fd;
+    color: #1976d2;
 }
 
-.dateCell {
-    font-size: 0.9rem;
+.avatarActive {
+    background-color: #e8f5e9;
+    color: #4caf50;
+}
+
+.tdDate {
     color: var(--dark-light);
-    text-align: center;
 }
 
-.dateInfo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+.tdDate .icon {
+    color: #9e9e9e;
+    font-size: 13px;
+    margin-right: 8px;
 }
 
-.dateIcon {
-    color: var(--gray);
-    font-size: 14px;
+.tdReason {
+    color: var(--dark-light);
 }
 
-.reasonCell {
-    font-size: 0.9rem;
-    text-align: center;
+.tdStatus {
+    text-align: right;
+    padding-right: 24px !important;
 }
 
-.reasonBadge {
+.statusBadge {
     display: inline-block;
-    padding: 4px 8px;
-    background-color: var(--archive-light);
-    color: var(--archive);
+    padding: 6px 16px;
     border-radius: 4px;
     font-weight: 500;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 
+.badgeActive {
+    background-color: #e8f5e9;
+    color: #4caf50;
+}
+
+.badgeArchived {
+    background-color: #f5f5f5;
+    color: #757575;
+}
+
+/* Archive Actions */
 .archiveActions {
     display: flex;
     justify-content: space-between;
@@ -364,63 +385,82 @@
     gap: 16px;
 }
 
-.restoreButton {
-    padding: 10px 20px;
-    background-color: var(--light);
-    border: 1px solid var(--archive);
-    color: var(--archive);
-    border-radius: var(--border-radius);
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition);
+.multiActions {
+    display: flex;
+    gap: 12px;
 }
 
-.restoreButton:hover:not(.disabled) {
-    background-color: var(--archive);
+.actionButton {
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+}
+
+.archiveButton {
+    background-color: #fff3e0;
+    color: #ff9800;
+    border: 1px solid #ffb74d;
+}
+
+.archiveButton:hover:not(.disabled) {
+    background-color: #ff9800;
     color: white;
 }
 
-.restoreButton.disabled {
+.restoreButton {
+    background-color: transparent;
+    color: var(--dark-light);
+    border: 1px solid #e0e0e0;
+}
+
+.restoreButton:hover:not(.disabled) {
+    background-color: #fafafa;
+}
+
+.actionButton.disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
+/* Pagination */
 .pagination {
     display: flex;
-    gap: 6px;
+    gap: 8px;
+    align-items: center;
 }
 
-.pageButton {
-    width: 36px;
+.pageBtn {
+    min-width: 36px;
     height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 6px;
-    border: 1px solid var(--gray-light);
-    background-color: var(--light);
+    border: 1px solid #e0e0e0;
+    background-color: white;
     cursor: pointer;
     transition: var(--transition);
     color: var(--dark-light);
     font-weight: 500;
-}
-
-.pageButton:hover {
-    border-color: var(--archive);
-    color: var(--archive);
-}
-
-.pageButton.active {
-    background-color: var(--archive);
-    border-color: var(--archive);
-    color: white;
-}
-
-.nextPage {
-    width: auto;
+    font-size: 0.9rem;
     padding: 0 12px;
 }
 
+.pageBtn:hover:not(.pageActive) {
+    background-color: #fafafa;
+}
+
+.pageActive {
+    background-color: #424242;
+    border-color: #424242;
+    color: white;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .content {
         padding: 10px;
@@ -442,6 +482,24 @@
         width: 100%;
         min-width: 0;
     }
+
+    .tabsContainer {
+        overflow-x: auto;
+        gap: 4px;
+    }
+
+    .tab {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    .tabCount {
+        font-size: 0.75rem;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 6px;
+    }
     
     .statsCard {
         flex-direction: column;
@@ -459,43 +517,28 @@
         border-bottom: none;
     }
     
-    .tableHeader {
+    .bulkActionsBar {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
-    }
-    
-    .bulkActions,
-    .tableControls {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .dateColumn:nth-child(4),
-    .reasonColumn {
-        display: none;
-    }
-    
-    .patientColumn {
-        width: 60%;
-    }
-    
-    .dateColumn {
-        width: 30%;
     }
     
     .archiveActions {
         flex-direction: column;
         align-items: stretch;
     }
+
+    .multiActions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .actionButton {
+        width: 100%;
+    }
     
     .pagination {
         justify-content: center;
-    }
-    
-    .restoreButton {
-        width: 100%;
-        margin-bottom: 16px;
     }
 }
 
@@ -507,30 +550,10 @@
     .searchWrapper {
         min-width: 240px;
     }
-    
-    .dateColumn:nth-child(4) {
-        display: none;
-    }
-    
-    .patientColumn {
-        width: 40%;
-    }
-    
-    .dateColumn {
-        width: 20%;
-    }
-    
-    .reasonColumn {
-        width: 30%;
-    }
 }
 
 @media (min-width: 1025px) {
     .content {
         padding: 24px;
-    }
-    
-    .tableWrapper {
-        overflow-x: visible;
     }
 }
