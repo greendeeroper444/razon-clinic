@@ -7,6 +7,7 @@ router.get('/getUsers', authenticate, UserController.getUsers);
 router.get('/getUserById/:userId', authenticate, UserController.getUserById);
 router.patch('/archiveUser/:userId', authenticate, UserController.archiveUser);
 router.patch('/unarchiveUser/:userId', authenticate, UserController.unarchiveUser);
-router.get('/getArchivedUsers', authenticate, UserController.getArchivedUsers);
+router.patch('/archiveMultipleUsers', authenticate, UserController.archiveMultipleUsers);
+router.patch('/unarchiveMultipleUsers', authenticate, UserController.unarchiveMultipleUsers);
 
 module.exports = router;

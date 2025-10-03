@@ -65,13 +65,32 @@ class UserController {
         }
     }
 
-    async getArchivedUsers(req, res, next) {
+    async archiveMultipleUsers(req, res, next) {
         try {
-            const result = await UserService.getArchivedUsers(req.query);
+            const { userIds } = req.body;
+            const archivedByUserId = req.user.id;
+            
+            const result = await UserService.archiveMultipleUsers(userIds, archivedByUserId);
             
             res.status(200).json({
                 success: true,
-                message: 'Archived users retrieved successfully',
+                message: result.message,
+                data: result
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async unarchiveMultipleUsers(req, res, next) {
+        try {
+            const { userIds } = req.body;
+            
+            const result = await UserService.unarchiveMultipleUsers(userIds);
+            
+            res.status(200).json({
+                success: true,
+                message: result.message,
                 data: result
             });
         } catch (error) {
