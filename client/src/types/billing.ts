@@ -1,13 +1,14 @@
 export interface BillingFormData {
-    id?: string;
+    id: string;
     medicalRecordId?: string;
     patientName?: string;
     itemName?: string[];
     itemQuantity?: number[];
     itemPrices?: number[];
     amount?: number;
-    paymentStatus?: 'Paid' | 'Unpaid' | 'Pending';
+    paymentStatus: 'Paid' | 'Unpaid' | 'Pending';
     medicalRecordDate?: string;
+    createdAt: string
 }
 
 export interface BillingFormProps {

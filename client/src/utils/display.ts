@@ -35,7 +35,7 @@ export const getExpiryStatus = (expiryDate: string) => {
 
 
 
-export const getAppointmentStatusClass = (status: string, styles: any) => {
+export const getStatusClass = (status: string, styles: any) => {
     switch (status) {
         case 'Pending':
             return styles.statusPending;
@@ -47,6 +47,14 @@ export const getAppointmentStatusClass = (status: string, styles: any) => {
             return styles.statusCancelled;
         case 'Rebooked':
             return styles.statusRebooked;
+        case 'Paid':
+            return styles.statusPaid;
+        case 'Unpaid':
+            return styles.statusUnpaid;
+        case 'Active':
+            return styles.statusActive;
+        case 'Archived':
+            return styles.statusArchived;
         default:
             return '';
     }

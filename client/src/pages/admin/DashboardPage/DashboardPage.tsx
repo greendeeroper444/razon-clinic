@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import styles from './DashboardPage.module.css';
 import { CalendarDays, UserLock, AlertTriangle, Stethoscope, ChevronRight, ArrowUp, Plus } from 'lucide-react';
 import { AppointmentResponse } from '../../../types';
-import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial, formatDate, formatTime, getAppointmentStatusClass, getItemIcon, getStockStatus, getExpiryStatus } from '../../../utils';
+import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial, formatDate, formatTime, getStatusClass, getItemIcon, getStockStatus, getExpiryStatus } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Header, Loading, Main } from '../../../components';
 import { useAppointmentStore, useInventoryStore } from '../../../stores';
@@ -21,11 +21,6 @@ const DashboardPage = () => {
 
     const handleViewClick = (appointment: AppointmentResponse) => {
         navigate(`/admin/appointments/details/${appointment.id}`);
-    };
-
-
-    const formatInventoryDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString();
     };
 
     const dashboardCards = [
@@ -121,11 +116,11 @@ const DashboardPage = () => {
                         <table className={styles.appointmentsTable}>
                             <thead>
                                 <tr>
-                                    <th>Patient Name</th>
-                                    <th>Preferred Date</th>
-                                    <th>Preferred Time</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
+                                    <th>PATIENT NAME</th>
+                                    <th>PREFERRED DATE</th>
+                                    <th>PREFERRED TIME</th>
+                                    <th>STATUS</th>
+                                    <th>ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -172,7 +167,7 @@ const DashboardPage = () => {
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
+                                                    <span className={`${styles.statusBadge} ${getStatusClass(appointment.status, styles)}`}>
                                                         {appointment.status}
                                                     </span>
                                                 </td>
@@ -226,13 +221,13 @@ const DashboardPage = () => {
                         <table className={styles.inventoryTable}>
                             <thead>
                                 <tr>
-                                <th>Medicine</th>
-                                <th>Category</th>
-                                <th>Price</th>
-                                <th>Stock</th>
-                                <th>Used</th>
-                                <th>Expiry Date</th>
-                                <th>Actions</th>
+                                <th>MEDICINE</th>
+                                <th>CATEGORY</th>
+                                <th>PRICE</th>
+                                <th>STOCK</th>
+                                <th>USED</th>
+                                <th>EXPIRY DATE</th>
+                                <th>ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -272,7 +267,7 @@ const DashboardPage = () => {
                                                 <td>{item.quantityUsed || 0}</td>
                                                 <td>
                                                     <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
-                                                        {formatInventoryDate(item.expiryDate)}
+                                                        {formatDate(item.expiryDate)}
                                                     </span>
                                                 </td>
                                                 <td>

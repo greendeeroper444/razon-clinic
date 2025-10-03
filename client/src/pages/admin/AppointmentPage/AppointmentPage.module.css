@@ -139,8 +139,7 @@
     font-size: 16px;
     font-style: italic;
 }
-.patientInfo,
-.medicineInfo {
+.patientInfo {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -264,8 +263,8 @@
     color: var(--primary);
 }
 .statusBadge.statusPending {
-    background-color: #d6d6f5;
-    color: var(--medical);
+    background-color: #f5f2d6;
+    color: var(--warning);
 }
 
 .statusBadge.statusScheduled{

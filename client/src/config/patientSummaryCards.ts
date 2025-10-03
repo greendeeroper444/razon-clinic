@@ -20,13 +20,13 @@ export const getPatientSummaryCards = (summaryStats: {
         value: summaryStats.active,
         footer: "Currently active"
     },
-    {
-        title: "Archived Patients",
-        icon: Archive,
-        iconColor: "orange",
-        value: summaryStats.archived,
-        footer: "Archived patients"
-    },
+    // {
+    //     title: "Archived Patients",
+    //     icon: Archive,
+    //     iconColor: "orange",
+    //     value: summaryStats.archived,
+    //     footer: "Archived patients"
+    // },
     {
         title: "This Month",
         icon: UserPlus,

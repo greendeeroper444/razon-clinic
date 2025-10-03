@@ -89,3 +89,20 @@ export interface PaginationProps {
     className?: string;
     showItemsInfo?: boolean;
 }
+
+export interface TableColumn<T> {
+    key: string;
+    header: string;
+    render: (item: T) => React.ReactNode;
+    className?: string;
+}
+
+export interface TableProps<T> {
+    columns: TableColumn<T>[];
+    data: T[] | any;
+    emptyMessage?: string;
+    searchTerm?: string;
+    className?: string;
+    onRowClick?: (item: T) => void;
+    getRowKey: (item: T) => string | number;
+}

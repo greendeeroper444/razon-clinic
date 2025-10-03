@@ -77,100 +77,171 @@
   transform: translateY(-1px);
 }
 
-/* summary cards */
-.summaryCards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  margin-bottom: 32px;
+.contentCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
 }
-
-.summaryCard {
-  background: white;
-  padding: 24px;
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  transition: var(--transition);
-  border: 1px solid var(--gray-light);
-  position: relative;
-  overflow: hidden;
+  
+.card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: var(--transition);
 }
-
-.summaryCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
-
-.summaryCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
+  
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
 }
-
-.summaryCard:hover::before {
-  left: 100%;
+  
+.cardTitle {
+    font-size: 0.9rem;
+    color: var(--gray);
+    font-weight: 500;
 }
-
+  
 .cardIcon {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, var(--primary-light), var(--primary));
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: var(--primary-dark);
-  z-index: 1;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+  
+.cardIcon.blue {
+    background-color: var(--primary);
+}
+.cardIcon.purple {
+    background-color: var(--appointment);
+}
+.medical {
+    background-color: var(--medical);
+}
+.green {
+    background-color: var(--success);
+}
+.orange {
+    background-color: var(--warning);
+}
+.red {
+    background-color: var(--danger);
+}
+  
+.actionBtn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+  
+.actionBtn.view,
+.actionBtn.primary {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+.actionBtn.view:hover,
+.actionBtn.primary:hover {
+    background-color: #bfdbfe;
+}
+  
+.actionBtn.update {
+    background-color: #fef7e2;
+    color: var(--warning);
+}
+.actionBtn.update:hover{
+    background-color: #fee6ca;
+}
+.actionBtn.delete {
+    background-color: #fee2e2;
+    color: var(--danger);
+}
+.actionBtn.delete:hover {
+    background-color: #fecaca;
+}
+  
+.actionBtn.success {
+    background-color: #d1fae5;
+    color: var(--success);
+}
+.actionBtn.success:hover {
+    background-color: #a7f3d0;
 }
 
-.iconSuccess {
-  background: linear-gradient(135deg, var(--success-light), var(--success));
-  color: var(--success);
+
+.statusBadge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+.statusBadge.statusPending {
+    background-color: #f5f2d6;
+    color: var(--warning);
 }
 
-.iconDanger {
-  background: linear-gradient(135deg, var(--danger-light), var(--danger));
-  color: var(--danger);
+.statusBadge.statusUnpaid{
+    background-color: #d6e4f5;
+    color: var(--primary);
 }
 
-.cardContent {
-  z-index: 1;
+.statusBadge.statusPaid {
+    background-color: #ecfdf5;
+    color: var(--success);
 }
 
-.cardContent h3 {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.statusBadge.statusCancelled {
+    background-color: #fef2f2;
+    color: var(--danger);
 }
-
-.cardAmount {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--dark);
-}
-
-.amountSuccess {
-  color: var(--success);
-}
-
-.amountDanger {
-  color: var(--danger);
+.statusBadge.statusRebooked {
+    background-color: #fef2f2;
+    color: var(--warning);
 }
 
 
+.cardValue {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+  
+.cardFooter {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+  
+.cardFooter i {
+    margin-right: 5px;
+}
+  
+.positive {
+    color: var(--success);
+}
+.negative {
+    color: var(--danger);
+}
 
 
 .section {
@@ -315,36 +386,6 @@
   color: var(--dark);
 }
 
-
-.status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.statusPaid {
-  background-color: var(--success-light);
-  color: var(--success);
-  border: 1px solid var(--success);
-}
-
-.statusPending {
-  background-color: var(--warning-light);
-  color: var(--warning);
-  border: 1px solid var(--warning);
-}
-
-.statusUnpaid {
-  background-color: var(--danger-light);
-  color: var(--danger);
-  border: 1px solid var(--danger);
-}
 
 
 .dateInfo {

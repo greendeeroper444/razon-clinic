@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css';
 import { useParams } from 'react-router-dom';
 import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand } from 'lucide-react';
-import { calculateAge, formatBirthdate, formatDate, formatTime, getAppointmentStatusClass, getLoadingText, getMiddleNameInitial } from '../../../utils';
+import { calculateAge, formatBirthdate, formatDate, formatTime, getStatusClass, getLoadingText, getMiddleNameInitial } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { AppointmentFormData, FormDataType } from '../../../types';
 import { useAppointmentStore } from '../../../stores';
@@ -115,7 +115,7 @@ const AppointmentDetailsPage = () => {
             <div className={styles.appointmentNumber}>
                 Appointment #{currentAppointment.appointmentNumber}
             </div>
-            <div className={`${styles.statusBadge} ${getAppointmentStatusClass(currentAppointment.status, styles)}`}>
+            <div className={`${styles.statusBadge} ${getStatusClass(currentAppointment.status, styles)}`}>
                 {currentAppointment.status}
             </div>
         </div>

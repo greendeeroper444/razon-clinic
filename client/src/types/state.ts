@@ -229,6 +229,13 @@ export interface BillingState {
     searchTerm: string;
     filterStatus: string;
 
+    summaryStats: {
+        totalRevenue: number;
+        paidAmount: number;
+        unpaidAmount: number;
+        totalBillings: number
+    };
+
     //actions
     fetchBillings:(params?: FetchParams) => Promise<void>;
     addBilling: (data: BillingFormData) => Promise<void>;

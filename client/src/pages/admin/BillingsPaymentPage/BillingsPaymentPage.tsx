@@ -1,12 +1,13 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import styles from './BillingsPaymentPage.module.css'
-import { Plus, Download, CreditCard, Check, AlertTriangle, User, Calendar, Eye } from 'lucide-react';
-import { BillingFormData, FormDataType } from '../../../types'
-import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading } from '../../../components'
+import { Plus, Download, CreditCard, User, Calendar, Eye } from 'lucide-react';
+import { BillingFormData, FormDataType, TableColumn } from '../../../types'
+import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
-import { formatDate, getLoadingText, getMedicalRecordId, getPaymentStatusClass, getStatusIcon, openModalWithRefresh } from '../../../utils'
+import { formatDate, getLoadingText, getMedicalRecordId, getPaymentStatusClass, getStatusClass, getStatusIcon, openModalWithRefresh } from '../../../utils'
 import { useBillingStore } from '../../../stores'
 import { useNavigate } from 'react-router-dom';
+import { getBillingSummaryCards } from '../../../config/billingSummaryCards';
 
 const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const navigate = useNavigate();
@@ -33,6 +34,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         deleteBilling,
         processPayment,
         exportBillings,
+        summaryStats,
         currentOperation
     } = useBillingStore();
 
@@ -140,16 +142,90 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     }, [deleteBilling, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
-    
 
-    //calculate summary data using useMemo for performance
-    const summaryData = useMemo(() => {
-        const totalAmount = billings.reduce((sum, bill) => sum + (bill.amount || 0), 0);
-        const paidAmount = billings.filter(bill => bill.paymentStatus === 'Paid').reduce((sum, bill) => sum + (bill.amount || 0), 0);
-        const unpaidAmount = billings.filter(bill => bill.paymentStatus === 'Unpaid').reduce((sum, bill) => sum + (bill.amount || 0), 0);
-        
-        return { totalAmount, paidAmount, unpaidAmount };
-    }, [billings]);
+    const billingColumns: TableColumn<BillingFormData>[] = [
+        {
+            key: 'patientName',
+            header: 'PATIENT NAME',
+            render: (billing) => (
+                <div className={styles.patientInfo}>
+                    <User />
+                    <span>{billing.patientName}</span>
+                </div>
+            )
+        },
+        {
+            key: 'medicalRecordId',
+            header: 'MEDICAL RECORD',
+            render: (billing) => (
+                <span className={styles.medicalRecord}>
+                    {getMedicalRecordId(billing.medicalRecordId)}
+                </span>
+            )
+        },
+        {
+            key: 'amount',
+            header: 'AMOUNT',
+            render: (billing) => (
+                <span className={styles.amount}>
+                    ₱{(billing.amount || 0).toFixed(2)}
+                </span>
+            )
+        },
+        {
+            key: 'paymentStatus',
+            header: 'STATUS',
+            render: (billing) => (
+               <span className={`${styles.statusBadge} ${getStatusClass(billing.paymentStatus, styles)}`}>
+                    {billing.paymentStatus}
+                </span>
+            )
+        },
+        {
+            key: 'createdAt',
+            header: 'DATE ISSUED',
+            render: (billing) => (
+                <div className={styles.dateInfo}>
+                    <span>{formatDate(billing.createdAt)}</span>
+                </div>
+            )
+        },
+        {
+            key: 'actions',
+            header: 'ACTIONS',
+            render: (billing) => (
+                <div className={styles.actionButtons}>
+                    <button
+                        type='button'
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewClick(billing.id);
+                        }}
+                        className={`${styles.actionBtn} ${styles.view}`}
+                        title="View Details"
+                    >
+                        View
+                    </button>
+                    {
+                        billing.paymentStatus !== 'Paid' && (
+                            <button
+                                type='button'
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleProcessPayment(billing.id);
+                                }}
+                                className={styles.btnPay}
+                                title="Process Payment"
+                                disabled={isProcessing}
+                            >
+                                <CreditCard />
+                            </button>
+                        )
+                    }
+                </div>
+            )
+        }
+    ];
 
     const headerActions = [
         {
@@ -167,6 +243,8 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     ];
 
+    const summaryCards = getBillingSummaryCards(summaryStats);
+
   return (
     <Main error={error}>
         <Header
@@ -175,38 +253,26 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         />
 
         {/* summary cards */}
-        <div className={styles.summaryCards}>
-            <div className={styles.summaryCard}>
-                <div className={styles.cardIcon}>
-                    <CreditCard />
-                </div>
-                <div className={styles.cardContent}>
-                    <h3>Total Revenue</h3>
-                    <p className={styles.cardAmount}>₱{summaryData.totalAmount.toFixed(2)}</p>
-                </div>
-            </div>
-            <div className={styles.summaryCard}>
-                <div className={`${styles.cardIcon} ${styles.iconSuccess}`}>
-                    <Check />
-                </div>
-                <div className={styles.cardContent}>
-                    <h3>Paid Amount</h3>
-                    <p className={`${styles.cardAmount} ${styles.amountSuccess}`}>₱{summaryData.paidAmount.toFixed(2)}</p>
-                </div>
-            </div>
-            <div className={styles.summaryCard}>
-                <div className={`${styles.cardIcon} ${styles.iconDanger}`}>
-                    <AlertTriangle />
-                </div>
-                <div className={styles.cardContent}>
-                    <h3>Outstanding</h3>
-                    <p className={`${styles.cardAmount} ${styles.amountDanger}`}>₱{summaryData.unpaidAmount.toFixed(2)}</p>
-                </div>
-            </div>
+        <div className={styles.contentCards}>
+            {
+                summaryCards.map((card, index) => (
+                    <div className={styles.card} key={index}>
+                        <div className={styles.cardHeader}>
+                            <div className={styles.cardTitle}>{card.title}</div>
+                            <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
+                                <card.icon /> 
+                            </div>
+                        </div>
+                        <div className={styles.cardValue}>{card.value}</div>
+                        <div className={styles.cardFooter}>
+                            <span>{card.footer}</span>
+                        </div>
+                    </div>
+                ))
+            }
         </div>
-        
+                
         {/* billing table */}
-
         <div className={styles.section}>
             <div className={styles.sectionHeader}>
                 <div className={styles.sectionTitle}>Billing & Payments</div>
@@ -250,98 +316,14 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                     </div>
                 ) : (
                     <>
-                        <div className={styles.tableResponsive}>
-                            <table className={styles.billingTable}>
-                                <thead>
-                                    <tr>
-                                        <th>Patient Name</th>
-                                        <th>Medical Record</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Date Issued</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        billings.length === 0 ? (
-                                            <tr>
-                                                <td colSpan={7} className={styles.emptyState}>
-                                                    {
-                                                        searchTerm ? 
-                                                        `No billings found matching "${searchTerm}". Try a different search term.` : 
-                                                        'No billings found. Click "New Item" to get started.'
-                                                    }
-                                                </td>
-                                            </tr>
-                                        ) : (
-                                            billings.map((bill) => (
-                                                <tr key={bill.id}>
-                                                    <td>
-                                                        <div className={styles.patientInfo}>
-                                                            <User />
-                                                            <span>{bill.patientName}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <span className={styles.medicalRecord}>
-                                                            {getMedicalRecordId(bill.medicalRecordId)}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span className={styles.amount}>
-                                                            ₱{(bill.amount || 0).toFixed(2)}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span className={`${styles.status} ${getPaymentStatusClass(bill.paymentStatus, styles)}`}>
-                                                            {
-                                                                (() => {
-                                                                    const Icon = getStatusIcon(bill.paymentStatus);
-                                                                    return <Icon className={styles.icon} />;
-                                                                })()
-                                                            }
-                                                            {bill.paymentStatus}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div className={styles.dateInfo}>
-                                                            <Calendar />
-                                                            <span>{formatDate(bill.createdAt)}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className={styles.actionButtons}>
-                                                            <button
-                                                                type='button'
-                                                                onClick={() => handleViewClick(bill.id)}
-                                                                className={styles.btnView}
-                                                                title="View Details"
-                                                            >
-                                                                <Eye />
-                                                            </button>
-                                                            {
-                                                                bill.paymentStatus !== 'Paid' && (
-                                                                    <button
-                                                                        type='button'
-                                                                        onClick={() => handleProcessPayment(bill.id)}
-                                                                        className={styles.btnPay}
-                                                                        title="Process Payment"
-                                                                        disabled={isProcessing}
-                                                                    >
-                                                                        <CreditCard />
-                                                                    </button>
-                                                                )
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                        <Table
+                            columns={billingColumns}
+                            data={billings}
+                            emptyMessage='No billings found. Click "New Billing" to get started.'
+                            searchTerm={searchTerm}
+                            getRowKey={(bill) => bill.id || ''}
+                            className={styles.billingTable}
+                        />
 
                         {
                             storePagination && storePagination.totalPages > 1 && (

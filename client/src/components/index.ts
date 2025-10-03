@@ -11,6 +11,7 @@ export { default as TextArea } from './ui/TextArea/TextArea';
 export { default as Loading } from './ui/Loading/Loading';
 export { default as Pagination } from './ui/Pagination/Pagination';
 export { default as Searchbar } from './ui/Searchbar/Searchbar';
+export { default as Table } from './ui/Table/Table';
 
 //layout components
 export { default as Footer } from './layout/Footer/Footer';

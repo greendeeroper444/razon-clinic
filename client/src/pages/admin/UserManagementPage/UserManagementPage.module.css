@@ -393,29 +393,24 @@
     color: var(--dark-light);
 }
 
-.tdStatus {
-    text-align: right;
-    padding-right: 24px !important;
-}
-
 .statusBadge {
     display: inline-block;
-    padding: 6px 16px;
-    border-radius: 4px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
     font-weight: 500;
-    font-size: 0.8rem;
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+.statusBadge.statusActive {
+    background-color: #d6f5d7;
+    color: var(--success);
 }
 
-.badgeActive {
-    background-color: #e8f5e9;
-    color: #4caf50;
+.statusBadge.statusArchived{
+    background-color: #d6e4f5;
+    color: var(--primary);
 }
-
-.badgeArchived {
-    background-color: #f5f5f5;
-    color: #757575;
-}
-
 .archiveActions {
     display: flex;
     justify-content: space-between;

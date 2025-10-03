@@ -15,6 +15,12 @@ export const useBillingStore = create<BillingState>()(
             error: null,
             isProcessing: false,
             selectedBilling: null,
+            summaryStats: {
+                totalRevenue: 0,
+                paidAmount: 0,
+                unpaidAmount: 0,
+                totalBillings: 0
+            },
             isModalOpen: false,
             isDeleteModalOpen: false,
             deleteBillingData: null,
@@ -35,6 +41,31 @@ export const useBillingStore = create<BillingState>()(
                 searchTerm: null
             },
 
+
+            fetchSummaryStats: async () => {
+                try {
+                    const { billings } = get();
+                    
+                    const totalRevenue = billings.reduce((sum, bill) => sum + (bill.amount || 0), 0);
+                    const paidAmount = billings.filter(bill => bill.paymentStatus === 'Paid')
+                        .reduce((sum, bill) => sum + (bill.amount || 0), 0);
+                    const unpaidAmount = billings.filter(bill => bill.paymentStatus === 'Unpaid')
+                        .reduce((sum, bill) => sum + (bill.amount || 0), 0);
+                    const totalBillings = billings.length;
+
+                    set({
+                        summaryStats: {
+                            totalRevenue,
+                            paidAmount,
+                            unpaidAmount,
+                            totalBillings
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error fetching billing summary stats:', error);
+                    set({ error: 'An error occurred while fetching summary stats' });
+                }
+            },
 
             //fetch billings with pagination and filters
             fetchBillings: async (params: FetchParams) => {
@@ -74,6 +105,11 @@ export const useBillingStore = create<BillingState>()(
                             fetchLoading: false
                         });
                     }
+
+                    if (!params.search && params.page === 1) {
+                        get().fetchSummaryStats();
+                    }
+                    
                 } catch (error) {
                     console.error('Error fetching appointments:', error);
                     set({ 

@@ -130,7 +130,7 @@ export interface MedicalRecordFormData {
     consultationNotes: string;
     followUpDate: string | undefined;
     vaccinationHistory: string;
-    personalDetails?: {
+    personalDetails: {
         fullName: string;
         dateOfBirth: string;
         gender: 'Male' | 'Female' | 'Other';
@@ -180,7 +180,7 @@ export interface MedicalRecordResponse extends MedicalRecordFormData {
     };
     updatedAt?: string;
     createdAt?: string;
-    dateRecorded?: string;
+    dateRecorded: string;
 }
 
 

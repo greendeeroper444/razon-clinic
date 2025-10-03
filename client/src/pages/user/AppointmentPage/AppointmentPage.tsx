@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import styles from './AppointmentPage.module.css'
 import { Plus, ChevronRight } from 'lucide-react'
 import { OpenModalProps } from '../../../hooks/hook'
-import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getAppointmentStatusClass, getLoadingText } from '../../../utils'
+import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getStatusClass, getLoadingText } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType } from '../../../types'
 import { Header, Loading, Main, Modal, SubmitLoading } from '../../../components'
 import { useNavigate } from 'react-router-dom'
@@ -162,7 +162,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span className={`${styles.statusBadge} ${getAppointmentStatusClass(appointment.status, styles)}`}>
+                                                    <span className={`${styles.statusBadge} ${getStatusClass(appointment.status, styles)}`}>
                                                         {appointment.status}
                                                     </span>
                                                 </td>

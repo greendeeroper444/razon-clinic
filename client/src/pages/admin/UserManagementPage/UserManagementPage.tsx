@@ -1,12 +1,12 @@
 import { useEffect, useCallback, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styles from './UserManagementPage.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faCalendarAlt, faClock } from '@fortawesome/free-solid-svg-icons'
 import { useUserManagementStore } from '../../../stores/userManagementStore'
-import { Header, Loading, Main, Pagination, Searchbar, SubmitLoading } from '../../../components'
-import { getLoadingText } from '../../../utils'
+import { Header, Loading, Main, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
+import { formatDate, getLoadingText, getStatusClass } from '../../../utils'
 import { getUserSummaryCards } from '../../../config/userSummaryCards'
+import { TableColumn, User } from '../../../types'
+import { PersonStanding } from 'lucide-react'
 
 const UserManagementPage = () => {
     const [searchParams] = useSearchParams()
@@ -87,15 +87,66 @@ const UserManagementPage = () => {
         fetchData(1, itemsPerPage, searchTerm)
     }, [fetchData, searchTerm])
 
-    const formatDate = (dateString: string | undefined) => {
-        if (!dateString) return '-'
-        const date = new Date(dateString)
-        return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-    }
-
     const stats = getStats()
 
-    const summaryCards = getUserSummaryCards(summaryStats)
+    const summaryCards = getUserSummaryCards(summaryStats);
+
+    const userColumns: TableColumn<User>[] = [
+        {
+            key: 'checkbox',
+            header: '',
+            className: styles.thCheckbox,
+            render: (user) => (
+                <input
+                    type="checkbox"
+                    title='Checkbox'
+                    checked={selectedUserIds.includes(user.id)}
+                    onChange={() => toggleUserSelection(user.id)}
+                    onClick={(e) => e.stopPropagation()}
+                />
+            )
+        },
+        {
+            key: 'user',
+            header: 'USER',
+            className: styles.thUser,
+            render: (user) => (
+                <div className={styles.userInfo}>
+                    <div className={`${styles.avatar} ${user.isArchived ? styles.avatarArchived : styles.avatarActive}`}>
+                        <PersonStanding />
+                    </div>
+                    <span>{user.firstName} {user.lastName}</span>
+            </div>
+            )
+        },
+        {
+            key: 'userNumber',
+            header: 'USER NUMBER',
+            className: styles.thDate,
+            render: (user) => user.userNumber
+        },
+        {
+            key: 'lastActive',
+            header: 'LAST ACTIVE',
+            className: styles.thDate,
+            render: (user) => (
+                <>
+                    {formatDate(user.lastActiveAt)}
+                </>
+            )
+        },
+        {
+            key: 'status',
+            header: 'STATUS',
+            className: styles.thStatus,
+            render: (user) => (
+                <span className={`${styles.statusBadge} ${getStatusClass(user.isArchived ? 'Archived' : 'Active', styles)}`}>
+                    {user.isArchived ? 'Archived' : 'Active'}
+                </span>
+
+            )
+        }
+    ];
 
   return (
     <Main error={error}>
@@ -209,105 +260,14 @@ const UserManagementPage = () => {
                         </div>
                     ) : (
                         <>
-                            <div className={styles.tableResponsive}>
-                                <table className={styles.userTable}>
-                                    <thead>
-                                        <tr>
-                                            <th className={styles.thCheckbox}></th>
-                                            <th className={styles.thUser}>USER</th>
-                                            <th className={styles.thDate}>USER NUMBER</th>
-                                            <th className={styles.thDate}>LAST ACTIVE</th>
-                                            {
-                                                (activeTab === 'archive' || activeTab === 'all') && (
-                                                    <th className={styles.thDate}>ARCHIVED DATE</th>
-                                                )
-                                            }
-                                            {
-                                                (activeTab === 'archive' || activeTab === 'all') && (
-                                                    <th className={styles.thReason}>ARCHIVED BY</th>
-                                                )
-                                            }
-                                            {
-                                                (activeTab === 'active' || activeTab === 'all') && (
-                                                    <th className={styles.thStatus}>STATUS</th>
-                                                )
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            users.length === 0 ? (
-                                                <tr>
-                                                    <td colSpan={7} className={styles.emptyState}>
-                                                        {
-                                                            searchTerm ? 
-                                                            `No users found matching "${searchTerm}". Try a different search term.` : 
-                                                            'No users found.'
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            ) : (
-                                                users.map(user => (
-                                                    <tr 
-                                                        key={user.id}
-                                                        className={`${styles.tableRow} ${selectedUserIds.includes(user.id) ? styles.selectedRow : ''}`}
-                                                        onClick={() => toggleUserSelection(user.id)}
-                                                    >
-                                                        <td className={styles.tdCheckbox}>
-                                                            <input
-                                                                type="checkbox"
-                                                                title='Checkbox'
-                                                                checked={selectedUserIds.includes(user.id)}
-                                                                onChange={() => toggleUserSelection(user.id)}
-                                                                onClick={(e) => e.stopPropagation()}
-                                                            />
-                                                        </td>
-                                                        <td className={styles.tdUser}>
-                                                            <div className={styles.userInfo}>
-                                                                <div className={`${styles.avatar} ${user.isArchived ? styles.avatarArchived : styles.avatarActive}`}>
-                                                                    <FontAwesomeIcon icon={faUser} />
-                                                                </div>
-                                                                <span>{user.firstName} {user.lastName}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td className={styles.tdDate}>
-                                                            {user.userNumber}
-                                                        </td>
-                                                        <td className={styles.tdDate}>
-                                                            <FontAwesomeIcon icon={faCalendarAlt} className={styles.icon} />
-                                                            {formatDate(user.lastActiveAt)}
-                                                        </td>
-                                                        {
-                                                            (activeTab === 'archive' || activeTab === 'all') && (
-                                                                <td className={styles.tdDate}>
-                                                                    <FontAwesomeIcon icon={faClock} className={styles.icon} />
-                                                                    {formatDate(user.archivedAt)}
-                                                                </td>
-                                                            )
-                                                        }
-                                                        {
-                                                            (activeTab === 'archive' || activeTab === 'all') && (
-                                                                <td className={styles.tdReason}>
-                                                                    {user.archivedBy ? `${user.archivedBy.firstName} ${user.archivedBy.lastName}` : '-'}
-                                                                </td>
-                                                            )
-                                                        }
-                                                        {
-                                                            (activeTab === 'active' || activeTab === 'all') && (
-                                                                <td className={styles.tdStatus}>
-                                                                    <span className={`${styles.statusBadge} ${user.isArchived ? styles.badgeArchived : styles.badgeActive}`}>
-                                                                        {user.isArchived ? 'Archived' : 'Active'}
-                                                                    </span>
-                                                                </td>
-                                                            )
-                                                        }
-                                                    </tr>
-                                                ))
-                                            )
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                            <Table
+                                columns={userColumns}
+                                data={users}
+                                emptyMessage='No users found.'
+                                searchTerm={searchTerm}
+                                getRowKey={(user) => user.id}
+                                onRowClick={(user) => toggleUserSelection(user.id)}
+                            />
 
                             {
                                 storePagination && storePagination.totalPages > 1 && (

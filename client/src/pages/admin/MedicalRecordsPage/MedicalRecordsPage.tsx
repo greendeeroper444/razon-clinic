@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styles from './MedicalRecordsPage.module.css';
 import { Plus, FileText, Download } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
-import { FormDataType, MedicalRecordFormData, MedicalRecordResponse } from '../../../types';
-import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading } from '../../../components';
+import { FormDataType, MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
+import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
 import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
-import { calculateAge2, getLoadingText, openModalWithRefresh } from '../../../utils';
+import { calculateAge2, formatDate, getLoadingText, openModalWithRefresh } from '../../../utils';
 import { useMedicalRecordStore } from '../../../stores';
 import { useNavigate } from 'react-router-dom';
 
@@ -153,6 +153,91 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     };
 
+
+    const medicalRecordsColumns: TableColumn<MedicalRecordResponse>[] = [
+        {
+            key: 'patientName',
+            header: 'PATIENT NAME',
+            render: (record) => (
+                <span className={styles.patientName}>
+                    {record.personalDetails.fullName}
+                </span>
+            )
+        },
+        {
+            key: 'dateOfBirth',
+            header: 'DATE OF BIRTH',
+            render: (record) => 
+                (formatDate(record.personalDetails.dateOfBirth))
+        },
+        {
+            key: 'age',
+            header: 'AGE',
+            render: (record) => calculateAge2(record.personalDetails.dateOfBirth)
+        },
+        {
+            key: 'gender',
+            header: 'GENDER',
+            render: (record) => record.personalDetails.gender
+        },
+        {
+            key: 'phone',
+            header: 'PHONE',
+            render: (record) => record.personalDetails.phone
+        },
+        {
+            key: 'dateRecorded',
+            header: 'DATE RECORDED',
+            render: (record) => 
+                (formatDate(record.dateRecorded))
+        },
+        {
+            key: 'actions',
+            header: 'ACTIONS',
+            render: (record) => {
+                getStatusFromRecord(record);
+                
+                return (
+                    <div className={styles.actions}>
+                        <button
+                            type='button'
+                            className={`${styles.actionBtn} ${styles.view}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleViewClick(record);
+                            }}
+                            title='View Details'
+                        >
+                            View
+                        </button>
+                        <button
+                            type='button'
+                            className={`${styles.actionBtn} ${styles.update}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openUpdateModal(record);
+                            }}
+                            title='Update'
+                        >
+                            Update
+                        </button>
+                        <button
+                            type='button'
+                            className={`${styles.actionBtn} ${styles.delete}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openDeleteModal(record);
+                            }}
+                            title='Delete'
+                        >
+                            Delete
+                        </button>
+                    </div>
+                );
+            }
+        }
+    ];
+
     const headerActions = [
         {
             id: 'newMedicalRecordBtn',
@@ -220,82 +305,14 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                     </div>
                 ) : (
                     <>
-                        <div className={styles.tableResponsive}>
-                            <table className={styles.recordsTable}>
-                                <thead>
-                                    <tr>
-                                        <th>Patient Name</th>
-                                        <th>Date of Birth</th>
-                                        <th>Age</th>
-                                        <th>Gender</th>
-                                        <th>Phone</th>
-                                        <th>Date Recorded</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        medicalRecords.length === 0 ? (
-                                            <tr>
-                                                <td colSpan={7} className={styles.emptyState}>
-                                                    {
-                                                        searchTerm ? 
-                                                        `No medical records found matching "${searchTerm}". Try a different search term.` : 
-                                                        'No medical records found. Click "New Item" to get started.'
-                                                    }
-                                                </td>
-                                            </tr>
-                                        ) : (
-                                            medicalRecords.map((record) => {
-                                                getStatusFromRecord(record);
-                                                return (
-                                                    <tr key={record.id} className={styles.tableRow}>
-                                                        <td className={styles.patientName}>
-                                                            {record.personalDetails.fullName}
-                                                        </td>
-                                                        <td>
-                                                            {new Date(record.personalDetails.dateOfBirth).toLocaleDateString()}
-                                                        </td>
-                                                        <td>{calculateAge2(record.personalDetails.dateOfBirth)}</td>
-                                                        <td>{record.personalDetails.gender}</td>
-                                                        <td>{record.personalDetails.phone}</td>
-                                                        <td>
-                                                            {new Date(record.dateRecorded).toLocaleDateString()}
-                                                        </td>
-                                                        <td className={styles.actions}>
-                                                            <button
-                                                                type='button'
-                                                                className={`${styles.actionBtn} ${styles.view}`}
-                                                                onClick={() => handleViewClick(record)}
-                                                                title='View Details'
-                                                            >
-                                                                View
-                                                            </button>
-                                                            <button
-                                                                type='button' 
-                                                                className={`${styles.actionBtn} ${styles.update}`} 
-                                                                onClick={() => openUpdateModal(record)}
-                                                                title='Update'
-                                                            >
-                                                                Update
-                                                            </button>
-                                                            <button
-                                                                type='button' 
-                                                                className={`${styles.actionBtn} ${styles.delete}`} 
-                                                                onClick={() => openDeleteModal(record)}
-                                                                title='Delete'
-                                                            >
-                                                                Delete
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })
-                                        )
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                        <Table
+                            columns={medicalRecordsColumns}
+                            data={medicalRecords}
+                            emptyMessage='No medical records found. Click "New Record" to get started.'
+                            searchTerm={searchTerm}
+                            getRowKey={(record) => record.id || ''}
+                            className={styles.recordsTable}
+                        />
 
 
                         {

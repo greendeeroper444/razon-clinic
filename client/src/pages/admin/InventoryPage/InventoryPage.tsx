@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react'
 import styles from './InventoryPage.module.css';
 import { Plus, Edit, Trash } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
-import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading } from '../../../components';
-import { FormDataType, InventoryItemFormData } from '../../../types';
+import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
+import { FormDataType, InventoryItemFormData, TableColumn } from '../../../types';
 import { formatDate, getExpiryStatus, getItemIcon, getLoadingText, getStockStatus, openModalWithRefresh } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
 import { useInventoryStore } from '../../../stores';
@@ -145,6 +145,96 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
 
     const summaryCards = getInventorySummaryCards(summaryStats);
 
+
+    const inventoryColumns: TableColumn<InventoryItemFormData>[] = [
+        {
+            key: 'medicine',
+            header: 'MEDICINE',
+            render: (item) => (
+            <div className={styles.medicineInfo}>
+                    <div className={styles.medicineIcon}>
+                        {
+                            (() => {
+                                const Icon = getItemIcon(item.category);
+                                return <Icon className={styles.icon} />;
+                            })()
+                        }
+                    </div>
+                    <div>
+                    <div className={styles.medicineName}>{item.itemName}</div>
+                    <div className={styles.medicineCategory}>{item.category}</div>
+                </div>
+            </div>
+            )
+        },
+        {
+            key: 'category',
+            header: 'CATEGORY',
+            render: (item) => item.category
+        },
+        {
+            key: 'price',
+            header: 'PRICE',
+            render: (item) => `₱${item.price}.00`
+        },
+        {
+            key: 'stock',
+            header: 'STOCK',
+            render: (item) => (
+            <span className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
+                {item.quantityInStock}
+            </span>
+            )
+        },
+        {
+            key: 'used',
+            header: 'USED',
+            render: (item) => item.quantityUsed || 0
+        },
+        {
+            key: 'expiry',
+            header: 'EXPIRY DATE',
+            render: (item) => (
+            <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
+                {formatDate(item.expiryDate)}
+            </span>
+            )
+        },
+        {
+            key: 'actions',
+            header: 'ACTIONS',
+            render: (item) => (
+            <>
+                <button 
+                type='button'
+                className={`${styles.actionBtn} ${styles.primary}`}
+                onClick={() => handleUpdateClick(item, true, true)}
+                disabled={isProcessing}
+                >
+                <Plus className={styles.icon} /> Restock
+                </button>
+                <button 
+                type='button'
+                className={`${styles.actionBtn} ${styles.update}`}
+                onClick={() => handleUpdateClick(item, false, false)}
+                disabled={isProcessing}
+                >
+                <Edit className={styles.icon} /> Edit
+                </button>
+                <button 
+                type='button'
+                className={`${styles.actionBtn} ${styles.cancel}`}
+                onClick={() => handleDeleteClick(item)}
+                disabled={isProcessing}
+                >
+                <Trash className={styles.icon} /> Delete
+                </button>
+            </>
+            )
+        }
+        ];
+
+
     const headerActions = [
         {
             id: 'newItemBtn',
@@ -229,96 +319,14 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                     </div>
                 ) : (
                     <>
-                        <div className={styles.tableResponsive}>
-                            <table className={styles.inventoryTable}>
-                                <thead>
-                                    <tr>
-                                        <th>Medicine</th>
-                                        <th>Category</th>
-                                        <th>Price</th>
-                                        <th>Stock</th>
-                                        <th>Used</th>
-                                        <th>Expiry Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        inventoryItems.length === 0 ? (
-                                            <tr>
-                                                <td colSpan={7} className={styles.emptyState}>
-                                                    {
-                                                        searchTerm ? 
-                                                        `No inventory items found matching "${searchTerm}". Try a different search term.` : 
-                                                        'No inventory items found. Click "New Item" to get started.'
-                                                    }
-                                                </td>
-                                            </tr>
-                                        ) : (
-                                            inventoryItems.map((item) => (
-                                                <tr key={item.id}>
-                                                    <td>
-                                                        <div className={styles.medicineInfo}>
-                                                            <div className={styles.medicineIcon}>
-                                                                {
-                                                                    (() => {
-                                                                        const Icon = getItemIcon(item.category);
-                                                                        return <Icon className={styles.icon} />;
-                                                                    })()
-                                                                }
-                                                            </div>
-                                                            <div>
-                                                                <div className={styles.medicineName}>{item.itemName}</div>
-                                                                <div className={styles.medicineCategory}>{item.category}</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>{item.category}</td>
-                                                    <td>₱{item.price}.00</td>
-                                                    <td className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
-                                                        {item.quantityInStock}
-                                                    </td>
-                                                    <td>{item.quantityUsed || 0}</td>
-                                                    <td>
-                                                        <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
-                                                            {formatDate(item.expiryDate)}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <button 
-                                                            type='button'
-                                                            className={`${styles.actionBtn} ${styles.primary}`}
-                                                            onClick={() => handleUpdateClick(item, true, true)}
-                                                            disabled={isProcessing}
-                                                        >
-                                                            <Plus className={styles.icon} /> Restock
-                                                        </button>
-                                                        <button 
-                                                            type='button'
-                                                            className={`${styles.actionBtn} ${styles.update}`}
-                                                            onClick={() => handleUpdateClick(item, false, false)}
-                                                            disabled={isProcessing}
-                                                        >
-                                                            <Edit className={styles.icon} /> Edit
-                                                        </button>
-                                                        <button 
-                                                            type='button'
-                                                            className={`${styles.actionBtn} ${styles.cancel}`}
-                                                            onClick={() => handleDeleteClick(item)}
-                                                            disabled={isProcessing}
-                                                        >
-                                                            <Trash className={styles.icon} /> Delete
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                        <Table
+                            columns={inventoryColumns}
+                            data={inventoryItems}
+                            emptyMessage='No inventory items found. Click "New Item" to get started.'
+                            searchTerm={searchTerm}
+                            getRowKey={(item) => item.id || ''}
+                        />
 
-                        {/* pagination - only show if storePagination exists and has valid data */}
                         {
                             storePagination && storePagination.totalPages > 1 && (
                                 <Pagination
