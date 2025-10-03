@@ -27,7 +27,10 @@ class InventoryItemService {
             //build filter object
             const filter = {};
             if (search) {
-                filter.itemName = { $regex: search, $options: 'i' };
+                filter.$or = [
+                    { itemName: { $regex: search, $options: 'i' } },
+                    { category: { $regex: search, $options: 'i' } }
+                ];
             }
             if (category) {
                 filter.category = category;

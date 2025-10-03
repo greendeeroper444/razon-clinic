@@ -43,44 +43,72 @@ class PatientService {
             search,
             page, 
             limit, 
-            email, 
+            email,
             firstName,
+            lastName,
+            patientNumber,
             religion,
+            sex,
+            fromDate,
+            toDate,
             sortBy = 'createdAt', 
             sortOrder = 'desc' 
         } = queryParams;
 
-        //build filter object
-        const filter = {};
-        if (search) {
-            filter.firstName = { $regex: search, $options: 'i' };
+        const filter = { isArchive: false };
+
+        if (fromDate || toDate) {
+            filter.createdAt = {};
+            if (fromDate) filter.createdAt.$gte = new Date(fromDate);
+            if (toDate) filter.createdAt.$lte = new Date(toDate);
         }
+
+        if (search) {
+            filter.$or = [
+                { firstName: { $regex: search, $options: 'i' } },
+                { lastName: { $regex: search, $options: 'i' } },
+                { middleName: { $regex: search, $options: 'i' } },
+                { patientNumber: { $regex: search, $options: 'i' } },
+                // { email: { $regex: search, $options: 'i' } },
+                { contactNumber: { $regex: search, $options: 'i' } },
+                // { address: { $regex: search, $options: 'i' } },
+                // { religion: { $regex: search, $options: 'i' } },
+                // { 'motherInfo.name': { $regex: search, $options: 'i' } },
+                // { 'fatherInfo.name': { $regex: search, $options: 'i' } }
+            ];
+        }
+
         if (email) {
             filter.email = { $regex: email, $options: 'i' };
         }
         if (firstName) {
             filter.firstName = { $regex: firstName, $options: 'i' };
         }
+        if (lastName) {
+            filter.lastName = { $regex: lastName, $options: 'i' };
+        }
+        if (patientNumber) {
+            filter.patientNumber = { $regex: patientNumber, $options: 'i' };
+        }
         if (religion) {
             filter.religion = { $regex: religion, $options: 'i' };
         }
+        if (sex) {
+            filter.sex = sex;
+        }
 
-        //build sort object
         const sort = {};
         sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
-        //get total count first
         const totalItems = await Patient.countDocuments(filter);
 
-        const searchTerm = search || firstName || null;
+        const searchTerm = search || firstName || lastName || patientNumber || null;
 
         let patients;
         let pagination;
 
-        //check if limit is provided (pagination requested)
         if (limit && parseInt(limit) > 0) {
-            //paginated query
-            const currentPage = parseInt(page);
+            const currentPage = parseInt(page) || 1;
             const itemsPerPage = parseInt(limit);
             const skip = (currentPage - 1) * itemsPerPage;
             const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -89,6 +117,7 @@ class PatientService {
                 .sort(sort)
                 .skip(skip)
                 .limit(itemsPerPage);
+                // .lean();
 
             const startIndex = totalItems > 0 ? skip + 1 : 0;
             const endIndex = Math.min(skip + itemsPerPage, totalItems);
@@ -109,8 +138,9 @@ class PatientService {
                 searchTerm: searchTerm
             };
         } else {
-            //unlimited query (no pagination)
-            patients = await Patient.find(filter).sort(sort);
+            patients = await Patient.find(filter)
+                .sort(sort);
+                // .lean();
 
             pagination = {
                 currentPage: 1,

@@ -86,6 +86,23 @@ const UserSchema = new mongoose.Schema(
             type: String,
             required: true,
             default: 'Patient'
+        },
+        isArchived: {
+            type: Boolean,
+            default: false
+        },
+        archivedAt: {
+            type: Date,
+            default: null
+        },
+        archivedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Admin',
+            default: null
+        },
+        lastActiveAt: {
+            type: Date,
+            default: Date.now
         }
     },
     {

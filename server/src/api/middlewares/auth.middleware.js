@@ -1,4 +1,4 @@
-const TokenHelper = require('../../helpers/token.helpers');
+const TokenHelper = require('../../helpers/token.helper');
 const { ApiError } = require('../../utils/errors');
 
 const authenticate = (req, res, next) => {

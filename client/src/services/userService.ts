@@ -141,31 +141,6 @@ export const deleteUser = async (userId: string) => {
     }
 };
 
-//get all users (includes doctors, staff, and users)
-export const getAllUsers = async () => {
-    try {
-        const token = localStorage.getItem('token');
-        
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        };
-        
-        const response = await axios.get(
-            `${API_BASE_URL}/api/users/getAllUsers`,
-            config
-        );
-        
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Failed to fetch users');
-        }
-        throw new Error('An error occurred while fetching users');
-    }
-};
-
 //get user profile (current authenticated user)
 export const getUserProfile = async () => {
     try {

@@ -6,6 +6,7 @@ const { connectDB } = require('./src/config/database');
 const setupMiddleware = require('./src/api/middlewares/middleware');
 const setupRoutes = require('./src/api/routes');
 const errorHandler = require('./src/api/middlewares/errorHandler.middleware');
+const { startArchiveJob } = require('./src/jobs/archiveInActiveUsers.job');
 
 
 //initialize express app
@@ -26,6 +27,9 @@ const startServer = async () => {
         //connect to database
         await connectDB();
         
+        //start cron jobs
+        startArchiveJob();
+
         //start server
         const PORT = config.port || 3000;
             app.listen(PORT, () => {

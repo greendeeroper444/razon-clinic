@@ -1,5 +1,5 @@
 const AuthService = require('../../services/auth.service');
-const TokenHelper = require('../../helpers/token.helpers');
+const TokenHelper = require('../../helpers/token.helper');
 const { ApiError } = require('../../utils/errors');
 
 class AuthController {
