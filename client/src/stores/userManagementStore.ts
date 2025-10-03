@@ -4,48 +4,46 @@ import { toast } from 'sonner'
 import { getUsers, getUserById, archiveUser, unarchiveUser, archiveMultipleUsers, unarchiveMultipleUsers } from '../services'
 import { FetchParams, OperationType, UserManagementState } from '../types'
 
-const initialState = {
-    users: [],
-    loading: false,
-    fetchLoading: false,
-    submitLoading: false,
-    error: null,
-    isProcessing: false,
-    selectedUser: null,
-    pagination: {
-        currentPage: 1,
-        totalPages: 1,
-        totalItems: 0,
-        itemsPerPage: 10,
-        hasNextPage: false,
-        hasPreviousPage: false,
-        startIndex: 1,
-        endIndex: 0,
-        isUnlimited: false,
-        nextPage: null,
-        previousPage: null,
-        remainingItems: 0,
-        searchTerm: null
-    },
-    totalCounts: {
-        allUsers: 0,
-        activeUsers: 0,
-        archivedUsers: 0
-    },
-    selectedUserIds: [],
-    searchQuery: '',
-    currentPage: 1,
-    itemsPerPage: 10,
-    activeTab: 'all' as const,
-    currentOperation: null as OperationType
-}
-
 export const useUserManagementStore = create<UserManagementState>()(
     devtools(
         (set, get) => ({
-            ...initialState,
+            users: [],
+            loading: false,
+            fetchLoading: false,
+            submitLoading: false,
+            error: null,
+            isProcessing: false,
+            selectedUser: null,
+            currentUser: null,
+            pagination: {
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: 0,
+                itemsPerPage: 10,
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startIndex: 1,
+                endIndex: 0,
+                isUnlimited: false,
+                nextPage: null,
+                previousPage: null,
+                remainingItems: 0,
+                searchTerm: null
+            },
+            summaryStats: {
+                total: 0,
+                active: 0,
+                archived: 0,
+                thisMonth: 0
+            },
+            selectedUserIds: [],
+            searchQuery: '',
+            currentPage: 1,
+            itemsPerPage: 10,
+            activeTab: 'all' as const,
+            currentOperation: null as OperationType,
 
-            fetchTotalCounts: async () => {
+            fetchSummaryStats: async () => {
                 try {
                     const [allResponse, activeResponse, archivedResponse] = await Promise.all([
                         getUsers({ page: 1, limit: 1 }),
@@ -53,15 +51,32 @@ export const useUserManagementStore = create<UserManagementState>()(
                         getUsers({ page: 1, limit: 1, isArchived: true })
                     ])
 
+                    const thisMonthResponse = await getUsers({ 
+                        page: 1, 
+                        limit: 1000,
+                    })
+
+                    const currentDate = new Date()
+                    const currentMonth = currentDate.getMonth()
+                    const currentYear = currentDate.getFullYear()
+
+                    const thisMonth = thisMonthResponse.data.users.filter((user: { createdAt?: string }) => {
+                        if (!user.createdAt) return false
+                        const userDate = new Date(user.createdAt)
+                        return userDate.getMonth() === currentMonth && 
+                            userDate.getFullYear() === currentYear
+                    }).length
+
                     set({
-                        totalCounts: {
-                            allUsers: allResponse.data.pagination.totalItems,
-                            activeUsers: activeResponse.data.pagination.totalItems,
-                            archivedUsers: archivedResponse.data.pagination.totalItems
+                        summaryStats: {
+                            total: allResponse.data.pagination.totalItems,
+                            active: activeResponse.data.pagination.totalItems,
+                            archived: archivedResponse.data.pagination.totalItems,
+                            thisMonth
                         }
                     })
                 } catch (error) {
-                    console.error('Error fetching total counts:', error)
+                    console.error('Error fetching user summary stats:', error)
                 }
             },
 
@@ -113,9 +128,9 @@ export const useUserManagementStore = create<UserManagementState>()(
                             loading: false
                         })
                         
-                        // if (!params.search && params.page === 1) {
-                        //     get().fetchTotalCounts()
-                        // }
+                        if (!params.search && params.page === 1) {
+                            get().fetchSummaryStats()
+                        }
                     } else {
                         set({ 
                             error: response.message || 'Failed to fetch users',
@@ -142,7 +157,7 @@ export const useUserManagementStore = create<UserManagementState>()(
                     
                     if (response.success) {
                         set({ 
-                            selectedUser: response.data.user,
+                            currentUser: response.data,
                             fetchLoading: false,
                             loading: false
                         })
@@ -211,7 +226,12 @@ export const useUserManagementStore = create<UserManagementState>()(
                     if (response.success) {
                         toast.success(response.message)
                         
-                        await get().fetchUsers()
+                        const { pagination, searchQuery } = get()
+                        await get().fetchUsers({ 
+                            page: pagination?.currentPage, 
+                            limit: pagination?.itemsPerPage,
+                            search: searchQuery 
+                        })
                         get().clearSelection()
 
                         setTimeout(() => {
@@ -242,7 +262,12 @@ export const useUserManagementStore = create<UserManagementState>()(
                     if (response.success) {
                         toast.success(response.message)
                         
-                        await get().fetchUsers()
+                        const { pagination, searchQuery } = get()
+                        await get().fetchUsers({ 
+                            page: pagination?.currentPage, 
+                            limit: pagination?.itemsPerPage,
+                            search: searchQuery 
+                        })
                         get().clearSelection()
 
                         setTimeout(() => {
@@ -281,7 +306,12 @@ export const useUserManagementStore = create<UserManagementState>()(
                         toast.success(response.message)
                         
                         setTimeout(async () => {
-                            await get().fetchUsers()
+                            const { pagination, searchQuery } = get()
+                            await get().fetchUsers({ 
+                                page: pagination?.currentPage, 
+                                limit: pagination?.itemsPerPage,
+                                search: searchQuery 
+                            })
                             get().clearSelection()
                             
                             set({ 
@@ -319,7 +349,12 @@ export const useUserManagementStore = create<UserManagementState>()(
                         toast.success(response.message)
                         
                         setTimeout(async () => {
-                            await get().fetchUsers()
+                            const { pagination, searchQuery } = get()
+                            await get().fetchUsers({ 
+                                page: pagination?.currentPage, 
+                                limit: pagination?.itemsPerPage,
+                                search: searchQuery 
+                            })
                             get().clearSelection()
                             
                             set({ 
@@ -346,22 +381,19 @@ export const useUserManagementStore = create<UserManagementState>()(
             },
 
             getStats: () => {
-                const { selectedUserIds, totalCounts } = get()
+                const { selectedUserIds, summaryStats } = get()
                 
                 return {
-                    totalUsers: totalCounts.allUsers,
-                    activeUsers: totalCounts.activeUsers,
-                    archivedUsers: totalCounts.archivedUsers,
+                    totalUsers: summaryStats.total,
+                    activeUsers: summaryStats.active,
+                    archivedUsers: summaryStats.archived,
                     selected: selectedUserIds.length
                 }
             },
 
-            resetStore: () => {
-                set(initialState)
-            },
-
             setLoading: (loading: boolean) => set({ loading }),
-            setError: (error: string | null) => set({ error })
+            setError: (error: string | null) => set({ error }),
+            clearCurrentUser: () => set({ currentUser: null })
         }),
         {
             name: 'user-management-store'

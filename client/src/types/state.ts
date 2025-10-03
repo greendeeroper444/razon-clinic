@@ -6,7 +6,7 @@ import { InventoryItemFormData } from "./invetory";
 import { MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
 import { Pagination } from "./pagination";
 import { Patient, PatientFormData, PatientResponse } from "./patient"
-import { User } from "./user";
+import { User, UserResponse } from "./user";
 
 export interface FetchParams {
     page?: number;
@@ -370,17 +370,16 @@ export interface AuthenticationState {
 }
 
 
-
-export interface TotalCounts {
-    allUsers: number
-    activeUsers: number
-    archivedUsers: number
-}
 export interface UserManagementState {
     users: User[]
     selectedUser: User | null
     pagination: Pagination | null
-    totalCounts: TotalCounts
+    summaryStats: {
+        total: number;
+        active: number;
+        archived: number;
+        thisMonth: number;
+    }
     
     selectedUserIds: string[]
     searchQuery: string
@@ -393,9 +392,11 @@ export interface UserManagementState {
     activeTab: 'all' | 'active' | 'archive'
     currentOperation: OperationType
     error: string | null
+
+    currentUser: UserResponse | null;
     
     fetchUsers: (params?: FetchParams) => Promise<void>
-    fetchTotalCounts: () => Promise<void>
+    fetchSummaryStats: () => Promise<void>
     fetchUserById: (userId: string) => Promise<void>
     setSearchQuery: (query: string) => void
     setCurrentPage: (page: number) => void

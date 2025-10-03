@@ -185,7 +185,7 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
         />
 
         {/* patients cards */}
-        <div className={styles.patientCards}>
+        <div className={styles.contentCards}>
             {
                 summaryCards.map((card, index) => (
                     <div className={styles.card} key={index}>
