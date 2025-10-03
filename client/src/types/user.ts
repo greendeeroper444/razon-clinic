@@ -15,7 +15,16 @@ export interface User {
     fatherInfo?: ParentInfo;
     religion?: string;
     role: string;
-    userType: string
+    userType: string;
+    lastActiveAt: string
+    createdAt: string
+    isArchived: boolean
+    archivedAt?: string
+    archivedBy?: {
+        id: string
+        firstName: string
+        lastName: string
+    }
 }
 
 export interface UserFormData {
@@ -64,5 +73,5 @@ export interface UserResponse {
 }
 
 export interface UserTab {
-    tab: 'All' | 'Active' | 'Archive';
+    tab: 'all' | 'Active' | 'Archive';
 }

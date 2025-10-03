@@ -12,6 +12,7 @@ export interface FetchParams {
     page?: number;
     limit?: number;
     search?: string;
+    isArchived?: boolean;
 }
 
 
@@ -366,4 +367,59 @@ export interface AuthenticationState {
     //auth helpers
     initializeAuth: () => Promise<void> 
     checkTokenExpiration: () => boolean
+}
+
+
+
+export interface TotalCounts {
+    allUsers: number
+    activeUsers: number
+    archivedUsers: number
+}
+export interface UserManagementState {
+    users: User[]
+    selectedUser: User | null
+    pagination: Pagination | null
+    totalCounts: TotalCounts
+    
+    selectedUserIds: string[]
+    searchQuery: string
+    currentPage: number
+    itemsPerPage: number
+    loading: boolean
+    fetchLoading: boolean
+    submitLoading: boolean
+    isProcessing: boolean
+    activeTab: 'all' | 'active' | 'archive'
+    currentOperation: OperationType
+    error: string | null
+    
+    fetchUsers: (params?: FetchParams) => Promise<void>
+    fetchTotalCounts: () => Promise<void>
+    fetchUserById: (userId: string) => Promise<void>
+    setSearchQuery: (query: string) => void
+    setCurrentPage: (page: number) => void
+    setItemsPerPage: (items: number) => void
+    setActiveTab: (tab: 'all' | 'active' | 'archive') => void
+    
+    toggleUserSelection: (userId: string) => void
+    toggleSelectAll: () => void
+    clearSelection: () => void
+    
+    archiveSingleUser: (userId: string) => Promise<void>
+    unarchiveSingleUser: (userId: string) => Promise<void>
+    archiveSelectedUsers: () => Promise<void>
+    unarchiveSelectedUsers: () => Promise<void>
+    
+    getFilteredUsers: () => User[]
+    getStats: () => {
+        totalUsers: number
+        activeUsers: number
+        archivedUsers: number
+        selected: number
+    }
+    
+    setLoading: (loading: boolean) => void
+    setError: (error: string | null) => void
+    resetStore: () => void
 }

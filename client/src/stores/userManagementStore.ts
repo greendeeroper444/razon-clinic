@@ -1,111 +1,8 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { toast } from 'sonner'
-import { 
-    getUsers, 
-    getUserById, 
-    archiveUser, 
-    unarchiveUser, 
-    archiveMultipleUsers, 
-    unarchiveMultipleUsers 
-} from '../services'
-
-interface User {
-    id: string
-    firstName: string
-    lastName: string
-    userNumber: string
-    email: string
-    contactNumber: string
-    lastActiveAt: string
-    createdAt: string
-    isArchived: boolean
-    archivedAt?: string
-    archivedBy?: {
-        id: string
-        firstName: string
-        lastName: string
-    }
-}
-
-interface Pagination {
-    currentPage: number
-    totalPages: number
-    totalItems: number
-    itemsPerPage: number
-    hasNextPage: boolean
-    hasPreviousPage: boolean
-    startIndex: number
-    endIndex: number
-    isUnlimited: boolean
-    nextPage: number | null
-    previousPage: number | null
-    remainingItems: number
-    searchTerm: string | null
-}
-
-interface TotalCounts {
-    allUsers: number
-    activeUsers: number
-    archivedUsers: number
-}
-
-type OperationType = 'archive' | 'unarchive' | 'archiveMultiple' | 'unarchiveMultiple' | null
-
-interface UserManagementState {
-    // Data
-    users: User[]
-    selectedUser: User | null
-    pagination: Pagination | null
-    totalCounts: TotalCounts
-    
-    // UI State
-    selectedUserIds: string[]
-    searchQuery: string
-    currentPage: number
-    itemsPerPage: number
-    loading: boolean
-    fetchLoading: boolean
-    submitLoading: boolean
-    isProcessing: boolean
-    activeTab: 'all' | 'active' | 'archive'
-    currentOperation: OperationType
-    error: string | null
-    
-    // Actions
-    fetchUsers: (params?: any) => Promise<void>
-    fetchTotalCounts: () => Promise<void>
-    fetchUserById: (userId: string) => Promise<void>
-    setSearchQuery: (query: string) => void
-    setCurrentPage: (page: number) => void
-    setItemsPerPage: (items: number) => void
-    setActiveTab: (tab: 'all' | 'active' | 'archive') => void
-    
-    // Selection
-    toggleUserSelection: (userId: string) => void
-    toggleSelectAll: () => void
-    clearSelection: () => void
-    
-    // Archive Actions
-    archiveSingleUser: (userId: string) => Promise<void>
-    unarchiveSingleUser: (userId: string) => Promise<void>
-    archiveSelectedUsers: () => Promise<void>
-    unarchiveSelectedUsers: () => Promise<void>
-    
-    // Helpers
-    getFilteredUsers: () => User[]
-    getStats: () => {
-        totalUsers: number
-        activeUsers: number
-        archivedUsers: number
-        selected: number
-    }
-    
-    // Utility
-    setLoading: (loading: boolean) => void
-    setError: (error: string | null) => void
-    resetStore: () => void
-}
+import { getUsers, getUserById, archiveUser, unarchiveUser, archiveMultipleUsers, unarchiveMultipleUsers } from '../services'
+import { FetchParams, OperationType, UserManagementState } from '../types'
 
 const initialState = {
     users: [],
@@ -148,7 +45,6 @@ export const useUserManagementStore = create<UserManagementState>()(
         (set, get) => ({
             ...initialState,
 
-            // Fetch total counts for all categories
             fetchTotalCounts: async () => {
                 try {
                     const [allResponse, activeResponse, archivedResponse] = await Promise.all([
@@ -169,8 +65,7 @@ export const useUserManagementStore = create<UserManagementState>()(
                 }
             },
 
-            // Fetch users with filters
-            fetchUsers: async (overrideParams = {}) => {
+            fetchUsers: async (params: FetchParams) => {
                 const currentState = get()
                 
                 if (currentState.fetchLoading) {
@@ -181,23 +76,9 @@ export const useUserManagementStore = create<UserManagementState>()(
                 try {
                     set({ fetchLoading: true, loading: true, error: null })
                     
-                    const { activeTab, currentPage, searchQuery, itemsPerPage } = get()
+                    const { activeTab } = get()
                     
-                    const queryParams = {
-                        page: overrideParams.page !== undefined ? overrideParams.page : currentPage,
-                        limit: overrideParams.limit !== undefined ? overrideParams.limit : itemsPerPage,
-                        search: overrideParams.search !== undefined ? overrideParams.search : searchQuery,
-                    }
-
-                    if (overrideParams.search !== undefined) {
-                        set({ searchQuery: overrideParams.search, currentPage: 1 })
-                    }
-                    if (overrideParams.limit !== undefined) {
-                        set({ itemsPerPage: overrideParams.limit, currentPage: 1 })
-                    }
-                    if (overrideParams.page !== undefined) {
-                        set({ currentPage: overrideParams.page })
-                    }
+                    const queryParams = { ...params }
 
                     if (activeTab === 'archive') {
                         queryParams.isArchived = true
@@ -208,27 +89,51 @@ export const useUserManagementStore = create<UserManagementState>()(
                     const response = await getUsers(queryParams)
                     
                     if (response.success) {
+                        const users = response.data.users || []
+                        const pagination = response.data.pagination || {}
+
                         set({ 
-                            users: response.data.users,
-                            pagination: response.data.pagination,
+                            users,
+                            pagination: {
+                                currentPage: pagination.currentPage || 1,
+                                totalPages: pagination.totalPages || 1,
+                                totalItems: pagination.totalItems || 0,
+                                itemsPerPage: pagination.itemsPerPage || 10,
+                                hasNextPage: pagination.hasNextPage || false,
+                                hasPreviousPage: pagination.hasPreviousPage || false,
+                                startIndex: pagination.startIndex || 1,
+                                endIndex: pagination.endIndex || 0,
+                                isUnlimited: pagination.isUnlimited || false,
+                                nextPage: pagination.nextPage,
+                                previousPage: pagination.previousPage,
+                                remainingItems: pagination.remainingItems || 0,
+                                searchTerm: pagination.searchTerm || null
+                            },
                             fetchLoading: false,
                             loading: false
                         })
                         
-                        get().fetchTotalCounts()
+                        if (!params.search && params.page === 1) {
+                            get().fetchTotalCounts()
+                        }
+                    } else {
+                        set({ 
+                            error: response.message || 'Failed to fetch users',
+                            fetchLoading: false,
+                            loading: false
+                        })
                     }
                 } catch (error) {
                     console.error('Error fetching users:', error)
                     set({ 
+                        error: 'An error occurred while fetching users',
                         fetchLoading: false, 
-                        loading: false,
-                        error: 'Failed to fetch users'
+                        loading: false
                     })
                     toast.error('Failed to fetch users')
                 }
             },
 
-            // Fetch single user
             fetchUserById: async (userId: string) => {
                 try {
                     set({ fetchLoading: true, loading: true, error: null })
@@ -296,7 +201,7 @@ export const useUserManagementStore = create<UserManagementState>()(
                 set({ selectedUserIds: [] })
             },
 
-            // Archive single user
+            
             archiveSingleUser: async (userId: string) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'archive' })
@@ -328,7 +233,6 @@ export const useUserManagementStore = create<UserManagementState>()(
                 }
             },
 
-            // Unarchive single user
             unarchiveSingleUser: async (userId: string) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'unarchive' })
@@ -360,7 +264,6 @@ export const useUserManagementStore = create<UserManagementState>()(
                 }
             },
 
-            // Archive selected users
             archiveSelectedUsers: async () => {
                 const { selectedUserIds } = get()
                 
@@ -399,7 +302,6 @@ export const useUserManagementStore = create<UserManagementState>()(
                 }
             },
 
-            // Unarchive selected users
             unarchiveSelectedUsers: async () => {
                 const { selectedUserIds } = get()
                 
