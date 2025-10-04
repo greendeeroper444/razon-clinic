@@ -6,13 +6,11 @@ import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Tab
 import { OpenModalProps } from '../../../hooks/hook'
 import { formatDate, getFirstLetterOfFirstAndLastName, getLoadingText, getMedicalRecordId, getStatusClass, openModalWithRefresh } from '../../../utils'
 import { useBillingStore } from '../../../stores'
-import { useNavigate } from 'react-router-dom';
 import { getBillingSummaryCards } from '../../../config/billingSummaryCards';
 import { toast } from 'sonner';
 import { generateBillingReceiptPDF } from '../../../templates';
 
 const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
-    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
