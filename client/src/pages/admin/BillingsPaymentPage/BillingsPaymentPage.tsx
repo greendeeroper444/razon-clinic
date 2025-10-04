@@ -4,7 +4,7 @@ import { Plus, Download, CreditCard, User } from 'lucide-react';
 import { BillingFormData, FormDataType, TableColumn } from '../../../types'
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
-import { formatDate, getLoadingText, getMedicalRecordId, getStatusClass, openModalWithRefresh } from '../../../utils'
+import { formatDate, getFirstLetterOfFirstAndLastName, getLoadingText, getMedicalRecordId, getStatusClass, openModalWithRefresh } from '../../../utils'
 import { useBillingStore } from '../../../stores'
 import { useNavigate } from 'react-router-dom';
 import { getBillingSummaryCards } from '../../../config/billingSummaryCards';
@@ -13,6 +13,8 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [selectedBillingId, setSelectedBillingId] = useState<string>('');
 
     //zustand store selectors
     const {
@@ -118,7 +120,13 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
     };
 
     const handleViewClick = (billId: string) => {
-        console.log("This is view billing: ",billId)
+        setSelectedBillingId(billId);
+        setIsDetailsModalOpen(true);
+    };
+
+    const handleCloseDetailsModal = () => {
+        setIsDetailsModalOpen(false);
+        setSelectedBillingId('');
     };
 
     const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
@@ -149,8 +157,21 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             header: 'PATIENT NAME',
             render: (billing) => (
                 <div className={styles.patientInfo}>
-                    <User />
-                    <span>{billing.patientName}</span>
+                    <div className={styles.patientAvatar}>
+                        {
+                            (() => {
+                                const patientName = billing.patientName
+                                return patientName 
+                                    ? getFirstLetterOfFirstAndLastName(patientName)
+                                    : 'N/A'
+                            })()
+                        }
+                    </div>
+                    <div>
+                        <div className={styles.patientName}>
+                            {billing.patientName}
+                        </div>
+                    </div>
                 </div>
             )
         },
@@ -368,6 +389,19 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteBillingData}
                     isProcessing={isProcessing}
+                />
+            )
+        }
+
+
+        {
+            isDetailsModalOpen && (
+                <Modal
+                    isOpen={isDetailsModalOpen}
+                    onClose={handleCloseDetailsModal}
+                    modalType='billing-details'
+                    onSubmit={() => {}}
+                    billingId={selectedBillingId}
                 />
             )
         }

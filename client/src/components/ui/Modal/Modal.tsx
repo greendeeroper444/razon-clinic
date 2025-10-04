@@ -3,7 +3,7 @@ import styles from './Modal.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { getPatients } from '../../../services'
-import { AppointmentForm, BillingsForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../../features/Forms'
+import { AppointmentForm, BillingsForm, BillingDetailsForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../../features/Forms'
 import { formatDateForDisplay, formatDateForInput, transformPatientForAppointment } from '../../../utils'
 import { AppointmentFormData, AppointmentStatus, BillingFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalProps, Patient, PatientFormData } from '../../../types'
 import Button from '../Button/Button'
@@ -19,7 +19,8 @@ const Modal: React.FC<ModalProps> = ({
     deleteData = null,
     isProcessing = false,
     isRestockMode,
-    isAddQuantityMode
+    isAddQuantityMode,
+    billingId 
 }) => {
     const [formData, setFormData] = useState<FormDataType>({});
     const [loadedPatients, setLoadedPatients] = useState<Patient[]>(patients);
@@ -282,6 +283,9 @@ const Modal: React.FC<ModalProps> = ({
         case 'billing':
             title = editData ? 'Edit Billing' : 'New Billing';
             break;
+        case 'billing-details':
+            title = 'Billing Details';
+            break;
         default:
             title = 'Form';
     }
@@ -359,6 +363,12 @@ const Modal: React.FC<ModalProps> = ({
                         onChange={handleChange}
                         isLoading={isLoading}
                     />
+                );
+            case 'billing-details':
+                return billingId ? (
+                    <BillingDetailsForm billingId={billingId} />
+                ) : (
+                    <p>Missing billing ID</p>
                 );
             default:
                 return <p>Unknown form type</p>;

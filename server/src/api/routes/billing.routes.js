@@ -35,13 +35,13 @@ router.delete(
 
 //additional routes for supporting data
 router.get(
-    '/getMedicalRecords', 
+    '/getMedicalRecordsForBilling', 
     authenticate, 
     BillingController.getMedicalRecordsForBilling
 );
 
 router.get(
-    '/getInventoryItems', 
+    '/getInventoryItemsForBilling', 
     authenticate, 
     BillingController.getInventoryItemsForBilling
 );

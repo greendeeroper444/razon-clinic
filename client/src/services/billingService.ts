@@ -20,7 +20,7 @@ export const addBilling = async (billingData: BillingFormData) => {
     }
 };
 
-export const getAllBillings = async (params = {}) => {
+export const getBillings = async (params = {}) => {
     try {
         const defaultParams = {
             page: 1,
@@ -49,7 +49,7 @@ export const getAllBillings = async (params = {}) => {
 export const getBillingById = async (billingId: string) => {
     try {
         const response = await axios.get(
-            `${API_BASE_URL}/api/billings/${billingId}`,
+            `${API_BASE_URL}/api/billings/getBillingById/${billingId}`,
         );
     
         return response.data;
@@ -66,7 +66,7 @@ export const getBillingById = async (billingId: string) => {
 export const updateBilling = async (billingId: string, billingData: Partial<BillingFormData>) => {
     try {
         const response = await axios.put(
-            `${API_BASE_URL}/api/billings/${billingId}`,
+            `${API_BASE_URL}/api/billings/updateBilling/${billingId}`,
             billingData
         );
     
@@ -85,7 +85,7 @@ export const updateBilling = async (billingId: string, billingData: Partial<Bill
 export const getMedicalRecordsForBilling = async () => {
     try {
         const response = await axios.get(
-            `${API_BASE_URL}/api/billings/getMedicalRecords`
+            `${API_BASE_URL}/api/billings/getMedicalRecordsForBilling`
         );
     
         return response.data;

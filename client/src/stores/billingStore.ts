@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { toast } from 'sonner';
 import { BillingState, OperationType, BillingFormData, FetchParams } from '../types';
-import { getAllBillings, addBilling, updateBilling, deleteBilling } from '../services';
+import { getBillings, addBilling, updateBilling, deleteBilling, getBillingById } from '../services';
 
 export const useBillingStore = create<BillingState>()(
     devtools(
@@ -24,6 +24,7 @@ export const useBillingStore = create<BillingState>()(
             isModalOpen: false,
             isDeleteModalOpen: false,
             deleteBillingData: null,
+            currentBilling: null,
             currentOperation: null as OperationType,
             pagination: {
                 currentPage: 1,
@@ -72,7 +73,7 @@ export const useBillingStore = create<BillingState>()(
                 try {
                     set({ fetchLoading: true, loading: true, error: null,});
 
-                    const response = await getAllBillings(params);
+                    const response = await getBillings(params);
                     
                     if (response.success) {
                         const billings = response.data.billings || [];
@@ -120,6 +121,35 @@ export const useBillingStore = create<BillingState>()(
                 }
             },
 
+
+            fetchBillingById: async (billingId: string) => {
+                try {
+                    set({ fetchLoading: true, error: null });
+                    
+                    const response = await getBillingById(billingId);
+                    
+                    if (response.success) {
+                        set({ 
+                            currentBilling: response.data,
+                            fetchLoading: false,
+                            error: null
+                        });
+                    } else {
+                        set({ 
+                            error: 'Failed to load billing details', 
+                            fetchLoading: false,
+                            currentBilling: null
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error fetching billing:', error);
+                    set({ 
+                        fetchLoading: false,
+                        error: 'An error occurred while fetching billing', 
+                        currentBilling: null
+                    });
+                }
+            },
 
             //add billing
             addBilling: async (data: BillingFormData) => {
@@ -265,10 +295,6 @@ export const useBillingStore = create<BillingState>()(
                 });
             },
 
-            //utility actions
-            setLoading: (loading: boolean) => set({ loading }),
-            setError: (error: string | null) => set({ error }),
-
             //process payment action
             processPayment: async (billId: string) => {
                 try {
@@ -310,6 +336,11 @@ export const useBillingStore = create<BillingState>()(
                     set({ loading: false });
                 }
             },
+
+
+            setLoading: (loading: boolean) => set({ loading }),
+            setError: (error: string | null) => set({ error }),
+            clearCurrentBilling: () => set({ currentBilling: null })
         }),
         {
             name: 'billing-store'

@@ -1,7 +1,7 @@
 import { DeleteData, FormDataType } from "./crud";
 import { Patient } from "./patient";
 
-export type ModalType = 'appointment' | 'patient' | 'item' | 'medical' | 'delete' | 'status' | 'billing' | 'user';
+export type ModalType = 'appointment' | 'patient' | 'item' | 'medical' | 'delete' | 'status' | 'billing' | 'billing-details' | 'user';
 
 export interface ModalProps {
     isOpen: boolean;
@@ -14,4 +14,5 @@ export interface ModalProps {
     isProcessing?: boolean;
     isRestockMode?: boolean;
     isAddQuantityMode?: boolean;
+    billingId?: string
 }

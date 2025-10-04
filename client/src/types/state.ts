@@ -218,6 +218,7 @@ export interface BillingState {
     isModalOpen: boolean;
     isDeleteModalOpen: boolean;
     deleteBillingData: { id: string, itemName: string, itemType: string } | null;
+    currentBilling: BillingResponse | null;
 
     //pagination state
     currentPage: number;
@@ -238,12 +239,14 @@ export interface BillingState {
 
     //actions
     fetchBillings:(params?: FetchParams) => Promise<void>;
+    fetchBillingById: (billingId: string) => Promise<void>;
     addBilling: (data: BillingFormData) => Promise<void>;
     updateBillingData: (id: string, data: BillingFormData) => Promise<void>;
     deleteBilling: (id: string) => Promise<void>;
-
+    fetchSummaryStats: () => Promise<void>;
     //pagination actions
     setCurrentPage: (page: number) => void;
+    clearCurrentBilling: () => void;
 
     //filter actions
     setSearchTerm: (term: string) => void;
