@@ -26,6 +26,9 @@ export interface BillingResponse {
     itemPrices: number[];
     amount: number;
     paymentStatus: string;
+    description?: string;
+    paymentMethod?: string;
+    notes?: string;
     medicalRecordDate: string;
     createdAt: string;
     updatedAt: string;

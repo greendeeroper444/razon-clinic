@@ -14,6 +14,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
     //zustand store selectors
     const {
@@ -141,17 +142,39 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     }, [deleteMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
-    const handleDownloadReceipt = () => {
-        if (selectedRecord) {
-            try {
-                generateMedicalRecordPDF(selectedRecord);
-                toast.success('Receipt downloaded successfully!');
-            } catch (error) {
-                console.error('Error generating receipt:', error);
-                toast.error('Failed to generate receipt');
-            }
+    const handleDownloadReceipt = useCallback((record: MedicalRecordFormData) => {
+        if (!record) {
+            toast.error('No record data available');
+            return;
         }
-    };
+
+        //prevent multiple simultaneous downloads
+        if (isGeneratingPDF) {
+            toast.warning('Please wait, generating receipt...');
+            return;
+        }
+
+        setIsGeneratingPDF(true);
+        const loadingToast = toast.loading('Generating receipt PDF...');
+
+        try {
+            generateMedicalRecordPDF(record);
+            
+            toast.dismiss(loadingToast);
+            toast.success('Receipt downloaded successfully!', {
+                description: `Receipt for ${record.personalDetails.fullName}`
+            });
+        } catch (error) {
+            console.error('Error generating receipt:', error);
+            
+            toast.dismiss(loadingToast);
+            toast.error('Failed to generate receipt', {
+                description: error instanceof Error ? error.message : 'An unexpected error occurred'
+            });
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    }, [isGeneratingPDF]);
 
 
     const medicalRecordsColumns: TableColumn<MedicalRecordResponse>[] = [
@@ -231,6 +254,18 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                             title='Delete'
                         >
                             Delete
+                        </button>
+
+                        <button
+                            type='button'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDownloadReceipt(record);
+                            }}
+                            className={`${styles.actionBtn} ${styles.download}`}
+                            title="Download Receipt"
+                        >
+                            <Download size={16} />
                         </button>
                     </div>
                 );

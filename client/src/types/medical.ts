@@ -47,9 +47,9 @@ export interface MedicalRecord {
     prescribedMedications?: string;
     consultationNotes?: string;
     followUpDate?: string;
-    dateRecorded: string;
-    createdAt: string;
-    updatedAt: string;
+     dateRecorded?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 
@@ -130,6 +130,10 @@ export interface MedicalRecordFormData {
     consultationNotes: string;
     followUpDate: string | undefined;
     vaccinationHistory: string;
+    dateRecorded?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    
     personalDetails: {
         fullName: string;
         dateOfBirth: string;
@@ -141,21 +145,21 @@ export interface MedicalRecordFormData {
         emergencyContact?: string;
         age?: number;
     };
-    medicalHistory?: {
+    medicalHistory: {
         allergies?: string;
         chronicConditions?: string;
         previousSurgeries?: string;
         familyHistory?: string;
         general?: string;
     };
-    growthMilestones?: {
+    growthMilestones: {
         height?: number;
         weight?: number;
         bmi?: number;
         growthNotes?: string;
         general?: string;
     };
-    currentSymptoms?: {
+    currentSymptoms: {
         chiefComplaint: string;
         symptomsDescription: string;
         symptomsDuration?: string;
