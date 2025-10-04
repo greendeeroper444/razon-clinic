@@ -7,7 +7,7 @@ class NotificationService {
         const { page, limit, isRead } = queryParams;
         
         const filter = {};
-   
+
         if (isRead !== undefined) {
             filter.isRead = isRead === 'true';
         }
@@ -18,29 +18,68 @@ class NotificationService {
             filter.sourceId = userId;
         }
         
-        const notifications = await Notification.find(filter)
-            .sort({ createdAt: -1 })
-            .skip((parseInt(page) - 1) * parseInt(limit))
-            .limit(parseInt(limit));
+        const totalItems = await Notification.countDocuments(filter);
         
-        const total = await Notification.countDocuments(filter);
         const unreadCount = await Notification.countDocuments({ 
             ...filter, 
             isRead: false 
         });
         
-        const totalPages = Math.ceil(total / parseInt(limit));
+        let notifications;
+        let pagination;
+        
+        const sort = { createdAt: -1 };
+
+        if (limit && parseInt(limit) > 0) {
+            const currentPage = parseInt(page) || 1;
+            const itemsPerPage = parseInt(limit);
+            const skip = (currentPage - 1) * itemsPerPage;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            
+            notifications = await Notification.find(filter)
+                .sort(sort)
+                .skip(skip)
+                .limit(itemsPerPage);
+
+            const startIndex = totalItems > 0 ? skip + 1 : 0;
+            const endIndex = Math.min(skip + itemsPerPage, totalItems);
+
+            pagination = {
+                currentPage: currentPage,
+                totalPages: totalPages,
+                totalItems: totalItems,
+                itemsPerPage: itemsPerPage,
+                hasNextPage: currentPage < totalPages,
+                hasPreviousPage: currentPage > 1,
+                startIndex: startIndex,
+                endIndex: endIndex,
+                isUnlimited: false,
+                nextPage: currentPage < totalPages ? currentPage + 1 : null,
+                previousPage: currentPage > 1 ? currentPage - 1 : null,
+                remainingItems: Math.max(0, totalItems - endIndex)
+            };
+        } else {
+            notifications = await Notification.find(filter).sort(sort);
+
+            pagination = {
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: totalItems,
+                itemsPerPage: totalItems,
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startIndex: totalItems > 0 ? 1 : 0,
+                endIndex: totalItems,
+                isUnlimited: true,
+                nextPage: null,
+                previousPage: null,
+                remainingItems: 0
+            };
+        }
         
         return {
             notifications,
-            pagination: {
-                currentPage: parseInt(page),
-                totalPages,
-                totalItems: total,
-                itemsPerPage: parseInt(limit),
-                hasNextPage: parseInt(page) < totalPages,
-                hasPrevPage: parseInt(page) > 1
-            },
+            pagination,
             unreadCount
         };
     }
