@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import styles from './BillingsPaymentPage.module.css'
-import { Plus, Download, CreditCard, User } from 'lucide-react';
+import { Plus, Download, CreditCard } from 'lucide-react';
 import { BillingFormData, FormDataType, TableColumn } from '../../../types'
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
@@ -8,6 +8,8 @@ import { formatDate, getFirstLetterOfFirstAndLastName, getLoadingText, getMedica
 import { useBillingStore } from '../../../stores'
 import { useNavigate } from 'react-router-dom';
 import { getBillingSummaryCards } from '../../../config/billingSummaryCards';
+import { toast } from 'sonner';
+import { generateBillingReceiptPDF } from '../../../templates';
 
 const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const navigate = useNavigate();
@@ -15,6 +17,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [selectedBillingId, setSelectedBillingId] = useState<string>('');
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
     //zustand store selectors
     const {
@@ -151,6 +154,45 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
     }, [deleteBilling, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
 
+    const handleDownloadReceipt = useCallback((billing: BillingFormData) => {
+        if (!billing) {
+            toast.error('No billing data available');
+            return;
+        }
+
+        if (!billing.patientName || !billing.medicalRecordId) {
+            toast.error('Incomplete billing data. Cannot generate receipt.');
+            return;
+        }
+
+        //prevent multiple simultaneous downloads
+        if (isGeneratingPDF) {
+            toast.warning('Please wait, generating receipt...');
+            return;
+        }
+
+        setIsGeneratingPDF(true);
+        const loadingToast = toast.loading('Generating receipt PDF...');
+
+        try {
+            generateBillingReceiptPDF(billing);
+            
+            toast.dismiss(loadingToast);
+            toast.success('Receipt downloaded successfully!', {
+                description: `Receipt for ${billing.patientName}`
+            });
+        } catch (error) {
+            console.error('Error generating receipt:', error);
+            
+            toast.dismiss(loadingToast);
+            toast.error('Failed to generate receipt', {
+                description: error instanceof Error ? error.message : 'An unexpected error occurred'
+            });
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    }, [isGeneratingPDF]);
+
     const billingColumns: TableColumn<BillingFormData>[] = [
         {
             key: 'patientName',
@@ -227,6 +269,19 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                     >
                         View
                     </button>
+
+                    <button
+                        type='button'
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownloadReceipt(billing);
+                        }}
+                        className={`${styles.actionBtn} ${styles.download}`}
+                        title="Download Receipt"
+                    >
+                        <Download size={16} />
+                    </button>
+
                     {
                         billing.paymentStatus !== 'Paid' && (
                             <button

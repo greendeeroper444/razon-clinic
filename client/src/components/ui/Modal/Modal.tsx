@@ -376,7 +376,7 @@ const Modal: React.FC<ModalProps> = ({
     };
 
     //no need the form submit or footer buttons
-    if (modalType === 'delete') {
+    if (modalType === 'delete' || modalType === 'billing-details') {
         return (
             <div className={styles.modalOverlay}>
                 <div className={`${styles.modalContent} ${styles.deleteModal}`}>

@@ -6,8 +6,8 @@ import { MedicalRecordResponse } from '../../../types';
 import { Header, Main } from '../../../components';
 import { calculateAge2 } from '../../../utils';
 import { useMedicalRecordStore } from '../../../stores';
-import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
+import { generateMedicalRecordPDF } from '../../../templates';
 
 const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     
@@ -55,7 +55,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     const handleDownloadReceipt = () => {
         if (selectedRecord) {
             try {
-                generateMedicalReceiptPDF(selectedRecord);
+                generateMedicalRecordPDF(selectedRecord);
                 toast.success('Receipt downloaded successfully!');
             } catch (error) {
                 console.error('Error generating receipt:', error);

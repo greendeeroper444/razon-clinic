@@ -4,11 +4,11 @@ import { Plus, FileText, Download } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { FormDataType, MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
-import { generateMedicalReceiptPDF } from '../../../templates/generateReceiptPdf';
 import { toast } from 'sonner';
 import { calculateAge2, formatDate, getLoadingText, openModalWithRefresh } from '../../../utils';
 import { useMedicalRecordStore } from '../../../stores';
 import { useNavigate } from 'react-router-dom';
+import { generateMedicalRecordPDF } from '../../../templates';
 
 const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const navigate = useNavigate();
@@ -144,7 +144,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const handleDownloadReceipt = () => {
         if (selectedRecord) {
             try {
-                generateMedicalReceiptPDF(selectedRecord);
+                generateMedicalRecordPDF(selectedRecord);
                 toast.success('Receipt downloaded successfully!');
             } catch (error) {
                 console.error('Error generating receipt:', error);
