@@ -26,12 +26,8 @@ const BillingForm: React.FC<BillingFormProps> = ({
                     getInventoryItems()
                 ]);
 
-                if (medicalRecordsResponse.data.success) {
-                    setMedicalRecords(medicalRecordsResponse.data.data);
-                }
-
-                 if (medicalRecordsResponse.data.success) {
-                    setMedicalRecords(medicalRecordsResponse.data.data);
+                if (medicalRecordsResponse.success) {
+                    setMedicalRecords(medicalRecordsResponse.data.medicalRecords);
                 }
 
                 if (inventoryItemsResponse.success) {
