@@ -33,8 +33,9 @@ const Notification: React.FC<ExtendedNotificationProps> = ({
             
             const response = await getNotifications(1, 20);
             
-            if (response.data.success) {
-                setNotifications(response.data.data);
+            if (response.success) {
+                const notificationsData = Array.isArray(response.data.notifications) ? response.data.notifications : [];
+                setNotifications(notificationsData);
                 const newUnreadCount = response.data.unreadCount || 0;
                 setUnreadCount(newUnreadCount);
                 

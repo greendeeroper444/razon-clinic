@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import styles from './Navigation.module.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faSignOutAlt, faTimes, faUser } from '@fortawesome/free-solid-svg-icons';
+import { Menu, LogOut, X, User } from 'lucide-react';
 import rpcLogo from '../../../assets/icons/rpc-logo.png';
 import { toast } from 'sonner';
 import { useAuthenticationStore } from '../../../stores/authenticationStore';
@@ -75,7 +74,7 @@ const Navigation = () => {
                                     onClick={handleLogout}
                                     className={styles.logoutButton}
                                 >
-                                    <FontAwesomeIcon icon={faSignOutAlt} className={styles.authIcon} />
+                                    <LogOut size={18} className={styles.authIcon} />
                                     Logout
                                 </button>
                             </>
@@ -83,7 +82,7 @@ const Navigation = () => {
                             //show login and signup when not authenticated
                             <>
                                 <Link to='/login' className={`${styles.loginLink} ${isActive('/login') ? styles.active : ''}`}>
-                                    <FontAwesomeIcon icon={faUser} className={styles.authIcon} />
+                                    <User size={18} className={styles.authIcon} />
                                     Login
                                 </Link>
                                 <Link to='/signup' className={`${styles.signupLink} ${isActive('/signup') ? styles.active : ''}`}>Sign Up</Link>
@@ -94,7 +93,7 @@ const Navigation = () => {
             </div>
             
             <button type='submit' className={styles.menuToggle} onClick={toggleMenu} aria-label='Toggle menu'>
-                <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
             
             {/*mobile menu overlay */}
@@ -138,7 +137,7 @@ const Navigation = () => {
                                     onClick={handleLogout}
                                     className={styles.logoutButton}
                                 >
-                                    <FontAwesomeIcon icon={faSignOutAlt} className={styles.authIcon} />
+                                    <LogOut size={18} className={styles.authIcon} />
                                     Logout
                                 </button>
                             </>
@@ -148,7 +147,7 @@ const Navigation = () => {
                                 <Link to='/login' 
                                     className={`${styles.loginLink} ${isActive('/login') ? styles.active : ''}`}
                                     onClick={toggleMenu}>
-                                    <FontAwesomeIcon icon={faUser} className={styles.authIcon} />
+                                    <User size={18} className={styles.authIcon} />
                                     Login
                                 </Link>
                                 <Link to='/signup' 

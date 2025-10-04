@@ -1,21 +1,7 @@
 import { useState, useEffect } from 'react'
 import styles from './Sidebar.module.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faClinicMedical, 
-    faTachometerAlt, 
-    faCalendarCheck, 
-    faProcedures, 
-    faPills, 
-    faSignOutAlt, 
-    faArchive,
-    faBars,
-    faChevronLeft,
-    faFileMedical,
-    faCreditCard,
-    faUser
-} from '@fortawesome/free-solid-svg-icons';
+import { Hospital, LayoutDashboard, CalendarCheck, Bed, Pill, LogOut, Menu, ChevronLeft, FileText, CreditCard, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { SidebarProps } from '../../../types';
 import { useAuthenticationStore } from '../../../stores/authenticationStore';
@@ -30,20 +16,16 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
         user,
     } = useAuthenticationStore()
 
-    
-    //check if screen size is mobile
+
     useEffect(() => {
         const checkScreenSize = () => {
             setIsMobile(window.innerWidth <= 768);
         };
         
-        //initial check
         checkScreenSize();
         
-        //add event listener
         window.addEventListener('resize', checkScreenSize);
         
-        //cleanup
         return () => window.removeEventListener('resize', checkScreenSize);
     }, []);
     
@@ -54,7 +36,6 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
 
             logout();
 
-            //redirect to login page
             navigate('/');
         } catch (error) {
             if (error instanceof Error) {
@@ -75,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     onClick={toggleSidebar}
                     aria-label='Open sidebar'
                 >
-                    <FontAwesomeIcon icon={faBars} />
+                    <Menu size={20} />
                 </button>
             )
         }
@@ -87,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
         `}>
             <div className={styles.sidebarHeader}>
                 <h2>
-                    <FontAwesomeIcon icon={faClinicMedical} color='#4169ff' size='1x' />
+                    <Hospital color='#4169ff' size={20} />
                     {
                         user && (user.role === 'Doctor') ? (
                             <span className={styles.logoText}>Doctor Panel</span>
@@ -105,7 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     onClick={toggleSidebar}
                     aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                 >
-                    <FontAwesomeIcon icon={faChevronLeft} />
+                    <ChevronLeft size={20} />
                 </button>
             </div>
 
@@ -117,7 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     className={`${styles.menuItem} ${isActive('/admin/dashboard') ? styles.active : ''}`}
                     title='Dashboard'
                 >
-                    <FontAwesomeIcon icon={faTachometerAlt} color='#94a3b8' />
+                    <LayoutDashboard color='#94a3b8' size={20} />
                     <span className={styles.menuText}>Dashboard</span>
                 </Link>
 
@@ -129,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                                 className={`${styles.menuItem} ${isActive('/admin/appointments') ? styles.active : ''}`}
                                 title='Appointments'
                             >
-                                <FontAwesomeIcon icon={faCalendarCheck} color='#94a3b8' />
+                                <CalendarCheck color='#94a3b8' size={20} />
                                 <span className={styles.menuText}>Appointments</span>
                             </Link>
 
@@ -138,7 +119,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                                 className={`${styles.menuItem} ${isActive('/admin/patients') ? styles.active : ''}`}
                                 title='Patients'
                             >
-                                <FontAwesomeIcon icon={faProcedures} color='#94a3b8' />
+                                <Bed color='#94a3b8' size={20} />
                                 <span className={styles.menuText}>Patients</span>
                             </Link>
                         </>
@@ -153,7 +134,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                                 className={`${styles.menuItem} ${isActive('/admin/medical-records') ? styles.active : ''}`}
                                 title='Medical Records'
                             >
-                                <FontAwesomeIcon icon={faFileMedical} color='#94a3b8' />
+                                <FileText color='#94a3b8' size={20} />
                                 <span className={styles.menuText}>Medical Records</span>
                             </Link>
                             {/* <Link
@@ -161,7 +142,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                                 className={`${styles.menuItem} ${isActive('/admin/growth-milestone') ? styles.active : ''}`}
                                 title='Growth Milestone'
                             >
-                                <FontAwesomeIcon icon={faChartLine} color='#94a3b8' />
+                                <TrendingUp color='#94a3b8' size={20} />
                                 <span className={styles.menuText}>Growth Milestone</span>
                             </Link> */}
                         </>
@@ -171,7 +152,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                             className={`${styles.menuItem} ${isActive('/admin/inventory') ? styles.active : ''}`}
                             title='Inventory'
                         >
-                            <FontAwesomeIcon icon={faPills} color='#94a3b8' />
+                            <Pill color='#94a3b8' size={20} />
                             <span className={styles.menuText}>Inventory</span>
                         </Link>
                     )
@@ -183,7 +164,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     className={`${styles.menuItem} ${isActive('/admin/billings-payment') ? styles.active : ''}`}
                     title='Billings'
                 >
-                    <FontAwesomeIcon icon={faCreditCard} color='#94a3b8' />
+                    <CreditCard color='#94a3b8' size={20} />
                     <span className={styles.menuText}>Billings</span>
                 </Link>
                 <Link
@@ -191,7 +172,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     className={`${styles.menuItem} ${isActive('/admin/users') ? styles.active : ''}`}
                     title='Users'
                 >
-                    <FontAwesomeIcon icon={faUser} color='#94a3b8' />
+                    <User color='#94a3b8' size={20} />
                     <span className={styles.menuText}>User Management</span>
                 </Link>
 
@@ -200,7 +181,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     onClick={handleLogout}
                     title='Logout'
                 >
-                    <FontAwesomeIcon icon={faSignOutAlt} color='#94a3b8' />
+                    <LogOut color='#94a3b8' size={20} />
                     <span className={styles.menuText}>Logout</span>
                 </div>
             </div>

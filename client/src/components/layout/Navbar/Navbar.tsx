@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import styles from './Navbar.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faBell, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { Search, Bell, ChevronDown } from 'lucide-react'
 import { getFirstAndLastName, getFirstLetterOfFirstAndLastName } from '../../../utils'
 import { getNotifications } from '../../../services'
 import { NavbarProps } from '../../../types'
@@ -19,10 +18,9 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     } = useAuthenticationStore()
 
 
-    //fetch unread count independently
     const fetchUnreadCount = async () => {
         try {
-            const response = await getNotifications(1, 1); //fetch 1 item to get unread count
+            const response = await getNotifications(1, 1);
             if (response.data.success) {
                 setUnreadCount(response.data.unreadCount || 0);
             }
@@ -45,7 +43,6 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
         }
     }, [isAuthenticated, user?.role]);
 
-    //handle unread count updates from notification component
     const handleUnreadCountChange = (count: number) => {
         setUnreadCount(count);
     };
@@ -112,7 +109,7 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
             
             {/* desktop search bar */}
             <div className={styles.searchBar}>
-                <FontAwesomeIcon icon={faSearch} />
+                <Search size={18} />
                 <input type="text" placeholder='Search patients, medicines...' />
             </div>
         </div>
@@ -123,7 +120,7 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
             showMobileSearch && (
                 <div className={styles.mobileSearchOverlay}>
                     <div className={styles.mobileSearchBar}>
-                        <FontAwesomeIcon icon={faSearch} />
+                        <Search size={18} />
                         <input 
                             ref={searchInputRef}
                             type="text" 
@@ -137,13 +134,13 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
             {/* mobile search icon & bar */}
             <div className={styles.searchContainer}>
                 <div className={styles.mobileSearchIcon} onClick={toggleMobileSearch}>
-                    <FontAwesomeIcon icon={faSearch} />
+                    <Search size={20} />
                 </div>
             </div>
             {
                 user && (user.role === 'Staff') && (
                     <div className={styles.notificationIcon} onClick={toggleNotifications}>
-                        <FontAwesomeIcon icon={faBell} />
+                        <Bell size={20} />
                         
                         {
                             unreadCount > 0 && (
@@ -163,7 +160,7 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
             <div className={styles.userProfile}>
                 <div className={styles.userAvatar}>{getFirstLetterOfFirstAndLastName(user?.firstName)}</div>
                 <div className={styles.userName}>{getFirstAndLastName(user?.firstName)}</div>
-                <FontAwesomeIcon icon={faChevronDown} style={{ fontSize: '0.8rem' }} />
+                <ChevronDown size={14} />
             </div>
         </div>
     </div>

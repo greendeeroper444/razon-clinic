@@ -171,6 +171,13 @@
     background-color: var(--gray-light);
 }
 
+.emptyState {
+    padding: 60px 20px !important;
+    text-align: center !important;
+    color: var(--gray, #64748b);
+    font-size: 16px;
+    font-style: italic;
+}
 /* Responsive adjustments */
 /* @media (max-width: 768px) {
     .notificationPanel {
