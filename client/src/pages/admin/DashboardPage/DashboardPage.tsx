@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import styles from './DashboardPage.module.css';
 import { CalendarDays, UserLock, AlertTriangle, Stethoscope, ChevronRight, ArrowUp, Plus } from 'lucide-react';
-import { AppointmentResponse } from '../../../types';
-import { getFirstLetterOfFirstAndLastName, getMiddleNameInitial, formatDate, formatTime, getStatusClass, getItemIcon, getStockStatus, getExpiryStatus } from '../../../utils';
+import { AppointmentResponse, InventoryItemFormData, TableColumn } from '../../../types';
+import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, getStatusClass, getItemIcon, getStockStatus, getExpiryStatus } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Header, Loading, Main } from '../../../components';
+import { Calendar, Header, Loading, Main, Table } from '../../../components';
 import { useAppointmentStore, useInventoryStore } from '../../../stores';
 
 const DashboardPage = () => {
@@ -22,6 +22,160 @@ const DashboardPage = () => {
     const handleViewClick = (appointment: AppointmentResponse) => {
         navigate(`/admin/appointments/details/${appointment.id}`);
     };
+
+    const handleRestockClick = (item: InventoryItemFormData) => {
+        navigate('/admin/inventory', { 
+            state: { 
+                restockItem: item,
+                openRestock: true 
+            } 
+        });
+    };
+
+    const appointmentColumns: TableColumn<AppointmentResponse>[] = [
+        {
+            key: 'patient',
+            header: 'PATIENT NAME',
+            render: (appointment) => (
+                <div className={styles.patientInfo}>
+                    <div className={styles.patientAvatar}>
+                        {
+                            (() => {
+                                const firstName = appointment.firstName
+                                return firstName 
+                                    ? getFirstLetterOfFirstAndLastName(firstName)
+                                    : 'N/A'
+                            })()
+                        }
+                    </div>
+                    <div>
+                        <div className={styles.patientName}>
+                            {appointment.firstName}
+                        </div>
+                        <div className={styles.patientId}>
+                            APT-ID: {appointment.appointmentNumber || 'Walk-in'}
+                        </div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            key: 'date',
+            header: 'PREFERRED DATE',
+            render: (appointment) => (
+                <div className={styles.appointmentDate}>
+                    {formatDate(appointment.preferredDate)}
+                </div>
+            )
+        },
+        {
+            key: 'time',
+            header: 'PREFERRED TIME',
+            render: (appointment) => (
+                <div className={styles.appointmentTime}>
+                    {formatTime(appointment.preferredTime)}
+                </div>
+            )
+        },
+        {
+            key: 'status',
+            header: 'STATUS',
+            render: (appointment) => (
+                <span className={`${styles.statusBadge} ${getStatusClass(appointment.status, styles)}`}>
+                    {appointment.status}
+                </span>
+            )
+        },
+        {
+            key: 'actions',
+            header: 'ACTIONS',
+            render: (appointment) => (
+                <>
+                    <button 
+                        type='button' 
+                        className={`${styles.actionBtn} ${styles.view}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewClick(appointment);
+                        }}
+                    >
+                        View
+                    </button>
+                </>
+            )
+        }
+    ];
+
+    const inventoryColumns: TableColumn<InventoryItemFormData>[] = [
+        {
+            key: 'medicine',
+            header: 'MEDICINE',
+            render: (item) => (
+                <div className={styles.medicineInfo}>
+                    <div className={styles.medicineIcon}>
+                        {
+                            (() => {
+                                const Icon = getItemIcon(item.category);
+                                return <Icon className={styles.icon} />;
+                            })()
+                        }
+                    </div>
+                    <div>
+                        <div className={styles.medicineName}>{item.itemName}</div>
+                        <div className={styles.medicineCategory}>{item.category}</div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            key: 'category',
+            header: 'CATEGORY',
+            render: (item) => item.category
+        },
+        {
+            key: 'price',
+            header: 'PRICE',
+            render: (item) => `₱${item.price}.00`
+        },
+        {
+            key: 'stock',
+            header: 'STOCK',
+            render: (item) => (
+                <span className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
+                    {item.quantityInStock}
+                </span>
+            )
+        },
+        {
+            key: 'used',
+            header: 'USED',
+            render: (item) => item.quantityUsed || 0
+        },
+        {
+            key: 'expiry',
+            header: 'EXPIRY DATE',
+            render: (item) => (
+                <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
+                    {formatDate(item.expiryDate)}
+                </span>
+            )
+        },
+        {
+            key: 'actions',
+            header: 'ACTIONS',
+            render: (item) => (
+                <>
+                    <button 
+                        type='button' 
+                        className={`${styles.actionBtn} ${styles.restock}`}
+                        onClick={() => handleRestockClick(item)}
+                    >
+                        <Plus className={styles.icon} /> Restock
+                    </button>
+                </>
+            )
+        }
+    ];
 
     const dashboardCards = [
         {
@@ -112,81 +266,12 @@ const DashboardPage = () => {
                         />
                     </div>
                 ) : (
-                    <div className={styles.tableResponsive}>
-                        <table className={styles.appointmentsTable}>
-                            <thead>
-                                <tr>
-                                    <th>PATIENT NAME</th>
-                                    <th>PREFERRED DATE</th>
-                                    <th>PREFERRED TIME</th>
-                                    <th>STATUS</th>
-                                    <th>ACTIONS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    appointments.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={5} className={styles.noData}>
-                                                No appointments found.
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        appointments.map((appointment) => (
-                                            <tr key={appointment.id}>
-                                                <td>
-                                                    <div className={styles.patientInfo}>
-                                                        <div className={styles.patientAvatar}>
-                                                            {
-                                                                (() => {
-                                                                    const firstName = appointment.firstName || appointment.firstName;
-                                                                    return firstName 
-                                                                        ? getFirstLetterOfFirstAndLastName(firstName)
-                                                                        : 'N/A';
-                                                                })()
-                                                            }
-                                                        </div>
-                                                        <div>
-                                                            <div className={styles.patientName}>
-                                                                {appointment.firstName} {appointment.lastName} {getMiddleNameInitial(appointment.middleName)}
-                                                            </div>
-                                                            <div className={styles.patientId}>
-                                                                APT-ID: {appointment.appointmentNumber || 'Walk-in'}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div className={styles.appointmentDate}>
-                                                        {formatDate(appointment.preferredDate)}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div className={styles.appointmentTime}>
-                                                        {formatTime(appointment.preferredTime)}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span className={`${styles.statusBadge} ${getStatusClass(appointment.status, styles)}`}>
-                                                        {appointment.status}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <button 
-                                                        type='button' 
-                                                        className={`${styles.actionBtn} ${styles.view}`}
-                                                        onClick={() => handleViewClick(appointment)}
-                                                    >
-                                                        View
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                    <Table
+                        columns={appointmentColumns}
+                        data={appointments}
+                        emptyMessage='No appointments found.'
+                        getRowKey={(appointment) => appointment.id}
+                    />
                 )
             }
         </div>
@@ -217,71 +302,12 @@ const DashboardPage = () => {
                         />
                     </div>
                 ) : (
-                    <div className={styles.tableResponsive}>
-                        <table className={styles.inventoryTable}>
-                            <thead>
-                                <tr>
-                                <th>MEDICINE</th>
-                                <th>CATEGORY</th>
-                                <th>PRICE</th>
-                                <th>STOCK</th>
-                                <th>USED</th>
-                                <th>EXPIRY DATE</th>
-                                <th>ACTIONS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    inventoryItems.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={6} className={styles.noData}>
-                                                No inventory items found.
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        inventoryItems.map((item) => (
-                                            <tr key={item.id}>
-                                                <td>
-                                                    <div className={styles.medicineInfo}>
-                                                        <div className={styles.medicineIcon}>
-                                                            {
-                                                                (() => {
-                                                                    const Icon = getItemIcon(item.category);
-                                                                    return <Icon className={styles.icon} />;
-                                                                })()
-                                                            }
-                                                        </div>
-                                                        <div>
-                                                            <div className={styles.medicineName}>{item.itemName}</div>
-                                                            <div className={styles.medicineCategory}>{item.category}</div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>{item.category}</td>
-                                                <td>
-                                                    ₱{item.price}.00
-                                                </td>
-                                                <td className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
-                                                    {item.quantityInStock}
-                                                </td>
-                                                <td>{item.quantityUsed || 0}</td>
-                                                <td>
-                                                    <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
-                                                        {formatDate(item.expiryDate)}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <button type='button' className={`${styles.actionBtn} ${styles.restock}`} onClick={() => navigate('/admin/inventory')}>
-                                                        <Plus className={styles.icon} /> Restock
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                    <Table
+                        columns={inventoryColumns}
+                        data={inventoryItems}
+                        emptyMessage='No inventory items found'
+                        getRowKey={(item) => item.id || ''}
+                    />
                 )
             }
         </div>

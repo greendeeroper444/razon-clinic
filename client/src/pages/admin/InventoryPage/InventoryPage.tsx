@@ -7,9 +7,11 @@ import { FormDataType, InventoryItemFormData, TableColumn } from '../../../types
 import { formatDate, getExpiryStatus, getItemIcon, getLoadingText, getStockStatus, openModalWithRefresh } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
 import { useInventoryStore } from '../../../stores';
+import { useLocation } from 'react-router-dom';
 
 const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
-
+    const location = useLocation();
+    
     //zustand store selectors
     const {
         inventoryItems,
@@ -56,6 +58,25 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             setIsInitialLoad(false);
         }
     }, [isInitialLoad, fetchData]);
+
+    //open modal when the inventory dashboard click restock
+    useEffect(() => {
+        const state = location.state as { restockItem?: InventoryItemFormData; openRestock?: boolean };
+        
+        if (state?.openRestock && state?.restockItem) {
+            if (!loading && inventoryItems.length > 0) {
+                const currentItem = inventoryItems.find(item => item.id === state.restockItem?.id);
+                
+                if (currentItem) {
+                    openUpdateModal(currentItem, true, true);
+                } else {
+                    openUpdateModal(state.restockItem, true, true);
+                }
+                
+                window.history.replaceState({}, document.title);
+            }
+        }
+    }, [location.state, loading, inventoryItems, openUpdateModal]);
 
     //handle search
     const handleSearch = useCallback((term: string) => {
@@ -151,7 +172,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             key: 'medicine',
             header: 'MEDICINE',
             render: (item) => (
-            <div className={styles.medicineInfo}>
+                <div className={styles.medicineInfo}>
                     <div className={styles.medicineIcon}>
                         {
                             (() => {
@@ -161,10 +182,10 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                         }
                     </div>
                     <div>
-                    <div className={styles.medicineName}>{item.itemName}</div>
-                    <div className={styles.medicineCategory}>{item.category}</div>
+                        <div className={styles.medicineName}>{item.itemName}</div>
+                        <div className={styles.medicineCategory}>{item.category}</div>
+                    </div>
                 </div>
-            </div>
             )
         },
         {
@@ -181,9 +202,9 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             key: 'stock',
             header: 'STOCK',
             render: (item) => (
-            <span className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
-                {item.quantityInStock}
-            </span>
+                <span className={`${styles.stockLevel} ${styles[getStockStatus(item.quantityInStock)]}`}>
+                    {item.quantityInStock}
+                </span>
             )
         },
         {
@@ -195,44 +216,44 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             key: 'expiry',
             header: 'EXPIRY DATE',
             render: (item) => (
-            <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
-                {formatDate(item.expiryDate)}
-            </span>
+                <span className={`${styles.expiryStatus} ${styles[getExpiryStatus(item.expiryDate)]}`}>
+                    {formatDate(item.expiryDate)}
+                </span>
             )
         },
         {
             key: 'actions',
             header: 'ACTIONS',
             render: (item) => (
-            <>
-                <button 
-                type='button'
-                className={`${styles.actionBtn} ${styles.primary}`}
-                onClick={() => handleUpdateClick(item, true, true)}
-                disabled={isProcessing}
-                >
-                <Plus className={styles.icon} /> Restock
-                </button>
-                <button 
-                type='button'
-                className={`${styles.actionBtn} ${styles.update}`}
-                onClick={() => handleUpdateClick(item, false, false)}
-                disabled={isProcessing}
-                >
-                <Edit className={styles.icon} /> Edit
-                </button>
-                <button 
-                type='button'
-                className={`${styles.actionBtn} ${styles.cancel}`}
-                onClick={() => handleDeleteClick(item)}
-                disabled={isProcessing}
-                >
-                <Trash className={styles.icon} /> Delete
-                </button>
-            </>
+                <>
+                    <button 
+                        type='button'
+                        className={`${styles.actionBtn} ${styles.primary}`}
+                        onClick={() => handleUpdateClick(item, true, true)}
+                        disabled={isProcessing}
+                    >
+                        <Plus className={styles.icon} /> Restock
+                    </button>
+                    <button 
+                        type='button'
+                        className={`${styles.actionBtn} ${styles.update}`}
+                        onClick={() => handleUpdateClick(item, false, false)}
+                        disabled={isProcessing}
+                    >
+                        <Edit className={styles.icon} /> Edit
+                    </button>
+                    <button 
+                        type='button'
+                        className={`${styles.actionBtn} ${styles.cancel}`}
+                        onClick={() => handleDeleteClick(item)}
+                        disabled={isProcessing}
+                    >
+                        <Trash className={styles.icon} /> Delete
+                    </button>
+                </>
             )
         }
-        ];
+    ];
 
 
     const headerActions = [

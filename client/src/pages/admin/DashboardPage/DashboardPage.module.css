@@ -206,6 +206,7 @@
 .patientId {
   font-size: 0.75rem;
   color: var(--gray);
+  text-align: start;
 }
 
 .medicineIcon {
@@ -228,6 +229,7 @@
 .medicineCategory {
   font-size: 0.75rem;
   color: var(--gray);
+  text-align: start;
 }
 
 .appointmentTime {
