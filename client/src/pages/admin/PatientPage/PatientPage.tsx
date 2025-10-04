@@ -54,6 +54,10 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     }, [isInitialLoad, fetchData]);
 
+    // useEffect(() => {
+    //     fetchPatients();
+    // }, [fetchPatients]);
+
     //handle search
     const handleSearch = useCallback((term: string) => {
         setSearchTerm(term);
@@ -84,10 +88,6 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
         transformPatientData(patients), 
         [patients]
     );
-
-    useEffect(() => {
-        fetchPatients();
-    }, [fetchPatients]);
 
     const handleOpenModal = useCallback(() => {
         openModalWithRefresh({
@@ -178,7 +178,7 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                         <div className={styles.patientName}>
                             {patient.firstName} {patient.lastName}
                         </div>
-                        <div className={styles.patientId}>#{patient.id}</div>
+                        <div className={styles.patientId}>#{patient.patientNumber}</div>
                     </div>
                 </div>
             )

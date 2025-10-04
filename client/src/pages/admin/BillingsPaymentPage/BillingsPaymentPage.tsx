@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import styles from './BillingsPaymentPage.module.css'
-import { Plus, Download, CreditCard, User, Calendar, Eye } from 'lucide-react';
+import { Plus, Download, CreditCard, User } from 'lucide-react';
 import { BillingFormData, FormDataType, TableColumn } from '../../../types'
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
-import { formatDate, getLoadingText, getMedicalRecordId, getPaymentStatusClass, getStatusClass, getStatusIcon, openModalWithRefresh } from '../../../utils'
+import { formatDate, getLoadingText, getMedicalRecordId, getStatusClass, openModalWithRefresh } from '../../../utils'
 import { useBillingStore } from '../../../stores'
 import { useNavigate } from 'react-router-dom';
 import { getBillingSummaryCards } from '../../../config/billingSummaryCards';
