@@ -2,14 +2,7 @@ const express = require('express');
 const router = express.Router();
 const MedicalRecordController = require('../controllers/medicalRecord.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
-const {
-    validateMedicalRecord,
-    validateMedicalRecordUpdate,
-    validateMedicalRecordId,
-    validateAppointmentId,
-    validateSearchQuery,
-    validateQueryParams
-} = require('../validators/medicalRecord.validator');
+const { validateMedicalRecord, validateMedicalRecordUpdate, validateMedicalRecordId, validateAppointmentId, validateSearchQuery, validateQueryParams } = require('../validators/medicalRecord.validator');
 
 router.post(
     '/addMedicalRecord',
