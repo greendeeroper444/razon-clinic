@@ -67,6 +67,7 @@ export interface UserId {
 }
 export interface Appointment {
     id: string;
+    appointmentId?: string;
     userId: UserId;
     fullName: string;
     firstName?: string;

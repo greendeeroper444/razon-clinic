@@ -120,6 +120,7 @@ const Modal: React.FC<ModalProps> = ({
                 } as InventoryItemFormData);
             } else if (modalType === 'medical') {
                 setFormData({
+                    appointmentId: '',
                     //personal details
                     fullName: '',
                     dateOfBirth: '',

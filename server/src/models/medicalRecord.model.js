@@ -6,6 +6,10 @@ const medicalRecordSchema = new mongoose.Schema(
             type: String,
             unique: true
         },
+        appointmentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Appointment',
+        },
         //personal details (from form)
         personalDetails: {
             fullName: {

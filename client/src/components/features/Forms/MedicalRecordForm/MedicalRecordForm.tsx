@@ -12,6 +12,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
     const [searchResults, setSearchResults] = useState<any>([]);
     const [showSearchDropdown, setShowSearchDropdown] = useState<boolean>(false);
     const [searchLoading, setSearchLoading] = useState<boolean>(false);
+    const [selectedAppointmentId, setSelectedAppointmentId] = useState<string>('');
     const searchTimeoutRef = useRef<number | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -78,16 +79,29 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             setShowSearchDropdown(false);
             setSearchResults([]);
 
+            //IMPORTANT: store the appointmentId
+            const appointmentIdToStore = String(appointment.id || appointment.appointmentId);
+            setSelectedAppointmentId(appointmentIdToStore);
+            
+            //Update the appointmentId in form data immediately
+            updateFormField('appointmentId', appointmentIdToStore);
+
             //first, try to get full appointment data for autofill
             let autofillSuccessful = false;
             
             if (onAutofill) {
                 try {
-                    const response = await getAppointmentForAutofill(String(appointment.id));
+                    const response = await getAppointmentForAutofill(appointmentIdToStore);
                     const autofillData = response.data;
 
+                    //add appointmentId to autofill data
+                    const dataWithAppointmentId = {
+                        ...autofillData,
+                        appointmentId: appointmentIdToStore
+                    };
+
                     //call the parent's autofill function
-                    onAutofill(autofillData);
+                    onAutofill(dataWithAppointmentId);
                     autofillSuccessful = true;
                 } catch (autofillError) {
                     console.log('Autofill API not available, falling back to direct field updates', autofillError);
@@ -105,8 +119,9 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     }
                 }
                 
-                //create the data object with all available fields
+                //create the data object with all available fields INCLUDING appointmentId
                 const fieldsToUpdate = {
+                    appointmentId: appointmentIdToStore,
                     fullName: appointment.fullName || 
                     `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}`.trim(),
                     dateOfBirth: formattedDate,
@@ -125,15 +140,18 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 Object.entries(fieldsToUpdate).forEach(([fieldName, fieldValue], index) => {
                     if (fieldValue !== '' && fieldValue !== null && fieldValue !== undefined) {
                         setTimeout(() => {
-                        updateFormField(fieldName, fieldValue);
+                            updateFormField(fieldName, fieldValue);
                         }, index * 10); //small delay between updates
                     }
                 });
             }
 
-            } catch (error) {
+        } catch (error) {
             console.error('Error selecting appointment:', error);
-            //even if there's an error, still update the name field
+            //even if there's an error, still update the name field and appointmentId
+            const appointmentIdToStore = String(appointment.id || appointment.appointmentId);
+            updateFormField('appointmentId', appointmentIdToStore);
+            
             const fallbackName = appointment.fullName || 
                                 `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}`.trim();
             if (fallbackName) {
@@ -147,7 +165,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
     //handle input focus to show dropdown if there are results
     const handleInputFocus = () => {
         if (searchResults.length > 0 && formData?.fullName && formData.fullName.length >= 2) {
-        setShowSearchDropdown(true);
+            setShowSearchDropdown(true);
         }
     };
 
@@ -191,7 +209,12 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
 
   return (
     <div className={styles.sectionDivider}>
-        {/* ersonal details section*/}
+        {/* Hidden field to store appointmentId */}
+        {selectedAppointmentId && (
+            <input type="hidden" name="appointmentId" value={selectedAppointmentId} />
+        )}
+
+        {/* Personal details section */}
         <h4>Personal Details</h4>
         <div className={styles.formRow}>
             <div className={styles.searchContainer} ref={dropdownRef}>
@@ -240,8 +263,6 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                                         Appointment Day: {formatDate(String(appointment.preferredDate))} - {convertTo12HourFormat(String(appointment.preferredTime))}
                                     </div>
                                     <div className={styles.appointmentBirthGender}>
-                                        {/* {appointment.dateOfBirth}  */}
-                                        {/* {appointment.gender && ` • ${appointment.gender}`} */}
                                          {appointment.gender}
                                     </div>
                                     {
@@ -344,7 +365,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 type='email'
                 label='Email Address'
                 name='email'
-                placeholder="Enter an email ddress"
+                placeholder="Enter an email address"
                 value={formData?.email || ''}
                 onChange={onChange}
                 disabled={isLoading}
@@ -431,10 +452,10 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     type='number'
                     label='Weight (kg)'
                     name='weight'
-                    placeholder="Weight in cm"
+                    placeholder="Weight in kg"
                     value={formData?.weight || ''}
                     onChange={onChange}
-                    min={30}
+                    min={1}
                     max={300}
                     disabled={isLoading}
                 />
@@ -518,7 +539,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             </div>
         </div>
 
-        {/* adddictional medical information */}
+        {/* additional medical information */}
         <div className={styles.sectionDivider}>
             <h4>Additional Information</h4>
             
@@ -544,7 +565,6 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 disabled={isLoading}
             />
 
-
             <TextArea
                 name='treatmentPlan'
                 label='Treatment Plan'
@@ -555,7 +575,6 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 resize='vertical'
                 disabled={isLoading}
             />
-
 
             <TextArea
                 name='prescribedMedications'

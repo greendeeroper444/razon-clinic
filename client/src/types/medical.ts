@@ -95,6 +95,7 @@ export interface CurrentSymptoms {
 export interface MedicalRecordFormData {
     //personal details (flattened for form)
     id: string;
+    appointmentId?: string;
     medicalRecordNumber: string;
     fullName: string;
     dateOfBirth: string;
