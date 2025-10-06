@@ -1,14 +1,15 @@
 const fs = require('fs');
 const path = require('path');
-const twilio = require('twilio');
+const moceansdk = require('mocean-sdk');
 const { logSMSMessage } = require('./smsLogger');
 
-const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+const MOCEAN_API_TOKEN = process.env.MOCEAN_API_TOKEN;
+const MOCEAN_SENDER_ID = process.env.MOCEAN_SENDER_ID || 'MOCEAN';
 
-//list of verified phone numbers for trial account
-const VERIFIED_NUMBERS = process.env.TWILIO_VERIFIED_NUMBERS 
-    ? process.env.TWILIO_VERIFIED_NUMBERS.split(',').map(num => num.trim())
-    : [];
+//initialize mocean client
+const mocean = new moceansdk.Mocean(
+    new moceansdk.Client({ apiToken: MOCEAN_API_TOKEN })
+);
 
 async function sendSMS(to, templatePath, replacements = {}) {
     let message = '';
@@ -42,109 +43,148 @@ async function sendSMS(to, templatePath, replacements = {}) {
             };
         }
 
-        //only check trial account status if not in development mode
-        let isTrial = false;
-        if (!isDevelopment) {
-            try {
-                isTrial = await checkIfTrialAccount();
-            } catch (error) {
-                console.error('Error checking account type, assuming trial account:', error.message);
-                isTrial = true; //assume trial if we can't check
-            }
-        }
-        
-        if (isTrial) {
-            //for trial accounts, check if the number is verified
-            if (!isNumberVerified(to)) {
-                console.log(`Skipping SMS to unverified number ${to} (Trial account limitation)`);
-                
-                //log the message that would have been sent for debugging
-                console.log('Message that would have been sent:', message);
-                logSMSMessage(to, message, 'SKIPPED_UNVERIFIED');
-                
-                //return early without throwing an error
-                return {
-                    success: false,
-                    reason: 'unverified_number',
-                    message: 'Number not verified for trial account'
-                };
-            }
+        //check if API token is configured
+        if (!MOCEAN_API_TOKEN) {
+            console.error('Mocean API token is not configured');
+            logSMSMessage(to, message, 'FAILED_CONFIG');
+            return {
+                success: false,
+                reason: 'configuration_error',
+                message: 'Mocean API token is not configured'
+            };
         }
 
-        //send the SMS
-        const result = await client.messages.create({
-            body: message,
-            from: process.env.TWILIO_PHONE_NUMBER,
-            to,
+        //prepare phone number format for Mocean
+        //Mocean expects numbers with country code (e.g., 60123456789 for Malaysia, 639XXXXXXXXX for Philippines)
+        let moceanNumber = to;
+        if (to.startsWith('+')) {
+            moceanNumber = to.substring(1); // Remove the + sign
+        } else if (to.startsWith('09')) {
+            //convert Philippine mobile format 09XXXXXXXXX to 639XXXXXXXXX
+            moceanNumber = '63' + to.substring(1);
+        } else if (to.startsWith('9')) {
+            //convert 9XXXXXXXXX to 639XXXXXXXXX
+            moceanNumber = '63' + to;
+        }
+
+        console.log(`Sending SMS to ${moceanNumber} via Mocean...`);
+        console.log(`Using sender ID: ${MOCEAN_SENDER_ID}`);
+
+        //send SMS using Mocean SDK
+        return new Promise((resolve, reject) => {
+            mocean.sms().send({
+                'mocean-from': MOCEAN_SENDER_ID,
+                'mocean-to': moceanNumber,
+                'mocean-text': message
+            }, function(err, res) {
+                if (err) {
+                    console.error('Mocean SDK error:', err);
+                    logSMSMessage(to, message, 'FAILED_SDK_ERROR', null, JSON.stringify(err));
+                    
+                    resolve({
+                        success: false,
+                        reason: 'sdk_error',
+                        message: err.message || 'Mocean SDK error',
+                        error: err
+                    });
+                    return;
+                }
+
+                //parse Mocean response
+                console.log('Mocean Response:', JSON.stringify(res, null, 2));
+                
+                if (res && res.messages && res.messages.length > 0) {
+                    const firstMessage = res.messages[0];
+                    
+                    if (firstMessage.status === '0' || firstMessage.status === 0) {
+                        //status 0 means success
+                        const msgId = firstMessage.msgid;
+                        console.log(`SMS sent successfully to ${to}. Message ID: ${msgId}`);
+                        logSMSMessage(to, message, 'SENT', msgId);
+                        
+                        resolve({
+                            success: true,
+                            msgId: msgId,
+                            receiver: firstMessage.receiver
+                        });
+                    } else {
+                        //handle various Mocean error statuses
+                        const errorMessage = getMoceanErrorMessage(firstMessage.status);
+                        const actualError = firstMessage.err_msg || errorMessage;
+                        
+                        console.log(`SMS not sent to ${to}: ${actualError} (Status: ${firstMessage.status})`);
+                        
+                        //special handling for whitelist errors in development
+                        if (firstMessage.status === 4 && firstMessage.err_msg?.includes('not whitelisted')) {
+                            console.log(`⚠️  WHITELIST REQUIRED: Add ${moceanNumber} to your Mocean dashboard whitelist`);
+                            logSMSMessage(to, message, 'FAILED_NOT_WHITELISTED', null, actualError);
+                        } else {
+                            logSMSMessage(to, message, 'FAILED_MOCEAN_ERROR', null, actualError);
+                        }
+                        
+                        resolve({
+                            success: false,
+                            reason: 'mocean_error',
+                            status: firstMessage.status,
+                            message: actualError,
+                            errorMsg: firstMessage.err_msg || errorMessage
+                        });
+                    }
+                } else {
+                    console.error('Unexpected Mocean response format:', res);
+                    logSMSMessage(to, message, 'FAILED_UNEXPECTED_RESPONSE');
+                    
+                    resolve({
+                        success: false,
+                        reason: 'unexpected_response',
+                        message: 'Unexpected response format from Mocean'
+                    });
+                }
+            });
         });
 
-        console.log(`SMS sent successfully to ${to}. SID: ${result.sid}`);
-        logSMSMessage(to, message, 'SENT', result.sid);
+    } catch (error) {
+        console.error('SMS sending failed:', error);
+        logSMSMessage(to, message, 'FAILED_OTHER', null, error.message);
         
         return {
-            success: true,
-            sid: result.sid
+            success: false,
+            reason: 'unexpected_error',
+            message: error.message
         };
-
-    } catch (error) {
-        //handle specific Twilio errors gracefully
-        if (error.code === 21608) {
-            console.log(`SMS not sent: Phone number ${to} is unverified (Trial account limitation)`);
-            logSMSMessage(to, message, 'FAILED_UNVERIFIED');
-            return {
-                success: false,
-                reason: 'unverified_number',
-                message: 'Number not verified for trial account'
-            };
-        } else if (error.code === 21211) {
-            console.log(`SMS not sent: Invalid phone number format ${to}`);
-            logSMSMessage(to, message, 'FAILED_INVALID_NUMBER');
-            return {
-                success: false,
-                reason: 'invalid_number',
-                message: 'Invalid phone number format'
-            };
-        } else if (error.code === 20003) {
-            console.log(`SMS not sent: Authentication error - check your Twilio credentials`);
-            logSMSMessage(to, message, 'FAILED_AUTH');
-            return {
-                success: false,
-                reason: 'authentication_error',
-                message: 'Twilio authentication failed - check credentials'
-            };
-        } else {
-            console.error('SMS sending failed:', error);
-            logSMSMessage(to, message, 'FAILED_OTHER', null, error.message);
-            return {
-                success: false,
-                reason: 'unexpected_error',
-                message: error.message
-            };
-        }
     }
 }
 
-//check if the account is a trial account
-async function checkIfTrialAccount() {
-    try {
-        const account = await client.api.accounts(process.env.TWILIO_SID).fetch();
-        return account.type === 'Trial';
-    } catch (error) {
-        //if we can't check the account type due to auth issues, throw the error
-        throw error;
-    }
+//helper function to get human-readable error messages from Mocean status codes
+function getMoceanErrorMessage(status) {
+    const statusStr = String(status);
+    const errorMessages = {
+        '1': 'Throttled - You have exceeded the submission capacity allowed',
+        '2': 'Missing Credentials',
+        '3': 'Invalid Credentials',
+        '4': 'Invalid message parameters',
+        '5': 'Invalid phone number',
+        '6': 'Invalid sender name',
+        '7': 'Message too long',
+        '8': 'Invalid Unicode data',
+        '9': 'System error - please retry',
+        '10': 'Cannot route message',
+        '11': 'Message expired',
+        '12': 'Destination barred',
+        '13': 'Unknown error',
+        '14': 'Insufficient credits',
+        '15': 'Account suspended',
+        '20': 'Missing mandatory parameters'
+    };
+
+    return errorMessages[statusStr] || `Unknown error (Status: ${status})`;
 }
 
-//check if a phone number is in the verified list
-function isNumberVerified(phoneNumber) {
-    return VERIFIED_NUMBERS.includes(phoneNumber);
-}
-
-//alternative function to send email instead of SMS for unverified numbers
+//alternative function to send email instead of SMS for failed numbers
 async function sendNotificationFallback(to, templatePath, replacements = {}, patientEmail = null) {
     const smsResult = await sendSMS(to, templatePath, replacements);
     
-    if (!smsResult.success && smsResult.reason === 'unverified_number' && patientEmail) {
+    if (!smsResult.success && patientEmail) {
         //fallback to email notification
         console.log(`Falling back to email notification for ${patientEmail}`);
         //we would implement email sending here
@@ -152,7 +192,7 @@ async function sendNotificationFallback(to, templatePath, replacements = {}, pat
         return {
             success: true,
             method: 'email',
-            message: 'Sent via email due to unverified SMS number'
+            message: 'Sent via email due to SMS failure'
         };
     }
     

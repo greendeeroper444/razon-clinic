@@ -316,3 +316,307 @@ Thank you for visiting us. We hope you had a great experience. If you have any q
 Take care!
 
 ---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-05T16:57:17.753Z
+To: +639501049657
+Status: SENT
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment has been SCHEDULED!
+
+Appointment Details:
+- Appointment #: 0001
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-05T16:59:59.060Z
+To: +639168309254
+Status: SENT
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been marked as COMPLETED.
+
+Date: October 17, 2025
+Time: 10:45
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-05T17:03:21.886Z
+To: +639168309254
+Status: SENT
+Message:
+Hello Greendee Roper Panogalon,
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0001
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-05T17:08:20.474Z
+To: +639168309254
+Status: FAILED_OTHER
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been REBOOKED.
+
+Previous Details:
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-05T17:08:41.915Z
+To: +639168309254
+Status: FAILED_OTHER
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment has been SCHEDULED!
+
+Appointment Details:
+- Appointment #: 0001
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-05T17:10:35.753Z
+To: +639168309254
+Status: FAILED_OTHER
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been marked as COMPLETED.
+
+Date: October 17, 2025
+Time: 10:45
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-05T17:10:54.992Z
+To: +639168309254
+Status: FAILED_OTHER
+Message:
+Hello Greendee Roper Panogalon,
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0001
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-05T17:11:45.681Z
+To: +639168309254
+Status: FAILED_OTHER
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been REBOOKED.
+
+Previous Details:
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-06T10:05:24.483Z
+To: +639168309254
+Status: FAILED_OTHER
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment has been SCHEDULED!
+
+Appointment Details:
+- Appointment #: 0001
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-06T10:07:51.886Z
+To: +639168309254
+Status: FAILED_OTHER
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been marked as COMPLETED.
+
+Date: October 17, 2025
+Time: 10:45
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-06T10:36:54.731Z
+To: +639168309254
+Status: FAILED_API_ERROR
+Message:
+Hello Greendee Roper Panogalon,
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0001
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-06T10:44:04.552Z
+To: +639168309254
+Status: FAILED_API_ERROR
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been REBOOKED.
+
+Previous Details:
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-06T10:47:17.490Z
+To: +639168309254
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment has been SCHEDULED!
+
+Appointment Details:
+- Appointment #: 0001
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-06T10:49:56.799Z
+To: +639168309254
+Status: FAILED_NOT_WHITELISTED
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been marked as COMPLETED.
+
+Date: October 17, 2025
+Time: 10:45
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-06T12:56:23.335Z
+To: +639168309254
+Status: FAILED_NOT_WHITELISTED
+Message:
+Hello Greendee Roper Panogalon,
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0001
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-10-06T12:59:16.178Z
+To: +639168309254
+Status: SENT
+Message:
+Hello Greendee Roper Panogalon,
+
+Your appointment #0001 has been REBOOKED.
+
+Previous Details:
+- Date: October 17, 2025
+- Time: 10:45
+- Reason: reason for visit
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
