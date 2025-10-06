@@ -4,8 +4,15 @@ class AppointmentController {
 
     async addAppointment(req, res, next) {
         try {
+            const userId = req.user.id;
             const createNotifications = !req.user || req.user.role === 'User';
-            const appointments = await AppointmentService.createAppointment(req.body, createNotifications);
+            
+            const appointmentData = {
+                ...req.body,
+                userId: userId
+            };
+            
+            const appointments = await AppointmentService.createAppointment(appointmentData, createNotifications);
 
             return res.status(201).json({
                 success: true,
@@ -39,19 +46,7 @@ class AppointmentController {
         }
     }
 
-    // async getAppointments(req, res, next) {
-    //     try {
-    //         const result = await AppointmentService.getAppointments(req.query);
-
-    //         return res.status(200).json({
-    //             success: true,
-    //             message: 'Appointments retrieved successfully',
-    //             data: result
-    //         });
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // }
+    
     async getAppointments(req, res, next) {
         try {
             const isMyAppointmentsRoute = req.route.path === '/getMyAppointments';
