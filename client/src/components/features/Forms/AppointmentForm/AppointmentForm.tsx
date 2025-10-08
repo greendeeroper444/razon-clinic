@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react'
 import styles from './AppointmentForm.module.css'
 import { getAppointments } from '../../../../services'
 import { convertTo12HourFormat, generateTimeSlots } from '../../../../utils'
-import { AppointmentFormProps } from '../../../../types'
+import { AppointmentFormData, AppointmentFormProps } from '../../../../types'
 import Input from '../../../ui/Input/Input'
 import Select, { SelectOption } from '../../../ui/Select/Select'
 import TextArea from '../../../ui/TextArea/TextArea'
@@ -15,21 +14,20 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 }) => {
     const [bookedSlots, setBookedSlots] = useState<{date: string, time: string, time12Hour?: string}[]>([]);
     const [availableTimes, setAvailableTimes] = useState<string[]>([]);
-    const [additionalPatients, setAdditionalPatients] = useState<any[]>([]);
 
     //fetch existing appointments to check for conflicts
     useEffect(() => {
         const fetchBookedSlots = async () => {
             try {
-                const response = await getAppointments();
-                if (response.data.success) {
-                    const appointments = response.data.data;
+                const response = await getAppointments({ page: 0, limit: 0 });
+                if (response.success) {
+                    const appointments = response.data.appointments;
                     const slots = appointments
-                        .filter(apt => apt.status !== 'Cancelled') // exclude cancelled appointments
-                        .map(apt => ({
-                            date: new Date(apt.preferredDate).toISOString().split('T')[0],
-                            time: apt.preferredTime,
-                            time12Hour: convertTo12HourFormat(apt.preferredTime) // convert to 12-hour format
+                        .filter((appointment: AppointmentFormData) => appointment.status !== 'Cancelled')
+                        .map((appointment: AppointmentFormData) => ({
+                            date: new Date(appointment.preferredDate).toISOString().split('T')[0],
+                            time: appointment.preferredTime,
+                            time12Hour: convertTo12HourFormat(appointment.preferredTime)
                         }));
                     setBookedSlots(slots);
                 }
@@ -50,7 +48,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             //filter out booked times for the selected date
             const bookedTimesForDate = bookedSlots
                 .filter(slot => slot.date === selectedDate)
-                .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); // 12-hour format for comparison
+                .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time));
             
             const available = allTimes.filter(time => !bookedTimesForDate.includes(time));
             setAvailableTimes(available);
@@ -58,33 +56,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             setAvailableTimes(generateTimeSlots());
         }
     }, [formData?.preferredDate, bookedSlots]);
-
-    //update formData when patients change
-    useEffect(() => {
-        if (additionalPatients.length > 0) {
-            //create patients array including primary patient
-            const primaryPatient = {
-                firstName: formData?.firstName || '',
-                lastName: formData?.lastName || '',
-                middleName: formData?.middleName || '',
-                birthdate: formData?.birthdate || '',
-                sex: formData?.sex || '',
-                height: formData?.height || '',
-                weight: formData?.weight || ''
-            };
-            
-            const allPatients = [primaryPatient, ...additionalPatients];
-            
-            //update formData with patients array
-            onChange({
-                target: {
-                    name: 'patients',
-                    value: allPatients
-                }
-            } as any);
-        }
-    }, [additionalPatients, formData?.firstName, formData?.lastName, formData?.middleName, formData?.birthdate, formData?.sex, formData?.height, formData?.weight]);
-
 
     const getReasonError = () => {
         const reason = formData?.reasonForVisit || '';
@@ -100,13 +71,25 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         return undefined;
     };
 
+    // check if a specific time is available for the selected date
+    const isTimeAvailable = (time: string): boolean => {
+        if (!formData?.preferredDate) return true;
+        
+        const bookedTimesForDate = bookedSlots
+            .filter(slot => slot.date === formData.preferredDate)
+            .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time));
+        
+        return !bookedTimesForDate.includes(time);
+    };
 
     const generateTimeOptions = (): SelectOption[] => {
-        return generateTimeSlots().map(time => {
+        const allTimes = generateTimeSlots();
+        
+        return allTimes.map(time => {
             const isAvailable = isTimeAvailable(time);
             return {
                 value: time,
-                label: `${time}${!isAvailable ? ' (Not Available)' : ''}`,
+                label: isAvailable ? time : `${time} (Booked)`,
                 disabled: !isAvailable
             };
         });
@@ -114,31 +97,19 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
     const getTimeSelectError = () => {
         if (formData?.preferredDate && availableTimes.length === 0) {
-            return 'No available times for this date.';
+            return 'No available times for this date. Please select another date.';
         }
         return undefined;
     };
-
 
     // check if a date has any available times
     const isDateAvailable = (dateString: string) => {
         const bookedTimesForDate = bookedSlots
             .filter(slot => slot.date === dateString)
-            .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); // 12-hour format
+            .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time));
         
         const allTimes = generateTimeSlots();
         return allTimes.some(time => !bookedTimesForDate.includes(time));
-    };
-
-    //check if a specific time is available for the selected date
-    const isTimeAvailable = (time: string) => {
-        if (!formData?.preferredDate) return true;
-        
-        const bookedTimesForDate = bookedSlots
-            .filter(slot => slot.date === formData.preferredDate)
-            .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); // 12-hour format for comparison
-        
-        return !bookedTimesForDate.includes(time);
     };
 
     //handle date change
@@ -148,17 +119,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         //first update the date
         onChange(e);
         
-        //check if the selected date has available times
-        if (selectedDate && !isDateAvailable(selectedDate)) {
-            //don't prevent the change, just show warning
-            return;
-        }
-        
         //clear the time if it's no longer available for the new date
         if (formData?.preferredTime && selectedDate) {
             const bookedTimesForDate = bookedSlots
                 .filter(slot => slot.date === selectedDate)
-                .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time)); // 12-hour format
+                .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time));
             
             if (bookedTimesForDate.includes(formData.preferredTime)) {
                 //clear the time selection
@@ -185,187 +150,92 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         onChange(e);
     };
 
-    //add new patient
-    const addPatient = () => {
-        const newPatient = {
-            firstName: '',
-            lastName: '',
-            middleName: '',
-            birthdate: '',
-            sex: '',
-            height: '',
-            weight: '',
-        };
-        setAdditionalPatients([...additionalPatients, newPatient]);
-    };
-
-    //remove patient
-    const removePatient = (index: number) => {
-        const updatedPatients = additionalPatients.filter((_, i) => i !== index);
-        setAdditionalPatients(updatedPatients);
-    };
-
-    //handle additional patient data change
-    const handleAdditionalPatientChange = (index: number, field: string, value: string) => {
-        const updatedPatients = [...additionalPatients];
-        updatedPatients[index] = { ...updatedPatients[index], [field]: value };
-        setAdditionalPatients(updatedPatients);
-    };
-
-    //handle primary patient change
-    const handlePrimaryPatientChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        onChange(e);
-    };
-
-    //render patient information form
-    const renderPatientForm = (patient: any, index: number, isAdditional: boolean = false) => {
-        const fieldPrefix = isAdditional ? `additional_${index}_` : '';
-        const patientData = isAdditional ? patient : formData;
-        const handleChange = isAdditional 
-            ? (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => 
-                handleAdditionalPatientChange(index, e.target.name.replace(fieldPrefix, ''), e.target.value)
-            : handlePrimaryPatientChange;
-
-        return (
-            <div key={isAdditional ? `additional_${index}` : 'primary'}>
-                <h4>{isAdditional ? `Patient ${index + 2} Information` : 'Patient Information'}</h4>
-                <div className={styles.removePatientContainer}>
-                   
-                    {
-                        isAdditional && (
-                            <button
-                                type="button"
-                                onClick={() => removePatient(index)}
-                                className={styles.removePatient}
-                                disabled={isLoading}
-                            >
-                                Remove Patient
-                            </button>
-                        )
-                    }
-                </div>
-                
-                <Input
-                    type='text'
-                    label='First Name'
-                    name={`${fieldPrefix}firstName`}
-                    placeholder="Patient's first name"
-                    value={patientData?.firstName || ''}
-                    onChange={handleChange}
-                />
-
-                <br />
-                
-                <Input
-                    type='text'
-                    label='Last Name'
-                    name={`${fieldPrefix}lastName`}
-                    placeholder="Patient's last name"
-                    value={patientData?.lastName || ''}
-                    onChange={handleChange}
-                />
-
-                <br />
-
-                <Input
-                    type='text'
-                    label='Middle Name (Optional)'
-                    name={`${fieldPrefix}middleName`}
-                    placeholder="Patient's middle name (optional)"
-                    value={patientData?.middleName || ''}
-                    onChange={handleChange}
-                />
-
-                <br />
-
-                <div className={styles.formRow}>
-
-                    <Input
-                        type='date'
-                        label='Birthday'
-                        name={`${fieldPrefix}birthdate`}
-                        placeholder={patientData.birthdate ? undefined : 'Select your birthdate'}
-                        leftIcon='calendar'
-                        value={patientData.birthdate || ''}
-                        onChange={handleChange}
-                        onFocus={(e) => {
-                            const target = e.target as HTMLInputElement;
-                            target.type = 'date';
-                        }}
-                    />
-
-                    <Select
-                        label='Gender'
-                        name={`${fieldPrefix}sex`}
-                        title='Select Gender'
-                        leftIcon='users'
-                        placeholder='Select Gender'
-                        value={patientData.sex || ''}
-                        onChange={handleChange}
-                        options={[
-                            { value: 'Male', label: 'Male' },
-                            { value: 'Female', label: 'Female' },
-                            { value: 'Other', label: 'Other' }
-                        ]}
-                    />
-                </div>
-
-                <div className={styles.formRow}>
-                    <Input
-                        type='number'
-                        label='Height (cm)'
-                        name={`${fieldPrefix}height`}
-                        placeholder="Height in cm"
-                        value={patientData?.height || ''}
-                        onChange={handleChange}
-                    />
-
-                    <Input
-                        type='number'
-                        label='Weight (cm)'
-                        name={`${fieldPrefix}weight`}
-                        placeholder="Weight in cm"
-                        value={patientData?.weight || ''}
-                        onChange={handleChange}
-                    />
-                </div>
-            </div>
-        );
-    };
-
   return (
     <div className={styles.sectionDivider}>
-        {/* primary patient information */}
-        {renderPatientForm(null, 0, false)}
+        <h4>Patient Information</h4>
+        
+        <Input
+            type='text'
+            label='First Name'
+            name='firstName'
+            placeholder="Patient's first name"
+            value={formData?.firstName || ''}
+            onChange={onChange}
+        />
 
-        {/* additional patients */}
-        {
-            additionalPatients.map((patient, index) => (
-                <div key={index} className={styles.sectionDivider}>
-                    {renderPatientForm(patient, index, true)}
-                </div>
-            ))
-        }
+        <br />
+        
+        <Input
+            type='text'
+            label='Last Name'
+            name='lastName'
+            placeholder="Patient's last name"
+            value={formData?.lastName || ''}
+            onChange={onChange}
+        />
 
-        {/* add patient button */}
-        <div className={styles.addPatientContainer}>
-            <button
-                type="button"
-                onClick={addPatient}
-                disabled={isLoading}
-                className={styles.addPatient}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
-            >
-                + Add Another Patient
-            </button>
-            {
-                additionalPatients.length > 0 && (
-                    <p className={styles.totalPatient}>
-                        Total patients: {additionalPatients.length + 1}
-                    </p>
-                )
-            }
+        <br />
+
+        <Input
+            type='text'
+            label='Middle Name (Optional)'
+            name='middleName'
+            placeholder="Patient's middle name (optional)"
+            value={formData?.middleName || ''}
+            onChange={onChange}
+        />
+
+        <br />
+
+        <div className={styles.formRow}>
+            <Input
+                type='date'
+                label='Birthday'
+                name='birthdate'
+                placeholder={formData?.birthdate ? undefined : 'Select your birthdate'}
+                leftIcon='calendar'
+                value={formData?.birthdate || ''}
+                onChange={onChange}
+                onFocus={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    target.type = 'date';
+                }}
+            />
+
+            <Select
+                label='Gender'
+                name='sex'
+                title='Select Gender'
+                leftIcon='users'
+                placeholder='Select Gender'
+                value={formData?.sex || ''}
+                onChange={onChange}
+                options={[
+                    { value: 'Male', label: 'Male' },
+                    { value: 'Female', label: 'Female' },
+                    { value: 'Other', label: 'Other' }
+                ]}
+            />
+        </div>
+
+        <div className={styles.formRow}>
+            <Input
+                type='number'
+                label='Height (cm)'
+                name='height'
+                placeholder="Height in cm"
+                value={formData?.height || ''}
+                onChange={onChange}
+            />
+
+            <Input
+                type='number'
+                label='Weight (kg)'
+                name='weight'
+                placeholder="Weight in kg"
+                value={formData?.weight || ''}
+                onChange={onChange}
+            />
         </div>
 
         {/* mother's information */}
@@ -476,7 +346,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         {/* appointment details */}
         <h4>Appointment Details</h4>
         <div className={styles.formRow}>
-
             <Input
                 type="date"
                 id="preferredDate"
@@ -485,7 +354,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 leftIcon="calendar"
                 value={formData?.preferredDate || ''}
                 onChange={handleDateChange}
-                min={new Date().toISOString().split('T')[0]} // prevent past dates
+                min={new Date().toISOString().split('T')[0]}
                 required
                 disabled={isLoading}
                 error={
@@ -527,9 +396,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             error={getReasonError()}
             resize="vertical"
         />
-
     </div>
-  )
+  ) 
 }
 
 export default AppointmentForm
