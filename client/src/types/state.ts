@@ -161,6 +161,7 @@ export interface MedicalRecordState {
 
     //actions
     fetchMedicalRecords: (params?: FetchParams) => Promise<void>;
+    fetchMyMedicalRecords: (params?: FetchParams) => Promise<void>;
     fetchMedicalRecordById: (medicalRecordId: string) => Promise<void>;
     addMedicalRecord: (data: MedicalRecordFormData) => Promise<void>;
     updateMedicalRecordData: (id: string, data: MedicalRecordFormData) => Promise<void>;

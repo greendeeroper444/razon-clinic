@@ -48,6 +48,34 @@ export const getMedicalRecords = async (params = {}) => {
     }
 };
 
+
+export const getMyMedicalRecords = async (params = {}) => {
+    try {
+
+        const defaultParams = {
+            page: 1,
+            limit: 10,
+            search: ''
+        };
+
+        const queryParams = { ...defaultParams, ...params };
+
+        const response  =  await axios.get(
+            `${API_BASE_URL}/api/medicalRecords/getMyMedicalRecords`,
+            { params: queryParams }
+        );
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching medical records:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+
+        throw error;
+    }
+};
+
 //get medical record by id
 export const getMedicalRecordById = async (medicalRecordId: string) => {
     try {

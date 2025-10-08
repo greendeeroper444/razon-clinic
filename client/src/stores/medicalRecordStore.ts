@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { MedicalRecordFormData, OperationType, MedicalRecord, ExtendedMedicalRecordState, Patient, FetchParams } from '../types'
-import { deleteMedicalRecord, getMedicalRecordById, getMedicalRecords, updateMedicalRecord, addMedicalRecord } from '../services';
+import { deleteMedicalRecord, getMedicalRecordById, getMedicalRecords, updateMedicalRecord, addMedicalRecord, getMyMedicalRecords } from '../services';
 import { toast } from 'sonner';
 
 export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
@@ -88,6 +88,78 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     set({ fetchLoading: true, loading: true, error: null });
                     
                     const response = await getMedicalRecords(params);
+                    
+                    if (response.success) {
+                        const medicalRecords = response.data.medicalRecords || [];
+                        const pagination = response.data.pagination || {};
+
+                        //extract unique patients from medical records for the modal dropdown
+                        const uniquePatients = Array.from(
+                            new Map(
+                                medicalRecords
+                                    .filter((record: MedicalRecord) => record?.id) 
+                                    .map((record: MedicalRecord) => [
+                                        record.id,
+                                        {
+                                            id: record.id,
+                                            firstName: record.personalDetails?.fullName || 'N/A'
+                                        }
+                                    ])
+                            ).values()
+                        );
+
+                        set({ 
+                            medicalRecords,
+                            patients: uniquePatients as Patient[],
+                            pagination: {
+                                currentPage: pagination.currentPage || 1,
+                                totalPages: pagination.totalPages || 1,
+                                totalItems: pagination.totalItems || 0,
+                                itemsPerPage: pagination.itemsPerPage || 10,
+                                hasNextPage: pagination.hasNextPage || false,
+                                hasPreviousPage: pagination.hasPreviousPage || false,
+                                startIndex: pagination.startIndex || 1,
+                                endIndex: pagination.endIndex || 0,
+                                isUnlimited: pagination.isUnlimited || false,
+                                nextPage: pagination.nextPage,
+                                previousPage: pagination.previousPage,
+                                remainingItems: pagination.remainingItems || 0,
+                                searchTerm: pagination.searchTerm || null
+                            },
+                            fetchLoading: false,
+                            loading: false,
+                            error: null
+                        });
+                    } else {
+                        set({ 
+                            error: response.message || 'Failed to fetch medical records', 
+                            fetchLoading: false,
+                            loading: false 
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error fetching medical records:', error);
+                    set({ 
+                        fetchLoading: false,
+                        error: 'An error occurred while fetching medical records', 
+                        loading: false 
+                    });
+                }
+            },
+
+            fetchMyMedicalRecords: async (params: FetchParams) => {
+                const currentState = get();
+                
+                //prevent multiple simultaneous fetches
+                if (currentState.fetchLoading) {
+                    console.log('Fetch already in progress, skipping...');
+                    return;
+                }
+
+                try {
+                    set({ fetchLoading: true, loading: true, error: null });
+                    
+                    const response = await getMyMedicalRecords(params);
                     
                     if (response.success) {
                         const medicalRecords = response.data.medicalRecords || [];

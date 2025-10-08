@@ -21,7 +21,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         pagination,
         showDetails,
         selectedRecord,
-        fetchMedicalRecords,
+        fetchMyMedicalRecords,
         viewMedicalRecord,
         closeDetailsModal,
         handlePageChange,
@@ -30,18 +30,18 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
 
 
     useEffect(() => {
-        fetchMedicalRecords();
-    }, [fetchMedicalRecords]);
+        fetchMyMedicalRecords();
+    }, [fetchMyMedicalRecords]);
 
     //handle search with debounce
     useEffect(() => {
         // const delayedSearch = setTimeout(() => {
-        //     fetchMedicalRecords(1, searchTerm);
+        //     fetchMyMedicalRecords(1, searchTerm);
         // }, 500);
 
         // return () => clearTimeout(delayedSearch);
-        fetchMedicalRecords(1, searchTerm);
-    }, [fetchMedicalRecords, searchTerm]);
+        fetchMyMedicalRecords(1, searchTerm);
+    }, [fetchMyMedicalRecords, searchTerm]);
 
 
     const handleReport = () => {
