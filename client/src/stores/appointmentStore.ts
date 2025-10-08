@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus } from '../services'
+import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus as updateAppointmentStatusService  } from '../services'
 import { AppointmentFormData, Patient, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
 import { toast } from 'sonner'
 
@@ -281,9 +281,9 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'status' });
                     
-                    const response = await updateAppointmentStatus(id, status);
+                    const response = await updateAppointmentStatusService(id, status);
                     
-                    if (response.data.success) {
+                    if (response.success) {
                         //update current appointment if it exists
                         const currentState = get()
                         if (currentState.currentAppointment && currentState.currentAppointment.id === id) {
