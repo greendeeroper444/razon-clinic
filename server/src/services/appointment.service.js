@@ -481,113 +481,110 @@ class AppointmentService {
         
         await appointment.save();
 
-        // //send SMS notification if status changed
-        // let smsResult = null;
-        // if (oldStatus !== appointment.status) {
-        //     smsResult = await this.sendStatusUpdateSMS(appointment);
-        // }
+        //send sms notification if status changed
+        let smsResult = null;
+        if (oldStatus !== appointment.status) {
+            smsResult = await this.sendStatusUpdateSMS(appointment);
+        }
 
-        return { 
-            appointment, 
-            // smsResult 
-        };
+        return { appointment, smsResult };
     }
 
-    // async sendStatusUpdateSMS(appointment) {
-    //     try {
-    //         //get contact number from either appointment or populated patient
-    //         const contactNumber = appointment.contactNumber || appointment.userId?.contactNumber;
+    async sendStatusUpdateSMS(appointment) {
+        try {
+            //get contact number from either appointment or populated patient
+            const contactNumber = appointment.contactNumber || appointment.userId?.contactNumber;
             
-    //         if (!contactNumber) {
-    //             console.log('No contact number available for SMS notification');
-    //             return null;
-    //         }
+            if (!contactNumber) {
+                console.log('No contact number available for SMS notification');
+                return null;
+            }
 
-    //         //only send SMS in production or when SMS_ENABLED is true
-    //         const shouldSendSMS = process.env.NODE_ENV === 'production' || process.env.SMS_ENABLED === 'true';
+            //only send sms in production or when SMS_ENABLED is true
+            const shouldSendSMS = process.env.NODE_ENV === 'production' || process.env.SMS_ENABLED === 'true';
             
-    //         if (!shouldSendSMS) {
-    //             console.log('SMS sending disabled in development environment');
-    //             return null;
-    //         }
+            if (!shouldSendSMS) {
+                console.log('SMS sending disabled in development environment');
+                return null;
+            }
 
-    //         const contactNumberStr = String(contactNumber);
+            const contactNumberStr = String(contactNumber);
             
-    //         //convert Philippine mobile number format for Twilio
-    //         let twilioNumber = contactNumberStr;
-    //         if (contactNumberStr.startsWith('09')) {
-    //             twilioNumber = '+63' + contactNumberStr.substring(1);
-    //         } else if (!contactNumberStr.startsWith('+63')) {
-    //             twilioNumber = '+63' + contactNumberStr;
-    //         }
+            //convert philippine mobile number format
+            let twilioNumber = contactNumberStr;
+            if (contactNumberStr.startsWith('09')) {
+                twilioNumber = '+63' + contactNumberStr.substring(1);
+            } else if (!contactNumberStr.startsWith('+63')) {
+                twilioNumber = '+63' + contactNumberStr;
+            }
 
-    //         //fetermine which template to use based on status
-    //         let templatePath;
-    //         switch (appointment.status.toLowerCase()) {
-    //             case 'scheduled':
-    //                 templatePath = 'scheduledMessage.txt';
-    //                 break;
-    //             case 'completed':
-    //                 templatePath = 'completedMessage.txt';
-    //                 break;
-    //             case 'cancelled':
-    //                 templatePath = 'cancelledMessage.txt';
-    //                 break;
-    //             case 'rebooked':
-    //                 templatePath = 'rebookedMessage.txt';
-    //                 break;
-    //             default:
-    //                 console.log(`No SMS template found for status: ${appointment.status}`);
-    //                 return {
-    //                     success: false,
-    //                     reason: 'no_template',
-    //                     message: `No SMS template found for status: ${appointment.status}`
-    //                 };
-    //         }
+            //fetermine which template to use based on status
+            let templatePath;
+            switch (appointment.status.toLowerCase()) {
+                case 'scheduled':
+                    templatePath = 'scheduledMessage.txt';
+                    break;
+                case 'completed':
+                    templatePath = 'completedMessage.txt';
+                    break;
+                case 'cancelled':
+                    templatePath = 'cancelledMessage.txt';
+                    break;
+                case 'rebooked':
+                    templatePath = 'rebookedMessage.txt';
+                    break;
+                default:
+                    console.log(`No SMS template found for status: ${appointment.status}`);
+                    return {
+                        success: false,
+                        reason: 'no_template',
+                        message: `No SMS template found for status: ${appointment.status}`
+                    };
+            }
 
-    //         //get patient name
-    //         const patientName = appointment.userId?.firstName 
-    //             ? `${appointment.userId.firstName} ${appointment.userId.lastName}`
-    //             : `${appointment.firstName} ${appointment.lastName}`;
+            //get patient name
+            const patientName = appointment.userId?.firstName 
+                ? `${appointment.userId.firstName} ${appointment.userId.lastName}`
+                : `${appointment.firstName} ${appointment.lastName}`;
 
-    //         //prepare replacement data for the SMS template
-    //         const replacements = {
-    //             patientName: patientName,
-    //             appointmentNumber: appointment.appointmentNumber,
-    //             preferredDate: new Date(appointment.preferredDate).toLocaleDateString('en-US', {
-    //                 year: 'numeric',
-    //                 month: 'long',
-    //                 day: 'numeric'
-    //             }),
-    //             preferredTime: appointment.preferredTime,
-    //             reasonForVisit: appointment.reasonForVisit,
-    //             status: appointment.status
-    //         };
+            //prepare replacement data for the sms template
+            const replacements = {
+                patientName: patientName,
+                appointmentNumber: appointment.appointmentNumber,
+                preferredDate: new Date(appointment.preferredDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }),
+                preferredTime: appointment.preferredTime,
+                reasonForVisit: appointment.reasonForVisit,
+                status: appointment.status
+            };
 
-    //         //dend the SMS
-    //         const result = await sendSMS(twilioNumber, templatePath, replacements);
+            //dend the sms
+            const result = await sendSMS(twilioNumber, templatePath, replacements);
             
-    //         if (result.success) {
-    //             if (result.reason === 'development_skip') {
-    //                 console.log(`SMS notification skipped for ${contactNumberStr} (development mode) - appointment ${appointment.appointmentNumber} status update: ${appointment.status}`);
-    //             } else {
-    //                 console.log(`SMS notification sent to ${contactNumberStr} for appointment ${appointment.appointmentNumber} status update: ${appointment.status}`);
-    //             }
-    //         } else {
-    //             console.log(`SMS notification failed for ${contactNumberStr}: ${result.message}`);
-    //         }
+            if (result.success) {
+                if (result.reason === 'development_skip') {
+                    console.log(`SMS notification skipped for ${contactNumberStr} (development mode) - appointment ${appointment.appointmentNumber} status update: ${appointment.status}`);
+                } else {
+                    console.log(`SMS notification sent to ${contactNumberStr} for appointment ${appointment.appointmentNumber} status update: ${appointment.status}`);
+                }
+            } else {
+                console.log(`SMS notification failed for ${contactNumberStr}: ${result.message}`);
+            }
 
-    //         return result;
+            return result;
 
-    //     } catch (error) {
-    //         console.error('Error in sendStatusUpdateSMS:', error);
-    //         return {
-    //             success: false,
-    //             reason: 'unexpected_error',
-    //             message: error.message
-    //         };
-    //     }
-    // }
+        } catch (error) {
+            console.error('Error in sendStatusUpdateSMS:', error);
+            return {
+                success: false,
+                reason: 'unexpected_error',
+                message: error.message
+            };
+        }
+    }
 
     async checkAppointmentExists(appointmentId) {
         if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
