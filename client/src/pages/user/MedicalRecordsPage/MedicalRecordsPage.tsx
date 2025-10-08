@@ -1,68 +1,180 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styles from './MedicalRecordsPage.module.css';
-import { User, History, Ruler, Stethoscope, Activity, X, FileText, Download } from 'lucide-react';
+import { FileText, Download } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
-import { MedicalRecordResponse } from '../../../types';
-import { Header, Main } from '../../../components';
-import { calculateAge2 } from '../../../utils';
-import { useMedicalRecordStore } from '../../../stores';
+import { MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
+import { Header, Loading, Main, Pagination, Searchbar, Table } from '../../../components';
 import { toast } from 'sonner';
+import { calculateAge2, formatDate } from '../../../utils';
+import { useMedicalRecordStore } from '../../../stores';
+import { useNavigate } from 'react-router-dom';
 import { generateMedicalRecordPDF } from '../../../templates';
 
-const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
-    
+const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
+    const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
     //zustand store selectors
     const {
         medicalRecords,
         loading,
         error,
-        searchTerm,
-        currentPage,
-        pagination,
-        showDetails,
-        selectedRecord,
+        isProcessing,
+        pagination: storePagination,
         fetchMyMedicalRecords,
-        viewMedicalRecord,
-        closeDetailsModal,
-        handlePageChange,
         getStatusFromRecord,
     } = useMedicalRecordStore();
 
 
-    useEffect(() => {
-        fetchMyMedicalRecords();
+    //calculate summary stats using useMemo for performance
+    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
+        try {
+            await fetchMyMedicalRecords({ page, limit, search });
+        } catch (error) {
+            console.error('Error fetching medical records:', error);
+        }
     }, [fetchMyMedicalRecords]);
 
-    //handle search with debounce
     useEffect(() => {
-        // const delayedSearch = setTimeout(() => {
-        //     fetchMyMedicalRecords(1, searchTerm);
-        // }, 500);
+        if (isInitialLoad) {
+            fetchData(1, 10, '');
+            setIsInitialLoad(false);
+        }
+    }, [isInitialLoad, fetchData]);
 
-        // return () => clearTimeout(delayedSearch);
-        fetchMyMedicalRecords(1, searchTerm);
-    }, [fetchMyMedicalRecords, searchTerm]);
+    //handle search
+    const handleSearch = useCallback((term: string) => {
+        setSearchTerm(term);
+        fetchData(1, storePagination?.itemsPerPage || 10, term);
+    }, [fetchData, storePagination?.itemsPerPage]);
 
+    //handle page change
+    const handlePageChange = useCallback((page: number) => {
+        fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
+
+    //handle items per page change
+    const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
+        fetchData(1, itemsPerPage, searchTerm);
+    }, [fetchData, searchTerm]);
 
     const handleReport = () => {
         console.log('Generate report');
     };
 
-    const handleViewRecord = (record: MedicalRecordResponse) => {
-        viewMedicalRecord(record);
-    };
+    const handleViewClick = (record: MedicalRecordResponse) => {
+        navigate(`/user/medical-records/details/${record.id}`)
+    }
 
-    const handleDownloadReceipt = () => {
-        if (selectedRecord) {
-            try {
-                generateMedicalRecordPDF(selectedRecord);
-                toast.success('Receipt downloaded successfully!');
-            } catch (error) {
-                console.error('Error generating receipt:', error);
-                toast.error('Failed to generate receipt');
+    const handleDownloadReceipt = useCallback((record: MedicalRecordFormData) => {
+        if (!record) {
+            toast.error('No record data available');
+            return;
+        }
+
+        //prevent multiple simultaneous downloads
+        if (isGeneratingPDF) {
+            toast.warning('Please wait, generating receipt...');
+            return;
+        }
+
+        setIsGeneratingPDF(true);
+        const loadingToast = toast.loading('Generating receipt PDF...');
+
+        try {
+            generateMedicalRecordPDF(record);
+            
+            toast.dismiss(loadingToast);
+            toast.success('Receipt downloaded successfully!', {
+                description: `Receipt for ${record.personalDetails.fullName}`
+            });
+        } catch (error) {
+            console.error('Error generating receipt:', error);
+            
+            toast.dismiss(loadingToast);
+            toast.error('Failed to generate receipt', {
+                description: error instanceof Error ? error.message : 'An unexpected error occurred'
+            });
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    }, [isGeneratingPDF]);
+
+
+    const medicalRecordsColumns: TableColumn<MedicalRecordResponse>[] = [
+        {
+            key: 'patientName',
+            header: 'PATIENT NAME',
+            render: (record) => (
+                <span className={styles.patientName}>
+                    {record.personalDetails.fullName}
+                </span>
+            )
+        },
+        {
+            key: 'dateOfBirth',
+            header: 'DATE OF BIRTH',
+            render: (record) => 
+                (formatDate(record.personalDetails.dateOfBirth))
+        },
+        {
+            key: 'age',
+            header: 'AGE',
+            render: (record) => calculateAge2(record.personalDetails.dateOfBirth)
+        },
+        {
+            key: 'gender',
+            header: 'GENDER',
+            render: (record) => record.personalDetails.gender
+        },
+        {
+            key: 'phone',
+            header: 'PHONE',
+            render: (record) => record.personalDetails.phone
+        },
+        {
+            key: 'dateRecorded',
+            header: 'DATE RECORDED',
+            render: (record) => 
+                (formatDate(record.dateRecorded))
+        },
+        {
+            key: 'actions',
+            header: 'ACTIONS',
+            render: (record) => {
+                getStatusFromRecord(record);
+                
+                return (
+                    <div className={styles.actions}>
+                        <button
+                            type='button'
+                            className={`${styles.actionBtn} ${styles.view}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleViewClick(record);
+                            }}
+                            title='View Details'
+                        >
+                            View
+                        </button>
+                        <button
+                            type='button'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDownloadReceipt(record);
+                            }}
+                            className={`${styles.actionBtn} ${styles.download}`}
+                            title="Download Receipt"
+                        >
+                            <Download size={16} />
+                        </button>
+                    </div>
+                );
             }
         }
-    };
+    ];
 
     const headerActions = [
         {
@@ -74,209 +186,84 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     ];
 
   return (
-    <Main loading={loading} error={error} loadingMessage='Loading medical records...'>
+    <Main error={error}>
         <Header
             title='Medical Records'
             actions={headerActions}
         />
 
-        {/* search section */}
-        {/* <div className={styles.searchFilterSection}>
-            <div className={styles.searchBox}>
-                <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
-                <input
-                    type='text'
-                    placeholder='Search by patient name, phone, or email...'
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className={styles.searchInput}
-                />
-            </div>
-        </div> */}
+        <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+                <div className={styles.sectionTitle}>Patient Records</div>
 
-        {/* medical records table */}
-        <div className={styles.tableContainer}>
-            <table className={styles.recordsTable}>
-                <thead>
-                    <tr>
-                        <th>Patient Name</th>
-                        <th>Date of Birth</th>
-                        <th>Age</th>
-                        <th>Gender</th>
-                        <th>Phone</th>
-                        <th>Date Recorded</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        medicalRecords.length === 0 ? (
-                            <tr>
-                                <td colSpan={7} className={styles.noRecords}>
-                                    No medical records found
-                                </td>
-                            </tr>
-                        ) : (
-                            medicalRecords.map((record) => {
-                                getStatusFromRecord(record);
-                                return (
-                                    <tr key={record.id} className={styles.tableRow}>
-                                        <td className={styles.patientName}>
-                                            {record.personalDetails.fullName}
-                                        </td>
-                                        <td>
-                                            {new Date(record.personalDetails.dateOfBirth).toLocaleDateString()}
-                                        </td>
-                                        <td>{calculateAge2(record.personalDetails.dateOfBirth)}</td>
-                                        <td>{record.personalDetails.gender}</td>
-                                        <td>{record.personalDetails.phone}</td>
-                                        <td>
-                                            {new Date(record.dateRecorded).toLocaleDateString()}
-                                        </td>
-                                        <td className={styles.actions}>
-                                            <button
-                                                type='button'
-                                                className={`${styles.actionBtn} ${styles.view}`}
-                                                onClick={() => handleViewRecord(record)}
-                                                title='View Details'
-                                            >
-                                                View
-                                            </button>
-                                        </td>
-                                    </tr>
-                                );
-                            })
-                        )
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        {/* pagination */}
-        {
-            pagination && pagination.totalPages > 1 && (
-                <div className={styles.pagination}>
-                    <button
-                        type='button'
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className={styles.paginationBtn}
-                    >
-                        Previous
-                    </button>
+                {/* search and items per page controls */}
+                <div className={styles.controls}>
+                    <Searchbar
+                        onSearch={handleSearch}
+                        placeholder="Search medicines..."
+                        disabled={loading}
+                        className={styles.searchbar}
+                    />
                     
-                    <span className={styles.paginationInfo}>
-                        Page {pagination.currentPage} of {pagination.totalPages} 
-                        ({pagination.totalRecords} total records)
-                    </span>
-                    
-                    <button
-                        type='button'
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === pagination.totalPages}
-                        className={styles.paginationBtn}
-                    >
-                        Next
-                    </button>
-                </div>
-            )
-        }
-
-        {/* record details modal */}
-        {
-            showDetails && selectedRecord && (
-                <div className={styles.modal}>
-                    <div className={styles.modalContent}>
-                        <div className={styles.modalHeader}>
-                            <h2>Medical Record Details</h2>
-                            <div className={styles.modalHeaderActions}>
-                                <button 
-                                    type='button'
-                                    onClick={handleDownloadReceipt} 
-                                    className={styles.downloadBtn}
-                                    title='Download Receipt'
-                                >
-                                    <Download /> Download Receipt
-                                </button>
-                                <button 
-                                    type='button'
-                                    title='Close'
-                                    onClick={closeDetailsModal} 
-                                    className={styles.closeBtn}
-                                >
-                                    <X />
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div className={styles.modalBody}>
-                            {/* personal details section */}
-                            <div className={styles.detailSection}>
-                                <h3><User /> Personal Details</h3>
-                                <div className={styles.detailGrid}>
-                                    <div><strong>Name:</strong> {selectedRecord.personalDetails.fullName}</div>
-                                    <div><strong>Date of Birth:</strong> {new Date(selectedRecord.personalDetails.dateOfBirth).toLocaleDateString()}</div>
-                                    <div><strong>Age:</strong> {calculateAge2(selectedRecord.personalDetails.dateOfBirth)} years</div>
-                                    <div><strong>Gender:</strong> {selectedRecord.personalDetails.gender}</div>
-                                    <div><strong>Blood Type:</strong> {selectedRecord.personalDetails.bloodType || 'Not specified'}</div>
-                                    <div><strong>Phone:</strong> {selectedRecord.personalDetails.phone}</div>
-                                    <div><strong>Email:</strong> {selectedRecord.personalDetails.email || 'Not provided'}</div>
-                                    <div><strong>Address:</strong> {selectedRecord.personalDetails.address || 'Not provided'}</div>
-                                    <div><strong>Emergency Contact:</strong> {selectedRecord.personalDetails.emergencyContact || 'Not provided'}</div>
-                                </div>
-                            </div>
-
-                            {/* current symptoms section */}
-                            <div className={styles.detailSection}>
-                                <h3><Stethoscope /> Current Symptoms</h3>
-                                <div className={styles.detailGrid}>
-                                    <div><strong>Chief Complaint:</strong> {selectedRecord.currentSymptoms.chiefComplaint}</div>
-                                    <div><strong>Symptoms Description:</strong> {selectedRecord.currentSymptoms.symptomsDescription}</div>
-                                    <div><strong>Duration:</strong> {selectedRecord.currentSymptoms.symptomsDuration || 'Not specified'}</div>
-                                    <div><strong>Pain Scale:</strong> {selectedRecord.currentSymptoms.painScale ? `${selectedRecord.currentSymptoms.painScale}/10` : 'Not specified'}</div>
-                                </div>
-                            </div>
-
-                            {/* medical history section */}
-                            <div className={styles.detailSection}>
-                                <h3><History /> Medical History</h3>
-                                <div className={styles.detailGrid}>
-                                    <div><strong>Allergies:</strong> {selectedRecord.medicalHistory.allergies || 'None reported'}</div>
-                                    <div><strong>Chronic Conditions:</strong> {selectedRecord.medicalHistory.chronicConditions || 'None reported'}</div>
-                                    <div><strong>Previous Surgeries:</strong> {selectedRecord.medicalHistory.previousSurgeries || 'None reported'}</div>
-                                    <div><strong>Family History:</strong> {selectedRecord.medicalHistory.familyHistory || 'Not provided'}</div>
-                                </div>
-                            </div>
-
-                            {/* growth milestones section */}
-                            <div className={styles.detailSection}>
-                                <h3><Ruler /> Growth Milestones</h3>
-                                <div className={styles.detailGrid}>
-                                    <div><strong>Height:</strong> {selectedRecord.growthMilestones.height ? `${selectedRecord.growthMilestones.height} cm` : 'Not measured'}</div>
-                                    <div><strong>Weight:</strong> {selectedRecord.growthMilestones.weight ? `${selectedRecord.growthMilestones.weight} kg` : 'Not measured'}</div>
-                                    <div><strong>BMI:</strong> {selectedRecord.growthMilestones.bmi || 'Not calculated'}</div>
-                                    <div><strong>Growth Notes:</strong> {selectedRecord.growthMilestones.growthNotes || 'No notes'}</div>
-                                </div>
-                            </div>
-
-                            {/* clinical information */}
-                            <div className={styles.detailSection}>
-                                <h3><Activity /> Clinical Information</h3>
-                                <div className={styles.detailGrid}>
-                                    <div><strong>Diagnosis:</strong> {selectedRecord.diagnosis || 'Pending'}</div>
-                                    <div><strong>Treatment Plan:</strong> {selectedRecord.treatmentPlan || 'Not specified'}</div>
-                                    <div><strong>Prescribed Medications:</strong> {selectedRecord.prescribedMedications || 'None prescribed'}</div>
-                                    <div><strong>Consultation Notes:</strong> {selectedRecord.consultationNotes || 'No notes'}</div>
-                                    <div><strong>Vaccination History:</strong> {selectedRecord.vaccinationHistory || 'Not provided'}</div>
-                                    <div><strong>Follow-up Date:</strong> {selectedRecord.followUpDate ? new Date(selectedRecord.followUpDate).toLocaleDateString() : 'Not scheduled'}</div>
-                                </div>
-                            </div>
-                        </div>
+                    <div className={styles.itemsPerPageControl}>
+                        <label htmlFor="itemsPerPage">Items per page:</label>
+                        <select
+                            id="itemsPerPage"
+                            value={storePagination?.itemsPerPage || 10}
+                            onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                            disabled={loading}
+                            className={styles.itemsPerPageSelect}
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
                     </div>
                 </div>
-            )
-        }
+            </div>
 
+            {
+                loading ? (
+                    <div className={styles.tableResponsive}>
+                        <Loading
+                            type='skeleton'
+                            rows={7}
+                            message='Loading medical records data...'
+                            delay={0}
+                            minDuration={1000}
+                        />
+                    </div>
+                ) : (
+                    <>
+                        <Table
+                            columns={medicalRecordsColumns}
+                            data={medicalRecords}
+                            emptyMessage='No medical records found. Click "New Record" to get started.'
+                            searchTerm={searchTerm}
+                            getRowKey={(record) => record.id || ''}
+                            className={styles.recordsTable}
+                        />
+
+
+                        {
+                            storePagination && storePagination.totalPages > 1 && (
+                                <Pagination
+                                    currentPage={storePagination.currentPage}
+                                    totalPages={storePagination.totalPages}
+                                    totalItems={storePagination.totalItems}
+                                    itemsPerPage={storePagination.itemsPerPage}
+                                    onPageChange={handlePageChange}
+                                    disabled={loading || isProcessing}
+                                    className={styles.pagination}
+                                />
+                            )
+                        }
+
+                    </>
+                )
+            }
+        </div>
     </Main>
   )
 }

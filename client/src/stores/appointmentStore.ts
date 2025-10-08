@@ -117,11 +117,19 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
             },
 
             //fetch only current user's appointments
-            fetchMyAppointments: async () => {
+            fetchMyAppointments: async (params: FetchParams) => {
+                const currentState = get();
+                
+                //prevent multiple simultaneous fetches
+                if (currentState.fetchLoading) {
+                    console.log('Fetch already in progress, skipping...');
+                    return;
+                }
+
                 try {
-                    set({ fetchLoading: true, loading: true, error: null, viewMode: 'user' });
+                    set({ fetchLoading: true, loading: true, error: null, viewMode: 'admin' });
                     
-                    const response = await getMyAppointments();
+                    const response = await getMyAppointments(params);
                     
                     if (response.success) {
                         const appointments = response.data.appointments || [];
@@ -175,10 +183,10 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         });
                     }
                 } catch (error) {
-                    console.error('Error fetching my appointments:', error);
+                    console.error('Error fetching appointments:', error);
                     set({ 
                         fetchLoading: false,
-                        error: 'An error occurred while fetching my appointments', 
+                        error: 'An error occurred while fetching appointments', 
                         loading: false 
                     });
                 }
