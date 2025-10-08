@@ -124,11 +124,19 @@ class MedicalRecordService {
     async getMedicalRecords(queryParams) {
         const {
             search, page, limit, fullName, phone, email, gender, bloodType,
-            chiefComplaint, diagnosis, fromDate, toDate,
+            chiefComplaint, diagnosis, fromDate, toDate, userId,
             sortBy = 'createdAt', sortOrder = 'desc'
         } = queryParams;
 
         const filter = {};
+
+        //filter by userId if provided (for user-specific routes)
+        if (userId) {
+            const userAppointments = await mongoose.model('Appointment').find({ userId }).select('_id');
+            const appointmentIds = userAppointments.map(apt => apt._id);
+            
+            filter.appointmentId = { $in: appointmentIds };
+        }
 
         if (fromDate || toDate) {
             filter.createdAt = {};

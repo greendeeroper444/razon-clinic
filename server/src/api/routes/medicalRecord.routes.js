@@ -19,6 +19,13 @@ router.get(
 );
 
 router.get(
+    '/getMyMedicalRecords',
+    authenticate,
+    validateQueryParams,
+    MedicalRecordController.getMedicalRecords
+);
+
+router.get(
     '/getMedicalRecordById/:medicalRecordId',
     authenticate,
     validateMedicalRecordId,

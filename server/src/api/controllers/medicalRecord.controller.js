@@ -51,7 +51,13 @@ class MedicalRecordController {
 
     async getMedicalRecords(req, res, next) {
         try {
-            const result = await MedicalRecordService.getMedicalRecords(req.query);
+            const isMyMedicalRecordsRoute = req.route.path === '/getMyMedicalRecords';
+            
+            const queryParams = isMyMedicalRecordsRoute 
+                ? { ...req.query, userId: req.user.id }
+                : req.query;
+            
+            const result = await MedicalRecordService.getMedicalRecords(queryParams);
 
             return res.status(200).json({
                 success: true,
