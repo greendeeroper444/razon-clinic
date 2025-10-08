@@ -19,7 +19,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     useEffect(() => {
         const fetchBookedSlots = async () => {
             try {
-                const response = await getAppointments({ page: 0, limit: 0 });
+                const response = await getAppointments({ page: 1, limit: 1000 });
                 if (response.success) {
                     const appointments = response.data.appointments;
                     const slots = appointments

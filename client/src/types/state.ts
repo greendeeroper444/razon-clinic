@@ -20,7 +20,6 @@ export interface FetchParams {
 export interface AppointmentState {
     //state
     appointments: AppointmentResponse[];
-    patients: Patient[];
     pagination: Pagination | null;
     loading: boolean;
     error: string | null;

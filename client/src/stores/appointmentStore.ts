@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus as updateAppointmentStatusService  } from '../services'
-import { AppointmentFormData, Patient, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
+import { AppointmentFormData, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
 import { toast } from 'sonner'
 
 
@@ -9,7 +9,6 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
     devtools(
         (set, get) => ({
             appointments: [],
-            patients: [],
             loading: false,
             fetchLoading: false,
             submitLoading: false,
@@ -40,11 +39,9 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 searchTerm: null
             },
 
-            //fetch all appointments with patient extraction (admin view)
             fetchAppointments: async (params: FetchParams) => {
                 const currentState = get();
                 
-                //prevent multiple simultaneous fetches
                 if (currentState.fetchLoading) {
                     console.log('Fetch already in progress, skipping...');
                     return;
@@ -59,28 +56,8 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         const appointments = response.data.appointments || [];
                         const pagination = response.data.pagination || {};
                         
-                        //extract unique patients from appointments
-                        const uniquePatients = Array.from(
-                            new Map(
-                                appointments
-                                    .filter((appointment: AppointmentFormData) => appointment?.id)
-                                    .map((appointment: AppointmentFormData) => [
-                                        appointment.id,
-                                        {
-                                            id: appointment.id,
-                                            firstName: appointment.firstName || 'N/A',
-                                            lastName: appointment.lastName || 'N/A',
-                                            middleName: appointment.middleName || '',
-                                            patientNumber: appointment.appointmentNumber || 'N/A',
-                                            fullName: `${appointment.firstName || ''} ${appointment.middleName || ''} ${appointment.lastName || ''}`.trim()
-                                        }
-                                    ])
-                            ).values()
-                        );
-                        
                         set({ 
                             appointments,
-                            patients: uniquePatients as Patient[],
                             pagination: {
                                 currentPage: pagination.currentPage || 1,
                                 totalPages: pagination.totalPages || 1,
@@ -116,18 +93,16 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 }
             },
 
-            //fetch only current user's appointments
             fetchMyAppointments: async (params: FetchParams) => {
                 const currentState = get();
                 
-                //prevent multiple simultaneous fetches
                 if (currentState.fetchLoading) {
                     console.log('Fetch already in progress, skipping...');
                     return;
                 }
 
                 try {
-                    set({ fetchLoading: true, loading: true, error: null, viewMode: 'admin' });
+                    set({ fetchLoading: true, loading: true, error: null, viewMode: 'user' });
                     
                     const response = await getMyAppointments(params);
                     
@@ -135,28 +110,8 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         const appointments = response.data.appointments || [];
                         const pagination = response.data.pagination || {};
                         
-                        //extract unique patients from appointments
-                        const uniquePatients = Array.from(
-                            new Map(
-                                appointments
-                                    .filter((appointment: AppointmentFormData) => appointment?.id)
-                                    .map((appointment: AppointmentFormData) => [
-                                        appointment.id,
-                                        {
-                                            id: appointment.id,
-                                            firstName: appointment.firstName || 'N/A',
-                                            lastName: appointment.lastName || 'N/A',
-                                            middleName: appointment.middleName || '',
-                                            patientNumber: appointment.appointmentNumber || 'N/A',
-                                            fullName: `${appointment.firstName || ''} ${appointment.middleName || ''} ${appointment.lastName || ''}`.trim()
-                                        }
-                                    ])
-                            ).values()
-                        );
-                        
                         set({ 
                             appointments,
-                            patients: uniquePatients as Patient[],
                             pagination: {
                                 currentPage: pagination.currentPage || 1,
                                 totalPages: pagination.totalPages || 1,
@@ -193,10 +148,8 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
             },
 
 
-            //fetch appointment by id for details page
             fetchAppointmentById: async (appointmentId: string) => {
                 try {
-                    // set({ loading: true, error: null });
                     set({ fetchLoading: true, loading: true, error: null });
                     
                     const response = await getAppointmentById(appointmentId);
@@ -204,45 +157,37 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     if (response.success) {
                         set({ 
                             currentAppointment: response.data,
+                            fetchLoading: false,
                             loading: false 
                         })
                     } else {
                         set({ 
                             error: 'Failed to load appointment details', 
+                            fetchLoading: false,
                             loading: false 
                         })
                     }
                 } catch (error) {
-                   console.error('Error fetching appointments:', error)
+                   console.error('Error fetching appointment:', error)
                     set({ 
                         fetchLoading: false,
-                        error: 'An error occurred while fetching appointments', 
+                        error: 'An error occurred while fetching appointment', 
                         loading: false 
                     })
                 }
             },
 
-
-            //update appointment
             updateAppointmentData: async (id: string, data: AppointmentFormData) => {
                 try {
-                    // set({ loading: true });
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'update' });
                     
                     await updateAppointment(id, data);
-
-                    // //refresh data - fetch all appointments and user appointments
-                    // await Promise.all([
-                    //     get().fetchAppointments(),
-                    //     get().fetchMyAppointments()
-                    // ]);
                     
-                    //only fetch appointment by id if we have a current appointment loaded
                     const currentState = get();
                     if (currentState.viewMode === 'admin') {
-                        await get().fetchAppointments();
+                        await get().fetchAppointments({});
                     } else {
-                        await get().fetchMyAppointments();
+                        await get().fetchMyAppointments({});
                     }
 
                     if (currentState.currentAppointment) {
@@ -270,13 +215,9 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         selectedAppointment: null,
                         currentOperation: null
                     })
-                } 
-                // finally {
-                //     set({ submitLoading: false, isProcessing: false })
-                // }
+                }
             },
 
-            //update appointment status
             updateAppointmentStatus: async (id: string, status: string) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'status' });
@@ -284,7 +225,6 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     const response = await updateAppointmentStatusService(id, status);
                     
                     if (response.success) {
-                        //update current appointment if it exists
                         const currentState = get()
                         if (currentState.currentAppointment && currentState.currentAppointment.id === id) {
                             set({
@@ -296,7 +236,6 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                             })
                         }
 
-                        //update appointments list
                         const updatedAppointments = currentState.appointments.map(appointment => 
                             appointment.id === id 
                                 ? { ...appointment, status: status as AppointmentStatus, updatedAt: new Date().toISOString() }
@@ -332,32 +271,21 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         selectedAppointment: null,
                         currentOperation: null
                     })
-                } 
-                // finally {
-                //     set({ submitLoading: false, isProcessing: false })
-                // }
+                }
             },
 
-            //delete appointment
             deleteAppointment: async (id: string) => {
                 try {
-                    // set({ isProcessing: true });
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
                     
-                    //delete the appointment first
                     await deleteAppointment(id);
 
-                    //refresh data - fetch all appointments and user appointments
-                    // await Promise.all([
-                    //     get().fetchAppointments(),
-                    //     get().fetchMyAppointments()
-                    // ]);
                     const currentState = get();
                     
                     if (currentState.viewMode === 'admin') {
-                        await get().fetchAppointments();
+                        await get().fetchAppointments({});
                     } else {
-                        await get().fetchMyAppointments();
+                        await get().fetchMyAppointments({});
                     }
 
                     
@@ -386,15 +314,10 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         selectedAppointment: null,
                         currentOperation: null
                     })
-                } 
-                // finally {
-                //     set({ submitLoading: false, isProcessing: false })
-                // }
+                }
             },
 
 
-
-            //modal actions
             openUpdateModal: (appointment: AppointmentFormData) => {
                 const formData: AppointmentFormData & { id?: string } = {
                     id: appointment.id,
@@ -436,13 +359,13 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
             },
 
             openDeleteModal: (appointment: AppointmentFormData) => {
-                const patientName = appointment.firstName || 'Unknown Patient'
-                const appointmentDate = appointment.birthdate || appointment.preferredDate
+                const userName = appointment.firstName || 'Unknown User'
+                const appointmentDate = appointment.preferredDate
                 
                 set({
                     deleteAppointmentData: {
                         id: appointment.id,
-                        itemName: `${patientName}'s appointment on ${appointmentDate}`,
+                        itemName: `${userName}'s appointment on ${appointmentDate}`,
                         itemType: 'Appointment'
                     },
                     isDeleteModalOpen: true
@@ -461,7 +384,6 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 set({ isDeleteModalOpen: false, deleteAppointmentData: null })
             },
 
-            //utility actions
             setLoading: (loading: boolean) => set({ loading }),
             setError: (error: string | null) => set({ error }),
             clearCurrentAppointment: () => set({ currentAppointment: null })

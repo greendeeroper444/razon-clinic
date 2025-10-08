@@ -7,7 +7,120 @@ const sendSMS = require('../utils/smsSender');
 class AppointmentService {
 
     async createAppointment(appointmentData, createNotifications = true) {
-        const selectedDate = new Date(appointmentData.preferredDate);
+        if (!appointmentData.reasonForVisit || appointmentData.reasonForVisit.trim().length < 5 || 
+            appointmentData.reasonForVisit.trim().length > 200) {
+            throw new Error('Reason for visit must be between 5 and 200 characters');
+        }
+
+        const { patients = [], ...appointmentInfo } = appointmentData;
+        
+        //if no patients array, create one with the primary patient data
+        const patientsToProcess = patients.length > 0 ? patients : [{
+            firstName: appointmentData.firstName,
+            lastName: appointmentData.lastName,
+            middleName: appointmentData.middleName,
+            birthdate: appointmentData.birthdate,
+            sex: appointmentData.sex,
+            height: appointmentData.height,
+            weight: appointmentData.weight
+        }];
+
+        if (patientsToProcess.length === 0) {
+            throw new Error('At least one patient is required');
+        }
+
+        for (let i = 0; i < patientsToProcess.length; i++) {
+            const patient = patientsToProcess[i];
+            
+            if (!patient.birthdate) {
+                throw new Error(`Birth date is required for patient ${i + 1}`);
+            }
+
+            if (!patient.sex || !['Male', 'Female'].includes(patient.sex)) {
+                throw new Error(`Valid sex selection is required for patient ${i + 1}`);
+            }
+        }
+
+        await this.validateTimeSlot(appointmentData.preferredTime, appointmentData.preferredDate);
+
+        const createdAppointments = [];
+        
+        for (let i = 0; i < patientsToProcess.length; i++) {
+            const patient = patientsToProcess[i];
+            
+            const appointmentPayload = {
+                userId: appointmentData.userId,
+                firstName: patient.firstName,
+                lastName: patient.lastName,
+                middleName: patient.middleName || null,
+                preferredDate: appointmentData.preferredDate,
+                preferredTime: appointmentData.preferredTime,
+                reasonForVisit: appointmentData.reasonForVisit?.trim(),
+                status: 'Pending',
+                //patient information fields
+                birthdate: patient.birthdate,
+                sex: patient.sex,
+                height: patient.height ? Number(patient.height) : undefined,
+                weight: patient.weight ? Number(patient.weight) : undefined,
+                religion: appointmentData.religion?.trim(),
+                //mother's information (shared across all patients)
+                motherInfo: {
+                    name: appointmentData.motherName?.trim(),
+                    age: appointmentData.motherAge ? Number(appointmentData.motherAge) : undefined,
+                    occupation: appointmentData.motherOccupation?.trim()
+                },
+                //father's information (shared across all patients)
+                fatherInfo: {
+                    name: appointmentData.fatherName?.trim(),
+                    age: appointmentData.fatherAge ? Number(appointmentData.fatherAge) : undefined,
+                    occupation: appointmentData.fatherOccupation?.trim()
+                },
+                contactNumber: appointmentData.contactNumber,
+                address: appointmentData.address,
+                //add patient number for multiple patients
+                patientNumber: i + 1,
+                totalPatients: patientsToProcess.length
+            };
+
+            //remove undefined values from nested objects
+            if (!appointmentPayload.motherInfo.name && !appointmentPayload.motherInfo.age && !appointmentPayload.motherInfo.occupation) {
+                delete appointmentPayload.motherInfo;
+            }
+            if (!appointmentPayload.fatherInfo.name && !appointmentPayload.fatherInfo.age && !appointmentPayload.fatherInfo.occupation) {
+                delete appointmentPayload.fatherInfo;
+            }
+
+            const appointment = new Appointment(appointmentPayload);
+            await appointment.save();
+            createdAppointments.push(appointment);
+
+            //only create notifications for the first patient to avoid duplicates
+            if (i === 0 && createNotifications) {
+                await this.createAppointmentNotification(appointmentPayload.userId, appointment, patientsToProcess.length, appointmentData.preferredDate, appointmentData.preferredTime);
+            }
+        }
+
+        return createdAppointments;
+    }
+
+    async validateTimeSlot(preferredTime, preferredDate) {
+        // vlidate time format: must be in HH:MM format, and MM should be 00, 15, 30, or 45
+        const timeRegex = /^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/;
+        if (!timeRegex.test(preferredTime)) {
+            throw new Error('Invalid time format. Time must be in HH:MM format using 15-minute intervals (e.g., 08:00, 08:15, 08:30, 08:45).');
+        }
+
+        // validate business hours (between 08:00 and 17:00)
+        const [hourStr, minuteStr] = preferredTime.split(':');
+        const hour = parseInt(hourStr);
+        const minute = parseInt(minuteStr);
+
+        if (hour < 8 || (hour === 17 && minute > 0) || hour > 17) {
+            throw new Error('Appointments are only available between 08:00 and 17:00.');
+        }
+
+        //check for appointment conflicts on the same date and time
+        const selectedDate = new Date(preferredDate);
         const startOfDay = new Date(selectedDate);
         startOfDay.setHours(0, 0, 0, 0);
         const endOfDay = new Date(selectedDate);
@@ -18,60 +131,16 @@ class AppointmentService {
                 $gte: startOfDay,
                 $lte: endOfDay
             },
-            preferredTime: appointmentData.preferredTime,
+            preferredTime: preferredTime,
             status: { $ne: 'Cancelled' }
         });
 
         if (conflictingAppointment) {
-            throw new Error(`This time slot (${appointmentData.preferredTime} on ${appointmentData.preferredDate}) is already booked. Please choose a different time.`);
+            throw new Error(`This time slot (${preferredTime} on ${preferredDate}) is already booked. Please choose a different time.`);
         }
-
-        const appointmentPayload = {
-            userId: appointmentData.userId,
-            firstName: appointmentData.firstName,
-            lastName: appointmentData.lastName,
-            middleName: appointmentData.middleName || null,
-            preferredDate: appointmentData.preferredDate,
-            preferredTime: appointmentData.preferredTime,
-            reasonForVisit: appointmentData.reasonForVisit?.trim(),
-            status: 'Pending',
-            birthdate: appointmentData.birthdate,
-            sex: appointmentData.sex,
-            height: appointmentData.height ? Number(appointmentData.height) : undefined,
-            weight: appointmentData.weight ? Number(appointmentData.weight) : undefined,
-            religion: appointmentData.religion?.trim(),
-            motherInfo: {
-                name: appointmentData.motherName?.trim(),
-                age: appointmentData.motherAge ? Number(appointmentData.motherAge) : undefined,
-                occupation: appointmentData.motherOccupation?.trim()
-            },
-            fatherInfo: {
-                name: appointmentData.fatherName?.trim(),
-                age: appointmentData.fatherAge ? Number(appointmentData.fatherAge) : undefined,
-                occupation: appointmentData.fatherOccupation?.trim()
-            },
-            contactNumber: appointmentData.contactNumber,
-            address: appointmentData.address
-        };
-
-        if (!appointmentPayload.motherInfo.name && !appointmentPayload.motherInfo.age && !appointmentPayload.motherInfo.occupation) {
-            delete appointmentPayload.motherInfo;
-        }
-        if (!appointmentPayload.fatherInfo.name && !appointmentPayload.fatherInfo.age && !appointmentPayload.fatherInfo.occupation) {
-            delete appointmentPayload.fatherInfo;
-        }
-
-        const appointment = new Appointment(appointmentPayload);
-        await appointment.save();
-
-        if (createNotifications) {
-            await this.createAppointmentNotification(appointmentPayload.userId, appointment, appointmentData.preferredDate, appointmentData.preferredTime);
-        }
-
-        return appointment;
     }
 
-    async createAppointmentNotification(userId, appointment, preferredDate, preferredTime) {
+    async createAppointmentNotification(userId, appointment, patientCount, preferredDate, preferredTime) {
         try {
             const existingNotification = await Notification.findOne({
                 sourceId: userId,
@@ -81,9 +150,9 @@ class AppointmentService {
             });
             
             if (!existingNotification) {
-                const user = await User.findById(userId);
-                const userName = user ? `${user.firstName} ${user.lastName}` : 'a user';
-                const message = `New appointment request from ${userName} for ${new Date(preferredDate).toLocaleDateString()} at ${preferredTime}.`;
+                const patient = await User.findById(userId);
+                const patientCountMsg = patientCount > 1 ? ` for ${patientCount} patients` : '';
+                const message = `New appointment request from ${patient?.fullName || 'a patient'}${patientCountMsg} for ${new Date(preferredDate).toLocaleDateString()} at ${preferredTime}.`;
                 
                 const notification = new Notification({
                     sourceId: userId,
@@ -130,6 +199,7 @@ class AppointmentService {
                 if (toDate) filter.preferredDate.$lte = new Date(toDate);
             }
 
+            //search functionality - search across multiple fields
             if (search) {
                 const searchConditions = [
                     { firstName: { $regex: search, $options: 'i' } },
@@ -138,10 +208,13 @@ class AppointmentService {
                     { address: { $regex: search, $options: 'i' } }
                 ];
 
+                //handle numeric search for contactNumber
                 const numericSearch = parseInt(search);
                 if (!isNaN(numericSearch)) {
+                    //if search is numeric, search for exact match or numbers that start with the search term
                     searchConditions.push({ contactNumber: numericSearch });
                     
+                    //also search for numbers that start with the search term (convert to string comparison)
                     const searchStr = search.toString();
                     searchConditions.push({
                         $expr: {
@@ -187,7 +260,7 @@ class AppointmentService {
                     .sort(sort)
                     .skip(skip)
                     .limit(itemsPerPage)
-                    .populate('userId', 'firstName lastName middleName email contactNumber userNumber');
+                    .populate('userId', 'firstName lastName middleName emailOrContactNumber patientNumber');
 
                 const startIndex = totalItems > 0 ? skip + 1 : 0;
                 const endIndex = Math.min(skip + itemsPerPage, totalItems);
@@ -210,7 +283,7 @@ class AppointmentService {
             } else {
                 appointments = await Appointment.find(filter)
                     .sort(sort)
-                    .populate('userId', 'firstName lastName middleName email contactNumber userNumber');
+                    .populate('userId', 'firstName lastName middleName emailOrContactNumber patientNumber');
 
                 pagination = {
                     currentPage: 1,
@@ -231,7 +304,8 @@ class AppointmentService {
 
             return {
                 appointments,
-                pagination
+                pagination,
+                // count: appointments.length
             };
         } catch (error) {
             throw error;
@@ -248,7 +322,7 @@ class AppointmentService {
         }
 
         const appointment = await Appointment.findById(appointmentId)
-            .populate('userId', 'firstName lastName middleName email contactNumber birthdate sex address dateRegistered userNumber');
+            .populate('userId', 'firstName lastName middleName email contactNumber birthdate sex address dateRegistered');
         
         if (!appointment) {
             throw new Error('Appointment not found');
@@ -262,6 +336,7 @@ class AppointmentService {
             throw new Error('Date parameter is required');
         }
         
+        //parse the date and create date range for the entire day
         const selectedDate = new Date(date);
         const startOfDay = new Date(selectedDate);
         startOfDay.setHours(0, 0, 0, 0);
@@ -278,8 +353,9 @@ class AppointmentService {
         
         const appointments = await Appointment.find(filter)
             .sort({ preferredTime: 1 })
-            .populate('userId', 'firstName lastName middleName email contactNumber userNumber');
+            .populate('userId', 'firstName lastName middleName emailOrContactNumber patientNumber');
         
+        //group appointments by time slots
         const timeSlots = appointments.reduce((acc, appointment) => {
             const timeKey = appointment.preferredTime;
             if (!acc[timeKey]) {
@@ -289,6 +365,7 @@ class AppointmentService {
             return acc;
         }, {});
         
+        //get unique time slots and sort them
         const availableTimeSlots = Object.keys(timeSlots).sort();
         
         return {
@@ -315,7 +392,7 @@ class AppointmentService {
         
         const appointments = await Appointment.find(filter)
             .sort({ createdAt: -1 })
-            .populate('userId', 'firstName lastName middleName email contactNumber userNumber');
+            .populate('userId', 'firstName emailOrContactNumber patientNumber');
         
         return {
             appointments,
@@ -347,11 +424,15 @@ class AppointmentService {
             throw new Error('Appointment not found');
         }
 
+        //store the old status for comparison
         const oldStatus = appointment.status;
         
+        //update based on request type
         if (isStatusUpdate) {
+            //for status-only update
             appointment.status = updateData.status;
         } else {
+            //for full update - basic appointment fields
             if (updateData.userId) appointment.userId = updateData.userId;
             if (updateData.firstName) appointment.firstName = updateData.firstName;
             if (updateData.lastName) appointment.lastName = updateData.lastName;
@@ -361,12 +442,14 @@ class AppointmentService {
             if (updateData.reasonForVisit) appointment.reasonForVisit = updateData.reasonForVisit;
             if (updateData.status) appointment.status = updateData.status;
 
+            //update patient information fields if provided
             if (updateData.birthdate) appointment.birthdate = updateData.birthdate;
             if (updateData.sex) appointment.sex = updateData.sex;
             if (updateData.height !== undefined) appointment.height = updateData.height ? Number(updateData.height) : undefined;
             if (updateData.weight !== undefined) appointment.weight = updateData.weight ? Number(updateData.weight) : undefined;
             if (updateData.religion !== undefined) appointment.religion = updateData.religion?.trim();
 
+            //handle mother's information
             const motherName = updateData.motherInfo?.name || updateData.motherName;
             const motherAge = updateData.motherInfo?.age || updateData.motherAge;
             const motherOccupation = updateData.motherInfo?.occupation || updateData.motherOccupation;
@@ -379,6 +462,7 @@ class AppointmentService {
                 appointment.markModified('motherInfo');
             }
 
+            //handle father's information
             const fatherName = updateData.fatherInfo?.name || updateData.fatherName;
             const fatherAge = updateData.fatherInfo?.age || updateData.fatherAge;
             const fatherOccupation = updateData.fatherInfo?.occupation || updateData.fatherOccupation;
@@ -397,6 +481,7 @@ class AppointmentService {
         
         await appointment.save();
 
+        //send sms notification if status changed
         let smsResult = null;
         if (oldStatus !== appointment.status) {
             smsResult = await this.sendStatusUpdateSMS(appointment);
@@ -407,6 +492,7 @@ class AppointmentService {
 
     async sendStatusUpdateSMS(appointment) {
         try {
+            //get contact number from either appointment or populated patient
             const contactNumber = appointment.contactNumber || appointment.userId?.contactNumber;
             
             if (!contactNumber) {
@@ -414,6 +500,7 @@ class AppointmentService {
                 return null;
             }
 
+            //only send sms in production or when SMS_ENABLED is true
             const shouldSendSMS = process.env.NODE_ENV === 'production' || process.env.SMS_ENABLED === 'true';
             
             if (!shouldSendSMS) {
@@ -423,6 +510,7 @@ class AppointmentService {
 
             const contactNumberStr = String(contactNumber);
             
+            //convert philippine mobile number format
             let twilioNumber = contactNumberStr;
             if (contactNumberStr.startsWith('09')) {
                 twilioNumber = '+63' + contactNumberStr.substring(1);
@@ -430,6 +518,7 @@ class AppointmentService {
                 twilioNumber = '+63' + contactNumberStr;
             }
 
+            //fetermine which template to use based on status
             let templatePath;
             switch (appointment.status.toLowerCase()) {
                 case 'scheduled':
@@ -453,12 +542,14 @@ class AppointmentService {
                     };
             }
 
-            const userName = appointment.userId?.firstName 
+            //get patient name
+            const patientName = appointment.userId?.firstName 
                 ? `${appointment.userId.firstName} ${appointment.userId.lastName}`
                 : `${appointment.firstName} ${appointment.lastName}`;
 
+            //prepare replacement data for the sms template
             const replacements = {
-                userName: userName,
+                patientName: patientName,
                 appointmentNumber: appointment.appointmentNumber,
                 preferredDate: new Date(appointment.preferredDate).toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -470,6 +561,7 @@ class AppointmentService {
                 status: appointment.status
             };
 
+            //dend the sms
             const result = await sendSMS(twilioNumber, templatePath, replacements);
             
             if (result.success) {

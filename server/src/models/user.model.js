@@ -119,12 +119,12 @@ const UserSchema = new mongoose.Schema(
     }
 );
 
-//static method to get the next patient number
+//static method to get the next user number
 UserSchema.statics.getNextUserNumber = async function() {
-    //find the patient with the highest number
+    //find the user with the highest number
     const highestUser = await this.findOne().sort('-userNumber');
     
-    //if no patients exist, start with 0001
+    //if no users exist, start with 0001
     if (!highestUser || !highestUser.userNumber) {
         return '0001';
     }

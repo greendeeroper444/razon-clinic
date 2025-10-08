@@ -1,15 +1,13 @@
 import axios from './httpClient'
 import { AppointmentFormData } from '../types'
 import API_BASE_URL from '../ApiBaseUrl'
-import { cleanObject, convertTo24Hour, createParentInfo, generateTimeSlots, processPatient } from '../utils';
+import { cleanObject, convertTo24Hour, createParentInfo, generateTimeSlots } from '../utils';
 
 
 export const addAppointment = async (appointmentData: AppointmentFormData) => {
     try {
-        const { patients = [], ...otherData } = appointmentData;
-        
         const processedData = cleanObject({
-            ...otherData,
+            ...appointmentData,
             preferredTime: convertTo24Hour(String(appointmentData.preferredTime)),
             motherAge: appointmentData.motherAge ? Number(appointmentData.motherAge) : undefined,
             fatherAge: appointmentData.fatherAge ? Number(appointmentData.fatherAge) : undefined,
@@ -17,9 +15,8 @@ export const addAppointment = async (appointmentData: AppointmentFormData) => {
             motherOccupation: appointmentData.motherOccupation?.trim(),
             fatherName: appointmentData.fatherName?.trim(),
             fatherOccupation: appointmentData.fatherOccupation?.trim(),
-            patients: patients.length > 0 
-            ? patients.map(processPatient)
-            : [processPatient(appointmentData)]
+            height: appointmentData.height ? Number(appointmentData.height) : undefined,
+            weight: appointmentData.weight ? Number(appointmentData.weight) : undefined
         });
         
         const response = await axios.post(
@@ -134,8 +131,6 @@ export const getAppointmentsByDate = async (date: string) => {
     }
 };
 
-
-//check appointment availability
 export const checkAppointmentAvailability = async (date: string, time: string) => {
     try {
         const response = await getAppointments({
@@ -146,21 +141,19 @@ export const checkAppointmentAvailability = async (date: string, time: string) =
         if (response.data.success) {
             const appointments = response.data.data;
             const conflictingAppointment = appointments.find(
-                apt => apt.preferredTime === time && apt.status !== 'Cancelled'
+                (appointment: AppointmentFormData) => appointment.preferredTime === time && appointment.status !== 'Cancelled'
             );
             
-            return !conflictingAppointment; //returns true if available, false if conflicted
+            return !conflictingAppointment;
         }
         
-        return true; //available if can't check
+        return true;
     } catch (error) {
         console.error('Error checking appointment availability:', error);
-        return true; //available if error occurs
+        return true;
     }
 };
 
-
-//function to get available time slots for a specific date
 export const getAvailableTimeSlots = async (date: string) => {
     const allTimeSlots = generateTimeSlots();
     
@@ -173,8 +166,8 @@ export const getAvailableTimeSlots = async (date: string) => {
         if (response.data.success) {
             const appointments = response.data.data;
             const bookedTimes = appointments
-                .filter(apt => apt.status !== 'Cancelled')
-                .map(apt => apt.preferredTime);
+                .filter((appointment: AppointmentFormData) => appointment.status !== 'Cancelled')
+                .map((appointment: AppointmentFormData) => appointment.preferredTime);
             
             return allTimeSlots.filter(time => !bookedTimes.includes(time));
         }

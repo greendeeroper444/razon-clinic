@@ -13,7 +13,6 @@ const AppointmentDetailsPage = () => {
     //zustand store selectors
     const {
         currentAppointment,
-        patients,
         submitLoading,
         loading,
         error,
@@ -21,7 +20,6 @@ const AppointmentDetailsPage = () => {
         isModalOpen,
         isStatusModalOpen,
         fetchAppointmentById,
-        fetchMyAppointments,
         updateAppointmentData,
         updateAppointmentStatus,
         openUpdateModal,
@@ -35,7 +33,6 @@ const AppointmentDetailsPage = () => {
     useEffect(() => {
         if (appointmentId) {
             fetchAppointmentById(appointmentId);
-            fetchMyAppointments(); //for patient dropdown in modal
         }
 
         //cleanup when component unmounts
@@ -69,7 +66,7 @@ const AppointmentDetailsPage = () => {
     }
     
 
-    const handleSubmitStatusUpdate = async (data: { status: string }): Promise<void> => {
+    const handleSubmitStatusUpdate = async (data: { status: any }): Promise<void> => {
         if (!appointmentId) {
             console.error('Missing appointment ID')
             return
@@ -311,7 +308,6 @@ const AppointmentDetailsPage = () => {
                     onClose={closeUpdateModal}
                     modalType="appointment"
                     onSubmit={handleSubmitUpdate}
-                    patients={patients}
                     editData={selectedAppointment}
                     isProcessing={submitLoading}
                 />

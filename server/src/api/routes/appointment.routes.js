@@ -4,7 +4,6 @@ const AppointmentController = require('../controllers/appointment.controller');
 const validator = require('../validators/appointment.validator');
 const { authenticate } = require('../middlewares/auth.middleware');
 
-//create a new appointment
 router.post(
     '/addAppointment', 
     authenticate, 
@@ -12,28 +11,27 @@ router.post(
     AppointmentController.addAppointment
 );
 
-//get all appointments (with optional query filters)
 router.get(
     '/getAppointments', 
-    authenticate, 
+    authenticate,
+    validator.validateQueryParams,
     AppointmentController.getAppointments
 );
-
 
 router.get(
     '/getMyAppointments', 
     authenticate,
+    validator.validateQueryParams,
     AppointmentController.getAppointments
 );
 
 router.get(
     '/getAllTimePerDate', 
-    authenticate, 
+    authenticate,
+    validator.validateDateQuery,
     AppointmentController.getAllTimePerDate
 );
 
-
-//get a specific appointment by ID
 router.get(
     '/getAppointmentById/:appointmentId', 
     authenticate, 
@@ -41,8 +39,6 @@ router.get(
     AppointmentController.getAppointmentById
 );
 
-
-//update an appointment
 router.put(
     '/updateAppointment/:appointmentId', 
     authenticate, 
@@ -50,7 +46,6 @@ router.put(
     AppointmentController.updateAppointment
 );
 
-//update only the status of an appointment
 router.patch(
     '/updateAppointment/:appointmentId/status', 
     authenticate, 
@@ -58,13 +53,11 @@ router.patch(
     AppointmentController.updateAppointment
 );
 
-//delete an appointment
 router.delete(
     '/deleteAppointment/:appointmentId', 
     authenticate, 
     validator.validateAppointmentId,
     AppointmentController.deleteAppointment
 );
-
 
 module.exports = router;

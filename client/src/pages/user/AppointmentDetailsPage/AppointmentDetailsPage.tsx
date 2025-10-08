@@ -13,7 +13,6 @@ const AppointmentDetailsPage = () => {
     //zustand store selectors
     const {
         currentAppointment,
-        patients,
         submitLoading,
         loading,
         error,
@@ -270,7 +269,6 @@ const AppointmentDetailsPage = () => {
                     onClose={closeUpdateModal}
                     modalType="appointment"
                     onSubmit={handleSubmitUpdate}
-                    patients={patients}
                     editData={selectedAppointment}
                     isProcessing={submitLoading}
                 />

@@ -3,7 +3,6 @@ import styles from './Main.module.css'
 import { MainProps } from '../../../types'
 import Loading, { LoadingType } from '../../ui/Loading/Loading';
 
-// Extended MainProps interface to include delay options
 interface ExtendedMainProps extends MainProps {
     loadingDelay?: number;
     loadingMinDuration?: number;

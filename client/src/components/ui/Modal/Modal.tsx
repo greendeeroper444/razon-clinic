@@ -2,9 +2,8 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import styles from './Modal.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import { getPatients } from '../../../services'
 import { AppointmentForm, BillingsForm, BillingDetailsForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../../features/Forms'
-import { formatDateForDisplay, formatDateForInput, transformPatientForAppointment } from '../../../utils'
+import { formatDateForDisplay, formatDateForInput } from '../../../utils'
 import { AppointmentFormData, AppointmentStatus, BillingFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalProps, Patient, PatientFormData } from '../../../types'
 import Button from '../Button/Button'
 
@@ -14,7 +13,6 @@ const Modal: React.FC<ModalProps> = ({
     onClose,
     modalType,
     onSubmit,
-    patients = [],
     editData = null,
     deleteData = null,
     isProcessing = false,
@@ -23,7 +21,6 @@ const Modal: React.FC<ModalProps> = ({
     billingId 
 }) => {
     const [formData, setFormData] = useState<FormDataType>({});
-    const [loadedPatients, setLoadedPatients] = useState<Patient[]>(patients);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
 
@@ -176,13 +173,6 @@ const Modal: React.FC<ModalProps> = ({
         }
     }, [modalType, editData]);
 
-    //fetch patients when appointment modal opens
-    useEffect(() => {
-        if (isOpen && modalType === 'appointment' && loadedPatients.length === 0) {
-            fetchPatients();
-        }
-    }, [isOpen, modalType]);
-
     //create a custom event when modal closes
     const handleClose = () => {
         onClose();
@@ -190,17 +180,6 @@ const Modal: React.FC<ModalProps> = ({
         window.dispatchEvent(new CustomEvent('modal-closed'));
     };
 
-    const fetchPatients = async () => {
-        try {
-            setIsLoading(true);
-            const response = await getPatients();
-            setLoadedPatients(response.data.patients);
-        } catch (error) {
-            console.error('Error fetching patients:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -300,7 +279,6 @@ const Modal: React.FC<ModalProps> = ({
                         formData={formData as AppointmentFormData}
                         onChange={handleChange}
                         isLoading={isLoading}
-                        patients={loadedPatients.map(transformPatientForAppointment)}
                     />
                 );
             case 'patient':
@@ -335,7 +313,6 @@ const Modal: React.FC<ModalProps> = ({
                         formData={formData as MedicalRecordFormData}
                         onChange={handleChange}
                         isLoading={isLoading}
-                        // patients={loadedPatients}
                     />
                 );
             case 'status':

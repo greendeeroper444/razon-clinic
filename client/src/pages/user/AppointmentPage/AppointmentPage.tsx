@@ -16,7 +16,6 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     //zustand store selectors
     const {
         appointments,
-        patients,
         submitLoading,
         loading,
         error,
@@ -322,7 +321,6 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                     onClose={closeUpdateModal}
                     modalType="appointment"
                     onSubmit={handleSubmitUpdate}
-                    patients={patients}
                     editData={selectedAppointment}
                     isProcessing={submitLoading}
                 />
