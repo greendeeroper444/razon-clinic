@@ -51,7 +51,7 @@ const SignupPage = () => {
     useEffect(() => {
         if (user) {
             const userRole = user.role
-            if (userRole === 'Patient') {
+            if (userRole === 'User') {
                 navigate('/user/appointments')
             } else if (userRole === 'Doctor' || userRole === 'Staff') {
                 navigate('/admin/dashboard')

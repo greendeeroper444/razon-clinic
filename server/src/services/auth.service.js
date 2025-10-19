@@ -43,7 +43,7 @@ class AuthService extends BaseService {
                 sex,
                 address,
                 dateRegistered: new Date(),
-                role: 'Patient'
+                role: 'User'
             };
             
             if (isEmail) {

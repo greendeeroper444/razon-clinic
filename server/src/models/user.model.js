@@ -85,7 +85,7 @@ const UserSchema = new mongoose.Schema(
         role: {
             type: String,
             required: true,
-            default: 'Patient'
+            default: 'User'
         },
         isArchived: {
             type: Boolean,

@@ -96,7 +96,7 @@ export const getCalendarAppointments = async (fromDate: string, toDate: string) 
             fromDate,
             toDate,
             page: 1,
-            limit: 10000,
+            limit: 1000,
             search: ''
         };
 

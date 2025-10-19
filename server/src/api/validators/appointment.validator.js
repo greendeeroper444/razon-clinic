@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 
 const validateAppointment = [
     (req, res, next) => {
-        //if no userId provided and user is a patient, use their ID
         if (!req.body.userId && req.user && req.user.role === 'User') {
             req.body.userId = req.user.id;
         }
