@@ -41,13 +41,11 @@ const SignupPage = () => {
         initializeAuth
     } = useAuthenticationStore()
 
-    //initialize auth and load saved form data on component mount
     useEffect(() => {
         initializeAuth()
         loadFormData()
     }, [initializeAuth, loadFormData])
 
-    //redirect if already authenticated
     useEffect(() => {
         if (user) {
             const userRole = user.role
@@ -126,7 +124,6 @@ const SignupPage = () => {
                 nextSignupStep()
             }
         } else {
-            //show validation errors as toasts
             Object.values(validationErrors).forEach(error => {
                 if (error) {
                     toast.error(error)

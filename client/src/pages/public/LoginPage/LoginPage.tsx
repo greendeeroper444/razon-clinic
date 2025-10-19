@@ -10,7 +10,7 @@ import backgroundImage from '../../../assets/backgrounds/background2.png'
 const LoginPage = () => {
     const navigate = useNavigate()
     
-    //zustand store selectors
+    //zustand store 
     const {
         loginForm,
         isLoading,
@@ -30,7 +30,6 @@ const LoginPage = () => {
         initializeAuth()
     }, [initializeAuth])
 
-    //redirect if already authenticated
     useEffect(() => {
         if (user) {
             const userRole = user.userType
@@ -67,12 +66,10 @@ const LoginPage = () => {
                     password: loginForm.password
                 })
                 
-                //navigation is handled in the useEffect above
             } catch (error) {
                 console.log(error);
             }
         } else {
-            //show validation errors as toasts
             Object.values(errors).forEach(error => {
                 if (error) {
                     toast.error(error)

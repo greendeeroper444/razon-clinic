@@ -11,7 +11,8 @@ export const register = async (userData: Omit<SignupFormData, 'confirmPassword' 
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Registration failed');
+            const message = error.response?.data?.message || 'Registration failed';
+            throw new Error(message);
         }
         throw new Error('An error occurred during registration');
     }
@@ -26,7 +27,8 @@ export const login = async (loginData: Omit<LoginFormData, 'rememberMe'>) => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Login failed');
+            const message = error.response?.data?.message || 'Login failed';
+            throw new Error(message);
         }
         throw new Error('An error occurred during login');
     }
@@ -38,7 +40,8 @@ export const getProfile = async () => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Failed to fetch profile');
+            const message = error.response?.data?.message || 'Failed to fetch profile';
+            throw new Error(message);
         }
         throw new Error('An error occurred while fetching profile');
     }
@@ -50,9 +53,9 @@ export const logout = async () => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || 'Logout failed');
+            const message = error.response?.data?.message || 'Logout failed';
+            throw new Error(message);
         }
         throw new Error('An error occurred during logout');
     }
 };
-

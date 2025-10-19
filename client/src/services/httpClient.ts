@@ -1,25 +1,37 @@
 import axios from 'axios';
 import API_BASE_URL from '../ApiBaseUrl';
 
-//set default configuration
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = API_BASE_URL;
 
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
-//function to add requests to queue while refreshing
 const subscribeTokenRefresh = (cb: (token: string) => void) => {
     refreshSubscribers.push(cb);
 };
 
-//function to notify all queued requests when refresh is complete
 const onRefreshed = (token: string) => {
     refreshSubscribers.map(cb => cb(token));
     refreshSubscribers = [];
 };
 
-//request interceptor
+//not trigger token refresh
+const AUTH_ENDPOINTS = [
+    '/api/auth/login',
+    '/api/auth/register',
+    '/api/auth/refreshToken',
+    '/api/auth/logout',
+    '/api/auth/requestPasswordReset',
+    '/api/auth/resetPassword'
+];
+
+const isAuthEndpoint = (url?: string): boolean => {
+    if (!url) return false;
+    return AUTH_ENDPOINTS.some(endpoint => url.includes(endpoint));
+};
+
+
 axios.interceptors.request.use(
     (config) => {
         return config;
@@ -29,7 +41,7 @@ axios.interceptors.request.use(
     }
 );
 
-// response interceptor for automatic token refresh
+
 axios.interceptors.response.use(
     (response) => {
         return response;
@@ -37,12 +49,14 @@ axios.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        //check if error is 401 and we haven't already tried to refresh
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if (isAuthEndpoint(originalRequest.url) || originalRequest._retry) {
+            return Promise.reject(error);
+        }
+
+        if (error.response?.status === 401) {
             if (isRefreshing) {
-                //if already refreshing, wait for it to complete
                 return new Promise((resolve) => {
-                    subscribeTokenRefresh((token: string) => {
+                    subscribeTokenRefresh(() => {
                         resolve(axios(originalRequest));
                     });
                 });
@@ -52,26 +66,21 @@ axios.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                //attempt to refresh the token
                 await axios.post('/api/auth/refreshToken');
                 
                 isRefreshing = false;
                 onRefreshed('refreshed');
                 
-                //retry the original request
                 return axios(originalRequest);
             } catch (refreshError) {
                 isRefreshing = false;
                 refreshSubscribers = [];
                 
-                //refresh failed, redirect to login
-                //get the auth store and logout
-                const { useAuthenticationStore } = await import('../stores');
-                const logout = useAuthenticationStore.getState().logout;
-                await logout();
-                
-                //redirect to login page
-                if (typeof window !== 'undefined') {
+                if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+                    const { useAuthenticationStore } = await import('../stores');
+                    const logout = useAuthenticationStore.getState().logout;
+                    await logout();
+                    
                     window.location.href = '/login';
                 }
                 
@@ -81,6 +90,6 @@ axios.interceptors.response.use(
 
         return Promise.reject(error);
     }
-)
+);
 
-export default axios
+export default axios;

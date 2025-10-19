@@ -6,7 +6,7 @@ import { getProfile, login, logout, register } from '../services'
 
 const STORAGE_KEY = 'signup_form_data'
 const STORAGE_TIMESTAMP_KEY = 'signup_form_timestamp'
-const ONE_HOUR_MS = 60 * 60 * 1000 // 1 hour in milliseconds
+const ONE_HOUR_MS = 60 * 60 * 1000
 
 const initialLoginForm: LoginFormData = {
     emailOrContactNumber: '',
@@ -47,25 +47,22 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                 validationErrors: {},
 
                 register: async (userData) => {
-                    set({ isLoading: true })
-                    
                     try {
+                        set({ isLoading: true })
+                        
                         await register(userData)
                         
-                        set({ isLoading: false })
-                        
-                        //clear saved form data on successful registration
                         get().clearSavedFormData()
                         
                         toast.success('Registration successful! Redirecting to login...')
                         
-                        return Promise.resolve()
+                        set({ isLoading: false })
                         
                     } catch (error) {
-                        set({ isLoading: false })
+                        console.error('Error registering user:', error)
                         const errorMessage = error instanceof Error ? error.message : 'An error occurred during registration'
                         toast.error(errorMessage)
-                        throw error
+                        set({ isLoading: false })
                     }
                 },
 
@@ -75,45 +72,48 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                         set({ user: response.data.user })
                     } catch (error) {
                         console.error('Failed to fetch user profile:', error)
+                        throw error
                     }
                 },
 
-                //authentication actions
                 login: async (credentials) => {
-                    set({ isLoading: true })
-                    
                     try {
-                        await login(credentials);
-
-                        set({
-                            isAuthenticated: true,
-                            isLoading: false
-                        })
+                        set({ isLoading: true })
+                        
+                        await login(credentials)
                         
                         await get().fetchUserProfile()
 
-                        //handle remember me - only store this preference
                         const { rememberMe } = get().loginForm
                         if (rememberMe) {
                             localStorage.setItem('rememberUser', 'true')
                         }
                         
+                        set({
+                            isAuthenticated: true,
+                            isLoading: false
+                        })
+                        
                         toast.success('Login successful!')
                         
-                        //role-based redirection logic would be handled in the component
-                        return Promise.resolve()
-                        
                     } catch (error) {
-                        set({ isLoading: false })
-                        const errorMessage = error instanceof Error ? error.message : 'Invalid credentials or server error'
+                        console.error('Error during login:', error)
+                        const errorMessage = error instanceof Error ? error.message : 'Invalid credentials'
                         toast.error(errorMessage)
-                        throw error
+                        set({ 
+                            isLoading: false,
+                            isAuthenticated: false,
+                            user: null
+                        })
                     }
                 },
 
                 logout: async () => {
-
-                    await logout();
+                    try {
+                        await logout()
+                    } catch (error) {
+                        console.error('Logout error:', error)
+                    }
 
                     set({
                         user: null,
@@ -129,32 +129,27 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                     toast.success('Logged out successfully')
                 },
 
-                
-                //form actions
                 updateLoginForm: (field, value) => {
                     set((state) => ({
                         loginForm: {
-                        ...state.loginForm,
-                        [field]: value
+                            ...state.loginForm,
+                            [field]: value
                         }
                     }))
                     
-                    //clear validation error for this field
                     get().clearValidationError(field)
                 },
 
                 updateSignupForm: (field, value) => {
                     set((state) => ({
                         signupForm: {
-                        ...state.signupForm,
-                        [field]: value
+                            ...state.signupForm,
+                            [field]: value
                         }
                     }))
                     
-                    //clear validation error for this field
                     get().clearValidationError(field)
                     
-                    //auto-save form data
                     setTimeout(() => get().saveFormData(), 500)
                 },
 
@@ -170,7 +165,6 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                     })
                 },
 
-                //step navigation
                 setSignupStep: (step) => {
                     set({ signupStep: step })
                 },
@@ -196,7 +190,6 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                     }))
                 },
 
-                //password visibility
                 togglePasswordVisibility: () => {
                     set((state) => ({ showPassword: !state.showPassword }))
                 },
@@ -205,7 +198,6 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                     set((state) => ({ showConfirmPassword: !state.showConfirmPassword }))
                 },
 
-                //validation
                 setValidationErrors: (errors) => {
                     set({ validationErrors: errors })
                 },
@@ -223,11 +215,9 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                     set({ validationErrors: {} })
                 },
 
-                //local storage for form data (signup form only)
                 saveFormData: () => {
                     const { signupForm, signupStep, completedSteps } = get()
                     
-                    //don't save if form is completely empty
                     const hasData = signupForm.firstName || 
                         signupForm.lastName ||
                         signupForm.middleName ||
@@ -265,7 +255,6 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                             const now = new Date().getTime()
                             const timeDiff = now - timestamp
                             
-                            //check if saved data is less than 1 hour old
                             if (timeDiff < ONE_HOUR_MS) {
                                 set({
                                     signupForm: parsedData.formData,
@@ -274,7 +263,6 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                                 })
                                 toast.success('Form data restored from previous session')
                             } else {
-                                //data is older than 1 hour, remove it
                                 get().clearSavedFormData()
                                 toast.info('Previous form data expired')
                             }
@@ -293,13 +281,6 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                     }
                 },
 
-                //auth helpers (simplified for cookie-based auth)
-                // initializeAuth: async () => {
-                //     const isRemembered = localStorage.getItem('rememberUser')
-                //     if (isRemembered && get().isAuthenticated) {
-                //         await get().fetchUserProfile()
-                //     }
-                // },
                 initializeAuth: async () => {
                     try {
                         await get().fetchUserProfile()
@@ -317,14 +298,11 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                 },
 
                 checkTokenExpiration: () => {
-                    //token expiration is now handled by server via cookies
-                    //always return true since server manages token validation
                     return true
                 }
             }),
             {
                 name: 'authentication-store',
-                //only persist user data and auth status - token handled via cookies
                 partialize: (state) => ({
                     user: state.user,
                     isAuthenticated: state.isAuthenticated
