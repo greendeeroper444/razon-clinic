@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import styles from './UserManagementPage.module.css'
 import { useUserManagementStore } from '../../../stores/userManagementStore'
 import { Header, Loading, Main, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
-import { formatDate, getLoadingText, getStatusClass } from '../../../utils'
+import { formatDate, getFirstLetterOfFirstAndLastName, getLoadingText, getStatusClass } from '../../../utils'
 import { getUserSummaryCards } from '../../../config/userSummaryCards'
 import { TableColumn, User } from '../../../types'
 import { PersonStanding } from 'lucide-react'
@@ -112,11 +112,26 @@ const UserManagementPage = () => {
             className: styles.thUser,
             render: (user) => (
                 <div className={styles.userInfo}>
-                    <div className={`${styles.avatar} ${user.isArchived ? styles.avatarArchived : styles.avatarActive}`}>
-                        <PersonStanding />
+                    <div className={styles.userAvatar}>
+                        {
+                            (() => {
+                                const firstName = user.firstName
+                                return firstName 
+                                    ? getFirstLetterOfFirstAndLastName(firstName)
+                                    : 'N/A'
+                            })()
+                        }
                     </div>
-                    <span>{user.firstName} {user.lastName}</span>
-            </div>
+                    <div>
+                        <div className={styles.userName}>
+                            {user.firstName}
+                        </div>
+
+                        <div className={styles.userId}>
+                            USR-ID: {user.userNumber || 'User'}
+                        </div>
+                    </div>
+                </div>
             )
         },
         {
