@@ -1,6 +1,8 @@
-import styles from './TermsAndConditionPage.module.css'
+import { User, Heart, Package, Bell, Archive, CreditCard, BarChart3, Shield, Activity, UserCheck, Users } from 'lucide-react';
+import styles from './TermsAndConditionPage.module.css';
 
 const TermsAndConditionPage = () => {
+
   return (
     <div className={styles.container}>
         <div className={styles.header}>
@@ -27,44 +29,50 @@ const TermsAndConditionPage = () => {
                 <div className={styles.subsection}>
                     <h3 className={styles.subsectionTitle}>2.1 Patient Services</h3>
                     <div className={styles.featureCard}>
-                    <div className={styles.featureIcon}>👤</div>
-                    <div className={styles.featureContent}>
-                        <h4>Appointment Booking System</h4>
-                        <ul className={styles.featureList}>
-                        <li>Automatic Patient ID generation for new registrations</li>
-                        <li>Personal details management and verification</li>
-                        <li>Flexible date and time selection</li>
-                        <li>Detailed reason for visit documentation</li>
-                        <li>Easy appointment rebooking capabilities</li>
-                        </ul>
-                    </div>
+                        <div className={styles.featureIcon}>
+                            <User size={32} strokeWidth={2} />
+                        </div>
+                        <div className={styles.featureContent}>
+                            <h4>Appointment Booking System</h4>
+                            <ul className={styles.featureList}>
+                                <li>Automatic Patient ID generation for new registrations</li>
+                                <li>Personal details management and verification</li>
+                                <li>Flexible date and time selection</li>
+                                <li>Detailed reason for visit documentation</li>
+                                <li>Easy appointment rebooking capabilities</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
                 <div className={styles.subsection}>
                     <h3 className={styles.subsectionTitle}>2.2 Medical Record Management</h3>
                     <div className={styles.featureCard}>
-                    <div className={styles.featureIcon}>🏥</div>
-                    <div className={styles.featureContent}>
-                        <h4>Comprehensive Health Records</h4>
-                        <ul className={styles.featureList}>
-                        <li>Complete medical history documentation</li>
-                        <li>Growth milestones tracking</li>
-                        <li>Vaccination history and scheduling</li>
-                        <li>Current symptoms assessment</li>
-                        <li>Professional diagnosis recording</li>
-                        <li>Detailed treatment plan development</li>
-                        <li>Prescription medication management</li>
-                        <li>Consultation notes and follow-up scheduling</li>
-                        </ul>
-                    </div>
+                        <div className={styles.featureIcon}>
+                            <Heart size={32} strokeWidth={2} />
+                        </div>
+                        <div className={styles.featureContent}>
+                            <h4>Comprehensive Health Records</h4>
+                            <ul className={styles.featureList}>
+                                <li>Complete medical history documentation</li>
+                                <li>Growth milestones tracking</li>
+                                <li>Vaccination history and scheduling</li>
+                                <li>Current symptoms assessment</li>
+                                <li>Professional diagnosis recording</li>
+                                <li>Detailed treatment plan development</li>
+                                <li>Prescription medication management</li>
+                                <li>Consultation notes and follow-up scheduling</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
                 <div className={styles.subsection}>
                     <h3 className={styles.subsectionTitle}>2.3 Inventory Management</h3>
                     <div className={styles.featureCard}>
-                        <div className={styles.featureIcon}>📦</div>
+                        <div className={styles.featureIcon}>
+                            <Package size={32} strokeWidth={2} />
+                        </div>
                         <div className={styles.featureContent}>
                             <h4>Medical Supplies Tracking</h4>
                             <ul className={styles.featureList}>
@@ -83,7 +91,10 @@ const TermsAndConditionPage = () => {
                 <h2 className={styles.sectionTitle}>3. User Responsibilities and Access</h2>
                 
                 <div className={styles.accessCard}>
-                    <h3 className={styles.accessTitle}>Patient Access</h3>
+                    <div className={styles.accessHeader}>
+                        <UserCheck size={24} strokeWidth={2} />
+                        <h3 className={styles.accessTitle}>Patient Access</h3>
+                    </div>
                     <p className={styles.accessText}>
                         Patients are granted access to appointment booking, personal health record viewing, 
                         and communication features. You are responsible for maintaining accurate personal 
@@ -92,7 +103,10 @@ const TermsAndConditionPage = () => {
                 </div>
 
                 <div className={styles.accessCard}>
-                    <h3 className={styles.accessTitle}>Medical Staff Access</h3>
+                    <div className={styles.accessHeader}>
+                        <Activity size={24} strokeWidth={2} />
+                        <h3 className={styles.accessTitle}>Medical Staff Access</h3>
+                    </div>
                     <p className={styles.accessText}>
                         Licensed medical professionals have full access to patient records, diagnosis tools, 
                         treatment planning, and prescription management. All medical decisions must comply 
@@ -101,7 +115,10 @@ const TermsAndConditionPage = () => {
                 </div>
 
                 <div className={styles.accessCard}>
-                    <h3 className={styles.accessTitle}>Administrative Staff Access</h3>
+                    <div className={styles.accessHeader}>
+                        <Users size={24} strokeWidth={2} />
+                        <h3 className={styles.accessTitle}>Administrative Staff Access</h3>
+                    </div>
                     <p className={styles.accessText}>
                         Administrative personnel can manage appointments, inventory, billing processes, 
                         and system notifications. Staff must maintain confidentiality and data security 
@@ -115,25 +132,33 @@ const TermsAndConditionPage = () => {
                 
                 <div className={styles.automationGrid}>
                     <div className={styles.automationCard}>
-                        <div className={styles.automationIcon}>🔔</div>
+                        <div className={styles.automationIcon}>
+                            <Bell size={40} strokeWidth={2} />
+                        </div>
                         <h4>Smart Notifications</h4>
                         <p>Automatic alerts for appointment scheduling, low inventory, and expired medications</p>
                     </div>
                     
                     <div className={styles.automationCard}>
-                        <div className={styles.automationIcon}>📁</div>
+                        <div className={styles.automationIcon}>
+                            <Archive size={40} strokeWidth={2} />
+                        </div>
                         <h4>Record Archiving</h4>
                         <p>Automatic archival of patient records after 2 years of inactivity</p>
                     </div>
                     
                     <div className={styles.automationCard}>
-                        <div className={styles.automationIcon}>💳</div>
+                        <div className={styles.automationIcon}>
+                            <CreditCard size={40} strokeWidth={2} />
+                        </div>
                         <h4>Billing Processing</h4>
                         <p>Streamlined payment processing and invoice generation</p>
                     </div>
                     
                     <div className={styles.automationCard}>
-                        <div className={styles.automationIcon}>📊</div>
+                        <div className={styles.automationIcon}>
+                            <BarChart3 size={40} strokeWidth={2} />
+                        </div>
                         <h4>Report Generation</h4>
                         <p>Comprehensive reporting for medical, administrative, and financial analysis</p>
                     </div>
@@ -143,6 +168,7 @@ const TermsAndConditionPage = () => {
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>5. Privacy and Data Protection</h2>
                 <div className={styles.privacyCard}>
+                    <Shield size={32} strokeWidth={2} style={{ position: 'absolute', top: '-16px', right: '20px', background: 'white', padding: '8px', borderRadius: '50%', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }} />
                     <p className={styles.text}>
                         We are committed to protecting your personal and medical information in accordance 
                         with HIPAA regulations and applicable privacy laws. All data transmission is encrypted, 

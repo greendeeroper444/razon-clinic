@@ -23,7 +23,8 @@ const AUTH_ENDPOINTS = [
     '/api/auth/refreshToken',
     '/api/auth/logout',
     '/api/auth/requestPasswordReset',
-    '/api/auth/resetPassword'
+    '/api/auth/resetPassword',
+    '/api/auth/me'
 ];
 
 const isAuthEndpoint = (url?: string): boolean => {
@@ -43,9 +44,7 @@ axios.interceptors.request.use(
 
 
 axios.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+    (response) => { return response; },
     async (error) => {
         const originalRequest = error.config;
 
@@ -76,7 +75,11 @@ axios.interceptors.response.use(
                 isRefreshing = false;
                 refreshSubscribers = [];
                 
-                if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+                //check if we're already on login or signup pages
+                if (typeof window !== 'undefined' && 
+                    !window.location.pathname.includes('/login') &&
+                    !window.location.pathname.includes('/signup') &&
+                    !window.location.pathname.includes('/register')) {
                     const { useAuthenticationStore } = await import('../stores');
                     const logout = useAuthenticationStore.getState().logout;
                     await logout();

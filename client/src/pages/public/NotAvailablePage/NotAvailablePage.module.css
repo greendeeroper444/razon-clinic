@@ -1,0 +1,325 @@
+.notAvailableContainer {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.notAvailableContainer::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: moveBackground 20s linear infinite;
+}
+
+@keyframes moveBackground {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(50px, 50px);
+    }
+}
+
+.contentWrapper {
+    text-align: center;
+    background: white;
+    padding: 60px 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.iconWrapper {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.warningIcon {
+    color: #e53e3e;
+    animation: pulse 2s infinite;
+    display: inline-block;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+.statusCode {
+    font-size: 8rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #1a202c;
+    margin: 20px 0;
+    font-weight: 700;
+}
+
+.description {
+    font-size: 1.1rem;
+    color: #718096;
+    margin: 30px 0;
+    line-height: 1.8;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.timeInfo {
+    margin: 30px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.timeBox {
+    background: linear-gradient(135deg, #fef5e7 0%, #ffeaa7 100%);
+    border: 2px solid #f39c12;
+    border-radius: 12px;
+    padding: 15px 25px;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(243, 156, 18, 0.2);
+}
+
+.timeLabel {
+    font-size: 14px;
+    font-weight: 600;
+    color: #d35400;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.timeValue {
+    font-size: 16px;
+    font-weight: 700;
+    color: #e67e22;
+    font-family: monospace;
+    display: block;
+}
+
+.infoBox {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.infoItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #f7fafc;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.infoItem:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.infoIcon {
+    color: #667eea;
+    flex-shrink: 0;
+}
+
+.infoText {
+    color: #4a5568;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 40px 0 30px;
+    flex-wrap: wrap;
+}
+
+.homeButton,
+.backButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.homeButton {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.homeButton:hover:not(.disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.backButton {
+    background: white;
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+}
+
+.backButton:hover:not(.disabled) {
+    background: #f7fafc;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-color: #cbd5e0;
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    filter: grayscale(60%);
+}
+
+.buttonIcon {
+    font-size: 1.1rem;
+}
+
+.helpText {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #e2e8f0;
+}
+
+.helpText p {
+    color: #718096;
+    font-size: 0.95rem;
+    margin: 8px 0;
+}
+
+.contactInfo {
+    font-weight: 600;
+    color: #667eea !important;
+    margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+    .notAvailableContainer {
+        padding: 10px;
+    }
+    
+    .contentWrapper {
+        padding: 40px 25px;
+    }
+    
+    .statusCode {
+        font-size: 6rem;
+    }
+    
+    .title {
+        font-size: 2rem;
+    }
+    
+    .description {
+        font-size: 1rem;
+    }
+
+    .infoBox {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .infoItem {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+    }
+    
+    .buttonGroup {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .homeButton,
+    .backButton {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .statusCode {
+        font-size: 4.5rem;
+    }
+    
+    .title {
+        font-size: 1.8rem;
+    }
+    
+    .warningIcon {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    .contentWrapper {
+        padding: 30px 20px;
+    }
+
+    .description {
+        font-size: 0.95rem;
+    }
+
+    .contactInfo {
+        font-size: 0.85rem;
+    }
+
+    .timeBox {
+        padding: 12px 20px;
+    }
+
+    .timeValue {
+        font-size: 14px;
+    }
+}

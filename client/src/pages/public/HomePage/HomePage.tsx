@@ -1,49 +1,7 @@
-// import styles from './HomePage.module.css'
-// import Footer from '../../../components/Footer/Footer';
-// import { useNavigate } from 'react-router-dom';
-// import SectionFeatures from '../../../components/SectionFeatures/SectionFeatures';
-
-// const HomePage = () => {
-//     const navigate = useNavigate();
-
-//   return (
-//     <div>
-//         <section className={styles.hero}>
-//             <h1>Book Your Appointment Online</h1>
-//             <p>Accessible. Reliable. Fast healthcare booking at your fingertips.</p>
-//             <button className={styles.btnPrimary} onClick={() => navigate('/login')}>Book Now</button>
-//         </section>
-
-//         <SectionFeatures />
-
-//         <Footer />
-//     </div>
-//   )
-// }
-
-// export default HomePage
 import { useState, useEffect, useRef } from 'react'
 import styles from './HomePage.module.css'
 import { useNavigate, Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { 
-    faHeart, 
-    faStethoscope, 
-    faUsers, 
-    faShieldAlt,
-    faBriefcaseMedical,
-    faHeartbeat,
-    faBrain,
-    faAllergies,
-    faUserMd,
-    faCalendarCheck,
-    faSyringe,
-    faCommentMedical,
-    faPhone, 
-    faEnvelope, 
-    faLocationDot
-} from '@fortawesome/free-solid-svg-icons'
-import { faFacebookF, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { Heart, Stethoscope, Users, Shield, Briefcase, Activity, Brain, Wind, UserCheck, CalendarCheck, Syringe, MessageCircle, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from 'lucide-react'
 import { Footer, SectionFeatures } from '../../../components'
 import razon from '../../../assets/profiles/razon.jpg'
 import secretary from '../../../assets/profiles/secretary.jpg'
@@ -75,56 +33,56 @@ const HomePage = () => {
             id: 1,
             title: "Well-Child Visits",
             description: "Regular check-ups to monitor your child's growth, development, and overall health.",
-            icon: faUserMd,
+            icon: UserCheck,
             color: "#3b82f6"
         },
         {
             id: 2,
             title: "Vaccinations",
             description: "Complete immunization services following the recommended pediatric vaccination schedule.",
-            icon: faSyringe,
+            icon: Syringe,
             color: "#10b981"
         },
         {
             id: 3,
             title: "Sick Child Visits",
             description: "Prompt care for illnesses, infections, and other acute health concerns.",
-            icon: faBriefcaseMedical,
+            icon: Briefcase,
             color: "#ef4444"
         },
         {
             id: 4,
             title: "Developmental Assessments",
             description: "Evaluations to ensure your child is meeting important developmental milestones.",
-            icon: faBrain,
+            icon: Brain,
             color: "#8b5cf6"
         },
         {
             id: 5,
             title: "Allergy Testing",
             description: "Identification and management of allergies and asthma conditions.",
-            icon: faAllergies,
+            icon: Wind,
             color: "#f59e0b"
         },
         {
             id: 6,
             title: "Preventive Care",
             description: "Services focused on maintaining good health and preventing illness.",
-            icon: faHeartbeat,
+            icon: Activity,
             color: "#3b82f6"
         },
         {
             id: 7,
             title: "Consultations",
             description: "One-on-one discussions about your child's health concerns and treatment options.",
-            icon: faCommentMedical,
+            icon: MessageCircle,
             color: "#1e293b"
         },
         {
             id: 8,
             title: "Health Screenings",
             description: "Early detection screenings for various pediatric health conditions.",
-            icon: faStethoscope,
+            icon: Stethoscope,
             color: "#6b7280"
         }
     ];
@@ -264,6 +222,7 @@ const HomePage = () => {
                 <h1 className={styles.slideInUp}>Book Your Appointment Online</h1>
                 <p className={`${styles.slideInUp} ${styles.delay1}`}>Accessible. Reliable. Fast healthcare booking at your fingertips.</p>
                 <button 
+                    type='submit'
                     className={`${styles.btnPrimary} ${styles.slideInUp} ${styles.delay2}`} 
                     onClick={() => navigate('/login')}
                 >
@@ -316,19 +275,22 @@ const HomePage = () => {
                     <div className={styles.valuesGrid}>
                         {
                             [
-                                { icon: faHeart, title: "Compassion", description: "We provide care with kindness, empathy, and respect for all children and their families." },
-                                { icon: faStethoscope, title: "Excellence", description: "We are committed to the highest standards of medical care and continuous professional development." },
-                                { icon: faUsers, title: "Family-Centered", description: "We recognize the family as an essential part of every child's care and well-being." },
-                                { icon: faShieldAlt, title: "Trust", description: "We build lasting relationships based on honesty, integrity, and transparent communication." }
-                            ].map((value, index) => (
-                                <div key={index} className={`${styles.valueCard} ${styles.slideInUp} ${styles[`delay${index + 1}`]}`}>
-                                    <div className={styles.valueIcon}>
-                                        <FontAwesomeIcon icon={value.icon} />
+                                { icon: Heart, title: "Compassion", description: "We provide care with kindness, empathy, and respect for all children and their families." },
+                                { icon: Stethoscope, title: "Excellence", description: "We are committed to the highest standards of medical care and continuous professional development." },
+                                { icon: Users, title: "Family-Centered", description: "We recognize the family as an essential part of every child's care and well-being." },
+                                { icon: Shield, title: "Trust", description: "We build lasting relationships based on honesty, integrity, and transparent communication." }
+                            ].map((value, index) => {
+                                const IconComponent = value.icon;
+                                return (
+                                    <div key={index} className={`${styles.valueCard} ${styles.slideInUp} ${styles[`delay${index + 1}`]}`}>
+                                        <div className={styles.valueIcon}>
+                                            <IconComponent size={32} strokeWidth={2} />
+                                        </div>
+                                        <h4>{value.title}</h4>
+                                        <p>{value.description}</p>
                                     </div>
-                                    <h4>{value.title}</h4>
-                                    <p>{value.description}</p>
-                                </div>
-                            ))
+                                );
+                            })
                         }
                     </div>
                 </div>
@@ -378,18 +340,21 @@ const HomePage = () => {
             <div className={styles.servicesContainer}>
                 <div className={styles.servicesGrid}>
                     {
-                        services.map((service, index) => (
-                            <div key={service.id} className={`${styles.serviceCard} ${styles.slideInUp} ${styles[`delay${(index % 4) + 1}`]}`}>
-                                <div className={styles.iconContainer} style={{ backgroundColor: service.color }}>
-                                    <FontAwesomeIcon icon={service.icon} className={styles.serviceIcon} />
+                        services.map((service, index) => {
+                            const IconComponent = service.icon;
+                            return (
+                                <div key={service.id} className={`${styles.serviceCard} ${styles.slideInUp} ${styles[`delay${(index % 4) + 1}`]}`}>
+                                    <div className={styles.iconContainer} style={{ backgroundColor: service.color }}>
+                                        <IconComponent className={styles.serviceIcon} size={32} strokeWidth={2} />
+                                    </div>
+                                    <h4>{service.title}</h4>
+                                    <p>{service.description}</p>
+                                    <Link to={`/services/${service.id}`} className={styles.learnMore}>
+                                        Learn more
+                                    </Link>
                                 </div>
-                                <h4>{service.title}</h4>
-                                <p>{service.description}</p>
-                                <Link to={`/services/${service.id}`} className={styles.learnMore}>
-                                    Learn more
-                                </Link>
-                            </div>
-                        ))
+                            );
+                        })
                     }
                 </div>
             </div>
@@ -400,11 +365,11 @@ const HomePage = () => {
                     <p className={styles.delay1}>Our friendly staff is ready to help you with all your pediatric healthcare needs</p>
                     <div className={`${styles.appointmentButtons} ${styles.delay2}`}>
                         <Link to="/appointment" className={styles.primaryButton}>
-                            <FontAwesomeIcon icon={faCalendarCheck} className={styles.buttonIcon} />
+                            <CalendarCheck className={styles.buttonIcon} size={20} strokeWidth={2} />
                             Book Online
                         </Link>
                         <div className={styles.phoneButton}>
-                            <FontAwesomeIcon icon={faCommentMedical} className={styles.buttonIcon} />
+                            <MessageCircle className={styles.buttonIcon} size={20} strokeWidth={2} />
                             Call Us: 0939-726-6918
                         </div>
                     </div>
@@ -456,19 +421,19 @@ const HomePage = () => {
                     <div className={`${styles.contactInfo} ${styles.slideInUp} ${styles.delay2}`}>
                         <h4>Contact Information</h4>
                         <div className={`${styles.infoItem} ${styles.slideInUp} ${styles.delay3}`}>
-                            <FontAwesomeIcon icon={faPhone} className={styles.infoIcon} />
+                            <Phone className={styles.infoIcon} size={20} strokeWidth={2} />
                             <div className={styles.infoText}>
                                 +0939-726-6918
                             </div>
                         </div>
                         <div className={`${styles.infoItem} ${styles.slideInUp} ${styles.delay4}`}>
-                            <FontAwesomeIcon icon={faEnvelope} className={styles.infoIcon} />
+                            <Mail className={styles.infoIcon} size={20} strokeWidth={2} />
                             <div className={styles.infoText}>
                                 drnice4kids@gmail.com
                             </div>
                         </div>
                         <div className={`${styles.infoItem} ${styles.slideInUp} ${styles.delay5}`}>
-                            <FontAwesomeIcon icon={faLocationDot} className={styles.infoIcon} />
+                            <MapPin className={styles.infoIcon} size={20} strokeWidth={2} />
                             <div className={styles.infoText}>
                                 4J38+73R, Gladiola St, Buhangin, Davao City, 8000 Davao del Sur
                             </div>
@@ -476,13 +441,13 @@ const HomePage = () => {
                         
                         <div className={`${styles.socialLinks} ${styles.slideInUp} ${styles.delay6}`}>
                             <a href="#" className={styles.socialIcon}>
-                                <FontAwesomeIcon icon={faFacebookF} />
+                                <Facebook size={20} strokeWidth={2} />
                             </a>
                             <a href="#" className={styles.socialIcon}>
-                                <FontAwesomeIcon icon={faInstagram} />
+                                <Instagram size={20} strokeWidth={2} />
                             </a>
                             <a href="#" className={styles.socialIcon}>
-                                <FontAwesomeIcon icon={faTwitter} />
+                                <Twitter size={20} strokeWidth={2} />
                             </a>
                         </div>
                     </div>

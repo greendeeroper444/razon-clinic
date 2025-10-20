@@ -124,7 +124,7 @@
   margin-bottom: 1.5rem;
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 1.5rem;
   transition: all 0.3s ease;
 }
 
@@ -135,15 +135,26 @@
 }
 
 .featureIcon {
-  font-size: 2rem;
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--primary-light);
-  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+  border-radius: 14px;
   flex-shrink: 0;
+  color: var(--primary);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.featureCard:hover .featureIcon {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+}
+
+.featureContent {
+  flex: 1;
 }
 
 .featureContent h4 {
@@ -161,45 +172,62 @@
 
 .featureList li {
   position: relative;
-  padding: 0.25rem 0 0.25rem 1.5rem;
+  padding: 0.35rem 0 0.35rem 1.75rem;
   color: var(--dark-light);
   font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .featureList li::before {
   content: '✓';
   position: absolute;
   left: 0;
-  top: 0.25rem;
+  top: 0.35rem;
   color: var(--success);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
 .accessCard {
   background: linear-gradient(135deg, var(--archive-light) 0%, white 100%);
   border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
   border-left: 4px solid var(--medical);
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .accessCard:hover {
   border-left-color: var(--appointment);
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.12);
+  transform: translateX(4px);
+}
+
+.accessHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.accessHeader svg {
+  color: var(--medical);
+  flex-shrink: 0;
 }
 
 .accessTitle {
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--dark);
-  margin: 0 0 0.75rem 0;
+  margin: 0;
 }
 
 .accessText {
   color: var(--dark-light);
   margin: 0;
   font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .automationGrid {
@@ -243,9 +271,21 @@
 }
 
 .automationIcon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--light) 100%);
+  border-radius: 50%;
+  color: var(--primary);
+  transition: all 0.3s ease;
+}
+
+.automationCard:hover .automationIcon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
 }
 
 .automationCard h4 {
@@ -259,6 +299,7 @@
   color: var(--dark-light);
   font-size: 0.9rem;
   margin: 0;
+  line-height: 1.5;
 }
 
 .privacyCard {
@@ -269,16 +310,21 @@
   position: relative;
 }
 
-.privacyCard::before {
-  content: '🔒';
+.privacyIcon {
   position: absolute;
-  top: -10px;
+  top: -16px;
   right: 20px;
-  font-size: 1.5rem;
   background: white;
-  padding: 0.5rem;
+  padding: 8px;
   border-radius: 50%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.privacyIcon svg {
+  color: var(--primary);
 }
 
 .footer {
@@ -308,7 +354,6 @@
   font-weight: 500;
 }
 
-
 @media (max-width: 768px) {
   .title {
     font-size: 2.5rem;
@@ -325,6 +370,15 @@
   .featureCard {
     flex-direction: column;
     text-align: center;
+    gap: 1rem;
+  }
+  
+  .featureIcon {
+    margin: 0 auto;
+  }
+  
+  .featureList li {
+    text-align: left;
   }
   
   .automationGrid {
@@ -351,5 +405,13 @@
   
   .automationCard {
     padding: 1.5rem;
+  }
+  
+  .accessCard {
+    padding: 1.25rem;
+  }
+  
+  .featureCard {
+    padding: 1.25rem;
   }
 }

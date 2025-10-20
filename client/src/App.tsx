@@ -4,11 +4,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
 import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, PatientFormData, FormDataType, ModalType, BillingFormData } from './types'
-import { Layout, Modal, PageTitle, ProtectedRoute, RootRedirect} from './components'
+import { Layout, Modal, PageTitle, ProtectedRoute, RootRedirect, Tormentum} from './components'
 import { addAppointment, addBilling, addInventoryItem, addMedicalRecord, addPatient } from './services'
 import { routes } from './routes'
 import './services/httpClient'
 import { useAuthenticationStore } from './stores'
+import { isTormentumArrived } from './components/ui/Tormentum/Tormentum'
+import { NotAvailablePage } from './pages'
 
 
 function App() {
@@ -20,7 +22,10 @@ function App() {
   const initializeAuth = useAuthenticationStore(state => state.initializeAuth);
 
   useEffect(() => {
-    initializeAuth()
+    // initializeAuth()
+    if (!isTormentumArrived()) {
+      initializeAuth();
+    }
   }, [initializeAuth])
   
 
@@ -115,11 +120,9 @@ function App() {
         <div className={`app-container ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
           <Toaster position="top-center" richColors />
           <PageTitle />
-          <Routes>
-            {/* special handling for root path */}
+          {/* <Routes>
             <Route path="/" element={<RootRedirect />} />
             
-            {/* admin routes - require admin user type */}
             {
               routes.filter(route => route.layout === 'admin').map((route) => (
                 <Route 
@@ -140,7 +143,6 @@ function App() {
               ))
             }
 
-            {/* user routes - require user user type */}
             {
               routes.filter(route => route.layout === 'user').map((route) => (
                 <Route 
@@ -161,7 +163,6 @@ function App() {
               ))
             }
 
-            {/* public routes - no authentication required */}
             {
               routes.filter(route => route.layout === 'public' && route.path !== '/').map((route) => (
                 <Route 
@@ -179,6 +180,92 @@ function App() {
                 />
               ))
             }
+          </Routes> */}
+          <Routes>
+            <Route 
+              path="/not-available" 
+              element={
+                <Layout
+                  type="public"
+                  sidebarCollapsed={sidebarCollapsed}
+                  toggleSidebar={toggleSidebar}
+                >
+                  {
+                    NotAvailablePage ? (
+                      <NotAvailablePage />
+                    ) : (
+                      <div>Not Available</div>
+                    )
+                  }
+                </Layout>
+              } 
+            />
+
+            <Route path="*" element={
+              <Tormentum>
+                <Routes>
+                  <Route path="/" element={<RootRedirect />} />
+                  
+                  {
+                    routes.filter(route => route.layout === 'admin').map((route) => (
+                      <Route 
+                        key={route.path}
+                        path={route.path} 
+                        element={
+                          <ProtectedRoute allowedUserTypes={['admin']}>
+                            <Layout
+                              type={route.layout}
+                              sidebarCollapsed={sidebarCollapsed}
+                              toggleSidebar={toggleSidebar}
+                            >
+                              <route.component openModal={openModal} />
+                            </Layout>
+                          </ProtectedRoute>
+                        } 
+                      />
+                    ))
+                  }
+
+                  {
+                    routes.filter(route => route.layout === 'user').map((route) => (
+                      <Route 
+                        key={route.path}
+                        path={route.path} 
+                        element={
+                          <ProtectedRoute allowedUserTypes={['user']}>
+                            <Layout
+                              type={route.layout}
+                              sidebarCollapsed={sidebarCollapsed}
+                              toggleSidebar={toggleSidebar}
+                            >
+                              <route.component openModal={openModal} />
+                            </Layout>
+                          </ProtectedRoute>
+                        } 
+                      />
+                    ))
+                  }
+
+                  {
+                    routes.filter(route => route.layout === 'public' && route.path !== '/' && route.path !== '/not-available').map((route) => (
+                      <Route 
+                        key={route.path}
+                        path={route.path} 
+                        element={
+                          <Layout
+                            type={route.layout}
+                            sidebarCollapsed={sidebarCollapsed}
+                            toggleSidebar={toggleSidebar}
+                          >
+                            <route.component openModal={openModal} />
+                          </Layout>
+                        } 
+                      />
+                    ))
+                  }
+                </Routes>
+              </Tormentum>
+            } />
           </Routes>
           <Modal
             isOpen={isModalOpen}

@@ -282,6 +282,14 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                 },
 
                 initializeAuth: async () => {
+                    //don't initialize auth on login/signup pages
+                    if (typeof window !== 'undefined' && 
+                        (window.location.pathname.includes('/login') || 
+                        window.location.pathname.includes('/signup') ||
+                        window.location.pathname.includes('/register'))) {
+                        return;
+                    }
+                    
                     try {
                         await get().fetchUserProfile()
                         const { user } = get()
