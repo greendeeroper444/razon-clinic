@@ -158,10 +158,10 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             return;
         }
 
-        if (!billing.patientName || !billing.medicalRecordId) {
-            toast.error('Incomplete billing data. Cannot generate receipt.');
-            return;
-        }
+        // if (!billing.patientName || !billing.medicalRecordId) {
+        //     toast.error('Incomplete billing data. Cannot generate receipt.');
+        //     return;
+        // }
 
         //prevent multiple simultaneous downloads
         if (isGeneratingPDF) {

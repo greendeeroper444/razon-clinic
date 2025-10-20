@@ -300,9 +300,10 @@ export const useBillingStore = create<BillingState>()(
                 try {
                     set({ statusLoading: true, isProcessing: true });
                     
-                    //update billing status to paid
+                    
                     await updateBilling(billId, { paymentStatus: 'Paid' });
-                    await get().fetchBillings();
+                    
+                    await get().fetchBillings({});
                     
                     toast.success('Payment processed successfully!');
                     
