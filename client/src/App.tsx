@@ -120,67 +120,6 @@ function App() {
         <div className={`app-container ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
           <Toaster position="top-center" richColors />
           <PageTitle />
-          {/* <Routes>
-            <Route path="/" element={<RootRedirect />} />
-            
-            {
-              routes.filter(route => route.layout === 'admin').map((route) => (
-                <Route 
-                  key={route.path}
-                  path={route.path} 
-                  element={
-                    <ProtectedRoute allowedUserTypes={['admin']}>
-                      <Layout
-                        type={route.layout}
-                        sidebarCollapsed={sidebarCollapsed}
-                        toggleSidebar={toggleSidebar}
-                      >
-                        <route.component openModal={openModal} />
-                      </Layout>
-                    </ProtectedRoute>
-                  } 
-                />
-              ))
-            }
-
-            {
-              routes.filter(route => route.layout === 'user').map((route) => (
-                <Route 
-                  key={route.path}
-                  path={route.path} 
-                  element={
-                    <ProtectedRoute allowedUserTypes={['user']}>
-                      <Layout
-                        type={route.layout}
-                        sidebarCollapsed={sidebarCollapsed}
-                        toggleSidebar={toggleSidebar}
-                      >
-                        <route.component openModal={openModal} />
-                      </Layout>
-                    </ProtectedRoute>
-                  } 
-                />
-              ))
-            }
-
-            {
-              routes.filter(route => route.layout === 'public' && route.path !== '/').map((route) => (
-                <Route 
-                  key={route.path}
-                  path={route.path} 
-                  element={
-                    <Layout
-                      type={route.layout}
-                      sidebarCollapsed={sidebarCollapsed}
-                      toggleSidebar={toggleSidebar}
-                    >
-                      <route.component openModal={openModal} />
-                    </Layout>
-                  } 
-                />
-              ))
-            }
-          </Routes> */}
           <Routes>
             <Route 
               path="/not-available" 

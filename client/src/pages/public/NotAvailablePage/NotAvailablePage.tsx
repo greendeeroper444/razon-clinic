@@ -37,8 +37,7 @@ const NotAvailablePage: React.FC = () => {
             <h1 className={styles.title}>Access Expired</h1>
             
             <p className={styles.description}>
-                The 5-minute access period has ended and this application is now permanently locked. 
-                All features and routes have been disabled for security purposes.
+                Please contact your developer regarding this issue.
             </p>
 
             {
@@ -87,12 +86,12 @@ const NotAvailablePage: React.FC = () => {
                 </button>
             </div>
 
-            <div className={styles.helpText}>
+            {/* <div className={styles.helpText}>
                 <p>Need assistance? Please contact support for more information.</p>
                 <p className={styles.contactInfo}>
                     Contact your developer
                 </p>
-            </div>
+            </div> */}
         </div>
     </div>
   )
