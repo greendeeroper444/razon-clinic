@@ -3,7 +3,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-light) 0%, #dbeafe 100%);
     padding: 20px;
     position: relative;
     overflow: hidden;
@@ -76,7 +76,7 @@
 .statusCode {
     font-size: 8rem;
     font-weight: 900;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-light) 0%, #dbeafe 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -194,7 +194,7 @@
 }
 
 .homeButton {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-light) 0%, #dbeafe 100%);
     color: white;
 }
 

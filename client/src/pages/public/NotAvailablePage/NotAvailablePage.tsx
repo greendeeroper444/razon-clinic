@@ -28,9 +28,9 @@ const NotAvailablePage: React.FC = () => {
   return (
     <div className={styles.notAvailableContainer}>
         <div className={styles.contentWrapper}>
-            <div className={styles.iconWrapper}>
+            {/* <div className={styles.iconWrapper}>
                 <Lock className={styles.warningIcon} size={80} strokeWidth={2.5} />
-            </div>
+            </div> */}
             
             <div className={styles.statusCode}>403</div>
             
@@ -55,7 +55,7 @@ const NotAvailablePage: React.FC = () => {
                 )
             }
 
-            <div className={styles.infoBox}>
+            {/* <div className={styles.infoBox}>
                 <div className={styles.infoItem}>
                     <Clock className={styles.infoIcon} size={24} />
                     <span className={styles.infoText}>Time Limit Reached</span>
@@ -64,7 +64,7 @@ const NotAvailablePage: React.FC = () => {
                     <ShieldAlert className={styles.infoIcon} size={24} />
                     <span className={styles.infoText}>Access Restricted</span>
                 </div>
-            </div>
+            </div> */}
 
             <div className={styles.buttonGroup}>
                 <a 

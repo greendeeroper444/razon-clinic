@@ -128,6 +128,7 @@ function App() {
                   type="public"
                   sidebarCollapsed={sidebarCollapsed}
                   toggleSidebar={toggleSidebar}
+                  hideNavigation={true}
                 >
                   {
                     NotAvailablePage ? (

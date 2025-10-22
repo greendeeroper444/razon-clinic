@@ -3,4 +3,5 @@ export interface LayoutProps {
   type: 'user' | 'admin' | 'public';
   sidebarCollapsed: boolean;
   toggleSidebar: () => void;
+  hideNavigation?: boolean;
 }

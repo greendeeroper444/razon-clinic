@@ -6,7 +6,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import Navbar from '../Navbar/Navbar';
 import Navigation from '../Navigation/Navigation';
 
-function Layout({children, type, sidebarCollapsed, toggleSidebar}: LayoutProps) {
+function Layout({children, type, sidebarCollapsed, toggleSidebar, hideNavigation = false}: LayoutProps) {
     const { openModal } = useModal();
     
     const childrenWithProps = React.Children.map(children, child => {
@@ -42,9 +42,13 @@ function Layout({children, type, sidebarCollapsed, toggleSidebar}: LayoutProps) 
                 </div>
             ) : (
                 <div className='main-content-public'>
-                    <header>
-                        <Navigation />
-                    </header>
+                    {
+                        !hideNavigation && (
+                            <header>
+                                <Navigation />
+                            </header>
+                        )
+                    }
 
                     <div className='content-area'>
                         {childrenWithProps} 
