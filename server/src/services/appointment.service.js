@@ -3,8 +3,13 @@ const User = require('../models/user.model');
 const Notification = require('../models/notification.model');
 const mongoose = require('mongoose');
 const sendSMS = require('../utils/smsSender');
+const { formatDate, formatTime } = require('../utils/display');
 
 class AppointmentService {
+    constructor() {
+        this.formatDate = formatDate;
+        this.formatTime = formatTime;
+    }
 
     async createAppointment(appointmentData, createNotifications = true) {
         const selectedDate = new Date(appointmentData.preferredDate);
@@ -423,11 +428,11 @@ class AppointmentService {
 
             const contactNumberStr = String(contactNumber);
             
-            let twilioNumber = contactNumberStr;
+            let moceanNumber = contactNumberStr;
             if (contactNumberStr.startsWith('09')) {
-                twilioNumber = '+63' + contactNumberStr.substring(1);
+                moceanNumber = '+63' + contactNumberStr.substring(1);
             } else if (!contactNumberStr.startsWith('+63')) {
-                twilioNumber = '+63' + contactNumberStr;
+                moceanNumber = '+63' + contactNumberStr;
             }
 
             let templatePath;
@@ -460,17 +465,13 @@ class AppointmentService {
             const replacements = {
                 userName: userName,
                 appointmentNumber: appointment.appointmentNumber,
-                preferredDate: new Date(appointment.preferredDate).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                }),
-                preferredTime: appointment.preferredTime,
+                preferredDate: this.formatDate(appointment.preferredDate),
+                preferredTime: this.formatTime(appointment.preferredTime),
                 reasonForVisit: appointment.reasonForVisit,
                 status: appointment.status
             };
 
-            const result = await sendSMS(twilioNumber, templatePath, replacements);
+            const result = await sendSMS(moceanNumber, templatePath, replacements);
             
             if (result.success) {
                 if (result.reason === 'development_skip') {

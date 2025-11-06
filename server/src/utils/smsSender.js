@@ -17,7 +17,7 @@ async function sendSMS(to, templatePath, replacements = {}) {
     try {
         message = fs.readFileSync(path.join(__dirname, '..', 'templates', 'sms', templatePath), 'utf-8');
 
-        //replace placeholders like {{patientName}}
+        //replace placeholders like {{userName}}
         Object.keys(replacements).forEach(key => {
             message = message.replace(new RegExp(`{{${key}}}`, 'g'), replacements[key]);
         });
@@ -25,11 +25,11 @@ async function sendSMS(to, templatePath, replacements = {}) {
         //check if we're in development mode
         const isDevelopment = process.env.NODE_ENV !== 'production';
         
-        //check if SMS should be sent in development mode
+        //check if sms should be sent in development mode
         const shouldSendInDev = process.env.SMS_ENABLED === 'true';
         const forceSend = process.env.SMS_FORCE_SEND === 'true';
         
-        //in development mode, skip SMS for Philippine numbers unless explicitly enabled
+        //in development mode, skip sms for Philippine numbers unless explicitly enabled
         if (isDevelopment && to.startsWith('+63') && !shouldSendInDev && !forceSend) {
             console.log(`Development Mode: Skipping SMS to Philippine number ${to} (SMS not enabled for development)`);
             
@@ -54,11 +54,11 @@ async function sendSMS(to, templatePath, replacements = {}) {
             };
         }
 
-        //prepare phone number format for Mocean
-        //Mocean expects numbers with country code (e.g., 60123456789 for Malaysia, 639XXXXXXXXX for Philippines)
+        //prepare phone number format for mocean
+        //mocean expects numbers with country code (e.g., 60123456789 for Malaysia, 639XXXXXXXXX for Philippines)
         let moceanNumber = to;
         if (to.startsWith('+')) {
-            moceanNumber = to.substring(1); // Remove the + sign
+            moceanNumber = to.substring(1); //remove the + sign
         } else if (to.startsWith('09')) {
             //convert Philippine mobile format 09XXXXXXXXX to 639XXXXXXXXX
             moceanNumber = '63' + to.substring(1);
@@ -69,8 +69,12 @@ async function sendSMS(to, templatePath, replacements = {}) {
 
         console.log(`Sending SMS to ${moceanNumber} via Mocean...`);
         console.log(`Using sender ID: ${MOCEAN_SENDER_ID}`);
+        console.log('Debug Info:');
+        console.log('API Token (first 20 chars):', MOCEAN_API_TOKEN ? MOCEAN_API_TOKEN.substring(0, 20) : 'UNDEFINED');
+        console.log('Full token length:', MOCEAN_API_TOKEN ? MOCEAN_API_TOKEN.length : 0);
+        console.log('Sender ID:', MOCEAN_SENDER_ID);
 
-        //send SMS using Mocean SDK
+        //send sms using mocean sdk
         return new Promise((resolve, reject) => {
             mocean.sms().send({
                 'mocean-from': MOCEAN_SENDER_ID,
@@ -90,7 +94,7 @@ async function sendSMS(to, templatePath, replacements = {}) {
                     return;
                 }
 
-                //parse Mocean response
+                //parse mocean response
                 console.log('Mocean Response:', JSON.stringify(res, null, 2));
                 
                 if (res && res.messages && res.messages.length > 0) {
@@ -116,7 +120,7 @@ async function sendSMS(to, templatePath, replacements = {}) {
                         
                         //special handling for whitelist errors in development
                         if (firstMessage.status === 4 && firstMessage.err_msg?.includes('not whitelisted')) {
-                            console.log(`⚠️  WHITELIST REQUIRED: Add ${moceanNumber} to your Mocean dashboard whitelist`);
+                            console.log(`WHITELIST REQUIRED: Add ${moceanNumber} to your Mocean dashboard whitelist`);
                             logSMSMessage(to, message, 'FAILED_NOT_WHITELISTED', null, actualError);
                         } else {
                             logSMSMessage(to, message, 'FAILED_MOCEAN_ERROR', null, actualError);
@@ -155,7 +159,6 @@ async function sendSMS(to, templatePath, replacements = {}) {
     }
 }
 
-//helper function to get human-readable error messages from Mocean status codes
 function getMoceanErrorMessage(status) {
     const statusStr = String(status);
     const errorMessages = {

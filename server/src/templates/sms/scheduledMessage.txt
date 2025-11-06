@@ -1,4 +1,4 @@
-Hello {{patientName}},
+Hello {{userName}},
 
 Your appointment has been SCHEDULED!
 

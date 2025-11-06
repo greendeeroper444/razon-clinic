@@ -1,4 +1,4 @@
-Hello {{patientName}},
+Hello {{userName}},
 
 We regret to inform you that your appointment has been CANCELLED.
 

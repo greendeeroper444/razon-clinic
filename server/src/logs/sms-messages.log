@@ -620,3 +620,385 @@ Please contact us to confirm your new appointment details. We apologize for any 
 
 Thank you for your understanding!
 ---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T02:59:26.656Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+Your appointment has been SCHEDULED!
+
+Appointment Details:
+- Appointment #: 0009
+- Date: November 5, 2025
+- Time: 08:00
+- Reason: Reasdnd csfdf
+
+Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:05:09.497Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+Your appointment #0009 has been marked as COMPLETED.
+
+Date: November 5, 2025
+Time: 08:00
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:09:40.844Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0009
+- Date: November 5, 2025
+- Time: 08:00
+- Reason: Reasdnd csfdf
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:16:37.033Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+Your appointment #0009 has been REBOOKED.
+
+Previous Details:
+- Date: November 5, 2025
+- Time: 08:00
+- Reason: Reasdnd csfdf
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:20:18.742Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0009
+- Date: November 5, 2025
+- Time: 08:00
+- Reason: Reasdnd csfdf
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:25:28.400Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+Your appointment #0009 has been REBOOKED.
+
+Previous Details:
+- Date: November 5, 2025
+- Time: 08:00
+- Reason: Reasdnd csfdf
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:29:22.781Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0009
+- Date: November 5, 2025
+- Time: 08:00
+- Reason: Reasdnd csfdf
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:30:16.315Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+Your appointment #0009 has been REBOOKED.
+
+Previous Details:
+- Date: November 5, 2025
+- Time: 08:00
+- Reason: Reasdnd csfdf
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:34:19.429Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+Your appointment has been SCHEDULED!
+
+Appointment Details:
+- Appointment #: 0010
+- Date: November 5, 2025
+- Time: 08:15
+- Reason: sdds dsds
+
+Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:37:22.633Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+Your appointment #0010 has been marked as COMPLETED.
+
+Date: November 5, 2025
+Time: 08:15
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:40:17.432Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0010
+- Date: November 5, 2025
+- Time: 08:15
+- Reason: sdds dsds
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:42:47.658Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+Your appointment #0010 has been REBOOKED.
+
+Previous Details:
+- Date: November 5, 2025
+- Time: 08:15
+- Reason: sdds dsds
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:49:28.068Z
+To: +639501049657
+Status: FAILED_API_ERROR
+Message:
+Hello {{patientName}},
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0010
+- Date: November 5, 2025
+- Time: 08:15
+- Reason: sdds dsds
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:52:38.699Z
+To: +639501049657
+Status: FAILED_API_ERROR
+Message:
+Hello {{patientName}},
+
+Your appointment #0010 has been REBOOKED.
+
+Previous Details:
+- Date: November 5, 2025
+- Time: 08:15
+- Reason: sdds dsds
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T03:53:32.379Z
+To: +639501049657
+Status: FAILED_API_ERROR
+Message:
+Hello {{patientName}},
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0010
+- Date: November 5, 2025
+- Time: 08:15
+- Reason: sdds dsds
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-04T05:44:48.619Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+Your appointment #0010 has been REBOOKED.
+
+Previous Details:
+- Date: November 5, 2025
+- Time: 08:15
+- Reason: sdds dsds
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-06T00:25:07.961Z
+To: +639501049657
+Status: FAILED_MOCEAN_ERROR
+Message:
+Hello {{patientName}},
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0010
+- Date: November 5, 2025
+- Time: 08:15
+- Reason: sdds dsds
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+---END MESSAGE---
+
+=== SMS LOG ENTRY ===
+Timestamp: 2025-11-06T00:50:06.887Z
+To: +639501049657
+Status: SENT
+Message:
+Hello {{patientName}},
+
+Your appointment #0010 has been REBOOKED.
+
+Previous Details:
+- Date: November 5, 2025
+- Time: 08:15
+- Reason: sdds dsds
+
+Please contact us to confirm your new appointment details. We apologize for any inconvenience.
+
+Thank you for your understanding!
+---END MESSAGE---
+
+        === SMS LOG ENTRY ===
+        Timestamp: 2025-11-06T01:17:46.574Z
+        To: +639501049657
+        Status: SENT
+        Message:
+        Hello Greendee Roper Panogalon,
+
+Your appointment #0010 has been marked as COMPLETED.
+
+Date: November 5, 2025
+Time: 08:15
+
+Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
+
+Take care!
+
+        ---END MESSAGE---
+
+    
+        === SMS LOG ENTRY ===
+        Timestamp: 2025-11-06T01:25:21.754Z
+        To: +639501049657
+        Status: SENT
+        Message:
+        Hello Greendee Roper Panogalon,
+
+We regret to inform you that your appointment has been CANCELLED.
+
+Appointment Details:
+- Appointment #: 0010
+- Date: Wed, November 5, 2025
+- Time: 8:15 AM
+- Reason: sdds dsds
+
+If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+        ---END MESSAGE---
+
+    

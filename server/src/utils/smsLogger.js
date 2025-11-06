@@ -20,19 +20,20 @@ function logSMSMessage(to, message, status = 'WOULD_SEND') {
     };
 
     const logString = `
-=== SMS LOG ENTRY ===
-Timestamp: ${logEntry.timestamp}
-To: ${logEntry.to}
-Status: ${logEntry.status}
-Message:
-${logEntry.message}
-${logEntry.separator}`;
+        === SMS LOG ENTRY ===
+        Timestamp: ${logEntry.timestamp}
+        To: ${logEntry.to}
+        Status: ${logEntry.status}
+        Message:
+        ${logEntry.message}
+        ${logEntry.separator}
+    `;
 
     //append to log file
     fs.appendFileSync(smsLogFile, logString);
     
     //also log to console with nice formatting
-    console.log('\n📱 SMS Message Log:');
+    console.log('\nSMS Message Log:');
     console.log(`   To: ${to}`);
     console.log(`   Status: ${status}`);
     console.log(`   Message: ${message.substring(0, 100)}${message.length > 100 ? '...' : ''}`);
