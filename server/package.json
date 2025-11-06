@@ -18,6 +18,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mocean-sdk": "2.2.3",
+    "module-alias": "^2.2.3",
     "moment-timezone": "^0.6.0",
     "mongoose": "^8.15.0",
     "morgan": "^1.10.0",
@@ -25,5 +26,18 @@
     "nodemon": "^3.1.10",
     "path": "^0.12.7",
     "winston": "^3.17.0"
+  },
+   "_moduleAliases": {
+    "@config": "src/config",
+    "@modules": "src/modules",
+    "@middlewares": "src/middlewares",
+    "@validators": "src/validators",
+    "@routes": "src/routes",
+    "@services": "src/services",
+    "@helpers": "src/helpers",
+    "@migrations": "src/migrations",
+    "@templates": "src/templates",
+    "@utils": "src/utils",
+    "@jobs": "src/jobs"
   }
 }

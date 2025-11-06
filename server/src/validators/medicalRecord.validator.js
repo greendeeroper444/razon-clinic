@@ -1,0 +1,336 @@
+const { body, param, query, validationResult } = require('express-validator');
+const { ApiError } = require('@utils/errors');
+const mongoose = require('mongoose');
+
+const validateMedicalRecord = [
+    body('appointmentId')
+        .optional()
+        .custom((value) => {
+            if (value && !mongoose.Types.ObjectId.isValid(value)) {
+                throw new Error('Invalid appointment ID format');
+            }
+            return true;
+        }),
+    body('fullName')
+        .trim()
+        .notEmpty().withMessage('Full name is required')
+        .isLength({ min: 2, max: 100 }).withMessage('Full name must be between 2 and 100 characters'),
+    
+    body('dateOfBirth')
+        .notEmpty().withMessage('Date of birth is required')
+        .isISO8601().withMessage('Date of birth must be a valid date')
+        .toDate()
+        .custom((value) => {
+            const today = new Date();
+            const age = (today - value) / (365.25 * 24 * 60 * 60 * 1000);
+            if (age < 0) {
+                throw new Error('Date of birth cannot be in the future');
+            }
+            if (age > 150) {
+                throw new Error('Date of birth seems unrealistic');
+            }
+            return true;
+        }),
+    
+    body('gender')
+        .notEmpty().withMessage('Gender is required')
+        .isIn(['Male', 'Female', 'Other']).withMessage('Gender must be Male, Female, or Other'),
+    
+    body('bloodType')
+        .optional()
+        .isIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']).withMessage('Invalid blood type'),
+    
+    body('address')
+        .optional()
+        .trim()
+        .isLength({ max: 200 }).withMessage('Address must not exceed 200 characters'),
+    
+    body('phone')
+        .notEmpty().withMessage('Phone number is required')
+        .matches(/^[0-9]{10,15}$/).withMessage('Phone number must be 10-15 digits'),
+    
+    body('emergencyContact')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 200 }).withMessage('Emergency contact must not exceed 200 characters'),
+
+    body('allergies')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 1000 }).withMessage('Allergies must not exceed 1000 characters'),
+    
+    body('chronicConditions')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 1000 }).withMessage('Chronic conditions must not exceed 1000 characters'),
+    
+    body('previousSurgeries')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 1000 }).withMessage('Previous surgeries must not exceed 1000 characters'),
+    
+    body('familyHistory')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 1000 }).withMessage('Family history must not exceed 1000 characters'),
+
+    body('height')
+        .optional({ checkFalsy: true })
+        .isFloat({ min: 30, max: 300 }).withMessage('Height must be between 30 and 300 cm'),
+    
+    body('weight')
+        .optional({ checkFalsy: true })
+        .isFloat({ min: 0.5, max: 500 }).withMessage('Weight must be between 0.5 and 500 kg'),
+    
+    body('bmi')
+        .optional({ checkFalsy: true })
+        .isFloat({ min: 5, max: 100 }).withMessage('BMI must be between 5 and 100'),
+    
+    body('growthNotes')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 500 }).withMessage('Growth notes must not exceed 500 characters'),
+
+    body('chiefComplaint')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ min: 1, max: 200 }).withMessage('Chief complaint must not exceed 200 characters'),
+    
+    body('symptomsDescription')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ min: 1, max: 1000 }).withMessage('Symptoms description must not exceed 1000 characters'),
+    
+    body('symptomsDuration')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 100 }).withMessage('Symptoms duration must not exceed 100 characters'),
+    
+    body('painScale')
+        .optional({ checkFalsy: true })
+        .isInt({ min: 0, max: 10 }).withMessage('Pain scale must be between 0 and 10'),
+
+    body('diagnosis')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 1000 }).withMessage('Diagnosis must not exceed 1000 characters'),
+    
+    body('treatmentPlan')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 2000 }).withMessage('Treatment plan must not exceed 2000 characters'),
+    
+    body('prescribedMedications')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 2000 }).withMessage('Prescribed medications must not exceed 2000 characters'),
+    
+    body('consultationNotes')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 2000 }).withMessage('Consultation notes must not exceed 2000 characters'),
+    
+    body('vaccinationHistory')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ max: 2000 }).withMessage('Vaccination history must not exceed 2000 characters'),
+
+    body('followUpDate')
+        .optional({ checkFalsy: true })
+        .isISO8601().withMessage('Follow-up date must be a valid date')
+        .toDate()
+        .custom((value) => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (value < today) {
+                throw new Error('Follow-up date cannot be in the past');
+            }
+            return true;
+        }),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const errorMessages = errors.array().map(error => {
+                return `${error.msg} for field: ${error.path}`;
+            });
+            return next(new ApiError(errorMessages[0], 400));
+        }
+        next();
+    }
+];
+
+const validateMedicalRecordUpdate = [
+    param('medicalRecordId')
+        .custom((value) => {
+            if (!mongoose.Types.ObjectId.isValid(value)) {
+                throw new Error('Invalid medical record ID format');
+            }
+            return true;
+        }),
+    
+    body('appointmentId')
+        .optional()
+        .custom((value) => {
+            if (value && !mongoose.Types.ObjectId.isValid(value)) {
+                throw new Error('Invalid appointment ID format');
+            }
+            return true;
+        }),
+    
+    body('fullName')
+        .optional()
+        .trim()
+        .isLength({ min: 2, max: 100 }).withMessage('Full name must be between 2 and 100 characters'),
+    
+    body('dateOfBirth')
+        .optional()
+        .isISO8601().withMessage('Date of birth must be a valid date')
+        .toDate()
+        .custom((value) => {
+            const today = new Date();
+            const age = (today - value) / (365.25 * 24 * 60 * 60 * 1000);
+            if (age < 0) {
+                throw new Error('Date of birth cannot be in the future');
+            }
+            if (age > 150) {
+                throw new Error('Date of birth seems unrealistic');
+            }
+            return true;
+        }),
+    
+    body('gender')
+        .optional()
+        .isIn(['Male', 'Female', 'Other']).withMessage('Gender must be Male, Female, or Other'),
+    
+    body('phone')
+        .optional()
+        .matches(/^[0-9]{10,15}$/).withMessage('Phone number must be 10-15 digits'),
+    
+    body('chiefComplaint')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ min: 1, max: 200 }).withMessage('Chief complaint must not exceed 200 characters'),
+    
+    body('symptomsDescription')
+        .optional({ checkFalsy: true })
+        .trim()
+        .isLength({ min: 1, max: 1000 }).withMessage('Symptoms description must not exceed 1000 characters'),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const errorMessages = errors.array().map(error => {
+                return `${error.msg} for field: ${error.path}`;
+            });
+            return next(new ApiError(errorMessages[0], 400));
+        }
+        next();
+    }
+];
+
+const validateMedicalRecordId = [
+    param('medicalRecordId')
+        .custom((value) => {
+            if (!mongoose.Types.ObjectId.isValid(value)) {
+                throw new Error('Invalid medical record ID format');
+            }
+            return true;
+        }),
+    
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const errorMessages = errors.array().map(error => error.msg);
+            return next(new ApiError(errorMessages[0], 400));
+        }
+        next();
+    }
+];
+
+const validateAppointmentId = [
+    param('appointmentId')
+        .custom((value) => {
+            if (!mongoose.Types.ObjectId.isValid(value)) {
+                throw new Error('Invalid appointment ID format');
+            }
+            return true;
+        }),
+    
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const errorMessages = errors.array().map(error => error.msg);
+            return next(new ApiError(errorMessages[0], 400));
+        }
+        next();
+    }
+];
+
+const validateSearchQuery = [
+    query('searchTerm')
+        .trim()
+        .notEmpty().withMessage('Search term is required')
+        .isLength({ min: 2 }).withMessage('Search term must be at least 2 characters'),
+    
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const errorMessages = errors.array().map(error => error.msg);
+            return next(new ApiError(errorMessages[0], 400));
+        }
+        next();
+    }
+];
+
+const validateQueryParams = [
+    query('page')
+        .optional()
+        .isInt({ min: 1 }).withMessage('Page must be a positive integer'),
+    
+    query('limit')
+        .optional()
+        .isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
+    
+    query('sortBy')
+        .optional()
+        .isIn(['createdAt', 'fullName', 'dateOfBirth', 'updatedAt']).withMessage('Invalid sort field'),
+    
+    query('sortOrder')
+        .optional()
+        .isIn(['asc', 'desc']).withMessage('Sort order must be asc or desc'),
+    
+    query('fromDate')
+        .optional()
+        .isISO8601().withMessage('From date must be a valid date'),
+    
+    query('toDate')
+        .optional()
+        .isISO8601().withMessage('To date must be a valid date'),
+    
+    query('gender')
+        .optional()
+        .isIn(['Male', 'Female', 'Other']).withMessage('Gender must be Male, Female, or Other'),
+    
+    query('bloodType')
+        .optional()
+        .isIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']).withMessage('Invalid blood type'),
+    
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const errorMessages = errors.array().map(error => error.msg);
+            return next(new ApiError(errorMessages[0], 400));
+        }
+        next();
+    }
+];
+
+module.exports = {
+    validateMedicalRecord,
+    validateMedicalRecordUpdate,
+    validateMedicalRecordId,
+    validateAppointmentId,
+    validateSearchQuery,
+    validateQueryParams
+};

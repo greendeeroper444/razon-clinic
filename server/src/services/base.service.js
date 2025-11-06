@@ -1,4 +1,4 @@
-const { ApiError } = require('../utils/errors');
+const { ApiError } = require('@utils/errors');
 
 class BaseService {
     

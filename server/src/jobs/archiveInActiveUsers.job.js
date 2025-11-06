@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const moment = require('moment-timezone');
-const User = require('../models/user.model');
-const logger = require('../utils/logger');
+const User = require('@modules/user/user.model');
+const logger = require('@utils/logger');
 
 /**
  * archive users who have been inactive for 1 year

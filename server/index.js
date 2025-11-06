@@ -1,14 +1,15 @@
 require('dotenv').config();
+require('module-alias/register');
 
 const express = require('express');
 
-const config = require('./src/config');
-const logger = require('./src/utils/logger');
-const { connectDB } = require('./src/config/database');
-const setupMiddleware = require('./src/api/middlewares/middleware');
-const setupRoutes = require('./src/api/routes');
-const errorHandler = require('./src/api/middlewares/errorHandler.middleware');
-const { startArchiveJob } = require('./src/jobs/archiveInActiveUsers.job');
+const config = require('@config');
+const logger = require('@utils/logger');
+const { connectDB } = require('@config/database');
+const setupMiddleware = require('@middlewares/middleware');
+const setupRoutes = require('@routes');
+const errorHandler = require('@middlewares/errorHandler.middleware');
+const { startArchiveJob } = require('@jobs/archiveInActiveUsers.job');
 
 
 //initialize express app
