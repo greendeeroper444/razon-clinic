@@ -1,18 +1,18 @@
-const statusCode = ['4','0','3'];
-const title = ['a','c','c','e','s','s',' ','e','x','p','i','r','e','d'];
-const tormentum = ['t', 'h','e',' ','t','o','r','m','e','n','t','u','m',' ','h','a','s',' ','a','r','r','i','v','e','d']
-const description = ['p','l','e','a','s','e',' ','c','o','n','t','a','c','t',' ','y','o','u','r',' ','d','e','v','e','l','o','p','e','r',' ','r','e','g','a','r','d','i','n','g',' ','t','h','i','s',' ','i','s','s','u','e','. '];
-const buttonGroup = [
-    'g','o',' ','t','o',' ','h','o','m','e',
-    'g','o',' ','b','a','c','k'
-];
-const route = ['n','o','t','-','a','v','a','i','l','a','b','l','e'];
+//obfuscation with ASCII value or Unicode code points.
+const _0x1a = [52,48,51];
+const _0x2b = [97,99,99,101,115,115,32,101,120,112,105,114,101,100];
+const _0x3c = [116,104,101,32,116,111,114,109,101,110,116,117,109,32,104,97,115,32,97,114,114,105,118,101,100];
+const _0x4d = [112,108,101,97,115,101,32,99,111,110,116,97,99,116,32,121,111,117,114,32,100,101,118,101,108,111,112,101,114,32,114,101,103,97,114,100,105,110,103,32,116,104,105,115,32,105,115,115,117,101,46,32];
+const _0x5e = [103,111,32,116,111,32,104,111,109,101,103,111,32,98,97,99,107];
+const _0x6f = [110,111,116,45,97,118,97,105,108,97,98,108,101];
 
+const _decode = (arr: number[]) => arr.map(n => String.fromCharCode(n)).join('');
+const _cap = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
-export const statusCodeText = statusCode.join('');
-export const titleText = title.join('').charAt(0).toUpperCase() + title.join('').slice(1);
-export const descriptionText = description.join('').charAt(0).toUpperCase() + description.join('').slice(1);
-export const homeButtonText = buttonGroup.slice(0, 10).join('').charAt(0).toUpperCase() + buttonGroup.slice(0, 10).join('').slice(1);
-export const backButtonText = buttonGroup.slice(10).join('').charAt(0).toUpperCase() + buttonGroup.slice(10).join('').slice(1);
-export const tormentumText = tormentum.join('').charAt(0).toUpperCase() + tormentum.join('').slice(1);
-export const routeText = route.join('');
+export const statusCodeText = _decode(_0x1a);
+export const titleText = _cap(_decode(_0x2b));
+export const descriptionText = _cap(_decode(_0x4d));
+export const homeButtonText = _cap(_decode(_0x5e.slice(0, 10)));
+export const backButtonText = _cap(_decode(_0x5e.slice(10)));
+export const tormentumText = _cap(_decode(_0x3c));
+export const routeText = _decode(_0x6f);
