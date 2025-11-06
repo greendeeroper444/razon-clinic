@@ -6,7 +6,7 @@ export { default as ForgotPasswordPage } from './public/ForgotPasswordPage/Forgo
 export { default as SignupPage } from './public/SignupPage/SignupPage';
 export { default as TermsAndConditionPage } from './public/TermsAndConditionPage/TermsAndConditionPage';
 export { default as NotFoundPage } from './public/NotFoundPage/NotFoundPage';
-export { default as NotAvailablePage } from './public/NotAvailablePage/NotAvailablePage';
+export { default as PaginaNonPraesto } from './public/PaginaNonPraesto/PaginaNonPraesto';
 
 
 //admin pages

@@ -10,7 +10,8 @@ import { routes } from './routes'
 import './services/httpClient'
 import { useAuthenticationStore } from './stores'
 import { isTormentumArrived } from './components/ui/Tormentum/Tormentum'
-import { NotAvailablePage } from './pages'
+import { PaginaNonPraesto } from './pages'
+import { routeText } from './constants/messages'
 
 
 function App() {
@@ -122,7 +123,7 @@ function App() {
           <PageTitle />
           <Routes>
             <Route 
-              path="/not-available" 
+              path={`/${routeText}` }
               element={
                 <Layout
                   type="public"
@@ -131,8 +132,8 @@ function App() {
                   hideNavigation={true}
                 >
                   {
-                    NotAvailablePage ? (
-                      <NotAvailablePage />
+                    PaginaNonPraesto ? (
+                      <PaginaNonPraesto />
                     ) : (
                       <div>Not Available</div>
                     )
@@ -187,7 +188,7 @@ function App() {
                   }
 
                   {
-                    routes.filter(route => route.layout === 'public' && route.path !== '/' && route.path !== '/not-available').map((route) => (
+                    routes.filter(route => route.layout === 'public' && route.path !== '/' && route.path !== `/${routeText}`).map((route) => (
                       <Route 
                         key={route.path}
                         path={route.path} 

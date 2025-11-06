@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Lock, Clock, ShieldAlert, Home, ArrowLeft } from 'lucide-react'
-import styles from './NotAvailablePage.module.css'
+import { Clock, Home, ArrowLeft } from 'lucide-react'
+import styles from './PaginaNonPraesto.module.css'
+import { backButtonText, descriptionText, homeButtonText, statusCodeText, titleText } from '../../../constants/messages';
 
-const NotAvailablePage: React.FC = () => {
+const PaginaNonPraesto: React.FC = () => {
     const [timeExpired, setTimeExpired] = useState<string>('');
     const [deadline, setDeadline] = useState<string>('');
 
@@ -26,19 +27,17 @@ const NotAvailablePage: React.FC = () => {
     };
 
   return (
-    <div className={styles.notAvailableContainer}>
+    <div className={styles.container}>
         <div className={styles.contentWrapper}>
             {/* <div className={styles.iconWrapper}>
                 <Lock className={styles.warningIcon} size={80} strokeWidth={2.5} />
             </div> */}
             
-            <div className={styles.statusCode}>403</div>
+            <div className={styles.statusCode}>{statusCodeText}</div>
             
-            <h1 className={styles.title}>Access Expired</h1>
+            <h1 className={styles.title}>{titleText}</h1>
             
-            <p className={styles.description}>
-                Please contact your developer regarding this issue.
-            </p>
+            <p className={styles.description}>{descriptionText}</p>
 
             {
                 (timeExpired || deadline) && (
@@ -73,7 +72,7 @@ const NotAvailablePage: React.FC = () => {
                     onClick={handleGoHome}
                 >
                     <Home size={20} />
-                    Go to Home
+                    {homeButtonText}
                 </a>
                 <button 
                     type='button'
@@ -82,7 +81,7 @@ const NotAvailablePage: React.FC = () => {
                     disabled
                 >
                     <ArrowLeft size={20} />
-                    Go Back
+                    {backButtonText}
                 </button>
             </div>
 
@@ -97,4 +96,4 @@ const NotAvailablePage: React.FC = () => {
   )
 }
 
-export default NotAvailablePage
+export default PaginaNonPraesto

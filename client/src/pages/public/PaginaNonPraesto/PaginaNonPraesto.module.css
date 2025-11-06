@@ -1,4 +1,4 @@
-.notAvailableContainer {
+.container {
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -9,7 +9,7 @@
     overflow: hidden;
 }
 
-.notAvailableContainer::before {
+.container::before {
     content: '';
     position: absolute;
     width: 200%;
@@ -246,7 +246,7 @@
 }
 
 @media (max-width: 768px) {
-    .notAvailableContainer {
+    .container {
         padding: 10px;
     }
     
