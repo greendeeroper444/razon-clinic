@@ -1,10 +1,6 @@
 import axios from './httpClient'
 import API_BASE_URL from '../ApiBaseUrl'
-
-interface FetchParams {
-    page?: number
-    limit?: number
-}
+import { FetchParams } from '../types'
 
 export const getDeletedMedicalRecords = async (params: FetchParams = {}) => {
     try {
