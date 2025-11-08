@@ -1,4 +1,4 @@
-import { DashboardPage, AppointmentPage, AppointmentDetailsPage, PatientPage, InventoryPage, UserManagementPage, MedicalRecordsPage, MedicalRecordDetailsPage, BillingsPaymentPage, CalendarDateDetailsPage, GrowthMilestonePage, PatientDetailsPage } from '../pages';
+import { DashboardPage, AppointmentPage, AppointmentDetailsPage, PatientPage, InventoryPage, UserManagementPage, MedicalRecordsPage, MedicalRecordDetailsPage, BillingsPaymentPage, CalendarDateDetailsPage, GrowthMilestonePage, PatientDetailsPage, ReportPage } from '../pages';
 import { RouteType } from '../types';
 
 export const adminRoutes: RouteType[] = [
@@ -14,4 +14,5 @@ export const adminRoutes: RouteType[] = [
     { path: '/admin/billings-payment', component: BillingsPaymentPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
     { path: '/admin/calendar-date-details', component: CalendarDateDetailsPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
     { path: '/admin/growth-milestone', component: GrowthMilestonePage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
+    { path: '/admin/reports', component: ReportPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
 ];

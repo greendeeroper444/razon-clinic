@@ -22,7 +22,7 @@ export { default as MedicalRecordDetailsPage } from './admin/MedicalRecordDetail
 export { default as BillingsPaymentPage } from './admin/BillingsPaymentPage/BillingsPaymentPage';
 export { default as CalendarDateDetailsPage } from './admin/CalendarDateDetailsPage/CalendarDateDetailsPage';
 export { default as GrowthMilestonePage } from './admin/GrowthMilestonePage/GrowthMilestonePage';
-
+export { default as ReportPage } from './admin/ReportPage/ReportPage';
 
 //user pages
 export { default as UserAppointmentPage } from './user/AppointmentPage/AppointmentPage';

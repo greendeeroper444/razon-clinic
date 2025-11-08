@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import styles from './Sidebar.module.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Hospital, LayoutDashboard, CalendarCheck, Bed, Pill, LogOut, Menu, ChevronLeft, FileText, CreditCard, User } from 'lucide-react';
+import { Hospital, LayoutDashboard, CalendarCheck, Bed, Pill, LogOut, Menu, ChevronLeft, FileText, CreditCard, User, ScrollText } from 'lucide-react';
 import { toast } from 'sonner';
 import { SidebarProps } from '../../../types';
 import { useAuthenticationStore } from '../../../stores/authenticationStore';
@@ -174,6 +174,15 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                 >
                     <User color='#94a3b8' size={20} />
                     <span className={styles.menuText}>User Management</span>
+                </Link>
+
+                <Link
+                    to='/admin/reports'
+                    className={`${styles.menuItem} ${isActive('/admin/report') ? styles.active : ''}`}
+                    title='Reports'
+                >
+                    <ScrollText color='#94a3b8' size={20} />
+                    <span className={styles.menuText}>Reports</span>
                 </Link>
 
                 <div

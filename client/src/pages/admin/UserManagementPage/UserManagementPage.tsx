@@ -2,11 +2,10 @@ import { useEffect, useCallback, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styles from './UserManagementPage.module.css'
 import { useUserManagementStore } from '../../../stores/userManagementStore'
-import { Header, Loading, Main, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
+import { Header, Loading, Main, Pagination, Searchbar, SubmitLoading, Tab, Table } from '../../../components'
 import { formatDate, getFirstLetterOfFirstAndLastName, getLoadingText, getStatusClass } from '../../../utils'
 import { getUserSummaryCards } from '../../../config/userSummaryCards'
 import { TableColumn, User } from '../../../types'
-import { PersonStanding } from 'lucide-react'
 
 const UserManagementPage = () => {
     const [searchParams] = useSearchParams()
@@ -87,7 +86,14 @@ const UserManagementPage = () => {
         fetchData(1, itemsPerPage, searchTerm)
     }, [fetchData, searchTerm])
 
+    //stats declaration before tabs
     const stats = getStats()
+
+    const tabs = [
+        { key: 'all', label: 'All Users', count: stats.totalUsers },
+        { key: 'active', label: 'Active Users', count: stats.activeUsers },
+        { key: 'archive', label: 'Archived', count: stats.archivedUsers }
+    ]
 
     const summaryCards = getUserSummaryCards(summaryStats);
 
@@ -188,33 +194,11 @@ const UserManagementPage = () => {
             }
         </div>
 
-
-        <div className={styles.tabsContainer}>
-            <button 
-                type='button'
-                className={`${styles.tab} ${activeTab === 'all' ? styles.activeTab : ''}`}
-                onClick={() => handleTabChange('all')}
-            >
-                All Users
-                <span className={styles.tabCount}>{stats.totalUsers}</span>
-            </button>
-            <button 
-                type='button'
-                className={`${styles.tab} ${activeTab === 'active' ? styles.activeTab : ''}`}
-                onClick={() => handleTabChange('active')}
-            >
-                Active Users
-                <span className={styles.tabCount}>{stats.activeUsers}</span>
-            </button>
-            <button 
-                type='button'
-                className={`${styles.tab} ${activeTab === 'archive' ? styles.activeTab : ''}`}
-                onClick={() => handleTabChange('archive')}
-            >
-                Archived
-                <span className={styles.tabCount}>{stats.archivedUsers}</span>
-            </button>
-        </div>
+        <Tab
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+        />
 
         <div className={styles.section}>
             <div className={styles.sectionHeader}>
