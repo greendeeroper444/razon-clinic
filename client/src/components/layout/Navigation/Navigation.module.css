@@ -116,11 +116,13 @@
 }
   
 .signupLink {
+    display: flex;
+    align-items: center;
     background-color: var(--primary, #3b82f6);
     color: white;
     text-decoration: none;
     font-weight: 500;
-    padding: 8px 16px;
+    padding: 8px 12px;
     border-radius: 6px;
     transition: all 0.3s ease;
 }

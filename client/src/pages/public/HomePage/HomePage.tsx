@@ -224,7 +224,7 @@ const HomePage = () => {
                 <button 
                     type='submit'
                     className={`${styles.btnPrimary} ${styles.slideInUp} ${styles.delay2}`} 
-                    onClick={() => navigate('/login')}
+                    onClick={() => navigate('/user/appointments')}
                 >
                     Book Now
                 </button>
@@ -364,7 +364,7 @@ const HomePage = () => {
                     <h3>Schedule an Appointment</h3>
                     <p className={styles.delay1}>Our friendly staff is ready to help you with all your pediatric healthcare needs</p>
                     <div className={`${styles.appointmentButtons} ${styles.delay2}`}>
-                        <Link to="/appointment" className={styles.primaryButton}>
+                        <Link to="/user/appointments" className={styles.primaryButton}>
                             <CalendarCheck className={styles.buttonIcon} size={20} strokeWidth={2} />
                             Book Online
                         </Link>
