@@ -62,6 +62,14 @@
     align-items: center;
     gap: 10px;
     cursor: pointer;
+    position: relative;
+    padding: 5px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.userProfile:hover {
+    background-color: var(--light);
 }
   
 .userAvatar {

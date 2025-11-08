@@ -6,17 +6,18 @@ import { getNotifications } from '../../../services'
 import { NavbarProps } from '../../../types'
 import Notification from '../../ui/Notification/Notification'
 import { useAuthenticationStore } from '../../../stores/authenticationStore'
+import UserDropdown from '../../features/UserDropdown/UserDropdown'
+import { toast } from 'sonner'
+import { useNavigate } from 'react-router-dom'
 
 const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
+    const navigate = useNavigate();
     const [showNotifications, setShowNotifications] = useState<boolean>(false);
+    const [showUserDropdown, setShowUserDropdown] = useState<boolean>(false);
     const [showMobileSearch, setShowMobileSearch] = useState<boolean>(false);
     const [unreadCount, setUnreadCount] = useState<number>(0);
     const searchInputRef = useRef<HTMLInputElement>(null);
-    const {
-        user,
-        isAuthenticated,
-    } = useAuthenticationStore()
-
+    const { user, isAuthenticated, logout } = useAuthenticationStore();
 
     const fetchUnreadCount = async () => {
         try {
@@ -49,6 +50,12 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     
     const toggleNotifications = () => {
         setShowNotifications(prev => !prev);
+        setShowUserDropdown(false);
+    };
+
+    const toggleUserDropdown = () => {
+        setShowUserDropdown(prev => !prev);
+        setShowNotifications(false);
     };
 
     const toggleMobileSearch = () => {
@@ -61,11 +68,31 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
         }, 100);
     };
 
-    //close notifications when clicking outside
+     const handleLogout = () => {
+        try {
+
+            logout();
+
+            navigate('/');
+        } catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message);
+            } else {
+                toast.error('Failed to logout');
+            }
+        }
+    };
+
+    //close notifications and user dropdown when clicking outside
     const handleClickOutside = (e: MouseEvent) => {
         const target = e.target as Element;
+        
         if (!target.closest(`.${styles.notificationIcon}`) && showNotifications) {
             setShowNotifications(false);
+        }
+        
+        if (!target.closest(`.${styles.userProfile}`) && showUserDropdown) {
+            setShowUserDropdown(false);
         }
         
         //close mobile search when clicking outside
@@ -94,7 +121,7 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
             document.removeEventListener('click', handleClickOutside);
             window.removeEventListener('resize', handleResize);
         };
-    }, [showNotifications, showMobileSearch]);
+    }, [showNotifications, showUserDropdown, showMobileSearch]);
 
   return (
     <div className={styles.navbar}>
@@ -157,10 +184,15 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     </div>
                 )
             }
-            <div className={styles.userProfile}>
+            <div className={styles.userProfile} onClick={toggleUserDropdown}>
                 <div className={styles.userAvatar}>{getFirstLetterOfFirstAndLastName(user?.firstName)}</div>
                 <div className={styles.userName}>{getFirstAndLastName(user?.firstName)}</div>
                 <ChevronDown size={14} />
+                <UserDropdown
+                    isVisible={showUserDropdown}
+                    onClose={() => setShowUserDropdown(false)}
+                    onLogout={handleLogout}
+                />
             </div>
         </div>
     </div>

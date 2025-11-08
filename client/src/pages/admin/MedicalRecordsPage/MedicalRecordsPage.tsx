@@ -23,11 +23,10 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         loading,
         error,
         isProcessing,
-        selectedRecord,
         isModalOpen,
         isDeleteModalOpen,
         selectedMedicalRecord,
-        deleteMedicalRecordData,
+        softDeleteMedicalRecordData,
         pagination: storePagination,
         fetchMedicalRecords,
         openUpdateModal,
@@ -36,7 +35,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         closeDeleteModal,
         updateMedicalRecordData,
         addMedicalRecord,
-        deleteMedicalRecord,
+        softDeleteMedicalRecord,
         getStatusFromRecord,
         currentOperation
     } = useMedicalRecordStore();
@@ -128,7 +127,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
 
         try {
-            await deleteMedicalRecord(data);
+            await softDeleteMedicalRecord(data);
 
              setTimeout(() => {
                 fetchData(
@@ -140,7 +139,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         } catch (error) {
             console.error('Error deleting medical record:', error);
         }
-    }, [deleteMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+    }, [softDeleteMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     const handleDownloadReceipt = useCallback((record: MedicalRecordFormData) => {
         if (!record) {
@@ -298,7 +297,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         <div className={styles.section}>
             <div className={styles.sectionHeader}>
-                <div className={styles.sectionTitle}>Patient Records</div>
+                <div className={styles.sectionTitle}>Medical Records</div>
 
                 {/* search and items per page controls */}
                 <div className={styles.controls}>
@@ -385,13 +384,13 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         {/* delete medical record modal */}
         {
-            isDeleteModalOpen && deleteMedicalRecordData && (
+            isDeleteModalOpen && softDeleteMedicalRecordData && (
                 <Modal
                     isOpen={isDeleteModalOpen}
                     onClose={closeDeleteModal}
                     modalType='delete'
                     onSubmit={handleConfirmDelete}
-                    deleteData={deleteMedicalRecordData}
+                    deleteData={softDeleteMedicalRecordData}
                     isProcessing={submitLoading}
                 />
             )

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { MedicalRecordFormData, OperationType, MedicalRecord, ExtendedMedicalRecordState, Patient, FetchParams } from '../types'
-import { deleteMedicalRecord, getMedicalRecordById, getMedicalRecords, updateMedicalRecord, addMedicalRecord, getMyMedicalRecords } from '../services';
+import { softDeleteMedicalRecord, getMedicalRecordById, getMedicalRecords, updateMedicalRecord, addMedicalRecord, getMyMedicalRecords } from '../services';
 import { toast } from 'sonner';
 
 export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
@@ -19,7 +19,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
             isModalOpen: false,
             isStatusModalOpen: false,
             isDeleteModalOpen: false,
-            deleteMedicalRecordData: null,
+            softDeleteMedicalRecordData: null,
             currentMedicalRecord: null,
             viewMode: 'user' as 'admin' | 'user',
             currentOperation: null as OperationType,
@@ -292,11 +292,11 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
             },
 
             //delete medical record
-            deleteMedicalRecord: async (id: string) => {
+            softDeleteMedicalRecord: async (id: string) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
                     
-                    await deleteMedicalRecord(id);
+                    await softDeleteMedicalRecord(id);
                     
                     await get().fetchMedicalRecords();
                     
@@ -304,7 +304,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
 
                     set({ 
                         isDeleteModalOpen: false, 
-                        deleteMedicalRecordData: null 
+                        softDeleteMedicalRecordData: null 
                     });
 
                     setTimeout(() => {
@@ -322,7 +322,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                         submitLoading: false, 
                         isProcessing: false,
                         isDeleteModalOpen: false,
-                        deleteMedicalRecordData: null,
+                        softDeleteMedicalRecordData: null,
                         currentOperation: null
                     });
                 }
@@ -409,7 +409,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 const recordDate = record.dateRecorded;
                 
                 set({
-                    deleteMedicalRecordData: {
+                    softDeleteMedicalRecordData: {
                         id: record.id,
                         itemName: `${patientName}'s medical record from ${new Date(recordDate).toLocaleDateString()}`,
                         itemType: 'Medical Record'
@@ -427,7 +427,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
             },
 
             closeDeleteModal: () => {
-                set({ isDeleteModalOpen: false, deleteMedicalRecordData: null });
+                set({ isDeleteModalOpen: false, softDeleteMedicalRecordData: null });
             },
 
             closeDetailsModal: () => {

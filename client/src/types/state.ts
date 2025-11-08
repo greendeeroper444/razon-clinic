@@ -3,7 +3,7 @@ import { LoginFormData, SignupFormData, ValidationErrors } from "./auth";
 import { BillingFormData, BillingResponse } from "./billing";
 import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
-import { MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
+import { DeletedMedicalRecord, MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
 import { Pagination } from "./pagination";
 import { Patient, PatientFormData, PatientResponse } from "./patient"
 import { User, UserResponse } from "./user";
@@ -144,7 +144,7 @@ export interface MedicalRecordState {
     isModalOpen: boolean;
     isStatusModalOpen: boolean;
     isDeleteModalOpen: boolean;
-    deleteMedicalRecordData: { id: string, itemName: string, itemType: string } | null;
+    softDeleteMedicalRecordData: { id: string, itemName: string, itemType: string } | null;
 
     //state for medical record details
     currentMedicalRecord: MedicalRecordResponse | null;
@@ -164,7 +164,7 @@ export interface MedicalRecordState {
     fetchMedicalRecordById: (medicalRecordId: string) => Promise<void>;
     addMedicalRecord: (data: MedicalRecordFormData) => Promise<void>;
     updateMedicalRecordData: (id: string, data: MedicalRecordFormData) => Promise<void>;
-    deleteMedicalRecord: (id: string) => Promise<void>;
+    softDeleteMedicalRecord: (id: string) => Promise<void>;
     viewMedicalRecord: (record: MedicalRecordResponse) => Promise<void>;
     
     //state for medical record details
@@ -433,4 +433,35 @@ export interface UserManagementState {
     setLoading: (loading: boolean) => void
     setError: (error: string | null) => void
     resetStore: () => void
+}
+
+export interface TrashState {
+    deletedRecords: DeletedMedicalRecord[]
+    loading: boolean
+    fetchLoading: boolean
+    submitLoading: boolean
+    error: string | null
+    isProcessing: boolean
+    selectedRecordIds: string[]
+    currentOperation: OperationType
+    pagination: {
+        currentPage: number
+        totalPages: number
+        totalItems: number
+        itemsPerPage: number
+        hasNextPage: boolean
+        hasPreviousPage: boolean
+        startIndex: number
+        endIndex: number
+    }
+    activeTab: 'medical-records'
+    
+    fetchDeletedRecords: (page?: number, limit?: number) => Promise<void>
+    restoreSingleRecord: (id: string) => Promise<void>
+    bulkRestore: () => Promise<void>
+    bulkPermanentDelete: () => Promise<void>
+    toggleRecordSelection: (id: string) => void
+    toggleSelectAll: () => void
+    setActiveTab: (tab: 'medical-records') => void
+    clearSelection: () => void
 }

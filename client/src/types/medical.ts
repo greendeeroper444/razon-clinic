@@ -236,3 +236,17 @@ export const transformFormDataToApiFormat = (formData: MedicalRecordFormData) =>
         followUpDate: formData.followUpDate || undefined,
     }
 };
+
+
+export interface DeletedMedicalRecord {
+    id: string
+    personalDetails: {
+        fullName: string
+    }
+    appointmentId: {
+        appointmentNumber: string
+    }
+    medicalRecordNumber: string
+    deletedAt: string
+    dateRecorded: string
+}

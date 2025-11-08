@@ -7,7 +7,11 @@ import { PatientFormData } from "./patient";
 
 export type FormDataType = AppointmentFormData | PatientFormData | InventoryItemFormData | MedicalRecordFormData | BillingFormData;
 
-export type OperationType = 'update' | 'delete' | 'status' | 'create' | 'fetch' | 'archive' | 'unarchive' | 'archiveMultiple' | 'unarchiveMultiple' | null;
+export type OperationType = 
+'update' | 'delete' | 'status' | 
+'create' | 'fetch' | 'archive' | 
+'unarchive' | 'archiveMultiple' | 'unarchiveMultiple' |
+'restore' | null;
 
 export interface DeleteData {
     id: string;

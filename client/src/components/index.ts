@@ -26,6 +26,7 @@ export { default as Header } from './layout/Header/Header';
 //feature components
 export { default as SectionFeatures } from './features/SectionFeatures/SectionFeatures';
 export { default as Calendar } from './features/Calendar/Calendar';
+export { default as UserDropdown } from './features/UserDropdown/UserDropdown';
 
 //routing utilities
 export { default as ProtectedRoute } from './routing/ProtectedRoute';

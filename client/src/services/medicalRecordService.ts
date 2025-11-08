@@ -113,9 +113,24 @@ export const updateMedicalRecord = async (medicalRecordId: string, medicalRecord
     }
 };
 
-export const deleteMedicalRecord = async (medicalRecordId: string) => {
+// export const deleteMedicalRecord = async (medicalRecordId: string) => {
+//     try {
+//         const response = await axios.delete(`${API_BASE_URL}/api/medicalRecords/deleteMedicalRecord/${medicalRecordId}`);
+
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error deleting medical record:', error);
+//         if (axios.isAxiosError(error)) {
+//             throw error.response?.data || error.message;
+//         }
+
+//         throw error;
+//     }
+// };
+
+export const softDeleteMedicalRecord = async (medicalRecordId: string) => {
     try {
-        const response = await axios.delete(`${API_BASE_URL}/api/medicalRecords/deleteMedicalRecord/${medicalRecordId}`);
+        const response = await axios.delete(`${API_BASE_URL}/api/medicalRecords/softDeleteMedicalRecord/${medicalRecordId}`);
 
         return response.data;
     } catch (error) {
@@ -127,7 +142,6 @@ export const deleteMedicalRecord = async (medicalRecordId: string) => {
         throw error;
     }
 };
-
 
 
 //search appointments by name

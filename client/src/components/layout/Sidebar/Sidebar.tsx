@@ -1,21 +1,15 @@
 import { useState, useEffect } from 'react'
 import styles from './Sidebar.module.css';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Hospital, LayoutDashboard, CalendarCheck, Bed, Pill, LogOut, Menu, ChevronLeft, FileText, CreditCard, User, ScrollText } from 'lucide-react';
-import { toast } from 'sonner';
+import { Link, useLocation } from 'react-router-dom';
+import { Hospital, LayoutDashboard, CalendarCheck, Bed, Pill, Menu, ChevronLeft, FileText, CreditCard, User, ScrollText, Trash } from 'lucide-react';
 import { SidebarProps } from '../../../types';
 import { useAuthenticationStore } from '../../../stores/authenticationStore';
 
 
 const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     const location = useLocation();
-    const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState<boolean>(false);
-    const {
-        logout,
-        user,
-    } = useAuthenticationStore()
-
+    const { user } = useAuthenticationStore()
 
     useEffect(() => {
         const checkScreenSize = () => {
@@ -30,21 +24,6 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     }, []);
     
     const isActive = (path: string): boolean => location.pathname === path;
-
-    const handleLogout = () => {
-        try {
-
-            logout();
-
-            navigate('/');
-        } catch (error) {
-            if (error instanceof Error) {
-                toast.error(error.message);
-            } else {
-                toast.error('Failed to logout');
-            }
-        }
-    };
 
   return (
     <> 
@@ -185,14 +164,14 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     <span className={styles.menuText}>Reports</span>
                 </Link>
 
-                <div
-                    className={styles.menuItem}
-                    onClick={handleLogout}
-                    title='Logout'
+                <Link
+                    to='/admin/trash'
+                    className={`${styles.menuItem} ${isActive('/admin/report') ? styles.active : ''}`}
+                    title='Reports'
                 >
-                    <LogOut color='#94a3b8' size={20} />
-                    <span className={styles.menuText}>Logout</span>
-                </div>
+                    <Trash color='#94a3b8' size={20} />
+                    <span className={styles.menuText}>Trash</span>
+                </Link>
             </div>
         </div>
     </>

@@ -121,11 +121,13 @@ export const getLoadingText = (operation: OperationType, modalType: ModalType): 
         case 'archive':
             return 'Archiving user...'
         case 'unarchive':
-                return 'Unarchiving user...'
+            return 'Unarchiving user...'
         case 'archiveMultiple':
-                return 'Archiving users...'
+            return 'Archiving users...'
         case 'unarchiveMultiple':
-                return 'Unarchiving users...'
+            return 'Unarchiving users...'
+        case 'restore':
+            return 'Restore records...'
         default:
             return 'Processing...';
     }
@@ -133,16 +135,13 @@ export const getLoadingText = (operation: OperationType, modalType: ModalType): 
 
 
 
-//helper function to get medical record id as string (wait)
 export const getMedicalRecordId = (medicalRecordId: any): string => {
     if (!medicalRecordId) return 'N/A';
     
-    //if it's a string (ObjectId), return the last 8 characters
     if (typeof medicalRecordId === 'string') {
         return medicalRecordId.slice(-8).toUpperCase();
     }
     
-    //if it's an object (populated), get the _id field
     if (typeof medicalRecordId === 'object' && medicalRecordId.id) {
         return medicalRecordId.id.toString().slice(-8).toUpperCase();
     }
