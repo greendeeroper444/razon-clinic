@@ -7,6 +7,7 @@
     "server": "nodemon index.js"
   },
   "dependencies": {
+    "axios": "^1.13.2",
     "bcryptjs": "^3.0.2",
     "compression": "^1.8.0",
     "cookie-parser": "^1.4.7",
@@ -27,7 +28,7 @@
     "path": "^0.12.7",
     "winston": "^3.17.0"
   },
-   "_moduleAliases": {
+  "_moduleAliases": {
     "@config": "src/config",
     "@modules": "src/modules",
     "@middlewares": "src/middlewares",

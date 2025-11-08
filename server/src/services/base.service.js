@@ -31,7 +31,6 @@ class BaseService {
         }
     }
 
-
     async findUserByEmailOrContact(emailOrContactNumber, isEmail, Admin, User, includePassword = false) {
         try {
             const query = isEmail 
@@ -40,7 +39,7 @@ class BaseService {
             
             const selectQuery = includePassword ? '+password' : '';
             
-            //try addmin first
+            //try admin first
             let user = includePassword 
                 ? await Admin.findOne(query).select(selectQuery)
                 : await Admin.findOne(query);
@@ -49,7 +48,7 @@ class BaseService {
                 return { user, userType: 'admin' };
             }
             
-            //try user model model
+            //try user model
             user = includePassword 
                 ? await User.findOne(query).select(selectQuery)
                 : await User.findOne(query);
@@ -128,7 +127,6 @@ class BaseService {
         return { user: userResponse };
     }
 
-    
     validateEmailOrContactNumber(emailOrContactNumber) {
         const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrContactNumber);
         const isContactNumber = /^(09|\+639)\d{9}$/.test(emailOrContactNumber);
@@ -158,6 +156,126 @@ class BaseService {
         }
         
         return false;
+    }
+
+    async paginate(Model, filter = {}, options = {}) {
+        const {
+            page = 1,
+            limit = 10,
+            sortBy = 'createdAt',
+            sortOrder = 'desc',
+            populate = null,
+            searchTerm = null
+        } = options;
+
+        const sort = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+        const totalItems = await Model.countDocuments(filter);
+
+        let data, pagination;
+
+        if (limit && parseInt(limit) > 0) {
+            const currentPage = parseInt(page) || 1;
+            const itemsPerPage = parseInt(limit);
+            const skip = (currentPage - 1) * itemsPerPage;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            
+            let query = Model.find(filter)
+                .sort(sort)
+                .skip(skip)
+                .limit(itemsPerPage);
+
+            if (populate) {
+                if (Array.isArray(populate)) {
+                    populate.forEach(pop => {
+                        query = query.populate(pop);
+                    });
+                } else {
+                    query = query.populate(populate);
+                }
+            }
+
+            data = await query;
+
+            const startIndex = totalItems > 0 ? skip + 1 : 0;
+            const endIndex = Math.min(skip + itemsPerPage, totalItems);
+
+            pagination = {
+                currentPage,
+                totalPages,
+                totalItems,
+                itemsPerPage,
+                hasNextPage: currentPage < totalPages,
+                hasPreviousPage: currentPage > 1,
+                startIndex,
+                endIndex,
+                isUnlimited: false,
+                nextPage: currentPage < totalPages ? currentPage + 1 : null,
+                previousPage: currentPage > 1 ? currentPage - 1 : null,
+                remainingItems: Math.max(0, totalItems - endIndex),
+                searchTerm
+            };
+        } else {
+            let query = Model.find(filter).sort(sort);
+
+            if (populate) {
+                if (Array.isArray(populate)) {
+                    populate.forEach(pop => {
+                        query = query.populate(pop);
+                    });
+                } else {
+                    query = query.populate(populate);
+                }
+            }
+
+            data = await query;
+
+            pagination = {
+                currentPage: 1,
+                totalPages: 1,
+                totalItems,
+                itemsPerPage: totalItems,
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startIndex: totalItems > 0 ? 1 : 0,
+                endIndex: totalItems,
+                isUnlimited: true,
+                nextPage: null,
+                previousPage: null,
+                remainingItems: 0,
+                searchTerm
+            };
+        }
+
+        return { data, pagination };
+    }
+
+    buildSearchFilter(search, fields = []) {
+        if (!search || !fields.length) return null;
+
+        return {
+            $or: fields.map(field => ({
+                [field]: { $regex: search, $options: 'i' }
+            }))
+        };
+    }
+
+    buildDateRangeFilter(fromDate, toDate, field = 'createdAt') {
+        if (!fromDate && !toDate) return null;
+
+        const dateFilter = {};
+        if (fromDate) dateFilter.$gte = new Date(fromDate);
+        if (toDate) dateFilter.$lte = new Date(toDate);
+
+        return { [field]: dateFilter };
+    }
+
+    mergeFilters(...filters) {
+        return filters.reduce((acc, filter) => {
+            if (filter) {
+                Object.assign(acc, filter);
+            }
+            return acc;
+        }, {});
     }
 }
 

@@ -1,9 +1,11 @@
 const MedicalRecord = require('./medicalRecord.model');
 const Appointment = require('@modules/appointment/appointment.model');
+const BaseService = require('@services/base.service');
 const mongoose = require('mongoose');
 
-class MedicalRecordService {
+class MedicalRecordService extends BaseService {
 
+    // ==================== CREATE ====================
     async createMedicalRecord(medicalRecordData) {
         const {
             appointmentId,
@@ -45,6 +47,8 @@ class MedicalRecordService {
         return await medicalRecord.save();
     }
 
+
+    // ==================== READ ====================
     async searchAppointmentsByName(searchTerm) {
         const searchRegex = new RegExp(searchTerm.trim(), 'i');
 
@@ -128,36 +132,37 @@ class MedicalRecordService {
             sortBy = 'createdAt', sortOrder = 'desc'
         } = queryParams;
 
-        const filter = {};
+        //base filter
+        const filter = { deletedAt: null };
 
         //filter by userId if provided (for user-specific routes)
         if (userId) {
             const userAppointments = await mongoose.model('Appointment').find({ userId }).select('_id');
             const appointmentIds = userAppointments.map(apt => apt._id);
-            
             filter.appointmentId = { $in: appointmentIds };
         }
 
-        if (fromDate || toDate) {
-            filter.createdAt = {};
-            if (fromDate) filter.createdAt.$gte = new Date(fromDate);
-            if (toDate) filter.createdAt.$lte = new Date(toDate);
-        }
+        //date range filter
+        const dateFilter = this.buildDateRangeFilter(fromDate, toDate, 'createdAt');
+        if (dateFilter) Object.assign(filter, dateFilter);
 
+        //search filter
         if (search) {
-            filter.$or = [
-                { 'personalDetails.fullName': { $regex: search, $options: 'i' } },
-                { 'personalDetails.phone': { $regex: search, $options: 'i' } },
-                { 'personalDetails.email': { $regex: search, $options: 'i' } },
-                { 'personalDetails.address': { $regex: search, $options: 'i' } },
-                { 'currentSymptoms.chiefComplaint': { $regex: search, $options: 'i' } },
-                { 'currentSymptoms.symptomsDescription': { $regex: search, $options: 'i' } },
-                { diagnosis: { $regex: search, $options: 'i' } },
-                { treatmentPlan: { $regex: search, $options: 'i' } },
-                { consultationNotes: { $regex: search, $options: 'i' } }
-            ];
+            const searchFilter = this.buildSearchFilter(search, [
+                'personalDetails.fullName',
+                'personalDetails.phone',
+                'personalDetails.email',
+                'personalDetails.address',
+                'currentSymptoms.chiefComplaint',
+                'currentSymptoms.symptomsDescription',
+                'diagnosis',
+                'treatmentPlan',
+                'consultationNotes'
+            ]);
+            Object.assign(filter, searchFilter);
         }
 
+        //specific field filters
         if (fullName) filter['personalDetails.fullName'] = { $regex: fullName, $options: 'i' };
         if (phone) filter['personalDetails.phone'] = { $regex: phone, $options: 'i' };
         if (email) filter['personalDetails.email'] = { $regex: email, $options: 'i' };
@@ -166,57 +171,31 @@ class MedicalRecordService {
         if (chiefComplaint) filter['currentSymptoms.chiefComplaint'] = { $regex: chiefComplaint, $options: 'i' };
         if (diagnosis) filter.diagnosis = { $regex: diagnosis, $options: 'i' };
 
-        const sort = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
-        const totalItems = await MedicalRecord.countDocuments(filter);
         const searchTerm = search || fullName || phone || email || chiefComplaint || diagnosis || null;
 
-        let medicalRecords, pagination;
+        const result = await this.paginate(MedicalRecord, filter, {
+            page,
+            limit,
+            sortBy,
+            sortOrder,
+            populate: {
+                path: 'appointmentId',
+                select: 'appointmentNumber firstName lastName middleName preferredDate preferredTime status'
+            },
+            searchTerm
+        });
 
-        if (limit && parseInt(limit) > 0) {
-            const currentPage = parseInt(page) || 1;
-            const itemsPerPage = parseInt(limit);
-            const skip = (currentPage - 1) * itemsPerPage;
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-            
-            medicalRecords = await MedicalRecord.find(filter)
-                .populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status')
-                .sort(sort)
-                .skip(skip)
-                .limit(itemsPerPage);
-
-            const startIndex = totalItems > 0 ? skip + 1 : 0;
-            const endIndex = Math.min(skip + itemsPerPage, totalItems);
-
-            pagination = {
-                currentPage, totalPages, totalItems, itemsPerPage,
-                hasNextPage: currentPage < totalPages,
-                hasPreviousPage: currentPage > 1,
-                startIndex, endIndex, isUnlimited: false,
-                nextPage: currentPage < totalPages ? currentPage + 1 : null,
-                previousPage: currentPage > 1 ? currentPage - 1 : null,
-                remainingItems: Math.max(0, totalItems - endIndex),
-                searchTerm
-            };
-        } else {
-            medicalRecords = await MedicalRecord.find(filter)
-                .populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status')
-                .sort(sort);
-
-            pagination = {
-                currentPage: 1, totalPages: 1, totalItems, itemsPerPage: totalItems,
-                hasNextPage: false, hasPreviousPage: false,
-                startIndex: totalItems > 0 ? 1 : 0, endIndex: totalItems,
-                isUnlimited: true, nextPage: null, previousPage: null,
-                remainingItems: 0, searchTerm
-            };
-        }
-
-        return { medicalRecords, pagination };
+        return {
+            medicalRecords: result.data,
+            pagination: result.pagination
+        };
     }
 
     async getMedicalRecordById(medicalRecordId) {
-        const medicalRecord = await MedicalRecord.findById(medicalRecordId)
-            .populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status reasonForVisit');
+        const medicalRecord = await MedicalRecord.findOne({ 
+            _id: medicalRecordId, 
+            deletedAt: null 
+        }).populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status reasonForVisit');
 
         if (!medicalRecord) {
             throw new Error('Medical record not found');
@@ -225,6 +204,67 @@ class MedicalRecordService {
         return medicalRecord;
     }
 
+    async getDeletedMedicalRecords(queryParams) {
+        const {
+            search, page, limit, fullName, phone, email, gender, bloodType,
+            chiefComplaint, diagnosis, fromDate, toDate,
+            sortBy = 'deletedAt', sortOrder = 'desc'
+        } = queryParams;
+
+        //base filter
+        const filter = { deletedAt: { $ne: null } };
+
+        //date range filter for deletedAt
+        const dateFilter = this.buildDateRangeFilter(fromDate, toDate, 'deletedAt');
+        if (dateFilter) Object.assign(filter, dateFilter);
+
+        //search filter
+        if (search) {
+            const searchFilter = this.buildSearchFilter(search, [
+                'personalDetails.fullName',
+                'personalDetails.phone',
+                'personalDetails.email',
+                'personalDetails.address',
+                'currentSymptoms.chiefComplaint',
+                'currentSymptoms.symptomsDescription',
+                'diagnosis',
+                'treatmentPlan',
+                'consultationNotes'
+            ]);
+            Object.assign(filter, searchFilter);
+        }
+
+        //specific field filters
+        if (fullName) filter['personalDetails.fullName'] = { $regex: fullName, $options: 'i' };
+        if (phone) filter['personalDetails.phone'] = { $regex: phone, $options: 'i' };
+        if (email) filter['personalDetails.email'] = { $regex: email, $options: 'i' };
+        if (gender) filter['personalDetails.gender'] = gender;
+        if (bloodType) filter['personalDetails.bloodType'] = bloodType;
+        if (chiefComplaint) filter['currentSymptoms.chiefComplaint'] = { $regex: chiefComplaint, $options: 'i' };
+        if (diagnosis) filter.diagnosis = { $regex: diagnosis, $options: 'i' };
+
+        const searchTerm = search || fullName || phone || email || chiefComplaint || diagnosis || null;
+
+        const result = await this.paginate(MedicalRecord, filter, {
+            page,
+            limit,
+            sortBy,
+            sortOrder,
+            populate: {
+                path: 'appointmentId',
+                select: 'appointmentNumber firstName lastName middleName preferredDate preferredTime status'
+            },
+            searchTerm
+        });
+
+        return {
+            medicalRecords: result.data,
+            pagination: result.pagination
+        };
+    }
+
+
+    // ==================== UPDATE ====================
     async updateMedicalRecord(medicalRecordId, updateData) {
         if (updateData.appointmentId) {
             const appointmentExists = await Appointment.findById(updateData.appointmentId);
@@ -233,8 +273,8 @@ class MedicalRecordService {
             }
         }
 
-        const medicalRecord = await MedicalRecord.findByIdAndUpdate(
-            medicalRecordId,
+        const medicalRecord = await MedicalRecord.findOneAndUpdate(
+            { _id: medicalRecordId, deletedAt: null },
             updateData,
             { new: true, runValidators: true }
         ).populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status');
@@ -246,8 +286,43 @@ class MedicalRecordService {
         return medicalRecord;
     }
 
-    async deleteMedicalRecord(medicalRecordId) {
-        const medicalRecord = await MedicalRecord.findByIdAndDelete(medicalRecordId);
+    async restoreMedicalRecord(medicalRecordId) {
+        const medicalRecord = await MedicalRecord.findOneAndUpdate(
+            { _id: medicalRecordId, deletedAt: { $ne: null } },
+            { deletedAt: null },
+            { new: true }
+        ).populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status');
+
+        if (!medicalRecord) {
+            throw new Error('Deleted medical record not found');
+        }
+
+        return medicalRecord;
+    }
+
+    async bulkRestore(medicalRecordIds) {
+        const result = await MedicalRecord.updateMany(
+            { 
+                _id: { $in: medicalRecordIds },
+                deletedAt: { $ne: null }
+            },
+            { deletedAt: null }
+        );
+
+        return {
+            restoredCount: result.modifiedCount,
+            message: `${result.modifiedCount} medical record(s) restored`
+        };
+    }
+
+
+    // ==================== DELETE ====================
+    async softDeleteMedicalRecord(medicalRecordId) {
+        const medicalRecord = await MedicalRecord.findOneAndUpdate(
+            { _id: medicalRecordId, deletedAt: null },
+            { deletedAt: new Date() },
+            { new: true }
+        );
 
         if (!medicalRecord) {
             throw new Error('Medical record not found');
@@ -256,20 +331,47 @@ class MedicalRecordService {
         return medicalRecord;
     }
 
+    async deleteMedicalRecord(medicalRecordId) {
+        const medicalRecord = await MedicalRecord.findOneAndDelete({
+            _id: medicalRecordId,
+            deletedAt: { $ne: null }
+        });
+
+        if (!medicalRecord) {
+            throw new Error('Deleted medical record not found');
+        }
+
+        return medicalRecord;
+    }
+
+    async bulkPermanentDelete(medicalRecordIds) {
+        const result = await MedicalRecord.deleteMany({
+            _id: { $in: medicalRecordIds },
+            deletedAt: { $ne: null }
+        });
+
+        return {
+            deletedCount: result.deletedCount,
+            message: `${result.deletedCount} medical record(s) permanently deleted`
+        };
+    }
+
+
+    // ==================== UTILITY ====================
     async checkMedicalRecordExists(medicalRecordId) {
         if (!mongoose.Types.ObjectId.isValid(medicalRecordId)) {
             return false;
         }
         
-        return !!(await MedicalRecord.findById(medicalRecordId));
+        return !!(await MedicalRecord.findOne({ _id: medicalRecordId, deletedAt: null }));
     }
 
     async countMedicalRecords(filter = {}) {
-        return await MedicalRecord.countDocuments(filter);
+        return await MedicalRecord.countDocuments({ ...filter, deletedAt: null });
     }
 
     async getMedicalRecordsByAppointmentId(appointmentId) {
-        return await MedicalRecord.find({ appointmentId })
+        return await MedicalRecord.find({ appointmentId, deletedAt: null })
             .populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status')
             .sort({ createdAt: -1 });
     } 

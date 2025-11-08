@@ -163,6 +163,10 @@ const medicalRecordSchema = new mongoose.Schema(
         dateRecorded: {
             type: Date,
             default: Date.now
+        },
+        deletedAt: {
+            type: Date,
+            default: null
         }
     },
     {
