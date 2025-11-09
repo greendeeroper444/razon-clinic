@@ -16,17 +16,17 @@ const StatusForm: React.FC<StatusFormProps> = ({currentStatus, onStatusChange}) 
         },
         {
             value: 'Scheduled',
-            label: 'Scheduled',
+            label: 'Approved',
             icon: faCalendarCheck,
             color: '#3B82F6',
-            description: 'Appointment is scheduled and confirmed'
+            description: 'Appointment has been approved'
         },
         {
             value: 'Completed',
             label: 'Completed',
             icon: faCheckCircle,
             color: '#10B981',
-            description: 'Appointment has been completed successfully'
+            description: 'Appointment has been completed'
         },
         {
             value: 'Cancelled',

@@ -190,7 +190,7 @@ const DashboardPage = () => {
             value: '5',
             icon: <UserLock />,
             iconColor: 'orange',
-            footer: <>Average wait time: <span>15 min</span></>
+            footer: <>Average wait time: <span> 15 min</span></>
         },
         {
             title: 'Low Stock Items',
@@ -201,10 +201,10 @@ const DashboardPage = () => {
         },
         {
             title: 'Available Doctors',
-            value: '4',
+            value: '1',
             icon: <Stethoscope />,
             iconColor: 'green',
-            footer: <span>2 GPs, 1 Dentist, 1 Specialist</span>
+            footer: <span>1 Specialist</span>
         }
     ];
 
