@@ -148,3 +148,67 @@ export const getMedicalRecordId = (medicalRecordId: any): string => {
     
     return 'N/A';
 };
+
+export const formatCurrency = (
+    amount: number | string | null | undefined,
+    currency: string = 'PHP',
+    locale: string = 'en-PH'
+): string => {
+    if (amount === null || amount === undefined || amount === '') {
+        return '₱0.00';
+    }
+
+    const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+    if (isNaN(numericAmount)) {
+        return '₱0.00';
+    }
+
+    try {
+        const formatter = new Intl.NumberFormat(locale, {
+            style: 'currency',
+            currency: currency,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        return formatter.format(numericAmount);
+    } catch (error) {
+        console.error('Currency formatting error:', error);
+        return `₱${numericAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+    }
+};
+
+export const formatCurrencyCompact = (
+    amount: number | string | null | undefined,
+    currency: string = 'PHP',
+    locale: string = 'en-PH'
+): string => {
+    if (amount === null || amount === undefined || amount === '') {
+        return '₱0';
+    }
+
+    const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+    if (isNaN(numericAmount)) {
+        return '₱0';
+    }
+
+    try {
+        const formatter = new Intl.NumberFormat(locale, {
+            style: 'currency',
+            currency: currency,
+            notation: 'compact',
+            maximumFractionDigits: 1
+        });
+
+        return formatter.format(numericAmount);
+    } catch (error) {
+        if (numericAmount >= 1000000) {
+            return `₱${(numericAmount / 1000000).toFixed(1)}M`;
+        } else if (numericAmount >= 1000) {
+            return `₱${(numericAmount / 1000).toFixed(1)}K`;
+        }
+        return `₱${numericAmount.toFixed(0)}`;
+    }
+};

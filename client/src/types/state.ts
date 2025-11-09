@@ -6,6 +6,7 @@ import { InventoryItemFormData } from "./invetory";
 import { DeletedMedicalRecord, MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
 import { Pagination } from "./pagination";
 import { Patient, PatientFormData, PatientResponse } from "./patient"
+import { DashboardReport, InventoryReportItem, InventorySummary, ReportParams, SalesReportItem, SalesSummary } from "./report";
 import { User, UserResponse } from "./user";
 
 export interface FetchParams {
@@ -464,4 +465,42 @@ export interface TrashState {
     toggleSelectAll: () => void
     setActiveTab: (tab: 'medical-records') => void
     clearSelection: () => void
+}
+
+export interface ReportState {
+    inventoryReportItems: InventoryReportItem[]
+    inventorySummary: InventorySummary | null
+    
+    salesReportItems: SalesReportItem[]
+    salesSummary: SalesSummary | null
+    
+    dashboardReport: DashboardReport | null
+    
+    loading: boolean
+    fetchLoading: boolean
+    error: string | null
+    activeTab: 'inventory' | 'sales' | 'dashboard'
+    
+    period: 'today' | 'week' | 'month' | 'year' | 'custom'
+    fromDate: string | null
+    toDate: string | null
+    category: string | null
+    paymentStatus: string | null
+    searchTerm: string
+    
+    inventoryPagination: Pagination
+    salesPagination: Pagination
+    
+    fetchInventoryReport: (params?: ReportParams) => Promise<void>
+    fetchInventorySummary: () => Promise<void>
+    fetchSalesReport: (params?: ReportParams) => Promise<void>
+    fetchSalesSummary: () => Promise<void>
+    fetchDashboardReport: () => Promise<void>
+    setActiveTab: (tab: 'inventory' | 'sales' | 'dashboard') => void
+    setPeriod: (period: 'today' | 'week' | 'month' | 'year' | 'custom') => void
+    setDateRange: (fromDate: string, toDate: string) => void
+    setCategory: (category: string | null) => void
+    setPaymentStatus: (status: string | null) => void
+    setSearchTerm: (term: string) => void
+    resetFilters: () => void
 }

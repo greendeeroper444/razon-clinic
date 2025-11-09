@@ -3,7 +3,7 @@ import styles from './Tab.module.css'
 interface TabItem {
     key: string
     label: string
-    count?: number
+    count?: number | null
 }
 
 interface TabProps {
