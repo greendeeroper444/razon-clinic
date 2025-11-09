@@ -157,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
 
                 <Link
                     to='/admin/reports'
-                    className={`${styles.menuItem} ${isActive('/admin/report') ? styles.active : ''}`}
+                    className={`${styles.menuItem} ${isActive('/admin/reports') ? styles.active : ''}`}
                     title='Reports'
                 >
                     <ScrollText color='#94a3b8' size={20} />
@@ -166,7 +166,7 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
 
                 <Link
                     to='/admin/trash'
-                    className={`${styles.menuItem} ${isActive('/admin/report') ? styles.active : ''}`}
+                    className={`${styles.menuItem} ${isActive('/admin/trash') ? styles.active : ''}`}
                     title='Reports'
                 >
                     <Trash color='#94a3b8' size={20} />
