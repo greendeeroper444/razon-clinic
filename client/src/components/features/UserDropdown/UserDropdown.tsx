@@ -23,10 +23,10 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ isVisible, onClose, onLogou
   return (
     <div className={styles.dropdownContainer}>
         <div className={styles.dropdownMenu}>
-            <div className={styles.dropdownItem} onClick={handleProfileClick}>
+            {/* <div className={styles.dropdownItem} onClick={handleProfileClick}>
                 <User size={18} />
                 <span>Profile</span>
-            </div>
+            </div> */}
             <div className={styles.dropdownDivider}></div>
             <div className={styles.dropdownItem} onClick={handleLogoutClick}>
                 <LogOut size={18} />

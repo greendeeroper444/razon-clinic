@@ -106,7 +106,7 @@ const ReportPage = () => {
     }
 
     const tabs = [
-        { key: 'dashboard', label: 'Dashboard', count: null },
+        { key: 'dashboard', label: 'Dashboard Report', count: null },
         { key: 'inventory', label: 'Inventory Report', count: inventoryPagination.totalItems },
         { key: 'sales', label: 'Sales Report', count: salesPagination.totalItems }
     ]
