@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { toast } from 'sonner';
 import { BillingState, OperationType, BillingFormData, FetchParams } from '../types';
-import { getBillings, addBilling, updateBilling, deleteBilling, getBillingById } from '../services';
+import { getBillings, addBilling, updateBilling, deleteBilling, getBillingById, exportBillings } from '../services';
 
 export const useBillingStore = create<BillingState>()(
     devtools(
@@ -324,20 +324,31 @@ export const useBillingStore = create<BillingState>()(
             },
 
             //export billings
-            exportBillings: async () => {
+            exportBillings: async (format: 'csv' | 'xlsx' | 'json' = 'xlsx') => {
                 try {
                     set({ loading: true });
                     
-                    //not yet done
-                    toast.success('Export completed successfully!');
+                    //export all data without any filters
+                    const exportParams = {
+                        format
+                    };
+
+                    const result = await exportBillings(exportParams);
+                    
+                    if (result.success) {
+                        toast.success('Export completed successfully!', {
+                            description: `Downloaded: ${result.filename}`
+                        });
+                    }
                 } catch (error) {
                     console.error('Error exporting billings:', error);
-                    toast.error('Failed to export billings');
+                    toast.error('Failed to export billings', {
+                        description: error instanceof Error ? error.message : 'An error occurred'
+                    });
                 } finally {
                     set({ loading: false });
                 }
             },
-
 
             setLoading: (loading: boolean) => set({ loading }),
             setError: (error: string | null) => set({ error }),

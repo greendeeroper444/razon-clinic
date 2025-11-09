@@ -86,7 +86,11 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
     }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
     
     const handleExport = async () => {
-        await exportBillings();
+        try {
+            await exportBillings();
+        } catch (error) {
+            console.error('Export error:', error);
+        }
     };
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
@@ -220,7 +224,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             header: 'MEDICAL RECORD',
             render: (billing) => (
                 <span className={styles.medicalRecord}>
-                    {getMedicalRecordId(billing.medicalRecordId)}
+                    {getMedicalRecordId(billing.id)}
                 </span>
             )
         },

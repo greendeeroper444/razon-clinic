@@ -73,3 +73,17 @@ export interface BillingFilters {
     paymentStatus?: string;
     patientName?: string;
 }
+
+export interface ExportBillingsParams {
+    format?: 'csv' | 'xlsx' | 'json';
+    search?: string;
+    paymentStatus?: string;
+    patientName?: string;
+    itemName?: string;
+    minAmount?: number;
+    maxAmount?: number;
+    fromDate?: string;
+    toDate?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+}

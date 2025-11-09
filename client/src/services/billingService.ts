@@ -1,5 +1,5 @@
 import axios from './httpClient'
-import { BillingFormData } from '../types'
+import { BillingFormData, ExportBillingsParams } from '../types'
 import API_BASE_URL from '../ApiBaseUrl'
 
 export const addBilling = async (billingData: BillingFormData) => {
@@ -109,6 +109,67 @@ export const deleteBilling = async (billingId: string) => {
         return response.data;
     } catch (error) {
         console.error('Error deleting billing:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+
+        throw error;
+    }
+}
+
+
+export const exportBillings = async (params: ExportBillingsParams = {}) => {
+    try {
+        const defaultParams = {
+            format: 'xlsx' as const
+        };
+
+        const queryParams = { ...defaultParams, ...params };
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/billings/exportBillings`,
+            { 
+                params: queryParams,
+                responseType: 'blob' //tells axios to expect binary data
+            }
+        );
+
+        //create blob from response
+        const blob = new Blob([response.data], {
+            type: response.headers['content-type']
+        });
+
+        const contentDisposition = response.headers['content-disposition'];
+        let filename = `billing_records_${new Date().toISOString().split('T')[0]}`;
+        
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+            if (filenameMatch && filenameMatch[1]) {
+                filename = filenameMatch[1];
+            }
+        } else {
+            const extension = queryParams.format === 'csv' ? '.csv' : queryParams.format === 'json' ? '.json' : '.xlsx';
+            filename += extension;
+        }
+
+        //download link and trigger download
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        
+        //cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        return {
+            success: true,
+            filename
+        };
+    } catch (error) {
+        console.error('Error exporting billings:', error);
         if (axios.isAxiosError(error)) {
             throw error.response?.data || error.message;
         }
