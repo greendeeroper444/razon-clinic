@@ -46,4 +46,10 @@ router.get(
     billingController.getInventoryItemsForBilling
 );
 
+router.get(
+    '/exportBillings',
+    authenticate,
+    billingController.exportBillings
+);
+
 module.exports = router;

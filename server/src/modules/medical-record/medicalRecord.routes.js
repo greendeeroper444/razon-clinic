@@ -97,4 +97,10 @@ router.post(
     medicalRecordController.bulkPermanentDelete
 );
 
+router.get(
+    '/exportMedicalRecords',
+    authenticate,
+    medicalRecordController.exportMedicalRecords
+);
+
 module.exports = router;

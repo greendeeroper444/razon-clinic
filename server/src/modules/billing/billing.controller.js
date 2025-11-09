@@ -1,4 +1,5 @@
 const BillingService = require('./billing.service');
+const GenerateBillingFile = require('./generateBillingFile.helper');
 
 class BillingController {
 
@@ -156,6 +157,78 @@ class BillingController {
                 message: 'Revenue data retrieved successfully',
                 data: revenueData
             });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+    // ==================== EXPORT ====================
+    async exportBillings(req, res, next) {
+        try {
+            const {
+                format = 'csv',
+                search,
+                paymentStatus,
+                patientName,
+                itemName,
+                minAmount,
+                maxAmount,
+                fromDate,
+                toDate,
+                sortBy,
+                sortOrder
+            } = req.query;
+
+            const queryParams = {
+                search,
+                paymentStatus,
+                patientName,
+                itemName,
+                minAmount,
+                maxAmount,
+                fromDate,
+                toDate,
+                sortBy,
+                sortOrder,
+                page: null,
+                limit: null
+            };
+
+            const result = await BillingService.getBillings(queryParams);
+            const records = result.billings;
+
+            if (!records || records.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'No billing records found to export'
+                });
+            }
+
+            const timestamp = new Date().toISOString().split('T')[0];
+            const formatLower = format.toLowerCase();
+
+            if (formatLower === 'csv') {
+                const csvData = GenerateBillingFile.generateCSV(records);
+                res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+                res.setHeader('Content-Disposition', `attachment; filename="billing_records_${timestamp}.csv"`);
+                return res.status(200).send(csvData);
+            } else if (formatLower === 'xlsx') {
+                const xlsxData = await GenerateBillingFile.generateXLSX(records);
+                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                res.setHeader('Content-Disposition', `attachment; filename="billing_records_${timestamp}.xlsx"`);
+                return res.status(200).send(xlsxData);
+            } else if (formatLower === 'json') {
+                const jsonData = GenerateBillingFile.generateJSON(records);
+                res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                res.setHeader('Content-Disposition', `attachment; filename="billing_records_${timestamp}.json"`);
+                return res.status(200).send(jsonData);
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid format. Supported formats: csv, xlsx, json'
+                });
+            }
         } catch (error) {
             next(error);
         }

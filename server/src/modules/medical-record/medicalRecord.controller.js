@@ -1,4 +1,5 @@
 const MedicalRecordService = require('./medicalRecord.service');
+const GenerateMedicalRecordFile = require('./generateMedicalRecordFile.helper')
 
 class MedicalRecordController {
 
@@ -206,6 +207,77 @@ class MedicalRecordController {
                 message: result.message,
                 data: { deletedCount: result.deletedCount }
             });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    // ==================== EXPORT ====================
+    async exportMedicalRecords(req, res, next) {
+        try {
+            const {
+                format = 'csv',
+                search,
+                fullName,
+                phone,
+                email,
+                gender,
+                bloodType,
+                chiefComplaint,
+                diagnosis,
+                fromDate,
+                toDate
+            } = req.query;
+
+            const queryParams = {
+                search,
+                fullName,
+                phone,
+                email,
+                gender,
+                bloodType,
+                chiefComplaint,
+                diagnosis,
+                fromDate,
+                toDate,
+                page: null,
+                limit: null
+            };
+
+            const result = await MedicalRecordService.getMedicalRecords(queryParams);
+            const records = result.medicalRecords;
+
+            if (!records || records.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'No medical records found to export'
+                });
+            }
+
+            const timestamp = new Date().toISOString().split('T')[0];
+            const formatLower = format.toLowerCase();
+
+            if (formatLower === 'csv') {
+                const csvData = GenerateMedicalRecordFile.generateCSV(records);
+                res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+                res.setHeader('Content-Disposition', `attachment; filename="medical_records_${timestamp}.csv"`);
+                return res.status(200).send(csvData);
+            } else if (formatLower === 'xlsx') {
+                const xlsxData = await GenerateMedicalRecordFile.generateXLSX(records);
+                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                res.setHeader('Content-Disposition', `attachment; filename="medical_records_${timestamp}.xlsx"`);
+                return res.status(200).send(xlsxData);
+            } else if (formatLower === 'json') {
+                const jsonData = GenerateMedicalRecordFile.generateJSON(records);
+                res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                res.setHeader('Content-Disposition', `attachment; filename="medical_records_${timestamp}.json"`);
+                return res.status(200).send(jsonData);
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid format. Supported formats: csv, xlsx, json'
+                });
+            }
         } catch (error) {
             next(error);
         }

@@ -31,3 +31,14 @@ POST /api/medicalRecords/bulkPermanentDelete
         "68e3fd69082bcdb125dee425"
     ]
 }
+
+
+# EXPORT MEDICAL RECORDS
+# export all records as XLSX
+GET /api/medicalRecords/exportMedicalRecords?format=xlsx
+
+# export filtered records as CSV
+GET /api/medicalRecords/exportMedicalRecords?format=csv&gender=Male&fromDate=2024-01-01
+
+# export with search term
+GET /api/medicalRecords/exportMedicalRecords?format=json&search=John Doe
