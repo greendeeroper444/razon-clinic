@@ -1,6 +1,7 @@
-const { body, param, query, validationResult } = require('express-validator');
-const { ApiError } = require('@utils/errors');
+const { body, param, query } = require('express-validator');
 const mongoose = require('mongoose');
+const { handleValidationErrors } = require('@helpers/validationErrorHandler.helper');
+
 
 const validateAppointment = [
     (req, res, next) => {
@@ -135,16 +136,7 @@ const validateAppointment = [
         .notEmpty().withMessage('Reason for visit is required')
         .isLength({ min: 5, max: 200 }).withMessage('Reason for visit must be between 5 and 200 characters'),
     
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => {
-                return `${error.msg} for field: ${error.param}`;
-            });
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateStatusUpdate = [
@@ -161,14 +153,7 @@ const validateStatusUpdate = [
         .isIn(['Pending', 'Scheduled', 'Completed', 'Cancelled', 'Rebooked'])
         .withMessage('Status must be one of: Pending, Scheduled, Completed, Cancelled, Rebooked'),
     
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateAppointmentId = [
@@ -180,14 +165,7 @@ const validateAppointmentId = [
             return true;
         }),
     
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateDateQuery = [
@@ -202,14 +180,7 @@ const validateDateQuery = [
             return true;
         }),
     
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateQueryParams = [
@@ -243,14 +214,7 @@ const validateQueryParams = [
         .optional()
         .isIn(['asc', 'desc']).withMessage('sortOrder must be either asc or desc'),
     
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 module.exports = {
@@ -258,5 +222,6 @@ module.exports = {
     validateStatusUpdate,
     validateAppointmentId,
     validateDateQuery,
-    validateQueryParams
+    validateQueryParams,
+    handleValidationErrors
 };

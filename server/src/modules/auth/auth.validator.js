@@ -1,5 +1,5 @@
-const { body, validationResult } = require('express-validator');
-const { ApiError } = require('@utils/errors');
+const { body } = require('express-validator');
+const { handleValidationErrors } = require('@helpers/validationErrorHandler.helper');
 
 const validateRegistration = [
     body('firstName')
@@ -101,14 +101,7 @@ const validateRegistration = [
         .trim()
         .isLength({ max: 30 }).withMessage('Religion must not exceed 30 characters'),
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateLogin = [
@@ -129,14 +122,7 @@ const validateLogin = [
         .trim()
         .notEmpty().withMessage('Password is required'),
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateChangePassword = [
@@ -162,14 +148,7 @@ const validateChangePassword = [
             return true;
         }),
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateProfileUpdate = [
@@ -230,14 +209,7 @@ const validateProfileUpdate = [
         .trim()
         .isLength({ max: 30 }).withMessage('Religion must not exceed 30 characters'),
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validatePasswordReset = [
@@ -254,14 +226,7 @@ const validatePasswordReset = [
             return true;
         }),
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateResetPassword = [
@@ -284,14 +249,7 @@ const validateResetPassword = [
             return true;
         }),
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 module.exports = {

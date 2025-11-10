@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const validator = require('@validators/appointment.validator');
+const validator = require('./appointment.validator');
 const { authenticate } = require('@middlewares/auth.middleware');
 const appointmentController = require('./appointment.controller');
 

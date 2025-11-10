@@ -1,6 +1,6 @@
-const { body, param, query, validationResult } = require('express-validator');
-const { ApiError } = require('@utils/errors');
+const { body, param, query } = require('express-validator');
 const mongoose = require('mongoose');
+const { handleValidationErrors } = require('@helpers/validationErrorHandler.helper');
 
 const validateMedicalRecord = [
     body('appointmentId')
@@ -148,16 +148,7 @@ const validateMedicalRecord = [
             return true;
         }),
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => {
-                return `${error.msg} for field: ${error.path}`;
-            });
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateMedicalRecordUpdate = [
@@ -217,16 +208,7 @@ const validateMedicalRecordUpdate = [
         .trim()
         .isLength({ min: 1, max: 1000 }).withMessage('Symptoms description must not exceed 1000 characters'),
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => {
-                return `${error.msg} for field: ${error.path}`;
-            });
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateMedicalRecordId = [
@@ -238,14 +220,7 @@ const validateMedicalRecordId = [
             return true;
         }),
     
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateAppointmentId = [
@@ -257,14 +232,7 @@ const validateAppointmentId = [
             return true;
         }),
     
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateSearchQuery = [
@@ -273,14 +241,7 @@ const validateSearchQuery = [
         .notEmpty().withMessage('Search term is required')
         .isLength({ min: 2 }).withMessage('Search term must be at least 2 characters'),
     
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 const validateQueryParams = [
@@ -316,14 +277,7 @@ const validateQueryParams = [
         .optional()
         .isIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']).withMessage('Invalid blood type'),
     
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const errorMessages = errors.array().map(error => error.msg);
-            return next(new ApiError(errorMessages[0], 400));
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 module.exports = {
