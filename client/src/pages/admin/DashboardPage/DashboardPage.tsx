@@ -1,23 +1,28 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import styles from './DashboardPage.module.css';
-import { CalendarDays, UserLock, AlertTriangle, Stethoscope, ChevronRight, ArrowUp, Plus } from 'lucide-react';
+import { ChevronRight, Plus } from 'lucide-react';
 import { AppointmentResponse, InventoryItemFormData, TableColumn } from '../../../types';
-import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, getStatusClass, getItemIcon, getStockStatus, getExpiryStatus } from '../../../utils';
+import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, getStatusClass, getItemIcon, getStockStatus, getExpiryStatus} from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Header, Loading, Main, Table } from '../../../components';
 import { useAppointmentStore, useInventoryStore } from '../../../stores';
+import { getDashboardSummaryCards } from '../../../config/dashboardSummaryCards';
 
 const DashboardPage = () => {
     const navigate = useNavigate();
-    //zustand store selectors
+    
     const { appointments, loading, error, fetchAppointments } = useAppointmentStore();
     const { inventoryItems, loading: inventoryLoading, error: inventoryError, fetchInventoryItems } = useInventoryStore();
 
     useEffect(() => {
-        fetchAppointments();
-        fetchInventoryItems();
+        fetchAppointments({});
+        fetchInventoryItems({});
     }, [fetchAppointments, fetchInventoryItems])
 
+    const dashboardCards = useMemo(() => 
+        getDashboardSummaryCards(appointments, inventoryItems),
+        [appointments, inventoryItems]
+    );
 
     const handleViewClick = (appointment: AppointmentResponse) => {
         navigate(`/admin/appointments/details/${appointment.id}`);
@@ -177,37 +182,6 @@ const DashboardPage = () => {
         }
     ];
 
-    const dashboardCards = [
-        {
-            title: 'Today\'s Appointments',
-            value: '18',
-            icon: <CalendarDays />,
-            iconColor: 'purple',
-            footer: <><ArrowUp className={styles.positive} /> <span className={styles.positive}>3 more than yesterday</span></>
-        },
-        {
-            title: 'Patients Waiting',
-            value: '5',
-            icon: <UserLock />,
-            iconColor: 'orange',
-            footer: <>Average wait time: <span> 15 min</span></>
-        },
-        {
-            title: 'Low Stock Items',
-            value: '7',
-            icon: <AlertTriangle />,
-            iconColor: 'red',
-            footer: <><ArrowUp className={styles.negative} /> <span className={styles.negative}>2 critical items</span></>
-        },
-        {
-            title: 'Available Doctors',
-            value: '1',
-            icon: <Stethoscope />,
-            iconColor: 'green',
-            footer: <span>1 Specialist</span>
-        }
-    ];
-
   return (
     <Main 
         loading={loading} 
@@ -260,7 +234,7 @@ const DashboardPage = () => {
                         <Loading
                             type='skeleton'
                             rows={7}
-                            message='Loading upcominng appointment data...'
+                            message='Loading upcoming appointment data...'
                             delay={0}
                             minDuration={1000}
                         />
@@ -279,19 +253,19 @@ const DashboardPage = () => {
         {/* inventory section */}
         <div className={styles.inventorySection}>
             <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>
-                Medicine Inventory ({inventoryItems.length})
-            </h3>
-            <div className={styles.sectionActions}>
-                <a href="#" onClick={() => navigate('/admin/inventory')}>
-                    <span>Manage Inventory</span>
-                    <ChevronRight />
-                </a>
-            </div>
+                <h3 className={styles.sectionTitle}>
+                    Medicine Inventory ({inventoryItems.length})
+                </h3>
+                <div className={styles.sectionActions}>
+                    <a href="#" onClick={() => navigate('/admin/inventory')}>
+                        <span>Manage Inventory</span>
+                        <ChevronRight />
+                    </a>
+                </div>
             </div>
 
             {
-                loading ? (
+                inventoryLoading ? (
                     <div className={styles.tableResponsive}>
                         <Loading
                             type='skeleton'
