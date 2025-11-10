@@ -3,6 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus as updateAppointmentStatusService, addAppointment  } from '../services'
 import { AppointmentFormData, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
 import { toast } from 'sonner'
+import { handleApiError } from '../utils/errorHandler'
 
 
 export const useAppointmentStore = create<ExtendedAppointmentState>()(
@@ -63,13 +64,21 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         });
                     }, 500);
 
-                } catch (error) {
+                } catch (error: any) {
                     console.error('Error adding appointment:', error);
-                    toast.error('Failed to add appointment');
+                    const { message, validationErrors } = handleApiError(
+                        error, 
+                        'Failed to add appointment'
+                    );
+                    toast.error(message);
+                    if (validationErrors) {
+                        console.log('Validation errors:', validationErrors);
+                    }
+                    
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isModalOpen: false,
+                        isModalOpen: true,
                         currentOperation: null
                     });
                 }

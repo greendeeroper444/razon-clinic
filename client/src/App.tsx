@@ -73,24 +73,19 @@ function App() {
       case 'appointment':
         try {
           await addAppointment(formData as AppointmentFormData);
-          toast.success('Appointment added successfully');
         } catch (error) {
           console.error('Error adding appointment:', error);
         }
         break;
       case 'patient':
         await addPatient(formData as PatientFormData);
-        toast.success('Personal patient added successfully');
         break;
       case 'item':
           await addInventoryItem(formData as InventoryItemFormData);
-          toast.success('Inventory item added successfully');
         break;
       case 'medical':
         try {
           await addMedicalRecord(formData as MedicalRecordFormData);
-          
-          toast.success('Medical record added successfully');
         } catch (error) {
           console.error('Error adding medical:', error);
         }
@@ -98,8 +93,6 @@ function App() {
       case 'billing':
         try {
           await addBilling(formData as BillingFormData);
-          
-          toast.success('Billings added successfully');
         } catch (error) {
           console.error('Error adding billing:', error);
         }

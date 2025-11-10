@@ -27,11 +27,14 @@ export const addAppointment = async (appointmentData: AppointmentFormData) => {
         return response.data;
     } catch (error) {
         console.error('Error adding appointment:', error);
-        if (axios.isAxiosError(error)) {
-            throw error.response?.data || error.message;
+        if (axios.isAxiosError(error) && error.response?.data) {
+            throw error.response.data;
         }
 
-        throw error;
+        throw { 
+            success: false, 
+            message: error instanceof Error ? error.message : 'An unexpected error occurred'
+        };
     }
 };
 

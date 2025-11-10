@@ -3,6 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { MedicalRecordFormData, OperationType, MedicalRecord, ExtendedMedicalRecordState, Patient, FetchParams } from '../types'
 import { softDeleteMedicalRecord, getMedicalRecordById, getMedicalRecords, updateMedicalRecord, addMedicalRecord, getMyMedicalRecords, exportMedicalRecords } from '../services';
 import { toast } from 'sonner';
+import { handleApiError } from '../utils/errorHandler';
 
 export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
     devtools(
@@ -62,11 +63,19 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
 
                 } catch (error) {
                     console.error('Error creating medical record:', error);
-                    toast.error('Failed to create medical record');
+                    const { message, validationErrors } = handleApiError(
+                        error, 
+                        'Failed to add appointment'
+                    );
+                    toast.error(message);
+                    if (validationErrors) {
+                        console.log('Validation errors:', validationErrors);
+                    }
+                    
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isModalOpen: false, 
+                        isModalOpen: true, 
                         selectedMedicalRecord: null,
                         currentOperation: null
                     });
