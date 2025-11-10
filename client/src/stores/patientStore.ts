@@ -42,6 +42,37 @@ export const usePatientStore = create<PatientState>()(
                 searchTerm: null
             },
 
+            //add patient
+            addPatient: async (data: PatientFormData) => {
+                try {
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
+                    
+                    await addPatient(data);
+                    await get().fetchPatients();
+                    
+                    toast.success('Patient added successfully!');
+                    set({ isModalOpen: false, selectedPatient: null });
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false, 
+                            isProcessing: false,
+                            currentOperation: null
+                        })
+                    }, 500)
+
+                } catch (error) {
+                    console.error('Error adding patient:', error);
+                    toast.error('Failed to add patient');
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        isModalOpen: false,
+                        currentOperation: null
+                    })
+                }
+            },
+
             //fetch patients
             fetchPatients: async (params: FetchParams) => {
                 const currentState = get();
@@ -125,37 +156,6 @@ export const usePatientStore = create<PatientState>()(
                 } catch (error) {
                     console.error('Error fetching patient summary stats:', error);
                     set({ error: 'An error occurred while fetching summary stats' });
-                }
-            },
-
-            //add patient
-            addPatient: async (data: PatientFormData) => {
-                try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
-                    
-                    await addPatient(data);
-                    await get().fetchPatients();
-                    
-                    toast.success('Patient added successfully!');
-                    set({ isModalOpen: false, selectedPatient: null });
-
-                    setTimeout(() => {
-                        set({ 
-                            submitLoading: false, 
-                            isProcessing: false,
-                            currentOperation: null
-                        })
-                    }, 500)
-
-                } catch (error) {
-                    console.error('Error adding patient:', error);
-                    toast.error('Failed to add patient');
-                    set({ 
-                        submitLoading: false, 
-                        isProcessing: false,
-                        isModalOpen: false,
-                        currentOperation: null
-                    })
                 }
             },
 

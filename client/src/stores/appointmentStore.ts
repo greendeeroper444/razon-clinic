@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus as updateAppointmentStatusService  } from '../services'
+import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus as updateAppointmentStatusService, addAppointment  } from '../services'
 import { AppointmentFormData, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
 import { toast } from 'sonner'
 
@@ -37,6 +37,42 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 previousPage: null,
                 remainingItems: 0,
                 searchTerm: null
+            },
+
+            addAppointment: async (data: AppointmentFormData) => {
+                try {
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
+                    
+                    await addAppointment(data);
+                    
+                    const currentState = get();
+                    if (currentState.viewMode === 'admin') {
+                        await get().fetchAppointments({});
+                    } else {
+                        await get().fetchMyAppointments({});
+                    }
+                    
+                    toast.success('Appointment added successfully!');
+                    set({ isModalOpen: false });
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false, 
+                            isProcessing: false,
+                            currentOperation: null
+                        });
+                    }, 500);
+
+                } catch (error) {
+                    console.error('Error adding appointment:', error);
+                    toast.error('Failed to add appointment');
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        isModalOpen: false,
+                        currentOperation: null
+                    });
+                }
             },
 
             fetchAppointments: async (params: FetchParams) => {

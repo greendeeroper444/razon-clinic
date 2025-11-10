@@ -43,6 +43,36 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 searchTerm: null
             },
 
+             addInventoryItem: async (data: InventoryItemFormData) => {
+                try {
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
+                    
+                    await addInventoryItem(data);
+                    
+                    toast.success('Item added successfully!');
+                    set({ isModalOpen: false, selectedInventoryItem: null });
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false, 
+                            isProcessing: false,
+                            currentOperation: null
+                        })
+                    }, 500)
+
+                } catch (error) {
+                    console.error('Error adding inventory item:', error);
+                    toast.error('Failed to add inventory item');
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        isModalOpen: false,
+                        currentOperation: null
+                    })
+                }
+            },
+
+
             fetchInventoryItems: async (params: FetchParams) => {
                 const currentState = get();
                 
@@ -121,35 +151,6 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 } catch (error) {
                     console.error('Error fetching summary stats:', error);
                     set({ error: 'An error occurred while fetching summary stats' });
-                }
-            },
-
-            addInventoryItem: async (data: InventoryItemFormData) => {
-                try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
-                    
-                    await addInventoryItem(data);
-                    
-                    toast.success('Item added successfully!');
-                    set({ isModalOpen: false, selectedInventoryItem: null });
-
-                    setTimeout(() => {
-                        set({ 
-                            submitLoading: false, 
-                            isProcessing: false,
-                            currentOperation: null
-                        })
-                    }, 500)
-
-                } catch (error) {
-                    console.error('Error adding inventory item:', error);
-                    toast.error('Failed to add inventory item');
-                    set({ 
-                        submitLoading: false, 
-                        isProcessing: false,
-                        isModalOpen: false,
-                        currentOperation: null
-                    })
                 }
             },
 

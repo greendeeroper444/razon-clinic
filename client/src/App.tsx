@@ -5,14 +5,12 @@ import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
 import { AppointmentFormData, InventoryItemFormData, MedicalRecordFormData, PatientFormData, FormDataType, ModalType, BillingFormData } from './types'
 import { Layout, Modal, PageTitle, ProtectedRoute, RootRedirect, Tormentum} from './components'
-import { addAppointment, addBilling, addInventoryItem, addMedicalRecord, addPatient } from './services'
 import { routes } from './routes'
 import './services/httpClient'
-import { useAuthenticationStore } from './stores'
+import { useAppointmentStore, useAuthenticationStore, useBillingStore, useInventoryStore, useMedicalRecordStore, usePatientStore } from './stores'
 import { isTormentumArrived } from './components/ui/Tormentum/Tormentum'
 import { PaginaNonPraesto } from './pages'
 import { routeText } from './constants/messages'
-
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -21,6 +19,11 @@ function App() {
   
   //initialize authentication on app load
   const initializeAuth = useAuthenticationStore(state => state.initializeAuth);
+  const addAppointment = useAppointmentStore(state => state.addAppointment);
+  const addPatient = usePatientStore(state => state.addPatient);
+  const addInventoryItem = useInventoryStore(state => state.addInventoryItem);
+  const addMedicalRecord = useMedicalRecordStore(state => state.addMedicalRecord);
+  const addBilling = useBillingStore(state => state.addBilling);
 
   useEffect(() => {
     // initializeAuth()
@@ -70,7 +73,6 @@ function App() {
       case 'appointment':
         try {
           await addAppointment(formData as AppointmentFormData);
-          
           toast.success('Appointment added successfully');
         } catch (error) {
           console.error('Error adding appointment:', error);
@@ -78,12 +80,10 @@ function App() {
         break;
       case 'patient':
         await addPatient(formData as PatientFormData);
-          
         toast.success('Personal patient added successfully');
         break;
       case 'item':
           await addInventoryItem(formData as InventoryItemFormData);
-          
           toast.success('Inventory item added successfully');
         break;
       case 'medical':
