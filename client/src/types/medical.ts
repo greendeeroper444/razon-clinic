@@ -250,3 +250,18 @@ export interface DeletedMedicalRecord {
     deletedAt: string
     dateRecorded: string
 }
+
+
+export interface ExportMedicalRecordsParams {
+    format?: 'csv' | 'xlsx' | 'json';
+    search?: string;
+    paymentStatus?: string;
+    patientName?: string;
+    itemName?: string;
+    minAmount?: number;
+    maxAmount?: number;
+    fromDate?: string;
+    toDate?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+}

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { MedicalRecordFormData, OperationType, MedicalRecord, ExtendedMedicalRecordState, Patient, FetchParams } from '../types'
-import { softDeleteMedicalRecord, getMedicalRecordById, getMedicalRecords, updateMedicalRecord, addMedicalRecord, getMyMedicalRecords } from '../services';
+import { softDeleteMedicalRecord, getMedicalRecordById, getMedicalRecords, updateMedicalRecord, addMedicalRecord, getMyMedicalRecords, exportMedicalRecords } from '../services';
 import { toast } from 'sonner';
 
 export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
@@ -328,6 +328,33 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 }
             },
 
+            exportMedicalRecords: async (format: 'csv' | 'xlsx' | 'json' = 'xlsx') => {
+                try {
+                    set({ loading: true });
+                    
+                    //export all data without any filters
+                    const exportParams = {
+                        format
+                    };
+
+                    const result = await exportMedicalRecords(exportParams);
+                    
+                    if (result.success) {
+                        toast.success('Export completed successfully!', {
+                            description: `Downloaded: ${result.filename}`
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error exporting medicala records:', error);
+                    toast.error('Failed to export medicala records', {
+                        description: error instanceof Error ? error.message : 'An error occurred'
+                    });
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+
             //view record details
             viewMedicalRecord: async (record: MedicalRecordFormData) => {
                 try {
@@ -346,7 +373,6 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     });
                 }
             },
-
 
 
             //modal actions

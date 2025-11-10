@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styles from './MedicalRecordsPage.module.css';
-import { Plus, FileText, Download } from 'lucide-react';
+import { Plus, Download } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { FormDataType, MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
@@ -37,7 +37,8 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         addMedicalRecord,
         softDeleteMedicalRecord,
         getStatusFromRecord,
-        currentOperation
+        currentOperation,
+        exportMedicalRecords
     } = useMedicalRecordStore();
 
 
@@ -85,8 +86,12 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         });
     }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
-    const handleReport = () => {
-        console.log('Generate report');
+    const handleExport = async () => {
+        try {
+            await exportMedicalRecords();
+        } catch (error) {
+            console.log('Export error:', error)
+        }
     };
 
     const handleViewClick = (record: MedicalRecordResponse) => {
@@ -281,9 +286,9 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             type: 'primary' as const
         },
         {
-            label: 'Report',
-            icon: <FileText />,
-            onClick: handleReport,
+            label: 'Export',
+            icon: <Download />,
+            onClick: handleExport,
             type: 'outline' as const
         }
     ];

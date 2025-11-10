@@ -1,5 +1,5 @@
 import axios from './httpClient'
-import { MedicalRecordFormData, transformFormDataToApiFormat } from '../types';
+import { ExportMedicalRecordsParams, MedicalRecordFormData, transformFormDataToApiFormat } from '../types';
 import API_BASE_URL from '../ApiBaseUrl';
 
 
@@ -177,36 +177,62 @@ export const getAppointmentForAutofill = async (appointmentId: string) => {
     }
 };
 
-
-
-
-
-
-
-//generate medical report (if you have this endpoint)
-export const generateMedicalReport = async (filters?: {
-    startDate?: string;
-    endDate?: string;
-    patientId?: string;
-}) => {
+export const exportMedicalRecords = async (params: ExportMedicalRecordsParams = {}) => {
     try {
-        const response = await axios.post(
-            `${API_BASE_URL}/api/medicalRecords/generateReport`,
-            filters,
-            // {
-            //     headers: {
-            //     'Content-Type': 'application/json',
-            //     'Authorization': `Bearer ${localStorage.getItem('token')}`
-            //     }
-            // }
+        const defaultParams = {
+            format: 'xlsx' as const
+        };
+
+        const queryParams = { ...defaultParams, ...params };
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/medicalRecords/exportMedicalRecords`,
+            { 
+                params: queryParams,
+                responseType: 'blob' //tells axios to expect binary data
+            }
         );
-        return response.data;
+
+        //create blob from response
+        const blob = new Blob([response.data], {
+            type: response.headers['content-type']
+        });
+
+        const contentDisposition = response.headers['content-disposition'];
+        let filename = `medical_records_${new Date().toISOString().split('T')[0]}`;
+        
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+            if (filenameMatch && filenameMatch[1]) {
+                filename = filenameMatch[1];
+            }
+        } else {
+            const extension = queryParams.format === 'csv' ? '.csv' : queryParams.format === 'json' ? '.json' : '.xlsx';
+            filename += extension;
+        }
+
+        //download link and trigger download
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        
+        //cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        return {
+            success: true,
+            filename
+        };
     } catch (error) {
-        console.error('Error updating medical record:', error);
+        console.error('Error exporting medical records:', error);
         if (axios.isAxiosError(error)) {
             throw error.response?.data || error.message;
         }
 
         throw error;
     }
-};
+}
