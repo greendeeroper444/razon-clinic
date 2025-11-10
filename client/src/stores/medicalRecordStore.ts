@@ -75,9 +75,9 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isModalOpen: true, 
-                        selectedMedicalRecord: null,
-                        currentOperation: null
+                        currentOperation: null,
+                        // isModalOpen: true, 
+                        // selectedMedicalRecord: null,
                     });
                 }
             },

@@ -78,8 +78,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isModalOpen: true,
-                        currentOperation: null
+                        currentOperation: null,
                     });
                 }
             },
