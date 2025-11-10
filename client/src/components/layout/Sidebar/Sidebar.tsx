@@ -164,14 +164,18 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     <span className={styles.menuText}>Reports</span>
                 </Link>
 
-                <Link
-                    to='/admin/trash'
-                    className={`${styles.menuItem} ${isActive('/admin/trash') ? styles.active : ''}`}
-                    title='Reports'
-                >
-                    <Trash color='#94a3b8' size={20} />
-                    <span className={styles.menuText}>Trash</span>
-                </Link>
+               {
+                    user && user.role === 'Doctor' && (
+                        <Link
+                            to='/admin/trash'
+                            className={`${styles.menuItem} ${isActive('/admin/trash') ? styles.active : ''}`}
+                            title='Reports'
+                        >
+                            <Trash color='#94a3b8' size={20} />
+                            <span className={styles.menuText}>Trash</span>
+                        </Link>
+                    )
+               }
             </div>
         </div>
     </>
