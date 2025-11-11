@@ -1,0 +1,552 @@
+.contentCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+  
+.card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: var(--transition);
+}
+  
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+  
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+  
+.cardTitle {
+    font-size: 0.9rem;
+    color: var(--gray);
+    font-weight: 500;
+}
+  
+.cardIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+  
+.cardIcon.blue {
+    background-color: var(--primary);
+}
+.cardIcon.purple {
+    background-color: var(--appointment);
+}
+.medical {
+    background-color: var(--medical);
+}
+.green {
+    background-color: var(--success);
+}
+.orange {
+    background-color: var(--warning);
+}
+.red {
+    background-color: var(--danger);
+}
+  
+.cardValue {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+  
+.cardFooter {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+  
+.cardFooter i {
+    margin-right: 5px;
+}
+  
+.positive {
+    color: var(--success);
+}
+.negative {
+    color: var(--danger);
+}
+
+.section{
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+  
+.sectionHeader{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    border-bottom: 1px solid var(--gray-light);
+}
+  
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.searchbar {
+    flex: 1;
+    min-width: 250px;
+    max-width: 400px;
+}
+
+.itemsPerPageControl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.itemsPerPageControl label {
+    font-size: 14px;
+    color: var(--gray, #64748b);
+    font-weight: 500;
+}
+
+.itemsPerPageSelect {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-light, #e2e8f0);
+    border-radius: var(--border-radius, 6px);
+    background: white;
+    color: #333;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition, all 0.2s ease);
+    min-width: 80px;
+}
+
+.itemsPerPageSelect:hover {
+    border-color: var(--gray, #cbd5e0);
+}
+
+.itemsPerPageSelect:focus {
+    outline: none;
+    border-color: var(--primary, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb, 59, 130, 246), 0.1);
+}
+
+.itemsPerPageSelect:disabled {
+    background: #f8fafc;
+    color: var(--gray, #94a3b8);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.bulkActionsBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: white;
+}
+
+.selectAllLabel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.selectAllCheckbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.selectedCount {
+    font-size: 0.9rem;
+    color: var(--dark);
+    font-weight: 400;
+}
+
+.recordCount {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.tableResponsive {
+    overflow-x: auto;
+}
+
+.tableContainer {
+    background: white;
+}
+
+.patientTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+  
+.patientTable th {
+    text-align: center;
+    padding: 12px 15px;
+    font-size: 0.8rem;
+    color: var(--gray);
+    font-weight: 500;
+    border-bottom: 1px solid var(--gray-light);
+}
+  
+.patientTable td {
+    padding: 15px;
+    border-bottom: 1px solid var(--gray-light);
+    vertical-align: middle;
+}
+  
+.patientTable tr:last-child td {
+    border-bottom: none;
+}
+
+.emptyState {
+    padding: 60px 20px !important;
+    text-align: center !important;
+    color: var(--gray, #64748b);
+    font-size: 16px;
+    font-style: italic;
+}
+
+.thCheckbox {
+    width: 60px;
+    padding-left: 24px !important;
+}
+
+.thPatient {
+    width: auto;
+}
+
+.thDate {
+    width: auto;
+}
+
+.thReason {
+    width: auto;
+}
+
+.thStatus {
+    width: auto;
+    text-align: right !important;
+    padding-right: 24px !important;
+}
+
+.patientTable tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.tableRow:hover {
+    background-color: #fafafa;
+}
+
+.selectedRow {
+    background-color: #e3f2fd;
+}
+
+.patientTable td {
+    padding: 18px 16px;
+    font-size: 0.9rem;
+    color: var(--dark-light);
+    vertical-align: middle;
+}
+
+.tdCheckbox {
+    width: 60px;
+    padding-left: 24px !important;
+}
+
+.tdCheckbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.tdPatient {
+    padding-right: 16px !important;
+}
+
+.patientInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.patientAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.patientName {
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.patientId {
+  font-size: 0.75rem;
+  color: var(--gray);
+}
+
+.avatarArchived {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.avatarActive {
+    background-color: #e8f5e9;
+    color: #4caf50;
+}
+
+.tdDate {
+    color: var(--dark-light);
+}
+
+.tdDate .icon {
+    color: #9e9e9e;
+    font-size: 13px;
+    margin-right: 8px;
+}
+
+.tdReason {
+    color: var(--dark-light);
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+.statusBadge.statusActive {
+    background-color: #d6f5d7;
+    color: var(--success);
+}
+
+.statusBadge.statusArchived{
+    background-color: #d6e4f5;
+    color: var(--primary);
+}
+.archiveActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.multiActions {
+    display: flex;
+    gap: 12px;
+}
+
+.actionButton {
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+}
+
+.archiveButton {
+    background-color: #fff3e0;
+    color: #ff9800;
+    border: 1px solid #ffb74d;
+}
+
+.archiveButton:hover:not(.disabled) {
+    background-color: #ff9800;
+    color: white;
+}
+
+.restoreButton {
+    background-color: transparent;
+    color: var(--dark-light);
+    border: 1px solid #e0e0e0;
+}
+
+.restoreButton:hover:not(.disabled) {
+    background-color: #fafafa;
+}
+
+.actionButton.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 20px;
+    justify-content: center;
+}
+
+.pageBtn {
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    background-color: white;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--dark-light);
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0 12px;
+}
+
+.pageBtn:hover:not(.pageActive) {
+    background-color: #fafafa;
+}
+
+.pageActive {
+    background-color: #424242;
+    border-color: #424242;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .content {
+        padding: 10px;
+    }
+    
+    .contentHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .actionSection {
+        width: 100%;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .searchWrapper {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .tabsContainer {
+        overflow-x: auto;
+        gap: 4px;
+    }
+
+    .tab {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    .tabCount {
+        font-size: 0.75rem;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 6px;
+    }
+    
+    .statsCard {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .statItem {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--gray-light);
+    }
+    
+    .statItem:last-child {
+        border-bottom: none;
+    }
+    
+    .bulkActionsBar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .archiveActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .multiActions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .actionButton {
+        width: 100%;
+    }
+    
+    .pagination {
+        justify-content: center;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .content {
+        padding: 16px;
+    }
+    
+    .searchWrapper {
+        min-width: 240px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .content {
+        padding: 24px;
+    }
+}

@@ -35,6 +35,7 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
         closeDeleteModal,
         updatePatientData,
         deletePatient,
+        archiveSinglePatient,
         currentOperation
     } = usePatientStore();
 
@@ -53,10 +54,6 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
             setIsInitialLoad(false);
         }
     }, [isInitialLoad, fetchData]);
-
-    // useEffect(() => {
-    //     fetchPatients();
-    // }, [fetchPatients]);
 
     //handle search
     const handleSearch = useCallback((term: string) => {
@@ -113,7 +110,21 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
     //handle archive/delete patient
     const handleDeleteClick = useCallback((patient: PatientFormData) => {
         openDeleteModal(patient);
-    },[ openDeleteModal]);
+    }, [openDeleteModal]);
+
+    //handle archive patient
+    const handleArchiveClick = useCallback(async (patient: PatientFormData) => {
+        if (!patient.id) {
+            console.error('Patient ID is missing');
+            return;
+        }
+
+        try {
+            await archiveSinglePatient(patient.id);
+        } catch (error) {
+            console.error('Error archiving patient:', error);
+        }
+    }, [archiveSinglePatient]);
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !selectedPatient || !selectedPatient.id) {
@@ -202,15 +213,6 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
             header: 'CONTACT',
             render: (patient) => patient.contactNumber || 'N/A'
         },
-        // {
-        //     key: 'status',
-        //     header: 'STATUS',
-        //     render: (patient) => (
-        //         <span className={`${styles.patientStatus} ${patient.isArchive ? styles.archived : styles.active}`}>
-        //             {patient.isArchive ? 'Archived' : 'Active'}
-        //         </span>
-        //     )
-        // },
         {
             key: 'actions',
             header: 'ACTIONS',
@@ -245,6 +247,17 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                         }}
                     >
                         Delete
+                    </button>
+                    <button 
+                        type='button'
+                        className={`${styles.actionBtn} ${styles.archive}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleArchiveClick(patient);
+                        }}
+                        disabled={isProcessing || patient.isArchived}
+                    >
+                        Archive
                     </button>
                 </>
             )
@@ -297,7 +310,7 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                 <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}
-                        placeholder="Search medicines..."
+                        placeholder="Search patients..."
                         disabled={loading}
                         className={styles.searchbar}
                     />
@@ -349,7 +362,7 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                                     totalItems={storePagination.totalItems}
                                     itemsPerPage={storePagination.itemsPerPage}
                                     onPageChange={handlePageChange}
-                                    disabled={loading || isProcessing}
+                    disabled={loading || isProcessing}
                                     className={styles.pagination}
                                 />
                             )

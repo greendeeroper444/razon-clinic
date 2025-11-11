@@ -147,12 +147,12 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     <span className={styles.menuText}>Billings</span>
                 </Link>
                 <Link
-                    to='/admin/users'
-                    className={`${styles.menuItem} ${isActive('/admin/users') ? styles.active : ''}`}
-                    title='Users'
+                    to='/admin/patient-management'
+                    className={`${styles.menuItem} ${isActive('/admin/patient-management') ? styles.active : ''}`}
+                    title='Patients'
                 >
                     <User color='#94a3b8' size={20} />
-                    <span className={styles.menuText}>User Management</span>
+                    <span className={styles.menuText}>Patient Management</span>
                 </Link>
 
                 <Link

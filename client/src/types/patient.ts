@@ -30,7 +30,13 @@ export interface PatientFormData {
         age?: number;
         occupation?: string;
     };
-    isArchive?: boolean;
+    isArchived?: boolean
+    archivedAt?: string
+    archivedBy?: {
+        id: string
+        firstName: string
+        lastName: string
+    }
 }
 
 
@@ -108,7 +114,7 @@ export interface PatientApiResponse {
         age?: number;
         occupation?: string;
     };
-    isArchive?: boolean;
+    isArchived?: boolean;
     _id?: string;
     createdAt?: string;
     updatedAt?: string;
@@ -125,6 +131,14 @@ export interface Patient {
     birthdate: string;
     sex: string;
     address: string;
+    isArchived?: boolean
+    archivedAt?: string
+    archivedBy?: {
+        id: string
+        firstName: string
+        lastName: string
+    }
+    lastActiveAt: string
 }
 
 // export interface PatientFormData {

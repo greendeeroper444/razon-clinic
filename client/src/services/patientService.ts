@@ -93,3 +93,59 @@ export const deletePatient = async (patientId: string) => {
         throw error;
     }
 };
+
+export const archivePatient = async (patientId: string) => {
+    try {
+        const response = await axios.patch(`${API_BASE_URL}/api/patients/archivePatient/${patientId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error archiving user:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+        throw error;
+    }
+};
+
+export const unarchivePatient = async (patientId: string) => {
+    try {
+        const response = await axios.patch(`${API_BASE_URL}/api/patients/unarchivePatient/${patientId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error unarchiving user:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+        throw error;
+    }
+};
+
+export const archiveMultiplePatients = async (patientIds: string[]) => {
+    try {
+        const response = await axios.patch(`${API_BASE_URL}/api/patients/archiveMultiplePatients`, {
+            patientIds
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error archiving multiple patients:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+        throw error;
+    }
+};
+
+export const unarchiveMultiplePatients = async (patientIds: string[]) => {
+    try {
+        const response = await axios.patch(`${API_BASE_URL}/api/patients/unarchiveMultiplePatients`, {
+            patientIds
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error unarchiving multiple patients:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+        throw error;
+    }
+};

@@ -389,7 +389,17 @@
 .cancel:hover {
     background-color: #fecaca;
 }
-  
+
+.archive {
+    background-color: #d1fae5;
+    color: var(--success);
+    margin-left: 8px;
+}
+.archive:hover {
+    background-color: #a7f3d0;
+}
+
+
 .success {
     background-color: #d1fae5;
     color: var(--success);
@@ -397,7 +407,8 @@
 .success:hover {
     background-color: #a7f3d0;
 }
-  .btnBack {
+
+.btnBack {
     background-color: var(--gray-light);
     color: var(--dark);
     border: none;

@@ -278,39 +278,70 @@ export interface BillingState {
 export interface PatientState {
     //state
     patients: PatientFormData[];
-    pagination: Pagination | null;
-    loading: boolean;
-    fetchLoading: boolean;
-    submitLoading: boolean;
-    statusLoading: boolean;
-    error: string | null;
-    isProcessing: boolean;
-    currentOperation: OperationType | null;
-
-    //modal state
     selectedPatient: (PatientFormData & { id?: string }) | null;
-    isModalOpen: boolean;
-    isDeleteModalOpen: boolean;
-    deletePatientData: { id: string, itemName: string, itemType: string } | null;
-
-    currentPatient: PatientResponse | null;
-
-    //summary stats state
+    pagination: Pagination | null;
     summaryStats: {
         total: number;
         active: number;
         archived: number;
         thisMonth: number;
     };
+    
+    selectedPatientIds: string[] | any;
+    searchQuery: string;
+    currentPage: number;
+    itemsPerPage: number;
+    loading: boolean;
+    fetchLoading: boolean;
+    submitLoading: boolean;
+    statusLoading: boolean;
+    isProcessing: boolean;
+    activeTab: 'all' | 'active' | 'archive';
+    currentOperation: OperationType | null;
+    error: string | null;
 
-    //actions
+    currentPatient: PatientResponse | null;
+
+    //modal state
+    isModalOpen: boolean;
+    isDeleteModalOpen: boolean;
+    deletePatientData: { id: string, itemName: string, itemType: string } | null;
+
+    //fetch actions
     fetchPatients: (params?: FetchParams) => Promise<void>;
     fetchSummaryStats: () => Promise<void>;
+    fetchPatientById: (patientId: string) => Promise<void>;
+    
+    //CRUD actions
     addPatient: (data: PatientFormData) => Promise<void>;
     updatePatientData: (id: string, data: PatientFormData) => Promise<void>;
     deletePatient: (id: string) => Promise<void>;
-    fetchPatientById: (patientId: string) => Promise<void>;
-    clearCurrentPatient: () => void;
+    
+    //navigation actions
+    setSearchQuery: (query: string) => void;
+    setCurrentPage: (page: number) => void;
+    setItemsPerPage: (items: number) => void;
+    setActiveTab: (tab: 'all' | 'active' | 'archive') => void;
+    
+    //selection actions
+    togglePatientSelection: (patientId: string) => void;
+    toggleSelectAll: () => void;
+    clearSelection: () => void;
+    
+    //archive actions
+    archiveSinglePatient: (patientId: string) => Promise<void>;
+    unarchiveSinglePatient: (patientId: string) => Promise<void>;
+    archiveSelectedPatients: () => Promise<void>;
+    unarchiveSelectedPatients: () => Promise<void>;
+    
+    //getter actions
+    getFilteredPatients: () => PatientFormData[];
+    getStats: () => {
+        totalPatients: number;
+        activePatients: number;
+        archivedPatients: number;
+        selected: number;
+    };
 
     //modal actions
     openAddModal: () => void;
@@ -322,6 +353,7 @@ export interface PatientState {
     //utility actions
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
+    clearCurrentPatient: () => void;
 }
 
 
