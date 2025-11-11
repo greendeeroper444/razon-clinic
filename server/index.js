@@ -9,7 +9,7 @@ const { connectDB } = require('@config/database');
 const setupMiddleware = require('@middlewares/middleware');
 const setupRoutes = require('@routes');
 const errorHandler = require('@middlewares/errorHandler.middleware');
-const { startArchiveJob } = require('@jobs/archiveInActiveUsers.job');
+const { startArchiveJob } = require('@jobs/archiveInActivePatients.job');
 
 
 //initialize express app
