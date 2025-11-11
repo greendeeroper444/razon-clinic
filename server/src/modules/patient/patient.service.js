@@ -1,5 +1,7 @@
 const Patient = require("./patient.model");
 const mongoose = require('mongoose');
+const moment = require('moment-timezone');
+const { ApiError } = require('@utils/errors');
 
 class PatientService {
 
@@ -52,10 +54,18 @@ class PatientService {
             fromDate,
             toDate,
             sortBy = 'createdAt', 
-            sortOrder = 'desc' 
+            sortOrder = 'desc',
+            isArchived
         } = queryParams;
 
-        const filter = { isArchive: false };
+        const filter = {};
+
+        if (isArchived !== undefined && isArchived !== null && isArchived !== '') {
+            const archivedValue = isArchived === 'true' || isArchived === true;
+            filter.isArchived = archivedValue;
+        } else {
+            filter.isArchived = false;
+        }
 
         if (fromDate || toDate) {
             filter.createdAt = {};
@@ -69,12 +79,7 @@ class PatientService {
                 { lastName: { $regex: search, $options: 'i' } },
                 { middleName: { $regex: search, $options: 'i' } },
                 { patientNumber: { $regex: search, $options: 'i' } },
-                // { email: { $regex: search, $options: 'i' } },
                 { contactNumber: { $regex: search, $options: 'i' } },
-                // { address: { $regex: search, $options: 'i' } },
-                // { religion: { $regex: search, $options: 'i' } },
-                // { 'motherInfo.name': { $regex: search, $options: 'i' } },
-                // { 'fatherInfo.name': { $regex: search, $options: 'i' } }
             ];
         }
 
@@ -114,10 +119,10 @@ class PatientService {
             const totalPages = Math.ceil(totalItems / itemsPerPage);
             
             patients = await Patient.find(filter)
+                .populate('archivedBy', 'firstName lastName')
                 .sort(sort)
                 .skip(skip)
                 .limit(itemsPerPage);
-                // .lean();
 
             const startIndex = totalItems > 0 ? skip + 1 : 0;
             const endIndex = Math.min(skip + itemsPerPage, totalItems);
@@ -139,8 +144,8 @@ class PatientService {
             };
         } else {
             patients = await Patient.find(filter)
+                .populate('archivedBy', 'firstName lastName')
                 .sort(sort);
-                // .lean();
 
             pagination = {
                 currentPage: 1,
@@ -248,6 +253,179 @@ class PatientService {
 
     async countPatients(filter = {}) {
         return await Patient.countDocuments(filter);
+    }
+
+
+    async archivePatient(patientId, archivedByAdminId) {
+        try {
+            const patient = await Patient.findOne({ _id: patientId });
+            
+            if (!patient) {
+                throw new ApiError('Patient not found', 404);
+            }
+            
+            if (patient.isArchived) {
+                throw new ApiError('Patient is already archived', 400);
+            }
+            
+            const now = moment().tz('Asia/Singapore').toDate();
+            
+            patient.isArchived = true;
+            patient.archivedAt = now;
+            patient.archivedBy = archivedByAdminId;
+            
+            await patient.save();
+            
+            return {
+                message: 'Patient archived successfully',
+                patient: {
+                    id: patient._id,
+                    firstName: patient.firstName,
+                    lastName: patient.lastName,
+                    patientNumber: patient.patientNumber,
+                    isArchived: patient.isArchived,
+                    archivedAt: patient.archivedAt
+                }
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async unarchivePatient(patientId) {
+        try {
+            const patient = await Patient.findOne({ _id: patientId });
+            
+            if (!patient) {
+                throw new ApiError('Patient not found', 404);
+            }
+            
+            if (!patient.isArchived) {
+                throw new ApiError('Patient is not archived', 400);
+            }
+            
+            const now = moment().tz('Asia/Singapore').toDate();
+            
+            patient.isArchived = false;
+            patient.archivedAt = null;
+            patient.archivedBy = null;
+            patient.lastActiveAt = now; //reset last active date
+            
+            await patient.save();
+            
+            return {
+                message: 'Patient unarchived successfully',
+                patient: {
+                    id: patient._id,
+                    firstName: patient.firstName,
+                    lastName: patient.lastName,
+                    patientNumber: patient.patientNumber,
+                    isArchived: patient.isArchived,
+                    lastActiveAt: patient.lastActiveAt
+                }
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async archiveMultiplePatients(patientIds, archivedByAdminId) {
+        try {
+            if (!patientIds || !Array.isArray(patientIds) || patientIds.length === 0) {
+                throw new ApiError('Patient IDs array is required', 400);
+            }
+
+            const patients = await Patient.find({ 
+                _id: { $in: patientIds },
+                isArchived: false 
+            });
+
+            if (patients.length === 0) {
+                throw new ApiError('No valid patients found to archive', 404);
+            }
+
+            const now = moment().tz('Asia/Singapore').toDate();
+
+            const result = await Patient.updateMany(
+                { 
+                    _id: { $in: patients.map(u => u._id) },
+                    isArchived: false
+                },
+                {
+                    $set: {
+                        isArchived: true,
+                        archivedAt: now,
+                        archivedBy: archivedByAdminId
+                    }
+                }
+            );
+
+            return {
+                message: `${result.modifiedCount} patient(s) archived successfully`,
+                archivedCount: result.modifiedCount,
+                requestedCount: patientIds.length,
+                skippedCount: patientIds.length - result.modifiedCount
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async unarchiveMultiplePatients(patientIds) {
+        try {
+            if (!patientIds || !Array.isArray(patientIds) || patientIds.length === 0) {
+                throw new ApiError('Patient IDs array is required', 400);
+            }
+
+            const patients = await Patient.find({ 
+                _id: { $in: patientIds },
+                isArchived: true 
+            });
+
+            if (patients.length === 0) {
+                throw new ApiError('No valid archived patients found to unarchive', 404);
+            }
+
+            const now = moment().tz('Asia/Singapore').toDate();
+
+            const result = await Patient.updateMany(
+                { 
+                    _id: { $in: patients.map(u => u._id) },
+                    isArchived: true
+                },
+                {
+                    $set: {
+                        isArchived: false,
+                        lastActiveAt: now
+                    },
+                    $unset: {
+                        archivedAt: "",
+                        archivedBy: ""
+                    }
+                }
+            );
+
+            return {
+                message: `${result.modifiedCount} patient(s) unarchived successfully`,
+                unarchivedCount: result.modifiedCount,
+                requestedCount: patientIds.length,
+                skippedCount: patientIds.length - result.modifiedCount
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async updateLastActive(patientId) {
+        try {
+            const now = moment().tz('Asia/Singapore').toDate();
+            
+            await Patient.findByIdAndUpdate(patientId, {
+                lastActiveAt: now
+            });
+        } catch (error) {
+            throw error;
+        }
     }
 }
 

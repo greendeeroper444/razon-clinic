@@ -147,44 +147,6 @@ class UserService extends BaseService {
         }
     }
 
-
-    async archiveUser(userId, archivedByUserId) {
-        try {
-            const user = await User.findOne({ _id: userId, role: 'User' });
-            
-            if (!user) {
-                throw new ApiError('User not found', 404);
-            }
-            
-            if (user.isArchived) {
-                throw new ApiError('User is already archived', 400);
-            }
-            
-            const now = moment().tz('Asia/Singapore').toDate();
-            
-            user.isArchived = true;
-            user.archivedAt = now;
-            user.archivedBy = archivedByUserId;
-            
-            await user.save();
-            
-            return {
-                message: 'User archived successfully',
-                user: {
-                    id: user._id,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    userNumber: user.userNumber,
-                    isArchived: user.isArchived,
-                    archivedAt: user.archivedAt
-                }
-            };
-        } catch (error) {
-            throw error;
-        }
-    }
-
-
     async getUserById(userId) {
         try {
             const user = await User.findOne({ _id: userId, role: 'User' }).lean();

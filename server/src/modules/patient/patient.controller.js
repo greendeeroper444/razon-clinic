@@ -75,6 +75,73 @@ class PatientController {
             next(error);
         }
     }
+
+
+    async archivePatient(req, res, next) {
+        try {
+            const { patientId } = req.params;
+            const archivedByAdminId = req.user.id; 
+            
+            const result = await PatientService.archivePatient(patientId, archivedByAdminId);
+            
+            res.status(200).json({
+                success: true,
+                message: result.message,
+                data: result
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async unarchivePatient(req, res, next) {
+        try {
+            const { patientId } = req.params;
+            
+            const result = await PatientService.unarchivePatient(patientId);
+            
+            res.status(200).json({
+                success: true,
+                message: result.message,
+                data: result
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async archiveMultiplePatients(req, res, next) {
+        try {
+            const { patientIds } = req.body;
+            const archivedByAdminId = req.user.id;
+            
+            const result = await PatientService.archiveMultiplePatients(patientIds, archivedByAdminId);
+            
+            res.status(200).json({
+                success: true,
+                message: result.message,
+                data: result
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async unarchiveMultiplePatients(req, res, next) {
+        try {
+            const { patientIds } = req.body;
+            
+            const result = await PatientService.unarchiveMultiplePatients(patientIds);
+            
+            res.status(200).json({
+                success: true,
+                message: result.message,
+                data: result
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = new PatientController();

@@ -91,9 +91,22 @@ const PatientSchema = new mongoose.Schema(
             maxlength: 30,
             trim: true
         },
-        isArchive: {
+        isArchived: {
             type: Boolean,
             default: false
+        },
+        archivedAt: {
+            type: Date,
+            default: null
+        },
+        archivedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Admin',
+            default: null
+        },
+        lastActiveAt: {
+            type: Date,
+            default: Date.now
         }
     },
     {

@@ -47,4 +47,10 @@ router.delete(
     patientController.deletePatient
 );
 
+
+router.patch('/archivePatient/:patientId', authenticate, patientController.archivePatient);
+router.patch('/unarchivePatient/:patientId', authenticate, patientController.unarchivePatient);
+router.patch('/archiveMultiplePatients', authenticate, patientController.archiveMultiplePatients);
+router.patch('/unarchiveMultiplePatients', authenticate, patientController.unarchiveMultiplePatients);
+
 module.exports = router;
