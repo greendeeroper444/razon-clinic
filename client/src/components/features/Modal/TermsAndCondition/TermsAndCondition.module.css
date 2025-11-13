@@ -1,0 +1,381 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modalContainer {
+    background-color: white;
+    border-radius: 16px;
+    max-width: 1000px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modalHeader {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 2rem;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    position: relative;
+}
+
+.closeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+}
+
+.closeButton:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.modalTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+}
+
+.modalSubtitle {
+    font-size: 1rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.modalContent {
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modalContent::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modalContent::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.modalContent::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.section {
+    margin-bottom: 2rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1f2937;
+}
+
+.sectionText {
+    color: #4b5563;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.subsection {
+    margin-bottom: 1.5rem;
+}
+
+.subsectionTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #374151;
+}
+
+.featureCard {
+    background: linear-gradient(135deg, #f0f9ff 0%, white 100%);
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.featureCard:hover {
+    border-color: #3b82f6;
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.featureIcon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #dbeafe 0%, #3b82f6 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.featureContent h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.featureContent ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #4b5563;
+    font-size: 0.9rem;
+}
+
+.featureContent ul li {
+    margin-bottom: 0.25rem;
+}
+
+.accessCard {
+    background: linear-gradient(135deg, #fef3c7 0%, white 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    border-left: 4px solid #f59e0b;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.accessCard:hover {
+    border-left-color: #d97706;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+    transform: translateX(4px);
+}
+
+.accessHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.accessTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1f2937;
+}
+
+.accessText {
+    color: #4b5563;
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.automationGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.automationCard {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.automationCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #10b981, #3b82f6);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.automationCard:hover::before {
+    transform: translateX(0);
+}
+
+.automationCard:hover {
+    border-color: #3b82f6;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+}
+
+.automationIcon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.automationCard:hover .automationIcon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.automationCard h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.automationCard p {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.privacyCard {
+    background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%);
+    border: 2px solid #3b82f6;
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+}
+
+.privacyIcon {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: white;
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modalFooter {
+    border-top: 1px solid #e5e7eb;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    background: #f9fafb;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.footerText {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.lastUpdated {
+    color: #9ca3af;
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .modalContainer {
+        max-height: 95vh;
+    }
+
+    .modalHeader {
+        padding: 1.5rem;
+    }
+
+    .modalTitle {
+        font-size: 1.5rem;
+    }
+
+    .modalContent {
+        padding: 1.5rem;
+    }
+
+    .featureCard {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .automationGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .modalOverlay {
+        padding: 0.5rem;
+    }
+
+    .modalHeader {
+        padding: 1rem;
+    }
+
+    .modalTitle {
+        font-size: 1.25rem;
+    }
+
+    .modalContent {
+        padding: 1rem;
+    }
+
+    .closeButton {
+        width: 36px;
+        height: 36px;
+    }
+}

@@ -1,9 +1,9 @@
-import { FormEvent, useEffect } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import styles from './SignupPage.module.css'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { SectionFeatures, Footer, Input, Select, TextArea } from '../../../components'
+import { SectionFeatures, Footer, Input, Select, TextArea, TermsAndCondition } from '../../../components'
 import { useAuthenticationStore } from '../../../stores'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
 
@@ -39,7 +39,8 @@ const SignupPage = () => {
         loadFormData,
         clearSavedFormData,
         initializeAuth
-    } = useAuthenticationStore()
+    } = useAuthenticationStore();
+    const [showTermsModal, setShowTermsModal] = useState(false);
 
     useEffect(() => {
         initializeAuth()
@@ -344,7 +345,17 @@ const SignupPage = () => {
                                     onChange={handleChange}
                                 />
                                 <label htmlFor='agreeToTerms'>
-                                    I agree to the <Link to='/terms-and-conditions' className={styles.termsLink}>Terms and Conditions</Link>
+                                    I agree to the{' '}
+                                    <button
+                                        type='button'
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setShowTermsModal(true);
+                                        }}
+                                        className={styles.termsLink}
+                                    >
+                                        Terms and Conditions
+                                    </button>
                                 </label>
                             </div>
                         </div>
@@ -456,6 +467,11 @@ const SignupPage = () => {
                 </div>
             </div>
         </section>
+
+        <TermsAndCondition
+            isOpen={showTermsModal} 
+            onClose={() => setShowTermsModal(false)} 
+        />
 
         <SectionFeatures />
         <Footer />

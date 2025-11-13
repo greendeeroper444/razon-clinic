@@ -501,7 +501,13 @@
     display: inline-block;
 }
 
-
+.termsLink {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--primary);
+}
 
 
 .optionalFields {
@@ -558,7 +564,7 @@
     
     .stepItem.active {
         background-color: #eff6ff;
-        border-color: #3b82f6;
+        border-color: var(--primary);
     }
     
     .stepItem.completed {
