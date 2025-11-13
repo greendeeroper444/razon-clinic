@@ -221,18 +221,18 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <div className={styles.formRow}>
             <Input
                 type='number'
-                label='Height (cm)'
+                label='Height (cm) (Optional)'
                 name='height'
-                placeholder="Height in cm"
+                placeholder="Height in cm (optional)"
                 value={formData?.height || ''}
                 onChange={onChange}
             />
 
             <Input
                 type='number'
-                label='Weight (kg)'
+                label='Weight (kg) (Optional)'
                 name='weight'
-                placeholder="Weight in kg"
+                placeholder="Weight in kg (optional)"
                 value={formData?.weight || ''}
                 onChange={onChange}
             />

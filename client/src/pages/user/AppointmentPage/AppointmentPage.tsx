@@ -7,6 +7,7 @@ import { AppointmentFormData, AppointmentResponse, FormDataType, TableColumn } f
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components'
 import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore } from '../../../stores'
+import { toast } from 'sonner'
 
 const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const navigate = useNavigate();
@@ -199,9 +200,19 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                     </button>
                     <button 
                         type='button' 
-                        className={`${styles.actionBtn} ${styles.update}`}
+                        className={`${styles.actionBtn} ${styles.update} ${
+                            ['Scheduled', 'Cancelled', 'Completed'].includes(appointment.status) 
+                                ? styles.disabled 
+                                : ''
+                        }`}
                         onClick={(e) => {
                             e.stopPropagation();
+                            
+                            if (['Scheduled', 'Cancelled', 'Completed'].includes(appointment.status)) {
+                                toast.info(`Cannot update appointments with "${appointment.status}" status`);
+                                return;
+                            }
+                            
                             openUpdateModal(appointment);
                         }}
                     >

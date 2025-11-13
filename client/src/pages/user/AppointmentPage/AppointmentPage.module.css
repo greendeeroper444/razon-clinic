@@ -236,6 +236,10 @@
 .actionBtn.update:hover{
     background-color: #fee6ca;
 }
+.actionBtn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 .actionBtn.delete {
     background-color: #fee2e2;
     color: var(--danger);

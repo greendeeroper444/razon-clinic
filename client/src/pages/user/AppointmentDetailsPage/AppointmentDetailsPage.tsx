@@ -196,13 +196,25 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <Ruler /> Height:
                             </span>
-                            <span className={styles.tableValue}>{currentAppointment.height} cm</span>
+                            {
+                                currentAppointment.height ? (
+                                    <span className={styles.tableValue}>{currentAppointment.height} cm</span>
+                                ) : (
+                                    <span className={styles.tableValue}>N/A</span>
+                                )
+                            }
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <Weight /> Weight:
                             </span>
-                            <span className={styles.tableValue}>{currentAppointment.weight} kg</span>
+                            {
+                                currentAppointment.weight  ? (
+                                    <span className={styles.tableValue}>{currentAppointment.weight} kg</span>
+                                ) : (
+                                     <span className={styles.tableValue}>N/A</span>
+                                )
+                            }
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>

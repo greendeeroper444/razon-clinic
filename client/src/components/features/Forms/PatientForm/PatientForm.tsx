@@ -49,7 +49,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 type='email'
                 label='Email Address (Optional)'
                 name='email'
-                placeholder="Email Address (Optional)"
+                placeholder="Email Address (optional)"
                 value={formData?.email || ''}
                 onChange={onChange}
             />
