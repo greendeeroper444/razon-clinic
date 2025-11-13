@@ -6,6 +6,7 @@ import { AppointmentFormData, AppointmentFormProps } from '../../../../types'
 import Input from '../../../ui/Input/Input'
 import Select, { SelectOption } from '../../../ui/Select/Select'
 import TextArea from '../../../ui/TextArea/TextArea'
+import { useAppointmentStore } from '../../../../stores'
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({
     formData,
@@ -14,6 +15,13 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 }) => {
     const [bookedSlots, setBookedSlots] = useState<{date: string, time: string, time12Hour?: string}[]>([]);
     const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+
+    const validationErrors = useAppointmentStore((state) => state.validationErrors);
+
+    const getFieldError = (fieldName: string): string | undefined => {
+        const errors = validationErrors[fieldName];
+        return errors && errors.length > 0 ? errors[0] : undefined;
+    };
 
     //fetch existing appointments to check for conflicts
     useEffect(() => {
@@ -60,6 +68,10 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     const getReasonError = () => {
         const reason = formData?.reasonForVisit || '';
         
+        // Check for API validation error first
+        const apiError = getFieldError('reasonForVisit');
+        if (apiError) return apiError;
+        
         if (reason.length > 0 && reason.length < 5) {
             return 'Reason must be at least 5 characters long.';
         }
@@ -96,6 +108,10 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     };
 
     const getTimeSelectError = () => {
+        //check for api validation error first
+        const apiError = getFieldError('preferredTime');
+        if (apiError) return apiError;
+        
         if (formData?.preferredDate && availableTimes.length === 0) {
             return 'No available times for this date. Please select another date.';
         }
@@ -161,6 +177,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             placeholder="Patient's first name"
             value={formData?.firstName || ''}
             onChange={onChange}
+            error={getFieldError('firstName')}
         />
 
         <br />
@@ -172,6 +189,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             placeholder="Patient's last name"
             value={formData?.lastName || ''}
             onChange={onChange}
+            error={getFieldError('lastName')}
         />
 
         <br />
@@ -183,6 +201,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             placeholder="Patient's middle name (optional)"
             value={formData?.middleName || ''}
             onChange={onChange}
+            error={getFieldError('middleName')}
         />
 
         <br />
@@ -200,6 +219,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     const target = e.target as HTMLInputElement;
                     target.type = 'date';
                 }}
+                error={getFieldError('birthdate')}
             />
 
             <Select
@@ -215,6 +235,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     { value: 'Female', label: 'Female' },
                     { value: 'Other', label: 'Other' }
                 ]}
+                error={getFieldError('sex')}
             />
         </div>
 
@@ -226,6 +247,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 placeholder="Height in cm (optional)"
                 value={formData?.height || ''}
                 onChange={onChange}
+                error={getFieldError('height')}
             />
 
             <Input
@@ -235,6 +257,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 placeholder="Weight in kg (optional)"
                 value={formData?.weight || ''}
                 onChange={onChange}
+                error={getFieldError('weight')}
             />
         </div>
 
@@ -250,6 +273,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     placeholder="Mother's name"
                     value={formData?.motherName || ''}
                     onChange={onChange}
+                    error={getFieldError('motherName')}
                 />
 
                 <Input
@@ -259,6 +283,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     placeholder="Mother's age"
                     value={formData?.motherAge || ''}
                     onChange={onChange}
+                    error={getFieldError('motherAge')}
                 />
             </div>
 
@@ -269,6 +294,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 placeholder="Mother's Occupation"
                 value={formData?.motherOccupation || ''}
                 onChange={onChange}
+                error={getFieldError('motherOccupation')}
             />
         </div>
 
@@ -286,6 +312,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     placeholder="Father's Name"
                     value={formData?.fatherName || ''}
                     onChange={onChange}
+                    error={getFieldError('fatherName')}
                 />
                 <Input
                     type='number'
@@ -294,6 +321,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     placeholder="Father's Age"
                     value={formData?.fatherAge || ''}
                     onChange={onChange}
+                    error={getFieldError('fatherAge')}
                 />
             </div>
 
@@ -304,6 +332,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 placeholder="Father's Occupation"
                 value={formData?.fatherOccupation || ''}
                 onChange={onChange}
+                error={getFieldError('fatherOccupation')}
             />
         </div>
 
@@ -316,6 +345,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             placeholder="Contact Number"
             value={formData?.contactNumber || ''}
             onChange={onChange}
+            error={getFieldError('contactNumber')}
         />
 
         <br />
@@ -328,6 +358,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             onChange={onChange}
             rows={3}
             resize='vertical'
+            error={getFieldError('address')}
         />
         
         <br />
@@ -339,6 +370,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             placeholder="Religion"
             value={formData?.religion || ''}
             onChange={onChange}
+            error={getFieldError('religion')}
         />
 
         <br />
@@ -355,12 +387,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 value={formData?.preferredDate || ''}
                 onChange={handleDateChange}
                 min={new Date().toISOString().split('T')[0]}
-                required
                 disabled={isLoading}
                 error={
-                    formData?.preferredDate && !isDateAvailable(formData.preferredDate)
+                    getFieldError('preferredDate') ||
+                    (formData?.preferredDate && !isDateAvailable(formData.preferredDate)
                         ? 'This date is fully booked. Please select another date.'
-                        : undefined
+                        : undefined)
                 }
             />
 
@@ -373,7 +405,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 value={formData?.preferredTime || ''}
                 onChange={handleTimeChange}
                 options={generateTimeOptions()}
-                required
                 disabled={isLoading || !formData?.preferredDate}
                 error={getTimeSelectError()}
             />
@@ -390,7 +421,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             minLength={5}
             maxLength={200}
             placeholder="Please describe the reason for your visit (5-200 characters)"
-            required
             disabled={isLoading}
             showCharCount={true}
             error={getReasonError()}

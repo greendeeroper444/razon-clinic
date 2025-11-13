@@ -19,7 +19,6 @@ function App() {
   
   //initialize authentication on app load
   const initializeAuth = useAuthenticationStore(state => state.initializeAuth);
-  const addAppointment = useAppointmentStore(state => state.addAppointment);
   const addPatient = usePatientStore(state => state.addPatient);
   const addInventoryItem = useInventoryStore(state => state.addInventoryItem);
   const addMedicalRecord = useMedicalRecordStore(state => state.addMedicalRecord);
@@ -70,13 +69,6 @@ function App() {
     
     //handle the data based on modal type
     switch (modalType) {
-      case 'appointment':
-        try {
-          await addAppointment(formData as AppointmentFormData);
-        } catch (error) {
-          console.error('Error adding appointment:', error);
-        }
-        break;
       case 'patient':
         await addPatient(formData as PatientFormData);
         break;
@@ -100,7 +92,6 @@ function App() {
       default:
         break;
     }
-    closeModal();
   }
   
   //handle sidebar toggle

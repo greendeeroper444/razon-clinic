@@ -226,7 +226,7 @@ const Modal: React.FC<ModalProps> = ({
                 }));
             }
         }
-        handleClose();
+        // handleClose();
     };
 
     

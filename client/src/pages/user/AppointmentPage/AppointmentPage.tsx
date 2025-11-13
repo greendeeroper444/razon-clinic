@@ -13,6 +13,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     //zustand store selectors
     const {
@@ -26,6 +27,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         isDeleteModalOpen,
         deleteAppointmentData,
         fetchMyAppointments,
+        addAppointment,
         updateAppointmentData,
         deleteAppointment,
         pagination: storePagination,
@@ -67,22 +69,42 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
 
-    const handleOpenModal = useCallback(() => {
-        openModalWithRefresh({
-            modalType: 'appointment',
-            openModal,
-            onRefresh: () => fetchData(
-                storePagination?.currentPage || 1, 
-                storePagination?.itemsPerPage || 10, 
-                searchTerm
-            ),
-        })
-    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+   const handleOpenModal = useCallback(() => {
+        setIsAddModalOpen(true);
+    }, []);
 
+    const handleCloseAddModal = useCallback(() => {
+        setIsAddModalOpen(false);
+    }, []);
+    
     const handleViewClick = (appointment: AppointmentResponse) => {
         navigate(`/user/appointments/details/${appointment.id}`)
     }
 
+    const handleSubmitAdd = useCallback(async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string') {
+            console.error('Invalid data for adding appointment')
+            return
+        }
+
+        const appointmentData = data as AppointmentFormData;
+
+        try {
+            await addAppointment(appointmentData)
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+                handleCloseAddModal();
+            }, 600);
+        } catch (error) {
+            console.error('Error adding appointment:', error);
+        }
+    }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, handleCloseAddModal])
+    
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !selectedAppointment?.id) {
             console.error('Invalid data or missing appointment ID')
@@ -324,6 +346,19 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             }
         </div>
         
+        {/* add appointment modal */}
+        {
+            isAddModalOpen && (
+                <Modal
+                    isOpen={isAddModalOpen}
+                    onClose={handleCloseAddModal}
+                    modalType="appointment"
+                    onSubmit={handleSubmitAdd}
+                    isProcessing={submitLoading}
+                />
+            )
+        }
+
         {/* update appointment modal */}
         {
             isModalOpen && (

@@ -2,16 +2,17 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styles from './AppointmentPage.module.css'
 import { Plus } from 'lucide-react'
 import { OpenModalProps } from '../../../hooks/hook'
-import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getStatusClass, getLoadingText } from '../../../utils'
+import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, getStatusClass, getLoadingText } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType, TableColumn } from '../../../types'
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components'
 import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore } from '../../../stores'
 
-const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
+const AppointmentPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     //zustand store selectors
     const {
@@ -25,6 +26,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         isDeleteModalOpen,
         deleteAppointmentData,
         fetchAppointments,
+        addAppointment,
         updateAppointmentData,
         deleteAppointment,
         pagination: storePagination,
@@ -67,20 +69,40 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
     }, [fetchData, searchTerm]);
 
     const handleOpenModal = useCallback(() => {
-        openModalWithRefresh({
-            modalType: 'appointment',
-            openModal,
-            onRefresh: () => fetchData(
-                storePagination?.currentPage || 1, 
-                storePagination?.itemsPerPage || 10, 
-                searchTerm
-            ),
-        })
-    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+        setIsAddModalOpen(true);
+    }, []);
+
+    const handleCloseAddModal = useCallback(() => {
+        setIsAddModalOpen(false);
+    }, []);
 
     const handleViewClick = (appointment: AppointmentResponse) => {
         navigate(`/admin/appointments/details/${appointment.id}`)
     }
+
+    const handleSubmitAdd = useCallback(async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string') {
+            console.error('Invalid data for adding appointment')
+            return
+        }
+
+        const appointmentData = data as AppointmentFormData;
+
+        try {
+            await addAppointment(appointmentData)
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+                handleCloseAddModal();
+            }, 600);
+        } catch (error) {
+            console.error('Error adding appointment:', error);
+        }
+    }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, handleCloseAddModal])
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !selectedAppointment?.id) {
@@ -313,6 +335,19 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             }
         </div>
         
+        {/* add appointment modal */}
+        {
+            isAddModalOpen && (
+                <Modal
+                    isOpen={isAddModalOpen}
+                    onClose={handleCloseAddModal}
+                    modalType="appointment"
+                    onSubmit={handleSubmitAdd}
+                    isProcessing={submitLoading}
+                />
+            )
+        }
+
         {/* update appointment modal */}
         {
             isModalOpen && (
