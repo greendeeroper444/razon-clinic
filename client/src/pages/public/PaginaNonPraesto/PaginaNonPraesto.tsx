@@ -10,9 +10,9 @@ const PaginaNonPraesto: React.FC = () => {
     useEffect(() => {
         const deadlineTimestamp = localStorage.getItem('app_deadline_timestamp');
         if (deadlineTimestamp) {
-        const deadlineDate = new Date(parseInt(deadlineTimestamp, 10));
-        setTimeExpired(deadlineDate.toLocaleTimeString());
-        setDeadline(deadlineDate.toLocaleDateString());
+            const deadlineDate = new Date(parseInt(deadlineTimestamp, 10));
+            setTimeExpired(deadlineDate.toLocaleTimeString());
+            setDeadline(deadlineDate.toLocaleDateString());
         }
     }, []);
 
