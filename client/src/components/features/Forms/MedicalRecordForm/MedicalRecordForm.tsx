@@ -327,7 +327,8 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 value={formData.bloodType || ''}
                 onChange={onChange}
                 options={[
-                    { value: 'A', label: 'A' },
+                    { value: 'A+', label: 'A+' },
+                    { value: 'A-', label: 'A-' },
                     { value: 'B+', label: 'B+' },
                     { value: 'B-', label: 'B-' },
                     { value: 'AB+', label: 'AB+' },
@@ -335,6 +336,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     { value: 'O+', label: 'O+' },
                     { value: 'O-', label: 'O-' }
                 ]}
+
             />
 
             <Input
