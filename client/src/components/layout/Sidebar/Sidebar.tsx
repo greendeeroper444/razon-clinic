@@ -9,7 +9,7 @@ import { useAuthenticationStore } from '../../../stores/authenticationStore';
 const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
     const location = useLocation();
     const [isMobile, setIsMobile] = useState<boolean>(false);
-    const { user } = useAuthenticationStore()
+    const { user } = useAuthenticationStore();
 
     useEffect(() => {
         const checkScreenSize = () => {
@@ -146,14 +146,18 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     <CreditCard color='#94a3b8' size={20} />
                     <span className={styles.menuText}>Billings</span>
                 </Link>
-                <Link
-                    to='/admin/patient-management'
-                    className={`${styles.menuItem} ${isActive('/admin/patient-management') ? styles.active : ''}`}
-                    title='Patients'
-                >
-                    <User color='#94a3b8' size={20} />
-                    <span className={styles.menuText}>Patient Management</span>
-                </Link>
+                {
+                    user && user.role === 'Doctor' && (
+                        <Link
+                            to='/admin/patient-management'
+                            className={`${styles.menuItem} ${isActive('/admin/patient-management') ? styles.active : ''}`}
+                            title='Patients'
+                        >
+                            <User color='#94a3b8' size={20} />
+                            <span className={styles.menuText}>Patient Management</span>
+                        </Link>
+                    )
+                }
 
                 <Link
                     to='/admin/reports'

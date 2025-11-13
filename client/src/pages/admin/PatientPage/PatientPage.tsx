@@ -6,7 +6,7 @@ import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Tab
 import { FormDataType, PatientDisplayData, PatientFormData, TableColumn } from '../../../types';
 import { calculateAge2, generateInitials, getLoadingText, openModalWithRefresh } from '../../../utils';
 import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
-import { usePatientStore } from '../../../stores';
+import { useAuthenticationStore, usePatientStore } from '../../../stores';
 import { useNavigate } from 'react-router-dom';
 
 const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
@@ -38,6 +38,7 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
         archiveSinglePatient,
         currentOperation
     } = usePatientStore();
+    const { user } = useAuthenticationStore();
 
     //calculate summary stats using useMemo for performance
     const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
@@ -248,17 +249,21 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                     >
                         Delete
                     </button>
-                    <button 
-                        type='button'
-                        className={`${styles.actionBtn} ${styles.archive}`}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleArchiveClick(patient);
-                        }}
-                        disabled={isProcessing || patient.isArchived}
-                    >
-                        Archive
-                    </button>
+                    {
+                        user && user.role === 'Doctor' && (
+                            <button 
+                                type='button'
+                                className={`${styles.actionBtn} ${styles.archive}`}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleArchiveClick(patient);
+                                }}
+                                disabled={isProcessing || patient.isArchived}
+                            >
+                                Archive
+                            </button>
+                        )
+                    }
                 </>
             )
         }

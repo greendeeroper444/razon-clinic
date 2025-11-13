@@ -51,7 +51,7 @@ const PatientManagementPage = () => {
 
     //sync url tab with store
     useEffect(() => {
-        const tab = searchParams.get('tab') || 'all'
+        const tab = searchParams.get('tab') || 'active'
         const validTabs = ['all', 'active', 'archive'] as const
         
         if (validTabs.includes(tab as typeof validTabs[number]) && tab !== activeTab) {
@@ -90,7 +90,7 @@ const PatientManagementPage = () => {
     const stats = getStats()
 
     const tabs = [
-        { key: 'all', label: 'All Patients', count: stats.totalPatients },
+        // { key: 'all', label: 'All Patients', count: stats.totalPatients },
         { key: 'active', label: 'Active Patients', count: stats.activePatients },
         { key: 'archive', label: 'Archived', count: stats.archivedPatients }
     ]
