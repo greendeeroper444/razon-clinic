@@ -11,7 +11,9 @@ import { useLocation } from 'react-router-dom';
 
 const InventoryPage: React.FC<OpenModalProps> = () => {
     const location = useLocation();
-    
+    //local state for search only
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
     //zustand store selectors
     const {
         inventoryItems,
@@ -40,10 +42,6 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         closeModalDelete,
         currentOperation
     } = useInventoryStore();
-
-    //local state for search only
-    const [searchTerm, setSearchTerm] = useState('');
-    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
     //memoized fetch function to prevent recreation on every render
     const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
@@ -81,18 +79,15 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         }
     }, [location.state, loading, inventoryItems, openModalUpdate]);
 
-    //handle search
     const handleSearch = useCallback((term: string) => {
         setSearchTerm(term);
         fetchData(1, storePagination?.itemsPerPage || 10, term);
     }, [fetchData, storePagination?.itemsPerPage]);
 
-    //handle page change
     const handlePageChange = useCallback((page: number) => {
         fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
     }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
 
-    //handle items per page change
     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
@@ -292,7 +287,6 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
             actions={headerActions}
         />
 
-        {/* inventory cards */}
         <div className={styles.inventoryCards}>
             {
                 summaryCards.map((card, index) => (
@@ -312,12 +306,10 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
             }
         </div>
 
-        {/* inventory table */}
         <div className={styles.section}>
             <div className={styles.sectionHeader}>
                 <div className={styles.sectionTitle}>Medicine Inventory</div>
                 
-                {/* search and items per page controls */}
                 <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}
@@ -344,7 +336,6 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
                 </div>
             </div>
 
-            
             {
                 loading ? (
                     <div className={styles.tableResponsive}>

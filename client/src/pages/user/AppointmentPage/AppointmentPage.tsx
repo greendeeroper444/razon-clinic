@@ -2,19 +2,17 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styles from './AppointmentPage.module.css'
 import { Plus } from 'lucide-react'
 import { OpenModalProps } from '../../../hooks/hook'
-import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, openModalWithRefresh, getStatusClass, getLoadingText } from '../../../utils'
+import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, getStatusClass, getLoadingText } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType, TableColumn } from '../../../types'
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components'
 import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore } from '../../../stores'
 import { toast } from 'sonner'
 
-const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
+const AppointmentPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
     //zustand store selectors
     const {
         appointments,
@@ -23,18 +21,21 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         error,
         isProcessing,
         selectedAppointment,
-        isModalOpen,
-        isDeleteModalOpen,
+        isModalCreateOpen,
+        isModalUpdateOpen,
+        isModalDeleteOpen,
         deleteAppointmentData,
         fetchMyAppointments,
         addAppointment,
         updateAppointmentData,
         deleteAppointment,
         pagination: storePagination,
-        openUpdateModal,
-        openDeleteModal,
-        closeUpdateModal,
-        closeDeleteModal,
+        openModalCreate,
+        openModalUpdate,
+        openModalDelete,
+        closeModalCreate,
+        closeModalUpdate,
+        closeModalDelete,
         currentOperation
     } = useAppointmentStore();
 
@@ -53,30 +54,23 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     }, [isInitialLoad, fetchData]);
 
-    //handle search
     const handleSearch = useCallback((term: string) => {
         setSearchTerm(term);
         fetchData(1, storePagination?.itemsPerPage || 10, term);
     }, [fetchData, storePagination?.itemsPerPage]);
 
-    //handle page change
     const handlePageChange = useCallback((page: number) => {
         fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
     }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
 
-    //handle items per page change
     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
 
-   const handleOpenModal = useCallback(() => {
-        setIsAddModalOpen(true);
-    }, []);
+   const handleCreateClick = useCallback(() => {
+        openModalCreate();
+    }, [openModalCreate]);
 
-    const handleCloseAddModal = useCallback(() => {
-        setIsAddModalOpen(false);
-    }, []);
-    
     const handleViewClick = (appointment: AppointmentResponse) => {
         navigate(`/user/appointments/details/${appointment.id}`)
     }
@@ -98,12 +92,12 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                     storePagination?.itemsPerPage || 10, 
                     searchTerm
                 );
-                handleCloseAddModal();
+                closeModalCreate();
             }, 600);
         } catch (error) {
             console.error('Error adding appointment:', error);
         }
-    }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, handleCloseAddModal])
+    }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
     
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !selectedAppointment?.id) {
@@ -235,7 +229,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                                 return;
                             }
                             
-                            openUpdateModal(appointment);
+                            openModalUpdate(appointment);
                         }}
                     >
                         Update
@@ -245,7 +239,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                         className={`${styles.actionBtn} ${styles.delete}`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            openDeleteModal(appointment);
+                            openModalDelete(appointment);
                         }}
                     >
                         Delete
@@ -260,7 +254,7 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             id: 'newAppointmentBtn',
             label: 'New Appointment',
             icon: <Plus />,
-            onClick: handleOpenModal,
+            onClick: handleCreateClick,
             type: 'primary' as const
         }
     ]
@@ -272,14 +266,12 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             actions={headerActions}
         />
 
-        {/* appointments */}
         <div className={styles.section}>
             <div className={styles.sectionHeader}>
                 <div className={styles.sectionTitle}> 
                     Appointments ({loading ? '...' : appointments.length}) 
                 </div>
 
-                {/* search and items per page controls */}
                 <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}
@@ -306,7 +298,6 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
                 </div>
             </div>
 
-            {/* show loading skeleton or actual table */}
             {
                 loading ? (
                     <div className={styles.tableResponsive}>
@@ -346,12 +337,11 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             }
         </div>
         
-        {/* add appointment modal */}
         {
-            isAddModalOpen && (
+            isModalCreateOpen && (
                 <Modal
-                    isOpen={isAddModalOpen}
-                    onClose={handleCloseAddModal}
+                    isOpen={isModalCreateOpen}
+                    onClose={closeModalCreate}
                     modalType="appointment"
                     onSubmit={handleSubmitAdd}
                     isProcessing={submitLoading}
@@ -359,12 +349,11 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             )
         }
 
-        {/* update appointment modal */}
         {
-            isModalOpen && (
+            isModalUpdateOpen && (
                 <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeUpdateModal}
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
                     modalType="appointment"
                     onSubmit={handleSubmitUpdate}
                     editData={selectedAppointment}
@@ -373,12 +362,11 @@ const AppointmentPage: React.FC<OpenModalProps> = ({openModal}) => {
             )
         }
 
-        {/* delete appointment modal */}
         {
-            isDeleteModalOpen && deleteAppointmentData && (
+            isModalDeleteOpen && deleteAppointmentData && (
                 <Modal
-                    isOpen={isDeleteModalOpen}
-                    onClose={closeDeleteModal}
+                    isOpen={isModalDeleteOpen}
+                    onClose={closeModalDelete}
                     modalType="delete"
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteAppointmentData}

@@ -12,8 +12,6 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
     //zustand store selectors
     const {
         appointments,
@@ -22,18 +20,21 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         error,
         isProcessing,
         selectedAppointment,
-        isModalOpen,
-        isDeleteModalOpen,
+        isModalCreateOpen,
+        isModalUpdateOpen,
+        isModalDeleteOpen,
         deleteAppointmentData,
         fetchAppointments,
         addAppointment,
         updateAppointmentData,
         deleteAppointment,
         pagination: storePagination,
-        openUpdateModal,
-        openDeleteModal,
-        closeUpdateModal,
-        closeDeleteModal,
+        openModalCreate,
+        openModalUpdate,
+        openModalDelete,
+        closeModalCreate,
+        closeModalUpdate,
+        closeModalDelete,
         currentOperation
     } = useAppointmentStore();
 
@@ -52,35 +53,28 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         }
     }, [isInitialLoad, fetchData]);
 
-    //handle search
     const handleSearch = useCallback((term: string) => {
         setSearchTerm(term);
         fetchData(1, storePagination?.itemsPerPage || 10, term);
     }, [fetchData, storePagination?.itemsPerPage]);
 
-    //handle page change
     const handlePageChange = useCallback((page: number) => {
         fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
     }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
 
-    //handle items per page change
     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
 
-    const handleOpenModal = useCallback(() => {
-        setIsAddModalOpen(true);
-    }, []);
-
-    const handleCloseAddModal = useCallback(() => {
-        setIsAddModalOpen(false);
-    }, []);
+    const handleCreateClick = useCallback(() => {
+        openModalCreate();
+    }, [openModalCreate]);
 
     const handleViewClick = (appointment: AppointmentResponse) => {
         navigate(`/admin/appointments/details/${appointment.id}`)
     }
 
-    const handleSubmitAdd = useCallback(async (data: FormDataType | string): Promise<void> => {
+    const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
             console.error('Invalid data for adding appointment')
             return
@@ -97,12 +91,12 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     storePagination?.itemsPerPage || 10, 
                     searchTerm
                 );
-                handleCloseAddModal();
+                closeModalCreate();
             }, 600);
         } catch (error) {
             console.error('Error adding appointment:', error);
         }
-    }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, handleCloseAddModal])
+    }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !selectedAppointment?.id) {
@@ -224,7 +218,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                         className={`${styles.actionBtn} ${styles.update}`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            openUpdateModal(appointment);
+                            openModalUpdate(appointment);
                         }}
                     >
                         Update
@@ -234,7 +228,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                         className={`${styles.actionBtn} ${styles.delete}`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            openDeleteModal(appointment);
+                            openModalDelete(appointment);
                         }}
                     >
                         Delete
@@ -249,7 +243,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             id: 'newAppointmentBtn',
             label: 'New Appointment',
             icon: <Plus />,
-            onClick: handleOpenModal,
+            onClick: handleCreateClick,
             type: 'primary' as const
         }
     ]
@@ -261,14 +255,12 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             actions={headerActions}
         />
 
-        {/* appointments */}
         <div className={styles.section}>
             <div className={styles.sectionHeader}>
                 <div className={styles.sectionTitle}> 
                     Appointments ({loading ? '...' : appointments.length}) 
                 </div>
 
-                {/* search and items per page controls */}
                 <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}
@@ -295,7 +287,6 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                 </div>
             </div>
 
-            {/* show loading skeleton or actual table */}
             {
                 loading ? (
                     <div className={styles.tableResponsive}>
@@ -335,25 +326,23 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             }
         </div>
         
-        {/* add appointment modal */}
         {
-            isAddModalOpen && (
+            isModalCreateOpen && (
                 <Modal
-                    isOpen={isAddModalOpen}
-                    onClose={handleCloseAddModal}
+                    isOpen={isModalCreateOpen}
+                    onClose={closeModalCreate}
                     modalType="appointment"
-                    onSubmit={handleSubmitAdd}
+                    onSubmit={handleSubmitCreate}
                     isProcessing={submitLoading}
                 />
             )
         }
 
-        {/* update appointment modal */}
         {
-            isModalOpen && (
+            isModalUpdateOpen && (
                 <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeUpdateModal}
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
                     modalType="appointment"
                     onSubmit={handleSubmitUpdate}
                     editData={selectedAppointment}
@@ -362,12 +351,11 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             )
         }
 
-        {/* delete appointment modal */}
         {
-            isDeleteModalOpen && deleteAppointmentData && (
+            isModalDeleteOpen && deleteAppointmentData && (
                 <Modal
-                    isOpen={isDeleteModalOpen}
-                    onClose={closeDeleteModal}
+                    isOpen={isModalDeleteOpen}
+                    onClose={closeModalDelete}
                     modalType="delete"
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteAppointmentData}

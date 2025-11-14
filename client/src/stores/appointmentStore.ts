@@ -16,9 +16,10 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
             error: null,
             isProcessing: false,
             selectedAppointment: null,
-            isModalOpen: false,
-            isStatusModalOpen: false,
-            isDeleteModalOpen: false,
+            isModalCreateOpen: false,
+            isModalUpdateOpen: false,
+            isModalStatusOpen: false,
+            isModalDeleteOpen: false,
             deleteAppointmentData: null,
             currentAppointment: null,
             viewMode: 'user' as 'admin' | 'user',
@@ -301,7 +302,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
 
                         set({ 
                             appointments: updatedAppointments,
-                            isStatusModalOpen: false,
+                            isModalStatusOpen: false,
                             selectedAppointment: null,
                         })
 
@@ -321,7 +322,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isStatusModalOpen: false,
+                        isModalStatusOpen: false,
                         selectedAppointment: null,
                         currentOperation: null
                     })
@@ -346,7 +347,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     toast.success('Appointment deleted successfully!')
 
                     set({ 
-                        isDeleteModalOpen: false, 
+                        isModalDeleteOpen: false, 
                         deleteAppointmentData: null 
                     })
 
@@ -364,7 +365,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isStatusModalOpen: false,
+                        isModalStatusOpen: false,
                         selectedAppointment: null,
                         currentOperation: null
                     })
@@ -372,7 +373,14 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
             },
 
 
-            openUpdateModal: (appointment: AppointmentFormData) => {
+            openModalCreate: () => {
+                set({ 
+                    isModalCreateOpen: true,
+                    validationErrors: {}
+                })
+            },
+
+            openModalUpdate: (appointment: AppointmentFormData) => {
                 const formData: AppointmentFormData & { id?: string } = {
                     id: appointment.id,
                     firstName: appointment.firstName,
@@ -401,19 +409,19 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 
                 set({ 
                     selectedAppointment: formData, 
-                    isModalOpen: true,
+                    isModalUpdateOpen: true,
                     validationErrors: {}
                 })
             },
 
-            openStatusModal: (appointment: AppointmentFormData) => {
+            openModalStatus: (appointment: AppointmentFormData) => {
                 set({
                     selectedAppointment: appointment,
-                    isStatusModalOpen: true
+                    isModalStatusOpen: true
                 })
             },
 
-            openDeleteModal: (appointment: AppointmentFormData) => {
+            openModalDelete: (appointment: AppointmentFormData) => {
                 const userName = appointment.firstName || 'Unknown User'
                 const appointmentDate = appointment.preferredDate
                 
@@ -423,24 +431,38 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         itemName: `${userName}'s appointment on ${appointmentDate}`,
                         itemType: 'Appointment'
                     },
-                    isDeleteModalOpen: true
+                    isModalDeleteOpen: true
                 })
             },
 
-            closeUpdateModal: () => {
+            closeModalCreate: () => {
                 set({ 
-                    isModalOpen: false, 
+                    isModalCreateOpen: false, 
                     selectedAppointment: null,
                     validationErrors: {}
                 })
             },
 
-            closeStatusModal: () => {
-                set({ isStatusModalOpen: false, selectedAppointment: null })
+            closeModalUpdate: () => {
+                set({ 
+                    isModalUpdateOpen: false, 
+                    selectedAppointment: null,
+                    validationErrors: {}
+                })
             },
 
-            closeDeleteModal: () => {
-                set({ isDeleteModalOpen: false, deleteAppointmentData: null })
+            closeModalStatus: () => {
+                set({ 
+                    isModalStatusOpen: false, 
+                    selectedAppointment: null,
+                })
+            },
+
+            closeModalDelete: () => {
+                set({ 
+                    isModalDeleteOpen: false, 
+                    deleteAppointmentData: null 
+                })
             },
 
             setLoading: (loading: boolean) => set({ loading }),

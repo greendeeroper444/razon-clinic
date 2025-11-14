@@ -29,9 +29,10 @@ export interface AppointmentState {
     
     //modal state
     selectedAppointment: (AppointmentFormData & { id?: string }) | null;
-    isModalOpen: boolean;
-    isStatusModalOpen: boolean;
-    isDeleteModalOpen: boolean;
+    isModalCreateOpen: boolean;
+    isModalUpdateOpen: boolean;
+    isModalStatusOpen: boolean;
+    isModalDeleteOpen: boolean;
     deleteAppointmentData: { id: string, itemName: string, itemType: string } | null;
 
     //state for appointment details
@@ -52,13 +53,14 @@ export interface AppointmentState {
     clearValidationErrors: () => void;
     
     //modal actions
-    openUpdateModal: (appointment: AppointmentResponse) => void;
-    openStatusModal: (appointment: AppointmentResponse) => void;
-    openDeleteModal: (appointment: AppointmentResponse) => void;
-    closeUpdateModal: () => void;
-    closeStatusModal: () => void;
-    closeDeleteModal: () => void;
-
+    openModalCreate: () => void;
+    openModalUpdate: (appointment: AppointmentResponse) => void;
+    openModalStatus: (appointment: AppointmentResponse) => void;
+    openModalDelete: (appointment: AppointmentResponse) => void;
+    closeModalCreate: () => void;
+    closeModalUpdate: () => void;
+    closeModalStatus: () => void;
+    closeModalDelete: () => void;
     
     //utility actions
     setLoading: (loading: boolean) => void;
