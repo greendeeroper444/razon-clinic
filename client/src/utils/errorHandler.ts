@@ -1,3 +1,5 @@
+import { toast } from 'sonner';
+
 interface ValidationError {
     field: string;
     message: string;
@@ -9,7 +11,66 @@ interface ErrorResponse {
     validationErrors: ValidationError[] | null;
 }
 
-export const handleApiError = (error: any, defaultMessage = "An error occurred"): ErrorResponse => {
+interface HandleStoreErrorOptions {
+    set: (state: any) => void;
+    defaultMessage?: string;
+    showToast?: boolean;
+    rethrow?: boolean;
+}
+
+export const handleStoreError = (
+    error: any,
+    options: HandleStoreErrorOptions
+): boolean => {
+    const {
+        set,
+        defaultMessage = 'An error occurred',
+        showToast = true,
+        rethrow = false
+    } = options;
+
+    console.error('Store error:', error);
+
+    if (error.errors && Array.isArray(error.errors)) {
+        const errorsByField: Record<string, string[]> = {};
+        
+        error.errors.forEach((err: ValidationError) => {
+            if (!errorsByField[err.field]) {
+                errorsByField[err.field] = [];
+            }
+            errorsByField[err.field].push(err.message);
+        });
+        
+        set({ validationErrors: errorsByField });
+
+        if (showToast) {
+            toast.error(error.message || 'Please fix the validation errors');
+        }
+
+        if (rethrow) {
+            throw error;
+        }
+
+        return true;
+    }
+
+    const { message } = handleApiError(error, defaultMessage);
+
+    if (showToast) {
+        toast.error(message);
+    }
+
+    if (rethrow) {
+        throw error;
+    }
+
+    return false;
+};
+
+export const handleApiError = (
+    error: any,
+    defaultMessage = "An error occurred"
+): ErrorResponse => {
     let message = defaultMessage;
     let validationErrors: ValidationError[] | null = null;
 
@@ -21,7 +82,9 @@ export const handleApiError = (error: any, defaultMessage = "An error occurred")
             message: err.message || err.msg || 'Invalid value'
         }));
         
-        const uniqueMessages = [...new Set(errors.map((err: any) => err.message || err.msg))];
+        const uniqueMessages = [...new Set(errors.map((err: any) => 
+            err.message || err.msg
+        ))];
         
         if (uniqueMessages.length === 1) {
             message = uniqueMessages[0];
@@ -53,5 +116,5 @@ export const handleApiError = (error: any, defaultMessage = "An error occurred")
         message, 
         error: enhancedError, 
         validationErrors 
-    }
-}
+    };
+};

@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus as updateAppointmentStatusService, addAppointment  } from '../services'
 import { AppointmentFormData, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
 import { toast } from 'sonner'
-import { handleApiError } from '../utils/errorHandler'
+import { handleApiError, handleStoreError } from '../utils/errorHandler'
 
 type ValidationError = {
     field: string;
@@ -66,7 +66,6 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     }
                     
                     toast.success('Appointment added successfully!');
-                    // Don't close modal here - let the component handle it
 
                     setTimeout(() => {
                         set({ 
@@ -77,35 +76,17 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     }, 500);
 
                 } catch (error: any) {
-                    console.error('Error adding appointment:', error);
+                    handleStoreError(error, {
+                        set,
+                        defaultMessage: 'Failed to add appointment'
+                    });
 
-                    if (error.errors && Array.isArray(error.errors)) {
-                        const errorsByField: Record<string, string[]> = {};
-                        
-                        error.errors.forEach((err: ValidationError) => {
-                            if (!errorsByField[err.field]) {
-                                errorsByField[err.field] = [];
-                            }
-                            errorsByField[err.field].push(err.message);
-                        });
-                        
-                        set({ validationErrors: errorsByField });
-                        toast.error(error.message || 'Please fix the validation errors');
-                    } else {
-                        const { message } = handleApiError(
-                            error, 
-                            'Failed to add appointment'
-                        );
-                        toast.error(message);
-                    }
-                    
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        currentOperation: null,
+                        currentOperation: null
                     });
 
-                    // Re-throw error so component knows validation failed
                     throw error;
                 }
             },
@@ -271,45 +252,27 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     }
                     
                     toast.success('Updated appointment successfully!')
-                    set({ isModalOpen: false, selectedAppointment: null })
 
                     setTimeout(() => {
                         set({ 
                             submitLoading: false, 
                             isProcessing: false,
                             currentOperation: null
-                        })
-                    }, 500)
+                        });
+                    }, 500);
 
                 } catch (error: any) {
-                    console.error('Error updating appointment:', error)
-                    if (error.errors && Array.isArray(error.errors)) {
-                        const errorsByField: Record<string, string[]> = {};
-                        
-                        error.errors.forEach((err: ValidationError) => {
-                            if (!errorsByField[err.field]) {
-                                errorsByField[err.field] = [];
-                            }
-                            errorsByField[err.field].push(err.message);
-                        });
-                        
-                        set({ validationErrors: errorsByField });
-                        toast.error(error.message || 'Please fix the validation errors');
-                    } else {
-                        const { message } = handleApiError(
-                            error, 
-                            'Failed to update appointment'
-                        );
-                        toast.error(message);
-                    }
+                    handleStoreError(error, {
+                        set,
+                        defaultMessage: 'Failed to add appointment'
+                    });
+
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
                         currentOperation: null
-                    })
+                    });
 
-                    // Don't close modal on validation error
-                    // Re-throw error so component knows validation failed
                     throw error;
                 }
             },
