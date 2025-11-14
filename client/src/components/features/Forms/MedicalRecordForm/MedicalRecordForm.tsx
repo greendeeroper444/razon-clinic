@@ -6,6 +6,8 @@ import { convertTo12HourFormat, formatDate } from '../../../../utils';
 import Input from '../../../ui/Input/Input';
 import Select from '../../../ui/Select/Select';
 import TextArea from '../../../ui/TextArea/TextArea';
+import { useMedicalRecordStore } from '../../../../stores';
+import useScrollToError from '../../../../hooks/useScrollToError';
 
 
 const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange, isLoading, onAutofill}) => {
@@ -15,6 +17,46 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
     const [selectedAppointmentId, setSelectedAppointmentId] = useState<string>('');
     const searchTimeoutRef = useRef<number | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const validationErrors = useMedicalRecordStore((state) => state.validationErrors);
+    
+    const { fieldRefs } = useScrollToError({
+        validationErrors,
+        fieldOrder: [
+            'fullName',
+            'dateOfBirth',
+            'gender',
+            'bloodType',
+            'phone',
+            'address',
+            'email',
+            'emergencyContact',
+            'allergies',
+            'chronicConditions',
+            'previousSurgeries',
+            'familyHistory',
+            'height',
+            'weight',
+            'growthNotes',
+            'chiefComplaint',
+            'symptomsDescription',
+            'symptomsDuration',
+            'painScale',
+            'vaccinationHistory',
+            'diagnosis',
+            'treatmentPlan',
+            'prescribedMedications',
+            'consultationNotes',
+            'followUpDate'
+        ],
+        scrollBehavior: 'smooth',
+        scrollBlock: 'center',
+        focusDelay: 300
+    });
+
+    const getFieldError = (fieldName: string): string | undefined => {
+        const errors = validationErrors[fieldName];
+        return errors && errors.length > 0 ? errors[0] : undefined;
+    };
 
     //handle search input change
     const handleSearchChange = async (e: any) => {
@@ -209,30 +251,30 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
 
   return (
     <div className={styles.sectionDivider}>
-        {/* Hidden field to store appointmentId */}
-        {selectedAppointmentId && (
-            <input type="hidden" name="appointmentId" value={selectedAppointmentId} />
-        )}
+        {
+            selectedAppointmentId && (
+                <input type="hidden" name="appointmentId" value={selectedAppointmentId} />
+            )
+        }
 
-        {/* Personal details section */}
         <h4>Personal Details</h4>
         <div className={styles.formRow}>
             <div className={styles.searchContainer} ref={dropdownRef}>
                 <Input
+                    ref={(el) => { fieldRefs.current['fullName'] = el; }}
                     type='text'
                     label='Full Name'
                     name='fullName'
                     value={formData?.fullName || ''}
                     onChange={handleSearchChange}
                     onFocus={handleInputFocus}
-                    required
                     disabled={isLoading}
                     placeholder="Start typing patient's name to search..."
                     autoComplete="off"
                     leftIcon="user"
+                    error={getFieldError('fullName')}
                 />
                 
-                {/* search dropdown */}
                 {
                     showSearchDropdown && (
                         <div className={styles.searchDropdown}>
@@ -289,6 +331,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
 
         <div className={styles.formRow}>
             <Input
+                ref={(el) => { fieldRefs.current['dateOfBirth'] = el; }}
                 type='date'
                 label='Date of Birth'
                 name='dateOfBirth'
@@ -301,9 +344,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     target.type = 'date';
                 }}
                 disabled={isLoading}
+                error={getFieldError('dateOfBirth')}
             />
 
            <Select
+                ref={(el) => { fieldRefs.current['gender'] = el; }}
                 name='gender'
                 label='Gender'
                 leftIcon='users'
@@ -315,11 +360,13 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     { value: 'Female', label: 'Female' },
                     { value: 'Other', label: 'Other' }
                 ]}
+                error={getFieldError('gender')}
             />
         </div>
 
         <div className={styles.formRow}>
             <Select
+                ref={(el) => { fieldRefs.current['bloodType'] = el; }}
                 name='bloodType'
                 label='Blood Type'
                 leftIcon='users'
@@ -336,10 +383,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     { value: 'O+', label: 'O+' },
                     { value: 'O-', label: 'O-' }
                 ]}
-
+                error={getFieldError('bloodType')}
             />
 
             <Input
+                ref={(el) => { fieldRefs.current['phone'] = el; }}
                 type='tel'
                 label='Phone'
                 name='phone'
@@ -347,10 +395,12 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 value={formData?.phone || ''}
                 onChange={onChange}
                 disabled={isLoading}
+                error={getFieldError('phone')}
             />
         </div>
 
         <TextArea
+            ref={(el) => { fieldRefs.current['address'] = el; }}
             name='address'
             label='Address'
             placeholder='Address'
@@ -360,10 +410,12 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             rows={3}
             resize='vertical'
             disabled={isLoading}
+            error={getFieldError('address')}
         />
 
         <div className={styles.formRow}>
             <Input
+                ref={(el) => { fieldRefs.current['email'] = el; }}
                 type='email'
                 label='Email Address'
                 name='email'
@@ -371,9 +423,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 value={formData?.email || ''}
                 onChange={onChange}
                 disabled={isLoading}
+                error={getFieldError('email')}
             />
 
             <Input
+                ref={(el) => { fieldRefs.current['emergencyContact'] = el; }}
                 type='text'
                 label='Emergency Contact'
                 name='emergencyContact'
@@ -381,14 +435,15 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 value={formData?.emergencyContact || ''}
                 onChange={onChange}
                 disabled={isLoading}
+                error={getFieldError('emergencyContact')}
             />
         </div>
 
-        {/* medical history section */}
         <div className={styles.sectionDivider}>
             <h4>Medical History</h4>
             
             <TextArea
+                ref={(el) => { fieldRefs.current['allergies'] = el; }}
                 name='allergies'
                 label='Known Allergies'
                 placeholder='List any known allergies'
@@ -397,9 +452,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('allergies')}
             />
 
             <TextArea
+                ref={(el) => { fieldRefs.current['chronicConditions'] = el; }}
                 name='chronicConditions'
                 label='Chronic Conditions'
                 placeholder='List any known chronic conditions'
@@ -408,9 +465,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('chronicConditions')}
             />
 
             <TextArea
+                ref={(el) => { fieldRefs.current['previousSurgeries'] = el; }}
                 name='previousSurgeries'
                 label='Previous Surgeries'
                 placeholder='List any known previous surgeries'
@@ -419,9 +478,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('previousSurgeries')}
             />
 
-             <TextArea
+            <TextArea
+                ref={(el) => { fieldRefs.current['familyHistory'] = el; }}
                 name='familyHistory'
                 label='Family History'
                 placeholder='List any known family history'
@@ -430,15 +491,16 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('familyHistory')}
             />
         </div>
 
-        {/* growth milestone section */}
         <div className={styles.sectionDivider}>
             <h4>Pediatric Growth Monitor</h4>
             
             <div className={styles.formRow}>
                 <Input
+                    ref={(el) => { fieldRefs.current['height'] = el; }}
                     type='number'
                     label='Height (cm)'
                     name='height'
@@ -448,9 +510,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     min={30}
                     max={300}
                     disabled={isLoading}
+                    error={getFieldError('height')}
                 />
 
                 <Input
+                    ref={(el) => { fieldRefs.current['weight'] = el; }}
                     type='number'
                     label='Weight (kg)'
                     name='weight'
@@ -460,6 +524,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     min={1}
                     max={300}
                     disabled={isLoading}
+                    error={getFieldError('weight')}
                 />
             </div>
 
@@ -478,6 +543,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             </div>
 
             <TextArea
+                ref={(el) => { fieldRefs.current['growthNotes'] = el; }}
                 name='growthNotes'
                 label='Growth Notes'
                 placeholder='Additional growth-related notes'
@@ -486,14 +552,15 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('growthNotes')}
             />
         </div>
 
-        {/* current symptoms section */}
         <div className={styles.sectionDivider}>
             <h4>Current Symptoms</h4>
             
             <Input
+                ref={(el) => { fieldRefs.current['chiefComplaint'] = el; }}
                 type='text'
                 label='Chief Complaint'
                 name='chiefComplaint'
@@ -501,11 +568,13 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 value={formData?.chiefComplaint || ''}
                 onChange={onChange}
                 disabled={isLoading}
+                error={getFieldError('chiefComplaint')}
             />
 
             <br />
 
             <TextArea
+                ref={(el) => { fieldRefs.current['symptomsDescription'] = el; }}
                 name='symptomsDescription'
                 label='Symptoms Description'
                 placeholder='Detailed description of symptoms'
@@ -514,10 +583,12 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('symptomsDescription')}
             />
 
             <div className={styles.formRow}>
                 <Input
+                    ref={(el) => { fieldRefs.current['symptomsDuration'] = el; }}
                     type='text'
                     label='Duration of Symptoms'
                     name='symptomsDuration'
@@ -525,9 +596,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     value={formData?.symptomsDuration || ''}
                     onChange={onChange}
                     disabled={isLoading}
+                    error={getFieldError('symptomsDuration')}
                 />
 
                 <Input
+                    ref={(el) => { fieldRefs.current['painScale'] = el; }}
                     type='number'
                     label='Pain Scale (1-10)'
                     name='painScale'
@@ -537,15 +610,16 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     min={1}
                     max={10}
                     disabled={isLoading}
+                    error={getFieldError('painScale')}
                 />
             </div>
         </div>
 
-        {/* additional medical information */}
         <div className={styles.sectionDivider}>
             <h4>Additional Information</h4>
             
             <TextArea
+                ref={(el) => { fieldRefs.current['vaccinationHistory'] = el; }}
                 name='vaccinationHistory'
                 label='Vaccination History'
                 placeholder='Recent vaccinations or immunization history'
@@ -554,9 +628,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('vaccinationHistory')}
             />
 
             <TextArea
+                ref={(el) => { fieldRefs.current['diagnosis'] = el; }}
                 name='diagnosis'
                 label='Diagnosis'
                 placeholder='Medical diagnosis (to be filled by healthcare provider)'
@@ -565,9 +641,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('diagnosis')}
             />
 
             <TextArea
+                ref={(el) => { fieldRefs.current['treatmentPlan'] = el; }}
                 name='treatmentPlan'
                 label='Treatment Plan'
                 placeholder='Recommended treatment plan'
@@ -576,9 +654,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('treatmentPlan')}
             />
 
             <TextArea
+                ref={(el) => { fieldRefs.current['prescribedMedications'] = el; }}
                 name='prescribedMedications'
                 label='Prescribed Medications'
                 placeholder='List of prescribed medications'
@@ -587,9 +667,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('prescribedMedications')}
             />
 
-             <TextArea
+            <TextArea
+                ref={(el) => { fieldRefs.current['consultationNotes'] = el; }}
                 name='consultationNotes'
                 label='Consultation Notes'
                 placeholder='Additional notes from consultation'
@@ -598,9 +680,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
+                error={getFieldError('consultationNotes')}
             />
 
             <Input
+                ref={(el) => { fieldRefs.current['followUpDate'] = el; }}
                 type='date'
                 label='Follow-up Date'
                 name='followUpDate'
@@ -609,6 +693,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 min={new Date().toISOString().split('T')[0]}
                 disabled={isLoading}
                 leftIcon='calendar'
+                error={getFieldError('followUpDate')}
             />
         </div>
     </div>
