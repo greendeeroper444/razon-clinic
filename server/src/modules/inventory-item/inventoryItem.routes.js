@@ -1,58 +1,51 @@
 const express = require('express');
 const router = express.Router();
-// const validator = require('../validators/InventoryItem.validator');
 const { authenticate } = require('@middlewares/auth.middleware');
 const inventoryItemController = require('./inventoryItem.controller');
-
-
+const validator = require('./inventoryItem.validator');
 
 router.post(
     '/addInventoryItem', 
     authenticate, 
-    // validator.validateInventoryItem, 
+    validator.validateInventoryItem, 
     inventoryItemController.addInventoryItem
 );
 
-
 router.get(
     '/getInventoryItems', 
-    authenticate, 
+    authenticate,
+    validator.validateQueryParams,
     inventoryItemController.getInventoryItem
 );
-
 
 router.get(
     '/getInventoryItem/:inventoryItemId', 
     authenticate, 
-    // validator.validateInventoryItemId,
+    validator.validateInventoryItemId,
     inventoryItemController.getInventoryItemById
 );
-
 
 router.put(
     '/updateInventoryItem/:inventoryItemId', 
     authenticate, 
-    // validator.validateInventoryItem, 
+    validator.validateInventoryItemId,
+    validator.validateInventoryItem, 
     inventoryItemController.updateInventoryItem
 );
-
 
 router.delete(
     '/deleteInventoryItem/:inventoryItemId', 
     authenticate, 
-    // validator.validateInventoryItemId,
+    validator.validateInventoryItemId,
     inventoryItemController.deleteInventoryItem
 );
 
-
-
 router.get(
     '/getLowStockItems', 
-    authenticate, 
+    authenticate,
+    validator.validateLowStockQuery,
     inventoryItemController.getLowStockItems
 );
-
-
 
 router.get(
     '/getExpiredItems', 
@@ -60,20 +53,17 @@ router.get(
     inventoryItemController.getExpiredItems
 );
 
-
-
 router.get(
     '/getExpiringItems', 
-    authenticate, 
+    authenticate,
+    validator.validateExpiringQuery,
     inventoryItemController.getExpiringItems
 );
-
-
 
 router.patch(
     '/updateStock/:inventoryItemId', 
     authenticate, 
-    // validator.validateStockUpdate,
+    validator.validateStockUpdate,
     inventoryItemController.updateStock
 );
 
