@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styles from './TrashPage.module.css'
-import { useTrashStore } from '../../../stores/trashStore'
+import { useTrashStore } from '../../../stores'
 import { Header, Loading, Main, Pagination, SubmitLoading, Tab, Table } from '../../../components'
 import { formatDate, getLoadingText } from '../../../utils'
 import { DeletedMedicalRecord, TableColumn } from '../../../types'

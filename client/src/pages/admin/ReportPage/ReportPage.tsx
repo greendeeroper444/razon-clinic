@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styles from './ReportPage.module.css'
-import { useReportStore } from '../../../stores/reportStore'
+import { useReportStore } from '../../../stores'
 import { Header, Loading, Main, Pagination, Searchbar, Tab, Table } from '../../../components'
 import { formatDate, formatCurrency, getStatusClass } from '../../../utils'
 import { InventoryItem, SalesReportItem, TableColumn } from '../../../types'

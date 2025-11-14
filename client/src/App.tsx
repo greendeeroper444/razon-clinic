@@ -3,11 +3,11 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ModalContext } from './hooks/hook'
 import { toast, Toaster } from 'sonner'
-import { InventoryItemFormData, MedicalRecordFormData, FormDataType, ModalType, BillingFormData } from './types'
+import { MedicalRecordFormData, FormDataType, ModalType, BillingFormData } from './types'
 import { Layout, Modal, PageTitle, ProtectedRoute, RootRedirect, Tormentum} from './components'
 import { routes } from './routes'
 import './services/httpClient'
-import { useAuthenticationStore, useBillingStore, useInventoryStore, useMedicalRecordStore } from './stores'
+import { useAuthenticationStore, useBillingStore, useMedicalRecordStore } from './stores'
 import { isTormentumArrived } from './components/ui/Tormentum/Tormentum'
 import { PaginaNonPraesto } from './pages'
 import { routeText } from './constants/messages'
@@ -19,7 +19,6 @@ function App() {
   
   //initialize authentication on app load
   const initializeAuth = useAuthenticationStore(state => state.initializeAuth);
-  const addInventoryItem = useInventoryStore(state => state.addInventoryItem);
   const addMedicalRecord = useMedicalRecordStore(state => state.addMedicalRecord);
   const addBilling = useBillingStore(state => state.addBilling);
 
@@ -68,9 +67,6 @@ function App() {
     
     //handle the data based on modal type
     switch (modalType) {
-      case 'item':
-          await addInventoryItem(formData as InventoryItemFormData);
-        break;
       case 'medical':
         try {
           await addMedicalRecord(formData as MedicalRecordFormData);

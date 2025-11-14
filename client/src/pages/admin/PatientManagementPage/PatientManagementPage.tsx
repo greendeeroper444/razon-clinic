@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styles from './PatientManagementPage.module.css'
-import { usePatientStore } from '../../../stores/patientStore'
+import { usePatientStore } from '../../../stores'
 import { Header, Loading, Main, Pagination, Searchbar, SubmitLoading, Tab, Table } from '../../../components'
 import { formatDate, getFirstLetterOfFirstAndLastName, getLoadingText, getStatusClass } from '../../../utils'
 import { getPatientSummaryCards } from '../../../config/patientSummaryCards'
@@ -32,7 +32,7 @@ const PatientManagementPage = () => {
         archiveSelectedPatients,
         unarchiveSelectedPatients,
         getStats
-    } = usePatientStore()
+    } = usePatientStore();
 
     const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
         try {

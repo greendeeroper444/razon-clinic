@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { InventoryItemFormData, ExtendedInventoryState, OperationType, FetchParams } from '../types'
 import { deleteInventoryItem, getInventoryItems, updateInventoryItem, addInventoryItem, getLowStockItems, getExpiringItems } from '../services';
 import { toast } from 'sonner';
-import { handleStoreError } from '../utils/errorHandler';
+import { handleStoreError } from '../utils';
 
 export const useInventoryStore = create<ExtendedInventoryState>()(
     devtools(
@@ -16,8 +16,9 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
             error: null,
             isProcessing: false,
             selectedInventoryItem: null,
-            isModalOpen: false,
-            isDeleteModalOpen: false,
+            isModalCreateOpen: false,
+            isModalUpdateOpen: false,
+            isModalDeleteOpen: false,
             deleteInventoryItemData: null,
             summaryStats: {
                 total: 0,
@@ -211,7 +212,7 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     
                     toast.success('Item deleted successfully!');
                     set({ 
-                        isDeleteModalOpen: false, 
+                        isModalDeleteOpen: false, 
                         deleteInventoryItemData: null 
                     });
 
@@ -234,17 +235,24 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 }
             },
 
-            openAddModal: () => {
+            openModalCreate: () => {
+                set({ 
+                    isModalCreateOpen: true,
+                    validationErrors: {}
+                });
+            },
+
+            openModalAdd: () => {
                 set({ 
                     selectedInventoryItem: null,
-                    isModalOpen: true,
+                    isModalUpdateOpen: true,
                     isRestockMode: false,
                     isAddQuantityMode: false,
                     validationErrors: {}
                 });
             },
 
-            openUpdateModal: (item: InventoryItemFormData, restockMode: boolean = false, addQuantityMode: boolean = false) => {
+            openModalUpdate: (item: InventoryItemFormData, restockMode: boolean = false, addQuantityMode: boolean = false) => {
                 const formData: InventoryItemFormData & { id?: string } = {
                     id: item.id,
                     itemName: item.itemName,
@@ -257,14 +265,14 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
 
                 set({ 
                     selectedInventoryItem: formData, 
-                    isModalOpen: true,
+                    isModalUpdateOpen: true,
                     isRestockMode: restockMode,
                     isAddQuantityMode: addQuantityMode,
                     validationErrors: {}
                 });
             },
 
-            openDeleteModal: (item: InventoryItemFormData) => {
+            openModalDelete: (item: InventoryItemFormData) => {
                 if (!item.id) {
                     console.error('Item ID is missing:', item);
                     return;
@@ -276,13 +284,21 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                         itemName: String(item.itemName),
                         itemType: 'Inventory Item'
                     },
-                    isDeleteModalOpen: true
+                    isModalDeleteOpen: true
                 });
             },
 
-            closeUpdateModal: () => {
+            closeModalCreate: () => {
                 set({ 
-                    isModalOpen: false, 
+                    isModalCreateOpen: false, 
+                    selectedInventoryItem: null,
+                    validationErrors: {}
+                });
+            },
+
+            closeModalUpdate: () => {
+                set({ 
+                    isModalUpdateOpen: false, 
                     selectedInventoryItem: null,
                     isRestockMode: false,
                     isAddQuantityMode: false,
@@ -290,9 +306,9 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 });
             },
 
-            closeDeleteModal: () => {
+            closeModalDelete: () => {
                 set({ 
-                    isDeleteModalOpen: false, 
+                    isModalDeleteOpen: false, 
                     deleteInventoryItemData: null 
                 });
             },

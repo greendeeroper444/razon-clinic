@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus as updateAppointmentStatusService, addAppointment  } from '../services'
 import { AppointmentFormData, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
 import { toast } from 'sonner'
-import { handleStoreError } from '../utils/errorHandler'
+import { handleStoreError } from '../utils'
 
 export const useAppointmentStore = create<ExtendedAppointmentState>()(
     devtools(

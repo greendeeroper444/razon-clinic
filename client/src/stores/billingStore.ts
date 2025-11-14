@@ -3,6 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { toast } from 'sonner';
 import { BillingState, OperationType, BillingFormData, FetchParams } from '../types';
 import { getBillings, addBilling, updateBilling, deleteBilling, getBillingById, exportBillings } from '../services';
+import { handleStoreError } from '../utils';
 
 export const useBillingStore = create<BillingState>()(
     devtools(
@@ -26,6 +27,7 @@ export const useBillingStore = create<BillingState>()(
             deleteBillingData: null,
             currentBilling: null,
             currentOperation: null as OperationType,
+            validationErrors: {},
             pagination: {
                 currentPage: 1,
                 totalPages: 1,
@@ -42,6 +44,45 @@ export const useBillingStore = create<BillingState>()(
                 searchTerm: null
             },
 
+            clearValidationErrors: () => set({ validationErrors: {} }),
+
+            addBilling: async (data: BillingFormData) => {
+                try {
+                    set({ 
+                        submitLoading: true, 
+                        isProcessing: true, 
+                        currentOperation: 'create',
+                        validationErrors: {}
+                    });
+                    
+                    await addBilling(data);
+                    await get().fetchBillings();
+                    
+                    toast.success('Billing added successfully!');
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false, 
+                            isProcessing: false,
+                            currentOperation: null
+                        })
+                    }, 500)
+
+                } catch (error) {
+                    handleStoreError(error, {
+                        set,
+                        defaultMessage: 'Failed to add billing'
+                    });
+
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        currentOperation: null
+                    });
+
+                    throw error;
+                }
+            },
 
             fetchSummaryStats: async () => {
                 try {
@@ -68,7 +109,6 @@ export const useBillingStore = create<BillingState>()(
                 }
             },
 
-            //fetch billings with pagination and filters
             fetchBillings: async (params: FetchParams) => {
                 try {
                     set({ fetchLoading: true, loading: true, error: null,});
@@ -121,7 +161,6 @@ export const useBillingStore = create<BillingState>()(
                 }
             },
 
-
             fetchBillingById: async (billingId: string) => {
                 try {
                     set({ fetchLoading: true, error: null });
@@ -151,51 +190,19 @@ export const useBillingStore = create<BillingState>()(
                 }
             },
 
-            //add billing
-            addBilling: async (data: BillingFormData) => {
-                try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
-                    
-                    await addBilling(data);
-                    await get().fetchBillings();
-                    
-                    toast.success('Billing added successfully!');
-                    set({ isModalOpen: false, selectedBilling: null });
-
-
-                    setTimeout(() => {
-                        set({ 
-                            submitLoading: false, 
-                            isProcessing: false,
-                            currentOperation: null
-                        })
-                    }, 500)
-
-                } catch (error) {
-                    console.error('Error adding billing:', error);
-                    toast.error('Failed to add billing');
-                    set({ 
-                        submitLoading: false, 
-                        isProcessing: false,
-                        isModalOpen: false,
-                        currentOperation: null
-                    })
-                }
-            },
-
-            //update billing
             updateBillingData: async (id: string, data: BillingFormData) => {
                 try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'update' });
+                    set({ 
+                        submitLoading: true, 
+                        isProcessing: true, 
+                        currentOperation: 'update',
+                        validationErrors: {}
+                    });
                     
                     await updateBilling(id, data);
                     await get().fetchBillings();
 
                     toast.success('Billing updated successfully!');
-                    set({ 
-                        isModalOpen: false, 
-                        selectedBilling: null
-                    });
 
                     setTimeout(() => {
                         set({ 
@@ -205,18 +212,21 @@ export const useBillingStore = create<BillingState>()(
                         })
                     }, 500);
                 } catch (error) {
-                    console.error('Error updating billing:', error);
-                    toast.error('Failed to update billing');
+                    handleStoreError(error, {
+                        set,
+                        defaultMessage: 'Failed to update billing'
+                    });
+
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isModalOpen: false,
                         currentOperation: null
-                    })
+                    });
+
+                    throw error;
                 }
             },
 
-            //delete billing
             deleteBilling: async (id: string) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
@@ -255,6 +265,7 @@ export const useBillingStore = create<BillingState>()(
                 set({ 
                     selectedBilling: null,
                     isModalOpen: true,
+                    validationErrors: {}
                 });
             },
 
@@ -262,6 +273,7 @@ export const useBillingStore = create<BillingState>()(
                 set({ 
                     selectedBilling: billing, 
                     isModalOpen: true,
+                    validationErrors: {}
                 });
             },
 
@@ -285,6 +297,7 @@ export const useBillingStore = create<BillingState>()(
                 set({ 
                     isModalOpen: false, 
                     selectedBilling: null,
+                    validationErrors: {}
                 });
             },
 

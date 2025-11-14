@@ -89,8 +89,9 @@ export interface InventoryState {
 
     //modal state
     selectedInventoryItem: (InventoryItemFormData & { id?: string }) | null;
-    isModalOpen: boolean;
-    isDeleteModalOpen: boolean;
+    isModalCreateOpen: boolean;
+    isModalUpdateOpen: boolean;
+    isModalDeleteOpen: boolean;
     deleteInventoryItemData: { id: string, itemName: string, itemType: string } | null;
 
     //summary stats state
@@ -114,11 +115,13 @@ export interface InventoryState {
     clearValidationErrors: () => void;
 
     //modal actions
-    openAddModal: () => void;
-    openUpdateModal: (item: InventoryItemFormData, restockMode?: boolean, addQuantityMode?: boolean) => void;
-    openDeleteModal: (item: InventoryItemFormData) => void;
-    closeUpdateModal: () => void;
-    closeDeleteModal: () => void;
+    openModalCreate: () => void;
+    openModalAdd: () => void;
+    openModalUpdate: (item: InventoryItemFormData, restockMode?: boolean, addQuantityMode?: boolean) => void;
+    openModalDelete: (item: InventoryItemFormData) => void;
+    closeModalCreate: () => void;
+    closeModalUpdate: () => void;
+    closeModalDelete: () => void;
 
     //utility actions
     setLoading: (loading: boolean) => void;

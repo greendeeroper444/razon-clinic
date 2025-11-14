@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { MedicalRecordFormData, OperationType, MedicalRecord, ExtendedMedicalRecordState, Patient, FetchParams } from '../types'
 import { softDeleteMedicalRecord, getMedicalRecordById, getMedicalRecords, updateMedicalRecord, addMedicalRecord, getMyMedicalRecords, exportMedicalRecords } from '../services';
 import { toast } from 'sonner';
-import { handleApiError } from '../utils/errorHandler';
+import { handleStoreError, formatDate } from '../utils';
 
 export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
     devtools(
@@ -24,6 +24,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
             currentMedicalRecord: null,
             viewMode: 'user' as 'admin' | 'user',
             currentOperation: null as OperationType,
+            validationErrors: {},
             pagination: {
                 currentPage: 1,
                 totalPages: 1,
@@ -40,18 +41,21 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 searchTerm: null
             },
 
-            //add new medical record
+            clearValidationErrors: () => set({ validationErrors: {} }),
+
             addMedicalRecord: async (data: MedicalRecordFormData) => {
                 try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
+                    set({ 
+                        submitLoading: true, 
+                        isProcessing: true, 
+                        currentOperation: 'create',
+                        validationErrors: {}
+                    });
                     
                     await addMedicalRecord(data);
-                    
-                    //refresh data
                     await get().fetchMedicalRecords();
                     
                     toast.success('Medical record created successfully!');
-                    set({ isModalOpen: false, selectedMedicalRecord: null });
 
                     setTimeout(() => {
                         set({ 
@@ -62,28 +66,21 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     }, 500);
 
                 } catch (error) {
-                    console.error('Error creating medical record:', error);
-                    const { message, validationErrors } = handleApiError(
-                        error, 
-                        'Failed to add appointment'
-                    );
-                    toast.error(message);
-                    if (validationErrors) {
-                        console.log('Validation errors:', validationErrors);
-                    }
-                    
+                    handleStoreError(error, {
+                        set,
+                        defaultMessage: 'Failed to add medical record'
+                    });
+
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        currentOperation: null,
-                        // isModalOpen: true, 
-                        // selectedMedicalRecord: null,
+                        currentOperation: null
                     });
+
+                    throw error;
                 }
             },
 
-            
-            //fetch all medical records with pagination and search
             fetchMedicalRecords: async (params: FetchParams) => {
                 const currentState = get();
                 
@@ -228,7 +225,6 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 }
             },
 
-            //fetch medical record by id for details page
             fetchMedicalRecordById: async (medicalRecordId: string) => {
                 try {
                     set({ fetchLoading: true, loading: true, error: null });
@@ -260,14 +256,16 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 }
             },
 
-            //update medical record
             updateMedicalRecordData: async (id: string, data: MedicalRecordFormData) => {
                 try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'update' });
+                    set({ 
+                        submitLoading: true, 
+                        isProcessing: true, 
+                        currentOperation: 'update',
+                        validationErrors: {}
+                    });
                     
                     await updateMedicalRecord(id, data);
-                    
-                    //refresh data
                     await get().fetchMedicalRecords();
 
                     //refresh it too
@@ -277,7 +275,6 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     }
                     
                     toast.success('Updated medical record successfully!');
-                    set({ isModalOpen: false, selectedMedicalRecord: null });
 
                     setTimeout(() => {
                         set({ 
@@ -288,19 +285,21 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     }, 500);
 
                 } catch (error) {
-                    console.error('Error updating medical record:', error);
-                    toast.error('Failed to update medical record');
+                    handleStoreError(error, {
+                        set,
+                        defaultMessage: 'Failed to update medical record'
+                    });
+
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isModalOpen: false, 
-                        selectedMedicalRecord: null,
                         currentOperation: null
                     });
+
+                    throw error;
                 }
             },
 
-            //delete medical record
             softDeleteMedicalRecord: async (id: string) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
@@ -364,7 +363,6 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
             },
 
 
-            //view record details
             viewMedicalRecord: async (record: MedicalRecordFormData) => {
                 try {
                     const response = await getMedicalRecordById(record.id);
@@ -383,8 +381,6 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 }
             },
 
-
-            //modal actions
             openUpdateModal: (record: MedicalRecord) => {
                 const formData: MedicalRecordFormData & { id?: string } = {
                     id: record.id,
@@ -428,7 +424,8 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 
                 set({ 
                     selectedMedicalRecord: formData, 
-                    isModalOpen: true 
+                    isModalOpen: true,
+                    validationErrors: {}
                 });
             },
 
@@ -446,7 +443,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 set({
                     softDeleteMedicalRecordData: {
                         id: record.id,
-                        itemName: `${patientName}'s medical record from ${new Date(recordDate).toLocaleDateString()}`,
+                        itemName: `${patientName}'s medical record from ${formatDate(recordDate)}`,
                         itemType: 'Medical Record'
                     },
                     isDeleteModalOpen: true
@@ -454,7 +451,11 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
             },
 
             closeUpdateModal: () => {
-                set({ isModalOpen: false, selectedMedicalRecord: null });
+                set({ 
+                    isModalOpen: false, 
+                    selectedMedicalRecord: null,
+                    validationErrors: {}
+                });
             },
 
             closeStatusModal: () => {

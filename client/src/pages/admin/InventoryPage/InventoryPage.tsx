@@ -4,12 +4,12 @@ import { Plus, Edit, Trash } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
 import { FormDataType, InventoryItemFormData, TableColumn } from '../../../types';
-import { formatDate, getExpiryStatus, getItemIcon, getLoadingText, getStockStatus, openModalWithRefresh } from '../../../utils';
+import { formatDate, getExpiryStatus, getItemIcon, getLoadingText, getStockStatus } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
 import { useInventoryStore } from '../../../stores';
 import { useLocation } from 'react-router-dom';
 
-const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
+const InventoryPage: React.FC<OpenModalProps> = () => {
     const location = useLocation();
     
     //zustand store selectors
@@ -21,8 +21,9 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         isProcessing,
         summaryStats,
         selectedInventoryItem,
-        isModalOpen,
-        isDeleteModalOpen,
+        isModalCreateOpen,
+        isModalUpdateOpen,
+        isModalDeleteOpen,
         deleteInventoryItemData,
         isRestockMode,
         isAddQuantityMode,
@@ -31,10 +32,12 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         addInventoryItem,
         updateInventoryItemData,
         deleteInventoryItem,
-        openUpdateModal,
-        openDeleteModal,
-        closeUpdateModal,
-        closeDeleteModal,
+        openModalCreate,
+        openModalUpdate,
+        openModalDelete,
+        closeModalCreate,
+        closeModalUpdate,
+        closeModalDelete,
         currentOperation
     } = useInventoryStore();
 
@@ -68,15 +71,15 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                 const currentItem = inventoryItems.find(item => item.id === state.restockItem?.id);
                 
                 if (currentItem) {
-                    openUpdateModal(currentItem, true, true);
+                    openModalUpdate(currentItem, true, true);
                 } else {
-                    openUpdateModal(state.restockItem, true, true);
+                    openModalUpdate(state.restockItem, true, true);
                 }
                 
                 window.history.replaceState({}, document.title);
             }
         }
-    }, [location.state, loading, inventoryItems, openUpdateModal]);
+    }, [location.state, loading, inventoryItems, openModalUpdate]);
 
     //handle search
     const handleSearch = useCallback((term: string) => {
@@ -94,26 +97,42 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
 
-    const handleOpenModal = useCallback(() => {
-        openModalWithRefresh({
-            modalType: 'item',
-            openModal,
-            onRefresh: () => fetchData(
-                storePagination?.currentPage || 1, 
-                storePagination?.itemsPerPage || 10, 
-                searchTerm
-            ),
-        });
-    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+    const handleCreateClick = useCallback(() => {
+        openModalCreate();
+    }, [openModalCreate]);
 
     const handleUpdateClick = useCallback((item: InventoryItemFormData, restockMode: boolean = false, addQuantityMode: boolean = false) => {
-        openUpdateModal(item, restockMode, addQuantityMode);
-    }, [openUpdateModal]);
+        openModalUpdate(item, restockMode, addQuantityMode);
+    }, [openModalUpdate]);
 
     const handleDeleteClick = useCallback((item: InventoryItemFormData) => {
-        openDeleteModal(item);
-    }, [openDeleteModal]);
+        openModalDelete(item);
+    }, [openModalDelete]);
 
+     const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string') {
+            console.error('Invalid data for adding invnetory item')
+            return
+        }
+
+        const inventoryData = data as InventoryItemFormData;
+
+        try {
+            await addInventoryItem(inventoryData)
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+                closeModalCreate();
+            }, 600);
+        } catch (error) {
+            console.error('Error adding invnetory item:', error);
+        }
+    }, [addInventoryItem, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
+    
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
             console.error('Invalid data or missing inventory ID');
@@ -165,7 +184,6 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
     }, [deleteInventoryItem, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
     const summaryCards = getInventorySummaryCards(summaryStats);
-
 
     const inventoryColumns: TableColumn<InventoryItemFormData>[] = [
         {
@@ -261,7 +279,7 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             id: 'newItemBtn',
             label: 'New Item',
             icon: <Plus className={styles.icon} /> ,
-            onClick: handleOpenModal,
+            onClick: handleCreateClick,
             type: 'primary' as const
         }
     ];
@@ -366,12 +384,23 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
             }
         </div>
 
-        {/* update/add inventory item modal */}
         {
-            isModalOpen && (
+            isModalCreateOpen && (
                 <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeUpdateModal}
+                    isOpen={isModalCreateOpen}
+                    onClose={closeModalCreate}
+                    modalType="item"
+                    onSubmit={handleSubmitCreate}
+                    isProcessing={submitLoading}
+                />
+            )
+        }
+
+        {
+            isModalUpdateOpen && (
+                <Modal
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
                     modalType='item'
                     onSubmit={handleSubmitUpdate}
                     editData={selectedInventoryItem}
@@ -381,13 +410,12 @@ const InventoryPage: React.FC<OpenModalProps> = ({openModal}) => {
                 />
             )
         }
-
-        {/* delete inventory item modal */}
+        
         {
-            isDeleteModalOpen && deleteInventoryItemData && (
+            isModalDeleteOpen && deleteInventoryItemData && (
                 <Modal
-                    isOpen={isDeleteModalOpen}
-                    onClose={closeDeleteModal}
+                    isOpen={isModalDeleteOpen}
+                    onClose={closeModalDelete}
                     modalType='delete'
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteInventoryItemData}

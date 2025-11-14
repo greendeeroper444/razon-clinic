@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { toast } from 'sonner';
 import { FetchParams, OperationType, PatientFormData, PatientState } from '../types';
 import { addPatient, deletePatient, getPatients, updatePatient, getPatientById, archivePatient, unarchivePatient, archiveMultiplePatients, unarchiveMultiplePatients } from '../services';
-import { handleStoreError } from '../utils/errorHandler';
+import { handleStoreError } from '../utils';
 
 export const usePatientStore = create<PatientState>()(
     devtools(
@@ -526,7 +526,6 @@ export const usePatientStore = create<PatientState>()(
                 }
             },
 
-            //modal actions
             openAddModal: () => {
                 set({ 
                     selectedPatient: null,
