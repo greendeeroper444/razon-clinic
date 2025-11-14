@@ -14,12 +14,12 @@ const validatePatient = [
         .isLength({ min: 3, max: 50 }).withMessage('Last name must be between 3 and 50 characters'),
     
     body('middleName')
-        .optional()
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
     
     body('email')
-        .optional()
+        .optional({ values: 'falsy' })
         .trim()
         .isEmail().withMessage('Must be a valid email address')
         .normalizeEmail(),
