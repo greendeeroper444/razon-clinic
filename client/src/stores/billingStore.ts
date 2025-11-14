@@ -57,7 +57,7 @@ export const useBillingStore = create<BillingState>()(
                     });
                     
                     await addBilling(data);
-                    await get().fetchBillings();
+                    await get().fetchBillings({});
                     
                     toast.success('Billing added successfully!');
 

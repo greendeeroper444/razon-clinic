@@ -4,6 +4,8 @@ import { BillingFormProps, InventoryItem, InventoryItemOption, MedicalRecordOpti
 import { getInventoryItems, getMedicalRecordsForBilling } from '../../../../services';
 import Select from '../../../ui/Select/Select';
 import Input from '../../../ui/Input/Input';
+import { useBillingStore } from '../../../../stores';
+import useScrollToError from '../../../../hooks/useScrollToError';
 
 const BillingForm: React.FC<BillingFormProps> = ({
     formData,
@@ -13,6 +15,25 @@ const BillingForm: React.FC<BillingFormProps> = ({
     const [availableItems, setAvailableItems] = useState<InventoryItemOption[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const validationErrors = useBillingStore((state) => state.validationErrors);
+        
+    const { fieldRefs } = useScrollToError({
+        validationErrors,
+        fieldOrder: [
+            'medicalRecordId',
+            'patientName',
+            'paymentStatus'
+        ],
+        scrollBehavior: 'smooth',
+        scrollBlock: 'center',
+        focusDelay: 300
+    });
+
+    const getFieldError = (fieldName: string): string | undefined => {
+        const errors = validationErrors[fieldName];
+        return errors && errors.length > 0 ? errors[0] : undefined;
+    };
+    
 
     //fetch data on component mount
     useEffect(() => {
@@ -238,7 +259,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
         return (
             <div className={styles.error}>
                 <p>{error}</p>
-                <button onClick={() => window.location.reload()}>Retry</button>
+                <button type='submit' onClick={() => window.location.reload()}>Retry</button>
             </div>
         );
     }
@@ -246,20 +267,22 @@ const BillingForm: React.FC<BillingFormProps> = ({
   return (
     <>
         <Select
+            ref={(el) => { fieldRefs.current['medicalRecordId'] = el; }}
             label='Select Medical Record'
             name='medicalRecordId'
             value={formData?.medicalRecordId || ''}
             onChange={handleMedicalRecordChange}
             placeholder='Choose a medical record...'
             leftIcon='user'
-            required
             options={medicalRecords.map(record => ({
                 value: record.id,
                 label: `${record.patientName} - ${record.date} (${record.diagnosis})`
             }))}
+            error={getFieldError('medicalRecordId')}
         />
 
         <Input
+            ref={(el) => { fieldRefs.current['patientName'] = el; }}
             type='text'
             label='Patient Name *'
             name='patientName'
@@ -267,8 +290,8 @@ const BillingForm: React.FC<BillingFormProps> = ({
             onChange={onChange}
             placeholder="Enter patient's full name"
             leftIcon='user'
-            required
             maxLength={100}
+            error={getFieldError('patientName')}
         />
 
         <div className={styles.billingSection}>
@@ -377,6 +400,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
         </div>
 
         <Select
+            ref={(el) => { fieldRefs.current['paymentStatus'] = el; }}
             name='paymentStatus'
             label='Payment Status'
             title='Select Status'
@@ -389,6 +413,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                 { value: 'Pending', label: 'Pending' },
                 { value: 'Paid', label: 'Paid' }
             ]}
+            error={getFieldError('paymentStatus')}
         />
         <div className={styles.totalSection}>
             <span className={styles.totalLabel}>Total Amount:</span>
