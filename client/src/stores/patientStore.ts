@@ -3,6 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { toast } from 'sonner';
 import { FetchParams, OperationType, PatientFormData, PatientState } from '../types';
 import { addPatient, deletePatient, getPatients, updatePatient, getPatientById, archivePatient, unarchivePatient, archiveMultiplePatients, unarchiveMultiplePatients } from '../services';
+import { handleStoreError } from '../utils/errorHandler';
 
 export const usePatientStore = create<PatientState>()(
     devtools(
@@ -31,6 +32,7 @@ export const usePatientStore = create<PatientState>()(
             itemsPerPage: 10,
             activeTab: 'all' as const,
             currentOperation: null as OperationType,
+            validationErrors: {},
             pagination: {
                 currentPage: 1,
                 totalPages: 1,
@@ -45,6 +47,53 @@ export const usePatientStore = create<PatientState>()(
                 previousPage: null,
                 remainingItems: 0,
                 searchTerm: null
+            },
+
+            clearValidationErrors: () => set({ validationErrors: {} }),
+
+            addPatient: async (data: PatientFormData) => {
+                try {
+                    set({ 
+                        submitLoading: true, 
+                        isProcessing: true, 
+                        currentOperation: 'create',
+                        validationErrors: {}
+                    });
+                    
+                    await addPatient(data);
+                    
+                    const { pagination, searchQuery } = get()
+                    await get().fetchPatients({ 
+                        page: pagination?.currentPage, 
+                        limit: pagination?.itemsPerPage,
+                        search: searchQuery 
+                    })
+                    
+                    toast.success('Patient added successfully!');
+                    set({ isModalOpen: false, selectedPatient: null });
+
+                    setTimeout(() => {
+                        set({ 
+                            submitLoading: false, 
+                            isProcessing: false,
+                            currentOperation: null
+                        })
+                    }, 500)
+
+                } catch (error) {
+                    handleStoreError(error, {
+                        set,
+                        defaultMessage: 'Failed to add patient'
+                    });
+
+                    set({ 
+                        submitLoading: false, 
+                        isProcessing: false,
+                        currentOperation: null
+                    });
+
+                    throw error;
+                }
             },
 
             fetchSummaryStats: async () => {
@@ -84,7 +133,6 @@ export const usePatientStore = create<PatientState>()(
                 }
             },
 
-            //fetch patients
             fetchPatients: async (params: FetchParams) => {
                 const currentState = get();
                 
@@ -178,47 +226,14 @@ export const usePatientStore = create<PatientState>()(
                 }
             },
 
-            //add patient
-            addPatient: async (data: PatientFormData) => {
-                try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
-                    
-                    await addPatient(data);
-                    
-                    const { pagination, searchQuery } = get()
-                    await get().fetchPatients({ 
-                        page: pagination?.currentPage, 
-                        limit: pagination?.itemsPerPage,
-                        search: searchQuery 
-                    })
-                    
-                    toast.success('Patient added successfully!');
-                    set({ isModalOpen: false, selectedPatient: null });
-
-                    setTimeout(() => {
-                        set({ 
-                            submitLoading: false, 
-                            isProcessing: false,
-                            currentOperation: null
-                        })
-                    }, 500)
-
-                } catch (error) {
-                    console.error('Error adding patient:', error);
-                    toast.error('Failed to add patient');
-                    set({ 
-                        submitLoading: false, 
-                        isProcessing: false,
-                        isModalOpen: false,
-                        currentOperation: null
-                    })
-                }
-            },
-
-            //update patient
             updatePatientData: async (id: string, data: PatientFormData) => {
                 try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'update' });
+                    set({ 
+                        submitLoading: true, 
+                        isProcessing: true, 
+                        currentOperation: 'update',
+                        validationErrors: {}
+                    });
                     
                     await updatePatient(id, data);
                     
@@ -246,18 +261,21 @@ export const usePatientStore = create<PatientState>()(
                     }, 500);
 
                 } catch (error) {
-                    console.error('Error updating patient:', error);
-                    toast.error('Failed to update patient');
+                    handleStoreError(error, {
+                        set,
+                        defaultMessage: 'Failed to update patient'
+                    });
+
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isModalOpen: false,
                         currentOperation: null
-                    })
+                    });
+
+                    throw error;
                 }
             },
 
-            //delete patient
             deletePatient: async (id: string) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
@@ -518,6 +536,7 @@ export const usePatientStore = create<PatientState>()(
                 set({ 
                     selectedPatient: null,
                     isModalOpen: true,
+                    validationErrors: {}
                 });
             },
 
@@ -549,6 +568,7 @@ export const usePatientStore = create<PatientState>()(
                 set({ 
                     selectedPatient: formData, 
                     isModalOpen: true,
+                    validationErrors: {}
                 });
             },
 
@@ -572,6 +592,7 @@ export const usePatientStore = create<PatientState>()(
                 set({ 
                     isModalOpen: false, 
                     selectedPatient: null,
+                    validationErrors: {}
                 });
             },
 

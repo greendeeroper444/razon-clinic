@@ -1,4 +1,4 @@
-import { useState, SelectHTMLAttributes } from 'react'
+import { useState, SelectHTMLAttributes, forwardRef } from 'react'
 import styles from './Select.module.css'
 import { User, Mail, Lock, Calendar, Users, ChevronDown, Clock, Pill, BadgeCheck } from 'lucide-react'
 
@@ -19,7 +19,7 @@ interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'onC
     placeholder?: string
 }
 
-const Select: React.FC<SelectProps> = ({
+const Select = forwardRef<HTMLSelectElement, SelectProps>(({
     label,
     error,
     onChange,
@@ -28,7 +28,7 @@ const Select: React.FC<SelectProps> = ({
     placeholder = 'Select an option',
     className,
     ...props
-}) => {
+}, ref) => {
     const [focused, setFocused] = useState<boolean>(false)
 
     const selectClasses = [
@@ -62,7 +62,6 @@ const Select: React.FC<SelectProps> = ({
         }
     }
 
-
   return (
     <div className={styles.container}>
         {label && <label className={styles.label}>{label}</label>}
@@ -76,6 +75,7 @@ const Select: React.FC<SelectProps> = ({
             }
 
             <select
+                ref={ref}
                 className={selectClasses}
                 onChange={onChange}
                 onFocus={() => setFocused(true)}
@@ -105,6 +105,8 @@ const Select: React.FC<SelectProps> = ({
         {error && <div className={styles.errorMessage}>{error}</div>}
     </div>
   )
-}
+})
+
+Select.displayName = 'Select'
 
 export default Select

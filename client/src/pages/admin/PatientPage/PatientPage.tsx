@@ -4,15 +4,16 @@ import { Plus } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components';
 import { FormDataType, PatientDisplayData, PatientFormData, TableColumn } from '../../../types';
-import { calculateAge2, generateInitials, getLoadingText, openModalWithRefresh } from '../../../utils';
+import { calculateAge2, generateInitials, getLoadingText } from '../../../utils';
 import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
 import { useAuthenticationStore, usePatientStore } from '../../../stores';
 import { useNavigate } from 'react-router-dom';
 
-const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
+const PatientPage: React.FC<OpenModalProps> = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const navigate = useNavigate();
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     //zustand store selectors
     const {
@@ -88,16 +89,12 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
     );
 
     const handleOpenModal = useCallback(() => {
-        openModalWithRefresh({
-            modalType: 'patient',
-            openModal,
-            onRefresh: () => fetchData(
-                storePagination?.currentPage || 1, 
-                storePagination?.itemsPerPage || 10, 
-                searchTerm
-            ),
-        });
-    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+        setIsAddModalOpen(true);
+    }, []);
+
+    const handleCloseAddModal = useCallback(() => {
+        setIsAddModalOpen(false);
+    }, []);
 
     //handle view patient details
     const handleViewClick = (patient: PatientDisplayData) => {
@@ -126,6 +123,31 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
             console.error('Error archiving patient:', error);
         }
     }, [archiveSinglePatient]);
+
+    const handleSubmitAdd = useCallback(async (data: FormDataType | string): Promise<void> => {
+            if (typeof data === 'string') {
+                console.error('Invalid data for adding patient')
+                return
+            }
+    
+            const patientData = data as PatientFormData;
+    
+            try {
+                await addPatient(patientData)
+    
+                setTimeout(() => {
+                    fetchData(
+                        storePagination?.currentPage || 1, 
+                        storePagination?.itemsPerPage || 10, 
+                        searchTerm
+                    );
+                    handleCloseAddModal();
+                }, 600);
+            } catch (error) {
+                console.error('Error adding patient:', error);
+            }
+        }, [addPatient, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, handleCloseAddModal])
+    
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !selectedPatient || !selectedPatient.id) {
@@ -367,7 +389,7 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                                     totalItems={storePagination.totalItems}
                                     itemsPerPage={storePagination.itemsPerPage}
                                     onPageChange={handlePageChange}
-                    disabled={loading || isProcessing}
+                                    disabled={loading || isProcessing}
                                     className={styles.pagination}
                                 />
                             )
@@ -376,6 +398,19 @@ const PatientPage: React.FC<OpenModalProps> = ({openModal}) => {
                 )
             }
         </div>
+
+        {/* add patient modal */}
+        {
+            isAddModalOpen && (
+                <Modal
+                    isOpen={isAddModalOpen}
+                    onClose={handleCloseAddModal}
+                    modalType="patient"
+                    onSubmit={handleSubmitAdd}
+                    isProcessing={submitLoading}
+                />
+            )
+        }
 
         {/* update patient modal */}
         {

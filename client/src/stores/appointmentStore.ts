@@ -3,12 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus as updateAppointmentStatusService, addAppointment  } from '../services'
 import { AppointmentFormData, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
 import { toast } from 'sonner'
-import { handleApiError, handleStoreError } from '../utils/errorHandler'
-
-type ValidationError = {
-    field: string;
-    message: string;
-}
+import { handleStoreError } from '../utils/errorHandler'
 
 export const useAppointmentStore = create<ExtendedAppointmentState>()(
     devtools(
@@ -75,7 +70,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         });
                     }, 500);
 
-                } catch (error: any) {
+                } catch (error) {
                     handleStoreError(error, {
                         set,
                         defaultMessage: 'Failed to add appointment'
@@ -261,10 +256,10 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         });
                     }, 500);
 
-                } catch (error: any) {
+                } catch (error) {
                     handleStoreError(error, {
                         set,
-                        defaultMessage: 'Failed to add appointment'
+                        defaultMessage: 'Failed to update appointment'
                     });
 
                     set({ 

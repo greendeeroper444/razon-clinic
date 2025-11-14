@@ -1,4 +1,4 @@
-import { useState, InputHTMLAttributes, ReactNode } from 'react'
+import { useState, InputHTMLAttributes, ReactNode, forwardRef } from 'react'
 import styles from './Input.module.css'
 import { User, EyeOff, Eye, Lock, Mail, Calendar, Church } from 'lucide-react'
 
@@ -14,7 +14,7 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChan
     onRightIconClick?: () => void;
 }
 
-const Input: React.FC<InputProps> = ({ 
+const Input = forwardRef<HTMLInputElement, InputProps>(({ 
     label, 
     error, 
     onChange, 
@@ -24,7 +24,7 @@ const Input: React.FC<InputProps> = ({
     onRightIconClick,
     className,
     ...props 
-}) => {
+}, ref) => {
     const [focused, setFocused] = useState<boolean>(false)
 
     const inputClasses = [
@@ -83,6 +83,7 @@ const Input: React.FC<InputProps> = ({
             }
 
             <input 
+                ref={ref}
                 className={inputClasses}
                 onChange={onChange}
                 onFocus={handleFocus}
@@ -106,6 +107,8 @@ const Input: React.FC<InputProps> = ({
         {error && <div className={styles.errorMessage}>{error}</div>}
     </div>
   )
-}
+})
+
+Input.displayName = 'Input'
 
 export default Input

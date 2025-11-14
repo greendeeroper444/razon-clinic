@@ -110,6 +110,8 @@ export interface InventoryState {
     addInventoryItem: (data: InventoryItemFormData) => Promise<void>;
     updateInventoryItemData: (id: string, data: InventoryItemFormData) => Promise<void>;
     deleteInventoryItem: (id: string) => Promise<void>;
+    validationErrors: Record<string, string[]>;
+    clearValidationErrors: () => void;
 
     //modal actions
     openAddModal: () => void;
@@ -170,6 +172,8 @@ export interface MedicalRecordState {
     updateMedicalRecordData: (id: string, data: MedicalRecordFormData) => Promise<void>;
     softDeleteMedicalRecord: (id: string) => Promise<void>;
     viewMedicalRecord: (record: MedicalRecordResponse) => Promise<void>;
+    validationErrors: Record<string, string[]>;
+    clearValidationErrors: () => void;
     
     //state for medical record details
     clearCurrentMedicalRecord: () => void;
@@ -251,6 +255,8 @@ export interface BillingState {
     //pagination actions
     setCurrentPage: (page: number) => void;
     clearCurrentBilling: () => void;
+    validationErrors: Record<string, string[]>;
+    clearValidationErrors: () => void;
 
     //filter actions
     setSearchTerm: (term: string) => void;
@@ -313,11 +319,11 @@ export interface PatientState {
     fetchPatients: (params?: FetchParams) => Promise<void>;
     fetchSummaryStats: () => Promise<void>;
     fetchPatientById: (patientId: string) => Promise<void>;
-    
-    //CRUD actions
     addPatient: (data: PatientFormData) => Promise<void>;
     updatePatientData: (id: string, data: PatientFormData) => Promise<void>;
     deletePatient: (id: string) => Promise<void>;
+    validationErrors: Record<string, string[]>;
+    clearValidationErrors: () => void;
     
     //navigation actions
     setSearchQuery: (query: string) => void;

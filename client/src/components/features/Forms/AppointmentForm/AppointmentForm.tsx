@@ -7,6 +7,7 @@ import Input from '../../../ui/Input/Input'
 import Select, { SelectOption } from '../../../ui/Select/Select'
 import TextArea from '../../../ui/TextArea/TextArea'
 import { useAppointmentStore } from '../../../../stores'
+import { useScrollToError } from '../../../../hooks/useScrollToError'
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({
     formData,
@@ -18,12 +19,39 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
     const validationErrors = useAppointmentStore((state) => state.validationErrors);
 
+    const { fieldRefs } = useScrollToError({
+        validationErrors,
+        fieldOrder: [
+            'firstName',
+            'lastName',
+            'middleName',
+            'birthdate',
+            'sex',
+            'height',
+            'weight',
+            'motherName',
+            'motherAge',
+            'motherOccupation',
+            'fatherName',
+            'fatherAge',
+            'fatherOccupation',
+            'contactNumber',
+            'address',
+            'religion',
+            'preferredDate',
+            'preferredTime',
+            'reasonForVisit'
+        ],
+        scrollBehavior: 'smooth',
+        scrollBlock: 'center',
+        focusDelay: 300
+    });
+
     const getFieldError = (fieldName: string): string | undefined => {
         const errors = validationErrors[fieldName];
         return errors && errors.length > 0 ? errors[0] : undefined;
     };
 
-    //fetch existing appointments to check for conflicts
     useEffect(() => {
         const fetchBookedSlots = async () => {
             try {
@@ -47,13 +75,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         fetchBookedSlots();
     }, []);
 
-    //update available times when date changes
     useEffect(() => {
         if (formData?.preferredDate) {
             const selectedDate = formData.preferredDate;
             const allTimes = generateTimeSlots();
             
-            //filter out booked times for the selected date
             const bookedTimesForDate = bookedSlots
                 .filter(slot => slot.date === selectedDate)
                 .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time));
@@ -68,7 +94,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     const getReasonError = () => {
         const reason = formData?.reasonForVisit || '';
         
-        // Check for API validation error first
         const apiError = getFieldError('reasonForVisit');
         if (apiError) return apiError;
         
@@ -83,7 +108,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         return undefined;
     };
 
-    // check if a specific time is available for the selected date
     const isTimeAvailable = (time: string): boolean => {
         if (!formData?.preferredDate) return true;
         
@@ -108,7 +132,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     };
 
     const getTimeSelectError = () => {
-        //check for api validation error first
         const apiError = getFieldError('preferredTime');
         if (apiError) return apiError;
         
@@ -118,7 +141,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         return undefined;
     };
 
-    // check if a date has any available times
     const isDateAvailable = (dateString: string) => {
         const bookedTimesForDate = bookedSlots
             .filter(slot => slot.date === dateString)
@@ -128,21 +150,16 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         return allTimes.some(time => !bookedTimesForDate.includes(time));
     };
 
-    //handle date change
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedDate = e.target.value;
-        
-        //first update the date
         onChange(e);
         
-        //clear the time if it's no longer available for the new date
         if (formData?.preferredTime && selectedDate) {
             const bookedTimesForDate = bookedSlots
                 .filter(slot => slot.date === selectedDate)
                 .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time));
             
             if (bookedTimesForDate.includes(formData.preferredTime)) {
-                //clear the time selection
                 onChange({
                     target: {
                         name: 'preferredTime',
@@ -153,11 +170,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         }
     };
 
-    //handle time change - prevent selection of unavailable times
     const handleTimeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedTime = e.target.value;
         
-        //if the selected time is not available, don't allow the change
         if (selectedTime && !isTimeAvailable(selectedTime)) {
             e.preventDefault();
             return;
@@ -171,6 +186,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <h4>Patient Information</h4>
         
         <Input
+            ref={(el) => { fieldRefs.current['firstName'] = el; }}
             type='text'
             label='First Name'
             name='firstName'
@@ -183,6 +199,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <br />
         
         <Input
+            ref={(el) => { fieldRefs.current['lastName'] = el; }}
             type='text'
             label='Last Name'
             name='lastName'
@@ -195,6 +212,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <br />
 
         <Input
+            ref={(el) => { fieldRefs.current['middleName'] = el; }}
             type='text'
             label='Middle Name (Optional)'
             name='middleName'
@@ -208,6 +226,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         <div className={styles.formRow}>
             <Input
+                ref={(el) => { fieldRefs.current['birthdate'] = el; }}
                 type='date'
                 label='Birthday'
                 name='birthdate'
@@ -223,6 +242,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             />
 
             <Select
+                ref={(el) => { fieldRefs.current['sex'] = el; }}
                 label='Gender'
                 name='sex'
                 title='Select Gender'
@@ -241,6 +261,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         <div className={styles.formRow}>
             <Input
+                ref={(el) => { fieldRefs.current['height'] = el; }}
                 type='number'
                 label='Height (cm) (Optional)'
                 name='height'
@@ -251,6 +272,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             />
 
             <Input
+                ref={(el) => { fieldRefs.current['weight'] = el; }}
                 type='number'
                 label='Weight (kg) (Optional)'
                 name='weight'
@@ -261,12 +283,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             />
         </div>
 
-        {/* mother's information */}
         <div className={styles.sectionDivider}>
             <h4>Mother's Information</h4>
             
             <div className={styles.formRow}>
                 <Input
+                    ref={(el) => { fieldRefs.current['motherName'] = el; }}
                     type='text'
                     label="Name"
                     name='motherName'
@@ -277,6 +299,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 />
 
                 <Input
+                    ref={(el) => { fieldRefs.current['motherAge'] = el; }}
                     type='number'
                     label="Age"
                     name='motherAge'
@@ -288,6 +311,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             </div>
 
             <Input
+                ref={(el) => { fieldRefs.current['motherOccupation'] = el; }}
                 type='text'
                 label="Occupation"
                 name='motherOccupation'
@@ -300,12 +324,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         <br />
 
-        {/* father's information */}
         <div className={styles.sectionDivider}>
             <h4>Father's Information</h4>
             
             <div className={styles.formRow}>
                 <Input
+                    ref={(el) => { fieldRefs.current['fatherName'] = el; }}
                     type='text'
                     label="Name"
                     name='fatherName'
@@ -315,6 +339,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     error={getFieldError('fatherName')}
                 />
                 <Input
+                    ref={(el) => { fieldRefs.current['fatherAge'] = el; }}
                     type='number'
                     label="Age"
                     name='fatherAge'
@@ -326,6 +351,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             </div>
 
             <Input
+                ref={(el) => { fieldRefs.current['fatherOccupation'] = el; }}
                 type='text'
                 label="Occupation"
                 name='fatherOccupation'
@@ -339,6 +365,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <br />
 
         <Input
+            ref={(el) => { fieldRefs.current['contactNumber'] = el; }}
             type='tel'
             label="Contact"
             name='contactNumber'
@@ -351,6 +378,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <br />
 
         <TextArea
+            ref={(el) => { fieldRefs.current['address'] = el; }}
             name='address'
             placeholder='Full Address'
             leftIcon='map-pin'
@@ -364,6 +392,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <br />
 
         <Input
+            ref={(el) => { fieldRefs.current['religion'] = el; }}
             type='text'
             label="Religion"
             name='religion'
@@ -375,10 +404,10 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         <br />
 
-        {/* appointment details */}
         <h4>Appointment Details</h4>
         <div className={styles.formRow}>
             <Input
+                ref={(el) => { fieldRefs.current['preferredDate'] = el; }}
                 type="date"
                 id="preferredDate"
                 name="preferredDate"
@@ -397,6 +426,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             />
 
             <Select
+                ref={(el) => { fieldRefs.current['preferredTime'] = el; }}
                 id="preferredTime"
                 name="preferredTime"
                 label="Preferred Time *"
@@ -411,6 +441,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         </div>
 
         <TextArea
+            ref={(el) => { fieldRefs.current['reasonForVisit'] = el; }}
             id="reasonForVisit"
             name="reasonForVisit"
             label="Reason for Visit *"

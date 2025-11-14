@@ -4,68 +4,112 @@ import { PatientFormProps } from '../../../../types';
 import Input from '../../../ui/Input/Input';
 import Select from '../../../ui/Select/Select';
 import TextArea from '../../../ui/TextArea/TextArea';
+import { usePatientStore } from '../../../../stores';
+import useScrollToError from '../../../../hooks/useScrollToError';
 
 const PatientForm: React.FC<PatientFormProps> = ({
     formData,
     onChange
 }) => {
+    const validationErrors = usePatientStore((state) => state.validationErrors);
+    
+    const { fieldRefs } = useScrollToError({
+        validationErrors,
+        fieldOrder: [
+            'firstName',
+            'lastName',
+            'middleName',
+            'email',
+            'contactNumber',
+            'birthdate',
+            'sex',
+            'address',
+            'religion',
+            'motherInfo.name',
+            'motherInfo.age',
+            'motherInfo.occupation',
+            'fatherInfo.name',
+            'fatherInfo.age',
+            'fatherInfo.occupation'
+        ],
+        scrollBehavior: 'smooth',
+        scrollBlock: 'center',
+        focusDelay: 300
+    });
+
+    const getFieldError = (fieldName: string): string | undefined => {
+        const errors = validationErrors[fieldName];
+        return errors && errors.length > 0 ? errors[0] : undefined;
+    };
+
   return (
     <>
         <Input
+            ref={(el) => { fieldRefs.current['firstName'] = el; }}
             type='text'
             label='First Name'
             name='firstName'
             placeholder="Patient's first name"
             value={formData?.firstName || ''}
             onChange={onChange}
+            error={getFieldError('firstName')}
         />
 
         <br />
 
         <Input
+            ref={(el) => { fieldRefs.current['lastName'] = el; }}
             type='text'
             label='Last Name'
             name='lastName'
             placeholder="Patient's last name"
             value={formData?.lastName || ''}
             onChange={onChange}
+            error={getFieldError('lastName')}
         />
 
         <br />
 
         <Input
+            ref={(el) => { fieldRefs.current['middleName'] = el; }}
             type='text'
             label='Middle Name'
             name='middleName'
             placeholder="Patient's middle name"
             value={formData?.middleName || ''}
             onChange={onChange}
+            error={getFieldError('middleName')}
         />
 
         <br />
 
         <div className={styles.formRow}>
             <Input
+                ref={(el) => { fieldRefs.current['email'] = el; }}
                 type='email'
                 label='Email Address (Optional)'
                 name='email'
                 placeholder="Email Address (optional)"
                 value={formData?.email || ''}
                 onChange={onChange}
+                error={getFieldError('email')}
             />
 
             <Input
+                ref={(el) => { fieldRefs.current['contactNumber'] = el; }}
                 type='tel'
                 label='Contact Number'
                 name='contactNumber'
                 placeholder="Contact Number"
                 value={formData?.contactNumber || ''}
                 onChange={onChange}
+                error={getFieldError('contactNumber')}
             />
         </div>
 
         <div className={styles.formRow}>
             <Input
+                ref={(el) => { fieldRefs.current['birthdate'] = el; }}
                 type='date'
                 label='Birthday'
                 name='birthdate'
@@ -77,9 +121,11 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     const target = e.target as HTMLInputElement;
                     target.type = 'date';
                 }}
+                error={getFieldError('birthdate')}
             />
 
             <Select
+                ref={(el) => { fieldRefs.current['sex'] = el; }}
                 name='sex'
                 label='Gender'
                 title='Select Gender'
@@ -92,10 +138,12 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     { value: 'Female', label: 'Female' },
                     { value: 'Other', label: 'Other' }
                 ]}
+                error={getFieldError('sex')}
             />
         </div>
 
         <TextArea
+            ref={(el) => { fieldRefs.current['address'] = el; }}
             name='address'
             label='Address'
             placeholder='Address'
@@ -104,15 +152,18 @@ const PatientForm: React.FC<PatientFormProps> = ({
             onChange={onChange}
             rows={3}
             resize='vertical'
+            error={getFieldError('address')}
         />
 
         <Input
+            ref={(el) => { fieldRefs.current['religion'] = el; }}
             type='text'
             label="Religion"
             name='religion'
             placeholder="Religion"
             value={formData?.religion || ''}
             onChange={onChange}
+            error={getFieldError('religion')}
         />
 
         <br />
@@ -123,31 +174,37 @@ const PatientForm: React.FC<PatientFormProps> = ({
             
             <div className={styles.formRow}>
                 <Input
+                    ref={(el) => { fieldRefs.current['motherInfo.name'] = el; }}
                     type='text'
                     label="Name"
                     name='motherInfo.name'
                     placeholder="Mother's name"
                     value={formData.motherInfo?.name || ''}
                     onChange={onChange}
+                    error={getFieldError('motherInfo.name')}
                 />
 
                 <Input
+                    ref={(el) => { fieldRefs.current['motherInfo.age'] = el; }}
                     type='number'
                     label="Age"
                     name='motherInfo.age'
                     placeholder="Mother's age"
                     value={formData.motherInfo?.age || ''}
                     onChange={onChange}
+                    error={getFieldError('motherInfo.age')}
                 />
             </div>
 
             <Input
+                ref={(el) => { fieldRefs.current['motherInfo.occupation'] = el; }}
                 type='text'
                 label="Occupation"
                 name='motherInfo.occupation'
                 placeholder="Mother's Occupation"
                 value={formData.motherInfo?.occupation || ''}
                 onChange={onChange}
+                error={getFieldError('motherInfo.occupation')}
             />
         </div>
 
@@ -159,31 +216,37 @@ const PatientForm: React.FC<PatientFormProps> = ({
             
             <div className={styles.formRow}>
                 <Input
+                    ref={(el) => { fieldRefs.current['fatherInfo.name'] = el; }}
                     type='text'
                     label="Name"
                     name='fatherInfo.name'
                     placeholder="Father's name"
                     value={formData.fatherInfo?.name || ''}
                     onChange={onChange}
+                    error={getFieldError('fatherInfo.name')}
                 />
 
                 <Input
+                    ref={(el) => { fieldRefs.current['fatherInfo.age'] = el; }}
                     type='number'
                     label="Age"
                     name='fatherInfo.age'
                     placeholder="Father's age"
                     value={formData.fatherInfo?.age || ''}
                     onChange={onChange}
+                    error={getFieldError('fatherInfo.age')}
                 />
             </div>
 
             <Input
+                ref={(el) => { fieldRefs.current['fatherInfo.occupation'] = el; }}
                 type='text'
                 label="Occupation"
                 name='fatherInfo.occupation'
                 placeholder="Father's Occupation"
                 value={formData.fatherInfo?.occupation || ''}
                 onChange={onChange}
+                error={getFieldError('fatherInfo.occupation')}
             />
         </div>
     </>

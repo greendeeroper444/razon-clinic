@@ -1,4 +1,4 @@
-import { useState, TextareaHTMLAttributes } from 'react'
+import { useState, TextareaHTMLAttributes, forwardRef } from 'react'
 import styles from './TextArea.module.css'
 import { User, Mail, Lock, Calendar, Users, MapPin, MessageSquare, FileText } from 'lucide-react'
 
@@ -14,7 +14,7 @@ interface TextAreaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>
     charCountClassName?: string
 }
 
-const TextArea: React.FC<TextAreaProps> = ({
+const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({
     label,
     error,
     onChange,
@@ -27,7 +27,7 @@ const TextArea: React.FC<TextAreaProps> = ({
     value = '',
     maxLength,
     ...props
-}) => {
+}, ref) => {
     const [focused, setFocused] = useState<boolean>(false)
 
     const textareaClasses = [
@@ -74,6 +74,7 @@ const TextArea: React.FC<TextAreaProps> = ({
             }
 
             <textarea
+                ref={ref}
                 className={textareaClasses}
                 onChange={onChange}
                 onFocus={() => setFocused(true)}
@@ -95,6 +96,8 @@ const TextArea: React.FC<TextAreaProps> = ({
         {error && <div className={styles.errorMessage}>{error}</div>}
     </div>
   )
-}
+})
+
+TextArea.displayName = 'TextArea'
 
 export default TextArea
