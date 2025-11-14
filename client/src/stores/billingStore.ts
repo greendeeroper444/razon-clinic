@@ -22,8 +22,9 @@ export const useBillingStore = create<BillingState>()(
                 unpaidAmount: 0,
                 totalBillings: 0
             },
-            isModalOpen: false,
-            isDeleteModalOpen: false,
+            isModalCreateOpen: false,
+            isModalUpdateOpen: false,
+            isModalDeleteOpen: false,
             deleteBillingData: null,
             currentBilling: null,
             currentOperation: null as OperationType,
@@ -152,7 +153,7 @@ export const useBillingStore = create<BillingState>()(
                     }
                     
                 } catch (error) {
-                    console.error('Error fetching appointments:', error);
+                    console.error('Error fetching billings:', error);
                     set({ 
                         fetchLoading: false,
                         error: 'An error occurred while fetching billings', 
@@ -232,11 +233,11 @@ export const useBillingStore = create<BillingState>()(
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
                     
                     await deleteBilling(id);
-                    await get().fetchBillings();
+                    await get().fetchBillings({});
                     
                     toast.success('Billing deleted successfully!');
                     set({ 
-                        isDeleteModalOpen: false, 
+                        isModalDeleteOpen: false, 
                         deleteBillingData: null 
                     });
 
@@ -259,56 +260,6 @@ export const useBillingStore = create<BillingState>()(
                 }
             },
 
-
-            //modal actions
-            openAddModal: () => {
-                set({ 
-                    selectedBilling: null,
-                    isModalOpen: true,
-                    validationErrors: {}
-                });
-            },
-
-            openUpdateModal: (billing: BillingFormData) => {
-                set({ 
-                    selectedBilling: billing, 
-                    isModalOpen: true,
-                    validationErrors: {}
-                });
-            },
-
-            openDeleteModal: (billing: BillingFormData) => {
-                if (!billing.id) {
-                    console.error('Billing ID is missing:', billing);
-                    return;
-                }
-                
-                set({
-                    deleteBillingData: {
-                        id: billing.id,
-                        itemName: billing.patientName || 'Unknown Patient',
-                        itemType: 'Billing'
-                    },
-                    isDeleteModalOpen: true
-                });
-            },
-
-            closeUpdateModal: () => {
-                set({ 
-                    isModalOpen: false, 
-                    selectedBilling: null,
-                    validationErrors: {}
-                });
-            },
-
-            closeDeleteModal: () => {
-                set({ 
-                    isDeleteModalOpen: false, 
-                    deleteBillingData: null 
-                });
-            },
-
-            //process payment action
             processPayment: async (billId: string) => {
                 try {
                     set({ statusLoading: true, isProcessing: true });
@@ -336,7 +287,6 @@ export const useBillingStore = create<BillingState>()(
                 }
             },
 
-            //export billings
             exportBillings: async (format: 'csv' | 'xlsx' | 'json' = 'xlsx') => {
                 try {
                     set({ loading: true });
@@ -361,6 +311,69 @@ export const useBillingStore = create<BillingState>()(
                 } finally {
                     set({ loading: false });
                 }
+            },
+
+            openModalCreate: (billing: BillingFormData) => {
+                set({ 
+                    selectedBilling: billing, 
+                    isModalCreateOpen: true,
+                    validationErrors: {}
+                });
+            },
+
+            openModalAdd: () => {
+                set({ 
+                    selectedBilling: null,
+                    isModalUpdateOpen: true,
+                    validationErrors: {}
+                });
+            },
+
+            openModalUpdate: (billing: BillingFormData) => {
+                set({ 
+                    selectedBilling: billing, 
+                    isModalUpdateOpen: true,
+                    validationErrors: {}
+                });
+            },
+
+            openModalDelete: (billing: BillingFormData) => {
+                if (!billing.id) {
+                    console.error('Billing ID is missing:', billing);
+                    return;
+                }
+                
+                set({
+                    deleteBillingData: {
+                        id: billing.id,
+                        itemName: billing.patientName || 'Unknown Patient',
+                        itemType: 'Billing'
+                    },
+                    isModalDeleteOpen: true
+                });
+            },
+
+            closeModalCreate: () => {
+                set({ 
+                    isModalCreateOpen: false, 
+                    selectedBilling: null,
+                    validationErrors: {}
+                });
+            },
+
+            closeModalUpdate: () => {
+                set({ 
+                    isModalUpdateOpen: false, 
+                    selectedBilling: null,
+                    validationErrors: {}
+                });
+            },
+
+            closeModalDelete: () => {
+                set({ 
+                    isModalDeleteOpen: false, 
+                    deleteBillingData: null 
+                });
             },
 
             setLoading: (loading: boolean) => set({ loading }),

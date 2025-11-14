@@ -236,17 +236,11 @@ export const usePatientStore = create<PatientState>()(
                     });
                     
                     await updatePatient(id, data);
-                    
-                    const { pagination, searchQuery } = get()
-                    await get().fetchPatients({ 
-                        page: pagination?.currentPage, 
-                        limit: pagination?.itemsPerPage,
-                        search: searchQuery 
-                    })
-
+                    await get().fetchPatients({});
                     await get().fetchPatientById(id);
 
                     toast.success('Patient updated successfully!');
+                    set({ isModalUpdateOpen: false, selectedPatient: null });
 
                     setTimeout(() => {
                         set({ 
@@ -277,19 +271,10 @@ export const usePatientStore = create<PatientState>()(
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
                     
                     await deletePatient(id);
-                    
-                    const { pagination, searchQuery } = get()
-                    await get().fetchPatients({ 
-                        page: pagination?.currentPage, 
-                        limit: pagination?.itemsPerPage,
-                        search: searchQuery 
-                    })
+                    await get().fetchPatients({});
                     
                     toast.success('Patient deleted successfully!');
-                    set({ 
-                        isModalDeleteOpen: false, 
-                        deletePatientData: null 
-                    });
+                    set({ isModalDeleteOpen: false, deletePatientData: null });
 
                     setTimeout(() => {
                         set({ 

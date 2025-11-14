@@ -297,9 +297,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                                 : appointment
                         )
                         
-
                         toast.success('Status updated successfully!');
-
                         set({ 
                             appointments: updatedAppointments,
                             isModalStatusOpen: false,
@@ -334,7 +332,6 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
                     
                     await deleteAppointment(id);
-
                     const currentState = get();
                     
                     if (currentState.viewMode === 'admin') {
@@ -342,14 +339,9 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     } else {
                         await get().fetchMyAppointments({});
                     }
-
                     
                     toast.success('Appointment deleted successfully!')
-
-                    set({ 
-                        isModalDeleteOpen: false, 
-                        deleteAppointmentData: null 
-                    })
+                    set({  isModalDeleteOpen: false, deleteAppointmentData: null })
 
                     setTimeout(() => {
                         set({ 

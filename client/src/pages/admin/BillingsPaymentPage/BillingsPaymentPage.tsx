@@ -10,7 +10,7 @@ import { getBillingSummaryCards } from '../../../config/billingSummaryCards';
 import { toast } from 'sonner';
 import { generateBillingReceiptPDF } from '../../../templates';
 
-const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
+const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -23,15 +23,19 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         submitLoading,
         loading,
         error,
-        isModalOpen,
-        isDeleteModalOpen,
+        isModalCreateOpen,
+        isModalUpdateOpen,
+        isModalDeleteOpen,
         selectedBilling,
         deleteBillingData,
         pagination: storePagination,
         isProcessing,
         fetchBillings,
-        closeUpdateModal,
-        closeDeleteModal,
+        openModalCreate,
+        openModalDelete,
+        closeModalCreate,
+        closeModalUpdate,
+        closeModalDelete,
         addBilling,
         updateBillingData,
         deleteBilling,
@@ -46,7 +50,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         try {
             await fetchBillings({ page, limit, search });
         } catch (error) {
-            console.error('Error fetching appointments:', error);
+            console.error('Error fetching billings:', error);
         }
     }, [fetchBillings]);
 
@@ -57,34 +61,24 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     }, [isInitialLoad, fetchData]);
 
-    //handle search
     const handleSearch = useCallback((term: string) => {
         setSearchTerm(term);
         fetchData(1, storePagination?.itemsPerPage || 10, term);
     }, [fetchData, storePagination?.itemsPerPage]);
 
-    //handle page change
     const handlePageChange = useCallback((page: number) => {
         fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
     }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
 
-    //handle items per page change
     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
 
-    const handleOpenModal = useCallback(() => {
-        openModalWithRefresh({
-            modalType: 'billing',
-            openModal,
-            onRefresh: () => fetchData(
-                storePagination?.currentPage || 1, 
-                storePagination?.itemsPerPage || 10, 
-                searchTerm
-            ),
-        });
-    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
-    
+   
+    const handleCreateClick = useCallback(() => {
+        openModalCreate();
+    }, [openModalCreate]);
+
     const handleExport = async () => {
         try {
             await exportBillings();
@@ -92,6 +86,31 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             console.error('Export error:', error);
         }
     };
+
+    const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string') {
+            console.error('Invalid data for adding billing')
+            return
+        }
+
+        const billingData = data as BillingFormData;
+
+        try {
+            await addBilling(billingData)
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+                closeModalCreate();
+            }, 600);
+        } catch (error) {
+            console.error('Error adding billing:', error);
+        }
+    }, [addBilling, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
+
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
@@ -161,11 +180,6 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             toast.error('No billing data available');
             return;
         }
-
-        // if (!billing.patientName || !billing.medicalRecordId) {
-        //     toast.error('Incomplete billing data. Cannot generate receipt.');
-        //     return;
-        // }
 
         //prevent multiple simultaneous downloads
         if (isGeneratingPDF) {
@@ -283,6 +297,16 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
                     >
                         <Download size={16} />
                     </button>
+                     <button 
+                        type='button' 
+                        className={`${styles.actionBtn} ${styles.delete}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            openModalDelete(billing);
+                        }}
+                    >
+                        Delete
+                    </button>
 
                     {
                         billing.paymentStatus !== 'Paid' && (
@@ -310,7 +334,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             id: 'newBillingBtn',
             label: 'New Billing',
             icon: <Plus />,
-            onClick: handleOpenModal,
+            onClick: handleCreateClick,
             type: 'primary' as const
         },
         {
@@ -422,12 +446,23 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
 
         </div>
 
-        {/* update billing modal */}
         {
-            isModalOpen && (
+            isModalCreateOpen && (
                 <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeUpdateModal}
+                    isOpen={isModalCreateOpen}
+                    onClose={closeModalCreate}
+                    modalType="billing"
+                    onSubmit={handleSubmitCreate}
+                    isProcessing={submitLoading}
+                />
+            )
+        }
+
+        {
+            isModalUpdateOpen && (
+                <Modal
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
                     modalType='billing'
                     onSubmit={handleSubmitUpdate}
                     editData={selectedBilling}
@@ -436,12 +471,11 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = ({openModal}) => {
             )
         }
 
-        {/* delete billing modal */}
         {
-            isDeleteModalOpen && deleteBillingData && (
+            isModalDeleteOpen && deleteBillingData && (
                 <Modal
-                    isOpen={isDeleteModalOpen}
-                    onClose={closeDeleteModal}
+                    isOpen={isModalDeleteOpen}
+                    onClose={closeModalDelete}
                     modalType='delete'
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteBillingData}

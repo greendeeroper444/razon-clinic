@@ -179,6 +179,7 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     await updateInventoryItem(id, data);
 
                     toast.success('Item updated successfully!');
+                    set({ isModalUpdateOpen: false, selectedInventoryItem: null });
 
                     setTimeout(() => {
                         set({ 
@@ -209,12 +210,10 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
                     
                     await deleteInventoryItem(id);
+                    await get().fetchInventoryItems({});
                     
                     toast.success('Item deleted successfully!');
-                    set({ 
-                        isModalDeleteOpen: false, 
-                        deleteInventoryItemData: null 
-                    });
+                    set({ isModalDeleteOpen: false, deleteInventoryItemData: null });
 
                     setTimeout(() => {
                         set({ 

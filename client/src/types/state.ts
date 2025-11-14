@@ -231,8 +231,9 @@ export interface BillingState {
 
     //modal state
     selectedBilling: (BillingFormData & { id?: string }) | null;
+    isModalCreateOpen: boolean;
     isModalUpdateOpen: boolean;
-    isDeleteModalOpen: boolean;
+    isModalDeleteOpen: boolean;
     deleteBillingData: { id: string, itemName: string, itemType: string } | null;
     currentBilling: BillingResponse | null;
 
@@ -272,11 +273,13 @@ export interface BillingState {
     applyFilters: () => Promise<void>;
 
     //modal actions
-    openAddModal: () => void;
-    openUpdateModal: (billing: BillingResponse) => void;
-    openDeleteModal: (billing: BillingResponse) => void;
-    closeUpdateModal: () => void;
-    closeDeleteModal: () => void;
+    openModalCreate: () => void;
+    openModalAdd: () => void;
+    openModalUpdate: (billing: BillingResponse) => void;
+    openModalDelete: (billing: BillingResponse | BillingFormData) => void;
+    closeModalCreate: () => void;
+    closeModalUpdate: () => void;
+    closeModalDelete: () => void;
 
     //utility actions
     setLoading: (loading: boolean) => void;
