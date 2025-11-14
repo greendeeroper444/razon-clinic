@@ -152,9 +152,10 @@ export interface MedicalRecordState {
     
     //modal state
     selectedMedicalRecord: (MedicalRecordFormData & { id?: string }) | null;
-    isModalOpen: boolean;
-    isStatusModalOpen: boolean;
-    isDeleteModalOpen: boolean;
+    isModalCreateOpen: boolean;
+    isModalUpdateOpen: boolean;
+    isModalStatusOpen: boolean;
+    isModalDeleteOpen: boolean;
     softDeleteMedicalRecordData: { id: string, itemName: string, itemType: string } | null;
 
     //state for medical record details
@@ -184,13 +185,15 @@ export interface MedicalRecordState {
     clearCurrentMedicalRecord: () => void;
     
     //modal actions
-    openUpdateModal: (record: MedicalRecordResponse | MedicalRecordFormData) => void;
-    openStatusModal: (record: MedicalRecordFormData) => void;
-    openDeleteModal: (record: MedicalRecordResponse) => void;
-    closeUpdateModal: () => void;
-    closeStatusModal: () => void;
-    closeDeleteModal: () => void;
-    closeDetailsModal: () => void;
+    openModalCreate: () => void;
+    openModalUpdate: (record: MedicalRecordResponse | MedicalRecordFormData) => void;
+    openModalStatus: (record: MedicalRecordFormData) => void;
+    openModalDelete: (record: MedicalRecordResponse) => void;
+    closeModalCreate: () => void;
+    closeModalUpdate: () => void;
+    closeModalStatus: () => void;
+    closeModalDelete: () => void;
+    closeModalDetails: () => void;
 
     //search and pagination actions
     setSearchTerm: (searchTerm: string) => void;
@@ -228,7 +231,7 @@ export interface BillingState {
 
     //modal state
     selectedBilling: (BillingFormData & { id?: string }) | null;
-    isModalOpen: boolean;
+    isModalUpdateOpen: boolean;
     isDeleteModalOpen: boolean;
     deleteBillingData: { id: string, itemName: string, itemType: string } | null;
     currentBilling: BillingResponse | null;
@@ -316,8 +319,9 @@ export interface PatientState {
     currentPatient: PatientResponse | null;
 
     //modal state
-    isModalOpen: boolean;
-    isDeleteModalOpen: boolean;
+    isModalCreateOpen: boolean;
+    isModalUpdateOpen: boolean;
+    isModalDeleteOpen: boolean;
     deletePatientData: { id: string, itemName: string, itemType: string } | null;
 
     //fetch actions
@@ -357,11 +361,13 @@ export interface PatientState {
     };
 
     //modal actions
-    openAddModal: () => void;
-    openUpdateModal: (item: PatientFormData) => void;
-    openDeleteModal: (item: PatientFormData) => void;
-    closeUpdateModal: () => void;
-    closeDeleteModal: () => void;
+    openModalCreate: () => void;
+    openModalAdd: () => void;
+    openModalUpdate: (item: PatientFormData) => void;
+    openModalDelete: (item: PatientFormData) => void;
+    closeModalCreate: () => void;
+    closeModalUpdate: () => void;
+    closeModalDelete: () => void;
 
     //utility actions
     setLoading: (loading: boolean) => void;

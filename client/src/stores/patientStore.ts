@@ -16,8 +16,9 @@ export const usePatientStore = create<PatientState>()(
             error: null,
             isProcessing: false,
             selectedPatient: null,
-            isModalOpen: false,
-            isDeleteModalOpen: false,
+            isModalCreateOpen: false,
+            isModalUpdateOpen: false,
+            isModalDeleteOpen: false,
             deletePatientData: null,
             currentPatient: null,
             summaryStats: {
@@ -286,7 +287,7 @@ export const usePatientStore = create<PatientState>()(
                     
                     toast.success('Patient deleted successfully!');
                     set({ 
-                        isDeleteModalOpen: false, 
+                        isModalDeleteOpen: false, 
                         deletePatientData: null 
                     });
 
@@ -333,7 +334,7 @@ export const usePatientStore = create<PatientState>()(
             togglePatientSelection: (patientId: string) => {
                 set((state) => ({
                     selectedPatientIds: state.selectedPatientIds.includes(patientId)
-                        ? state.selectedPatientIds.filter(id => id !== patientId)
+                        ? state.selectedPatientIds.filter((id: string) => id !== patientId)
                         : [...state.selectedPatientIds, patientId]
                 }))
             },
@@ -526,15 +527,22 @@ export const usePatientStore = create<PatientState>()(
                 }
             },
 
-            openAddModal: () => {
+            openModalCreate: () => {
                 set({ 
-                    selectedPatient: null,
-                    isModalOpen: true,
+                    isModalCreateOpen: true,
                     validationErrors: {}
                 });
             },
 
-            openUpdateModal: (patient: PatientFormData) => {
+            openModalAdd: () => {
+                set({ 
+                    selectedPatient: null,
+                    isModalUpdateOpen: true,
+                    validationErrors: {}
+                });
+            },
+
+            openModalUpdate: (patient: PatientFormData) => {
                 const formData: PatientFormData & { patientId?: string } = {
                     id: patient.id,
                     firstName: patient.firstName,
@@ -561,12 +569,12 @@ export const usePatientStore = create<PatientState>()(
 
                 set({ 
                     selectedPatient: formData, 
-                    isModalOpen: true,
+                    isModalUpdateOpen: true,
                     validationErrors: {}
                 });
             },
 
-            openDeleteModal: (patient: PatientFormData) => {
+            openModalDelete: (patient: PatientFormData) => {
                 if (!patient.id) {
                     console.error('Patient ID is missing:', patient);
                     return;
@@ -578,26 +586,33 @@ export const usePatientStore = create<PatientState>()(
                         itemName: patient.firstName || 'Unknown Patient',
                         itemType: 'Patient'
                     },
-                    isDeleteModalOpen: true
+                    isModalDeleteOpen: true
                 });
             },
 
-            closeUpdateModal: () => {
+            closeModalCreate: () => {
                 set({ 
-                    isModalOpen: false, 
+                    isModalCreateOpen: false, 
                     selectedPatient: null,
                     validationErrors: {}
                 });
             },
 
-            closeDeleteModal: () => {
+            closeModalUpdate: () => {
                 set({ 
-                    isDeleteModalOpen: false, 
+                    isModalUpdateOpen: false, 
+                    selectedPatient: null,
+                    validationErrors: {}
+                });
+            },
+
+            closeModalDelete: () => {
+                set({ 
+                    isModalDeleteOpen: false, 
                     deletePatientData: null 
                 });
             },
 
-            //utility actions
             setLoading: (loading: boolean) => set({ loading }),
             setError: (error: string | null) => set({ error }),
             clearCurrentPatient: () => set({ currentPatient: null })

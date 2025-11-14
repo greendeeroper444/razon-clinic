@@ -11,7 +11,6 @@ import { useLocation } from 'react-router-dom';
 
 const InventoryPage: React.FC<OpenModalProps> = () => {
     const location = useLocation();
-    //local state for search only
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     //zustand store selectors

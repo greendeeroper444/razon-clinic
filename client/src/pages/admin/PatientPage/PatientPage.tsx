@@ -10,11 +10,9 @@ import { useAuthenticationStore, usePatientStore } from '../../../stores';
 import { useNavigate } from 'react-router-dom';
 
 const PatientPage: React.FC<OpenModalProps> = () => {
+    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
-    const navigate = useNavigate();
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
     //zustand store selectors
     const {
         patients,
@@ -22,18 +20,21 @@ const PatientPage: React.FC<OpenModalProps> = () => {
         loading,
         error,
         isProcessing,
-        isModalOpen,
-        isDeleteModalOpen,
+        isModalCreateOpen,
+        isModalUpdateOpen,
+        isModalDeleteOpen,
         selectedPatient,
         deletePatientData,
         addPatient,
         pagination: storePagination,
         summaryStats,
         fetchPatients,
-        openUpdateModal,
-        openDeleteModal,
-        closeUpdateModal,
-        closeDeleteModal,
+        openModalCreate,
+        openModalUpdate,
+        openModalDelete,
+        closeModalCreate,
+        closeModalUpdate,
+        closeModalDelete,
         updatePatientData,
         deletePatient,
         archiveSinglePatient,
@@ -57,18 +58,15 @@ const PatientPage: React.FC<OpenModalProps> = () => {
         }
     }, [isInitialLoad, fetchData]);
 
-    //handle search
     const handleSearch = useCallback((term: string) => {
         setSearchTerm(term);
         fetchData(1, storePagination?.itemsPerPage || 10, term);
     }, [fetchData, storePagination?.itemsPerPage]);
 
-    //handle page change
     const handlePageChange = useCallback((page: number) => {
         fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
     }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
 
-    //handle items per page change
     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
@@ -88,29 +86,22 @@ const PatientPage: React.FC<OpenModalProps> = () => {
         [patients]
     );
 
-    const handleOpenModal = useCallback(() => {
-        setIsAddModalOpen(true);
-    }, []);
+    const handleCreateClick = useCallback(() => {
+        openModalCreate();
+    }, [openModalCreate]);
 
-    const handleCloseAddModal = useCallback(() => {
-        setIsAddModalOpen(false);
-    }, []);
-
-    //handle view patient details
     const handleViewClick = (patient: PatientDisplayData) => {
         navigate(`/admin/patients/details/${patient.id}`)
     };
 
     const handleUpdateClick = useCallback((patient: PatientFormData) => {
-        openUpdateModal(patient);
-    }, [openUpdateModal]);
+        openModalUpdate(patient);
+    }, [openModalUpdate]);
 
-    //handle archive/delete patient
     const handleDeleteClick = useCallback((patient: PatientFormData) => {
-        openDeleteModal(patient);
-    }, [openDeleteModal]);
+        openModalDelete(patient);
+    }, [openModalDelete]);
 
-    //handle archive patient
     const handleArchiveClick = useCallback(async (patient: PatientFormData) => {
         if (!patient.id) {
             console.error('Patient ID is missing');
@@ -124,29 +115,29 @@ const PatientPage: React.FC<OpenModalProps> = () => {
         }
     }, [archiveSinglePatient]);
 
-    const handleSubmitAdd = useCallback(async (data: FormDataType | string): Promise<void> => {
-            if (typeof data === 'string') {
-                console.error('Invalid data for adding patient')
-                return
-            }
-    
-            const patientData = data as PatientFormData;
-    
-            try {
-                await addPatient(patientData)
-    
-                setTimeout(() => {
-                    fetchData(
-                        storePagination?.currentPage || 1, 
-                        storePagination?.itemsPerPage || 10, 
-                        searchTerm
-                    );
-                    handleCloseAddModal();
-                }, 600);
-            } catch (error) {
-                console.error('Error adding patient:', error);
-            }
-        }, [addPatient, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, handleCloseAddModal])
+    const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string') {
+            console.error('Invalid data for adding patient')
+            return
+        }
+
+        const patientData = data as PatientFormData;
+
+        try {
+            await addPatient(patientData)
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+                closeModalCreate();
+            }, 600);
+        } catch (error) {
+            console.error('Error adding patient:', error);
+        }
+    }, [addPatient, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
     
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
@@ -296,7 +287,7 @@ const PatientPage: React.FC<OpenModalProps> = () => {
             id: 'newPatientBtn',
             label: 'New Patient',
             icon: <Plus />,
-            onClick: handleOpenModal,
+            onClick: handleCreateClick,
             type: 'primary' as const
         }
     ];
@@ -308,7 +299,6 @@ const PatientPage: React.FC<OpenModalProps> = () => {
             actions={headerActions}
         />
 
-        {/* patients cards */}
         <div className={styles.contentCards}>
             {
                 summaryCards.map((card, index) => (
@@ -328,12 +318,10 @@ const PatientPage: React.FC<OpenModalProps> = () => {
             }
         </div>
 
-        {/* patient table */}
         <div className={styles.section}>
             <div className={styles.sectionHeader}>
                 <div className={styles.sectionTitle}>Patient Records</div>
 
-                {/* search and items per page controls */}
                 <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}
@@ -399,25 +387,23 @@ const PatientPage: React.FC<OpenModalProps> = () => {
             }
         </div>
 
-        {/* add patient modal */}
         {
-            isAddModalOpen && (
+            isModalCreateOpen && (
                 <Modal
-                    isOpen={isAddModalOpen}
-                    onClose={handleCloseAddModal}
+                    isOpen={isModalCreateOpen}
+                    onClose={closeModalCreate}
                     modalType="patient"
-                    onSubmit={handleSubmitAdd}
+                    onSubmit={handleSubmitCreate}
                     isProcessing={submitLoading}
                 />
             )
         }
 
-        {/* update patient modal */}
         {
-            isModalOpen && (
+            isModalUpdateOpen && (
                 <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeUpdateModal}
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
                     modalType='patient'
                     onSubmit={handleSubmitUpdate}
                     editData={selectedPatient}
@@ -426,12 +412,11 @@ const PatientPage: React.FC<OpenModalProps> = () => {
             )
         }
 
-        {/* delete patient modal */}
         {
-            isDeleteModalOpen && deletePatientData && (
+            isModalDeleteOpen && deletePatientData && (
                 <Modal
-                    isOpen={isDeleteModalOpen}
-                    onClose={closeDeleteModal}
+                    isOpen={isModalDeleteOpen}
+                    onClose={closeModalDelete}
                     modalType='delete'
                     onSubmit={handleConfirmDelete}
                     deleteData={deletePatientData}
