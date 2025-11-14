@@ -248,6 +248,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     }
                     
                     toast.success('Updated appointment successfully!')
+                    set({ isModalUpdateOpen: false, selectedAppointment: null });
 
                     setTimeout(() => {
                         set({ 

@@ -111,7 +111,6 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
         }
     }, [addBilling, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
 
-
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
             console.error('Invalid data or missing billing ID');

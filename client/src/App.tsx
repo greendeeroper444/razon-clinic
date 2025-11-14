@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ModalContext } from './hooks/hook'
-import { toast, Toaster } from 'sonner'
-import { MedicalRecordFormData, FormDataType, ModalType, BillingFormData } from './types'
-import { Layout, Modal, PageTitle, ProtectedRoute, RootRedirect, Tormentum} from './components'
+import { Toaster } from 'sonner'
+import { ModalType } from './types'
+import { Layout, PageTitle, ProtectedRoute, RootRedirect, Tormentum} from './components'
 import { routes } from './routes'
 import './services/httpClient'
-import { useAuthenticationStore, useBillingStore, useMedicalRecordStore } from './stores'
+import { useAuthenticationStore } from './stores'
 import { isTormentumArrived } from './components/ui/Tormentum/Tormentum'
 import { PaginaNonPraesto } from './pages'
 import { routeText } from './constants/messages'
@@ -19,8 +19,6 @@ function App() {
   
   //initialize authentication on app load
   const initializeAuth = useAuthenticationStore(state => state.initializeAuth);
-  const addMedicalRecord = useMedicalRecordStore(state => state.addMedicalRecord);
-  const addBilling = useBillingStore(state => state.addBilling);
 
   useEffect(() => {
     // initializeAuth()
@@ -48,45 +46,11 @@ function App() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  //modal functions
   const openModal = (type: ModalType): void => {
     setModalType(type);
     setIsModalOpen(true);
   }
 
-  const closeModal = (): void => setIsModalOpen(false);
-
-  const handleSubmit = async (formData: FormDataType | string): Promise<void> => {
-
-    //handle delete operations (when formData is a string ID)
-    if (typeof formData === 'string') {
-      toast.success('Item deleted successfully');
-      closeModal();
-      return;
-    }
-    
-    //handle the data based on modal type
-    switch (modalType) {
-      case 'medical':
-        try {
-          await addMedicalRecord(formData as MedicalRecordFormData);
-        } catch (error) {
-          console.error('Error adding medical:', error);
-        }
-        break;
-      case 'billing':
-        try {
-          await addBilling(formData as BillingFormData);
-        } catch (error) {
-          console.error('Error adding billing:', error);
-        }
-        break;
-      default:
-        break;
-    }
-  }
-  
-  //handle sidebar toggle
   const toggleSidebar = (): void => {
     setSidebarCollapsed(!sidebarCollapsed);
   }
@@ -184,12 +148,6 @@ function App() {
               </Tormentum>
             } />
           </Routes>
-          <Modal
-            isOpen={isModalOpen}
-            onClose={closeModal}
-            modalType={modalType}
-            onSubmit={handleSubmit}
-          />
         </div>
       </ModalContext.Provider>
     </BrowserRouter>

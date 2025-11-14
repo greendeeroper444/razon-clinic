@@ -17,9 +17,10 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
             error: null,
             isProcessing: false,
             selectedMedicalRecord: null,
-            isModalOpen: false,
-            isStatusModalOpen: false,
-            isDeleteModalOpen: false,
+            isModalCreateOpen: false,
+            isModalUpdateOpen: false,
+            isModalStatusOpen: false,
+            isModalDeleteOpen: false,
             softDeleteMedicalRecordData: null,
             currentMedicalRecord: null,
             viewMode: 'user' as 'admin' | 'user',
@@ -275,6 +276,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     }
                     
                     toast.success('Updated medical record successfully!');
+                    set({ isModalUpdateOpen: false, selectedMedicalRecord: null });
 
                     setTimeout(() => {
                         set({ 
@@ -305,15 +307,10 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'delete' });
                     
                     await softDeleteMedicalRecord(id);
-                    
                     await get().fetchMedicalRecords();
                     
                     toast.success('Medical record deleted successfully!');
-
-                    set({ 
-                        isDeleteModalOpen: false, 
-                        softDeleteMedicalRecordData: null 
-                    });
+                    set({ isModalDeleteOpen: false, softDeleteMedicalRecordData: null });
 
                     setTimeout(() => {
                         set({ 
@@ -329,7 +326,7 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isDeleteModalOpen: false,
+                        isModalDeleteOpen: false,
                         softDeleteMedicalRecordData: null,
                         currentOperation: null
                     });
@@ -381,7 +378,30 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 }
             },
 
-            openUpdateModal: (record: MedicalRecord) => {
+            getStatusFromRecord: (record: MedicalRecord): string => {
+                if (record.followUpDate) {
+                    const followUpDate = new Date(record.followUpDate);
+                    const today = new Date();
+                    if (followUpDate > today) {
+                        return 'Pending';
+                    }
+                }
+                
+                if (record.diagnosis && record.treatmentPlan) {
+                    return 'Completed';
+                }
+                
+                return 'Active';
+            },
+
+            openModalCreate: () => {
+                set({ 
+                    isModalCreateOpen: true,
+                    validationErrors: {}
+                });
+            },
+
+            openModalUpdate: (record: MedicalRecord) => {
                 const formData: MedicalRecordFormData & { id?: string } = {
                     id: record.id,
                     
@@ -424,19 +444,19 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 
                 set({ 
                     selectedMedicalRecord: formData, 
-                    isModalOpen: true,
+                    isModalUpdateOpen: true,
                     validationErrors: {}
                 });
             },
 
-            openStatusModal: (record: MedicalRecordFormData) => {
+            openModalStatus: (record: MedicalRecordFormData) => {
                 set({
                     selectedMedicalRecord: record,
-                    isStatusModalOpen: true
+                    isModalStatusOpen: true
                 });
             },
 
-            openDeleteModal: (record: MedicalRecord) => {
+            openModalDelete: (record: MedicalRecord) => {
                 const patientName = record.personalDetails.fullName || 'Unknown Patient';
                 const recordDate = record.dateRecorded;
                 
@@ -446,52 +466,41 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                         itemName: `${patientName}'s medical record from ${formatDate(recordDate)}`,
                         itemType: 'Medical Record'
                     },
-                    isDeleteModalOpen: true
+                    isModalDeleteOpen: true
                 });
             },
 
-            closeUpdateModal: () => {
+            closeModalCreate: () => {
                 set({ 
-                    isModalOpen: false, 
+                    isModalCreateOpen: false, 
                     selectedMedicalRecord: null,
                     validationErrors: {}
                 });
             },
 
-            closeStatusModal: () => {
-                set({ isStatusModalOpen: false, selectedMedicalRecord: null });
+            closeModalUpdate: () => {
+                set({ 
+                    isModalUpdateOpen: false, 
+                    selectedMedicalRecord: null,
+                    validationErrors: {}
+                });
             },
 
-            closeDeleteModal: () => {
-                set({ isDeleteModalOpen: false, softDeleteMedicalRecordData: null });
+            closeModalStatus: () => {
+                set({ isModalStatusOpen: false, selectedMedicalRecord: null });
             },
 
-            closeDetailsModal: () => {
+            closeModalDelete: () => {
+                set({ isModalDeleteOpen: false, softDeleteMedicalRecordData: null });
+            },
+
+            closeModalDetails: () => {
                 set({ showDetails: false, selectedRecord: null });
             },
 
-            
-            //utility actions
             setLoading: (loading: boolean) => set({ loading }),
             setError: (error: string | null) => set({ error }),
             clearCurrentMedicalRecord: () => set({ currentMedicalRecord: null }),
-            
-            //get status from record
-            getStatusFromRecord: (record: MedicalRecord): string => {
-                if (record.followUpDate) {
-                    const followUpDate = new Date(record.followUpDate);
-                    const today = new Date();
-                    if (followUpDate > today) {
-                        return 'Pending';
-                    }
-                }
-                
-                if (record.diagnosis && record.treatmentPlan) {
-                    return 'Completed';
-                }
-                
-                return 'Active';
-            }
         }),
         {
             name: 'medical-record-store'

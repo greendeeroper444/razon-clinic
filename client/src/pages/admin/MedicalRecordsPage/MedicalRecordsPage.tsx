@@ -5,17 +5,16 @@ import { OpenModalProps } from '../../../hooks/hook';
 import { FormDataType, MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
 import { toast } from 'sonner';
-import { calculateAge2, formatDate, getLoadingText, openModalWithRefresh } from '../../../utils';
+import { calculateAge2, formatDate, getLoadingText } from '../../../utils';
 import { useMedicalRecordStore } from '../../../stores';
 import { useNavigate } from 'react-router-dom';
 import { generateMedicalRecordPDF } from '../../../templates';
 
-const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
+const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-
     //zustand store selectors
     const {
         medicalRecords,
@@ -23,16 +22,19 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         loading,
         error,
         isProcessing,
-        isModalOpen,
-        isDeleteModalOpen,
+        isModalCreateOpen,
+        isModalUpdateOpen,
+        isModalDeleteOpen,
         selectedMedicalRecord,
         softDeleteMedicalRecordData,
         pagination: storePagination,
         fetchMedicalRecords,
-        openUpdateModal,
-        openDeleteModal,
-        closeUpdateModal,
-        closeDeleteModal,
+        openModalCreate,
+        openModalUpdate,
+        openModalDelete,
+        closeModalCreate,
+        closeModalUpdate,
+        closeModalDelete,
         updateMedicalRecordData,
         addMedicalRecord,
         softDeleteMedicalRecord,
@@ -58,37 +60,26 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
         }
     }, [isInitialLoad, fetchData]);
 
-    //handle search
     const handleSearch = useCallback((term: string) => {
         setSearchTerm(term);
         fetchData(1, storePagination?.itemsPerPage || 10, term);
     }, [fetchData, storePagination?.itemsPerPage]);
 
-    //handle page change
     const handlePageChange = useCallback((page: number) => {
         fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
     }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
 
-    //handle items per page change
     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
 
-    const handleOpenModal = useCallback(() => {
-        openModalWithRefresh({
-            modalType: 'medical',
-            openModal,
-            onRefresh: () => fetchData(
-                storePagination?.currentPage || 1, 
-                storePagination?.itemsPerPage || 10, 
-                searchTerm
-            ),
-        });
-    }, [openModal, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+    const handleCreateClick = useCallback(() => {
+        openModalCreate();
+    }, [openModalCreate]);
 
-    const handleExport = async () => {
+    const handleExport = () => {
         try {
-            await exportMedicalRecords();
+            exportMedicalRecords();
         } catch (error) {
             console.log('Export error:', error)
         }
@@ -97,6 +88,30 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
     const handleViewClick = (record: MedicalRecordResponse) => {
         navigate(`/admin/medical-records/details/${record.id}`)
     }
+
+    const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string') {
+            console.error('Invalid data for adding billing')
+            return
+        }
+
+        const billingData = data as MedicalRecordFormData;
+
+        try {
+            await addMedicalRecord(billingData)
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1, 
+                    storePagination?.itemsPerPage || 10, 
+                    searchTerm
+                );
+                closeModalCreate();
+            }, 600);
+        } catch (error) {
+            console.error('Error adding medical records:', error);
+        }
+    }, [addMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
@@ -242,7 +257,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                             className={`${styles.actionBtn} ${styles.update}`}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                openUpdateModal(record);
+                                openModalUpdate(record);
                             }}
                             title='Update'
                         >
@@ -253,7 +268,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
                             className={`${styles.actionBtn} ${styles.delete}`}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                openDeleteModal(record);
+                                openModalDelete(record);
                             }}
                             title='Delete'
                         >
@@ -282,7 +297,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             id: 'newMedicalRecordBtn',
             label: 'New Record',
             icon: <Plus />,
-            onClick: handleOpenModal,
+            onClick: handleCreateClick,
             type: 'primary' as const
         },
         {
@@ -373,12 +388,24 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             }
         </div>
 
-        {/* update medical record modal */}
         {
-            isModalOpen && (
+            isModalCreateOpen && (
                 <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeUpdateModal}
+                    isOpen={isModalCreateOpen}
+                    onClose={closeModalCreate}
+                    modalType='medical'
+                    onSubmit={handleSubmitCreate}
+                    editData={selectedMedicalRecord}
+                    isProcessing={submitLoading}
+                />
+            )
+        }
+
+        {
+            isModalUpdateOpen && (
+                <Modal
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
                     modalType='medical'
                     onSubmit={handleSubmitUpdate}
                     editData={selectedMedicalRecord}
@@ -387,12 +414,11 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             )
         }
 
-        {/* delete medical record modal */}
         {
-            isDeleteModalOpen && softDeleteMedicalRecordData && (
+            isModalDeleteOpen && softDeleteMedicalRecordData && (
                 <Modal
-                    isOpen={isDeleteModalOpen}
-                    onClose={closeDeleteModal}
+                    isOpen={isModalDeleteOpen}
+                    onClose={closeModalDelete}
                     modalType='delete'
                     onSubmit={handleConfirmDelete}
                     deleteData={softDeleteMedicalRecordData}

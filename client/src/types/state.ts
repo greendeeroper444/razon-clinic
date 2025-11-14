@@ -178,6 +178,7 @@ export interface MedicalRecordState {
     updateMedicalRecordData: (id: string, data: MedicalRecordFormData) => Promise<void>;
     softDeleteMedicalRecord: (id: string) => Promise<void>;
     viewMedicalRecord: (record: MedicalRecordResponse) => Promise<void>;
+    exportMedicalRecords: () => void;
     validationErrors: Record<string, string[]>;
     clearValidationErrors: () => void;
     

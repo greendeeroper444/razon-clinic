@@ -204,6 +204,7 @@ export const useBillingStore = create<BillingState>()(
                     await get().fetchBillings();
 
                     toast.success('Billing updated successfully!');
+                    set({ isModalUpdateOpen: false, selectedBilling: null });
 
                     setTimeout(() => {
                         set({ 
@@ -236,10 +237,7 @@ export const useBillingStore = create<BillingState>()(
                     await get().fetchBillings({});
                     
                     toast.success('Billing deleted successfully!');
-                    set({ 
-                        isModalDeleteOpen: false, 
-                        deleteBillingData: null 
-                    });
+                    set({ isModalDeleteOpen: false, deleteBillingData: null });
 
                     setTimeout(() => {
                         set({ 
