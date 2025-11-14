@@ -70,7 +70,6 @@ export const usePatientStore = create<PatientState>()(
                     })
                     
                     toast.success('Patient added successfully!');
-                    set({ isModalOpen: false, selectedPatient: null });
 
                     setTimeout(() => {
                         set({ 
@@ -247,10 +246,6 @@ export const usePatientStore = create<PatientState>()(
                     await get().fetchPatientById(id);
 
                     toast.success('Patient updated successfully!');
-                    set({ 
-                        isModalOpen: false, 
-                        selectedPatient: null
-                    });
 
                     setTimeout(() => {
                         set({ 

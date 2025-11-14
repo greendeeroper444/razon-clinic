@@ -3,6 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { InventoryItemFormData, ExtendedInventoryState, OperationType, FetchParams } from '../types'
 import { deleteInventoryItem, getInventoryItems, updateInventoryItem, addInventoryItem, getLowStockItems, getExpiringItems } from '../services';
 import { toast } from 'sonner';
+import { handleStoreError } from '../utils/errorHandler';
 
 export const useInventoryStore = create<ExtendedInventoryState>()(
     devtools(
@@ -27,6 +28,7 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
             isRestockMode: false,
             isAddQuantityMode: false,
             currentOperation: null as OperationType,
+            validationErrors: {},
             pagination: {
                 currentPage: 1,
                 totalPages: 1,
@@ -43,14 +45,20 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                 searchTerm: null
             },
 
-             addInventoryItem: async (data: InventoryItemFormData) => {
+            clearValidationErrors: () => set({ validationErrors: {} }),
+
+            addInventoryItem: async (data: InventoryItemFormData) => {
                 try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'create' });
+                    set({ 
+                        submitLoading: true, 
+                        isProcessing: true, 
+                        currentOperation: 'create',
+                        validationErrors: {}
+                    });
                     
                     await addInventoryItem(data);
                     
                     toast.success('Item added successfully!');
-                    set({ isModalOpen: false, selectedInventoryItem: null });
 
                     setTimeout(() => {
                         set({ 
@@ -61,14 +69,18 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     }, 500)
 
                 } catch (error) {
-                    console.error('Error adding inventory item:', error);
-                    toast.error('Failed to add inventory item');
+                    handleStoreError(error, {
+                        set,
+                        defaultMessage: 'Failed to add inventory item'
+                    });
+
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isModalOpen: false,
                         currentOperation: null
-                    })
+                    });
+
+                    throw error;
                 }
             },
 
@@ -156,17 +168,16 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
 
             updateInventoryItemData: async (id: string, data: InventoryItemFormData) => {
                 try {
-                    set({ submitLoading: true, isProcessing: true, currentOperation: 'update' });
+                    set({ 
+                        submitLoading: true, 
+                        isProcessing: true, 
+                        currentOperation: 'update',
+                        validationErrors: {}
+                    });
                     
                     await updateInventoryItem(id, data);
 
                     toast.success('Item updated successfully!');
-                    set({ 
-                        isModalOpen: false, 
-                        selectedInventoryItem: null,
-                        isRestockMode: false,
-                        isAddQuantityMode: false
-                    });
 
                     setTimeout(() => {
                         set({ 
@@ -177,14 +188,18 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     }, 500);
 
                 } catch (error) {
-                    console.error('Error updating inventory item:', error);
-                    toast.error('Failed to update inventory item');
+                    handleStoreError(error, {
+                        set,
+                        defaultMessage: 'Failed to update inventory item'
+                    });
+
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
-                        isModalOpen: false,
                         currentOperation: null
-                    })
+                    });
+
+                    throw error;
                 }
             },
 
@@ -224,7 +239,8 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     selectedInventoryItem: null,
                     isModalOpen: true,
                     isRestockMode: false,
-                    isAddQuantityMode: false
+                    isAddQuantityMode: false,
+                    validationErrors: {}
                 });
             },
 
@@ -243,7 +259,8 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     selectedInventoryItem: formData, 
                     isModalOpen: true,
                     isRestockMode: restockMode,
-                    isAddQuantityMode: addQuantityMode
+                    isAddQuantityMode: addQuantityMode,
+                    validationErrors: {}
                 });
             },
 
@@ -268,7 +285,8 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     isModalOpen: false, 
                     selectedInventoryItem: null,
                     isRestockMode: false,
-                    isAddQuantityMode: false
+                    isAddQuantityMode: false,
+                    validationErrors: {}
                 });
             },
 
