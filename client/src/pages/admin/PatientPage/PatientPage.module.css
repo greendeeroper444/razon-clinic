@@ -265,30 +265,6 @@
     background-color: #a7f3d0;
 }
 
-.patientTable {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.patientTable th {
-    text-align: center;
-    padding: 12px 15px;
-    font-size: 0.8rem;
-    color: var(--gray);
-    font-weight: 500;
-    border-bottom: 1px solid var(--gray-light);
-}
-
-.patientTable td {
-    padding: 15px;
-    border-bottom: 1px solid var(--gray-light);
-    vertical-align: middle;
-}
-
-.patientTable tr:last-child td {
-    border-bottom: none;
-}
-
 @media (max-width: 768px) {
     .contentCards {
         grid-template-columns: 1fr;

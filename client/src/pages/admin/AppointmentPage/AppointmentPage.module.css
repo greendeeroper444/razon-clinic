@@ -198,9 +198,6 @@
     background-color: #fecaca;
 }
 
-.pagination {
-}
-
 @media (max-width: 768px) {
     .actionBtn {
         padding: 4px 8px;

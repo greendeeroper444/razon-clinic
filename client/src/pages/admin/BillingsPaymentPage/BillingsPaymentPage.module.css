@@ -316,47 +316,15 @@
     transform: scale(1.1);
 }
 
-.billingTable {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.billingTable th {
-    text-align: center;
-    padding: 12px 15px;
-    font-size: 0.8rem;
-    color: var(--gray);
-    font-weight: 500;
-    border-bottom: 1px solid var(--gray-light);
-}
-
-.billingTable td {
-    padding: 15px;
-    border-bottom: 1px solid var(--gray-light);
-    vertical-align: middle;
-    text-align: center;
-}
-
-.pagination {
-}
-
 @media (max-width: 768px) {
     .contentCards {
         grid-template-columns: 1fr;
     }
-    
-    .tableResponsive {
-        overflow-x: auto;
-    }
-    
-    .billingTable {
-        min-width: 800px;
-    }
 }
 
-@media (max-width: 480px) {
+/* @media (max-width: 480px) {
     .actionButtons {
         flex-direction: column;
         gap: 4px;
     }
-}
+} */

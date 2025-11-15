@@ -171,30 +171,3 @@
 .actionBtn.download:hover {
     background-color: #bfdbfe;
 }
-
-.recordsTable {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.recordsTable th {
-    text-align: center;
-    padding: 12px 15px;
-    font-size: 0.8rem;
-    color: var(--gray);
-    font-weight: 500;
-    border-bottom: 1px solid var(--gray-light);
-}
-
-.recordsTable td {
-    padding: 15px;
-    border-bottom: 1px solid var(--gray-light);
-    vertical-align: middle;
-}
-
-.recordsTable tr:last-child td {
-    border-bottom: none;
-}
-
-.pagination {
-}

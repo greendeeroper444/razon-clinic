@@ -236,9 +236,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                             emptyMessage='No medical records found. Click "New Record" to get started.'
                             searchTerm={searchTerm}
                             getRowKey={(record) => record.id || ''}
-                            className={styles.recordsTable}
                         />
-
 
                         {
                             storePagination && storePagination.totalPages > 1 && (
@@ -249,7 +247,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                                     itemsPerPage={storePagination.itemsPerPage}
                                     onPageChange={handlePageChange}
                                     disabled={loading || isProcessing}
-                                    className={styles.pagination}
                                 />
                             )
                         }

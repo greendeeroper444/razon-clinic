@@ -413,7 +413,6 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
                             emptyMessage='No billings found. Click "New Billing" to get started.'
                             searchTerm={searchTerm}
                             getRowKey={(bill) => bill.id || ''}
-                            className={styles.billingTable}
                         />
 
                         {
@@ -425,7 +424,6 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
                                     itemsPerPage={storePagination.itemsPerPage}
                                     onPageChange={handlePageChange}
                                     disabled={loading || isProcessing}
-                                    className={styles.pagination}
                                 />
                             )
                         }

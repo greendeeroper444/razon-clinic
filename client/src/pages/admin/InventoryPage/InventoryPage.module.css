@@ -270,43 +270,6 @@
     background-color: #fecaca;
 }
 
-.inventoryTable {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.inventoryTable th {
-    text-align: center;
-    padding: 12px 15px;
-    font-size: 0.8rem;
-    color: var(--gray);
-    font-weight: 500;
-    border-bottom: 1px solid var(--gray-light);
-    background: #f8fafc;
-}
-
-.inventoryTable td {
-    padding: 15px;
-    border-bottom: 1px solid var(--gray-light);
-    vertical-align: middle;
-    text-align: center;
-}
-
-.inventoryTable tr:last-child td {
-    border-bottom: none;
-}
-
-.inventoryTable tbody tr:hover {
-    background-color: #f8fafc;
-}
-
-.pagination {
-    margin-top: 20px;
-    padding: 20px;
-    border-top: 1px solid var(--gray-light, #e2e8f0);
-    background: #fafbfc;
-}
-
 @media (max-width: 768px) {
     .inventoryCards {
         grid-template-columns: 1fr;
@@ -321,16 +284,6 @@
 
     .itemsPerPageControl {
         justify-content: space-between;
-    }
-
-    .pagination {
-        padding: 16px;
-    }
-
-    .inventoryTable th,
-    .inventoryTable td {
-        padding: 10px 8px;
-        font-size: 0.75rem;
     }
 
     .medicineInfo {
@@ -352,10 +305,6 @@
         width: 14px;
         height: 14px;
     }
-
-    .inventoryTable td:last-child {
-        white-space: nowrap;
-    }
 }
 
 @media (max-width: 480px) {
@@ -367,19 +316,6 @@
         padding: 6px 8px;
         font-size: 13px;
         min-width: 70px;
-    }
-
-    .pagination {
-        padding: 12px;
-    }
-
-    .inventoryTable {
-        font-size: 0.7rem;
-    }
-
-    .inventoryTable th,
-    .inventoryTable td {
-        padding: 8px 4px;
     }
 
     .medicineInfo {

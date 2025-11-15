@@ -310,7 +310,6 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                                     itemsPerPage={storePagination.itemsPerPage}
                                     onPageChange={handlePageChange}
                                     disabled={loading || isProcessing}
-                                    className={styles.pagination}
                                 />
                             )
                         }
