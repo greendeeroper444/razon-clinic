@@ -12,15 +12,15 @@
   margin: 0;
 }
 
-.contentActions {
-  display: flex;
-  gap: 10px;
-}
-
 .headerLeft {
     display: flex;
     align-items: center;
     gap: 16px;
+}
+
+.contentActions {
+  display: flex;
+  gap: 10px;
 }
 
 .btnBack {
@@ -79,4 +79,15 @@
 .btnOutline:hover {
     background-color: var(--primary-light);
     transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    /* .contentHeader {
+        flex-direction: column;
+    } */
+
+    button span:nth-child(2) {
+        display: none;
+    }
+
 }

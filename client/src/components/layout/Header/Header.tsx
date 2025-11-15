@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({
                 actions.length > 0 && (
                     <section className={styles.contentActions} role='toolbar' aria-label='Page actions'>
                         {
-                            actions.map((action, index) => (
+                            actions.map((action: any, index: string) => (
                                 <button
                                     key={action.id || index}
                                     type="button"
@@ -56,8 +56,8 @@ const Header: React.FC<HeaderProps> = ({
                                     onClick={action.onClick}
                                     disabled={action.disabled}
                                 >
-                                    {action.icon && action.icon}
-                                    {action.label}
+                                    <span>{action.icon && action.icon}</span>
+                                    <span>{action.label}</span>
                                 </button>
                             ))
                         }

@@ -59,9 +59,9 @@
 }
 
 @media (max-width: 480px) {
-    .table td {
+    /* .table td {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-    }
+    } */
 }
