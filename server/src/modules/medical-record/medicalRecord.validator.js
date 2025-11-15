@@ -50,93 +50,93 @@ const validateMedicalRecord = [
         .matches(/^[0-9]{10,15}$/).withMessage('Phone number must be 10-15 digits'),
     
     body('emergencyContact')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 200 }).withMessage('Emergency contact must not exceed 200 characters'),
 
     body('allergies')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 1000 }).withMessage('Allergies must not exceed 1000 characters'),
     
     body('chronicConditions')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 1000 }).withMessage('Chronic conditions must not exceed 1000 characters'),
     
     body('previousSurgeries')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 1000 }).withMessage('Previous surgeries must not exceed 1000 characters'),
     
     body('familyHistory')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 1000 }).withMessage('Family history must not exceed 1000 characters'),
 
     body('height')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .isFloat({ min: 30, max: 300 }).withMessage('Height must be between 30 and 300 cm'),
     
     body('weight')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .isFloat({ min: 0.5, max: 500 }).withMessage('Weight must be between 0.5 and 500 kg'),
     
     body('bmi')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .isFloat({ min: 5, max: 100 }).withMessage('BMI must be between 5 and 100'),
     
     body('growthNotes')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 500 }).withMessage('Growth notes must not exceed 500 characters'),
 
     body('chiefComplaint')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ min: 1, max: 200 }).withMessage('Chief complaint must not exceed 200 characters'),
     
     body('symptomsDescription')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ min: 1, max: 1000 }).withMessage('Symptoms description must not exceed 1000 characters'),
     
     body('symptomsDuration')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 100 }).withMessage('Symptoms duration must not exceed 100 characters'),
     
     body('painScale')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .isInt({ min: 0, max: 10 }).withMessage('Pain scale must be between 0 and 10'),
 
     body('diagnosis')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 1000 }).withMessage('Diagnosis must not exceed 1000 characters'),
     
     body('treatmentPlan')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 2000 }).withMessage('Treatment plan must not exceed 2000 characters'),
     
     body('prescribedMedications')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 2000 }).withMessage('Prescribed medications must not exceed 2000 characters'),
     
     body('consultationNotes')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 2000 }).withMessage('Consultation notes must not exceed 2000 characters'),
     
     body('vaccinationHistory')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 2000 }).withMessage('Vaccination history must not exceed 2000 characters'),
 
     body('followUpDate')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .isISO8601().withMessage('Follow-up date must be a valid date')
         .toDate()
         .custom((value) => {
@@ -199,12 +199,12 @@ const validateMedicalRecordUpdate = [
         .matches(/^[0-9]{10,15}$/).withMessage('Phone number must be 10-15 digits'),
     
     body('chiefComplaint')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ min: 1, max: 200 }).withMessage('Chief complaint must not exceed 200 characters'),
     
     body('symptomsDescription')
-        .optional({ checkFalsy: true })
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ min: 1, max: 1000 }).withMessage('Symptoms description must not exceed 1000 characters'),
 

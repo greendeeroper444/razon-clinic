@@ -48,7 +48,6 @@ const billingSchema = new mongoose.Schema(
     }
 );
 
-//index for better query performance
 billingSchema.index({ medicalRecordId: 1 });
 billingSchema.index({ paymentStatus: 1 });
 billingSchema.index({ patientName: 1 });

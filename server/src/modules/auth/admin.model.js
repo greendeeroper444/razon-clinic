@@ -30,7 +30,6 @@ const AdminSchema = new mongoose.Schema(
             unique: true,
             validate: {
                 validator: function(v) {
-                    //return true if empty or valid email format
                     return !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
                 },
                 message: 'Please provide a valid email address'
@@ -94,7 +93,6 @@ const AdminSchema = new mongoose.Schema(
     }
 );
 
-//pre-save middleware to ensure either email or contactNumber is provided
 AdminSchema.pre('save', function(next) {
     if (!this.email && !this.contactNumber) {
         return next(new Error('Either email or contact number is required'));
@@ -102,7 +100,6 @@ AdminSchema.pre('save', function(next) {
     next();
 });
 
-//create model from schema
 const Admin = mongoose.model('Admin', AdminSchema);
 
 module.exports = Admin;

@@ -119,25 +119,19 @@ const UserSchema = new mongoose.Schema(
     }
 );
 
-//static method to get the next user number
 UserSchema.statics.getNextUserNumber = async function() {
-    //find the user with the highest number
     const highestUser = await this.findOne().sort('-userNumber');
     
-    //if no users exist, start with 0001
     if (!highestUser || !highestUser.userNumber) {
         return '0001';
     }
     
-    //get the numeric value and increment
     const currentNumber = parseInt(highestUser.userNumber, 10);
     const nextNumber = currentNumber + 1;
     
-    //format with leading zeros
     return String(nextNumber).padStart(4, '0');
 };
 
-//pre-validate middleware to ensure userNumber is set before validation
 UserSchema.pre('validate', async function(next) {
     try {
         if (!this.userNumber) {
@@ -149,7 +143,6 @@ UserSchema.pre('validate', async function(next) {
     }
 });
 
-//pre-save middleware to ensure either email or contactNumber is provided
 UserSchema.pre('save', function(next) {
     if (!this.email && !this.contactNumber) {
         return next(new Error('Either email or contact number is required'));
@@ -157,7 +150,6 @@ UserSchema.pre('save', function(next) {
     next();
 });
 
-//create model from schema
 const User = mongoose.model('User', UserSchema);
 
 module.exports = User;

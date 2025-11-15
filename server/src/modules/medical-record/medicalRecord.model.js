@@ -10,20 +10,20 @@ const medicalRecordSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Appointment',
         },
-        //personal details (from form)
+        
         personalDetails: {
             fullName: {
                 type: String,
-                required: [true, 'Full name is required'],
+                required: true,
                 trim: true
             },
             dateOfBirth: {
                 type: Date,
-                required: [true, 'Date of birth is required']
+                required: true
             },
             gender: {
                 type: String,
-                required: [true, 'Gender is required'],
+                required: true,
                 enum: ['Male', 'Female', 'Other']
             },
             bloodType: {
@@ -36,7 +36,7 @@ const medicalRecordSchema = new mongoose.Schema(
             },
             phone: {
                 type: String,
-                required: [true, 'Phone number is required'],
+                required: true,
                 trim: true
             },
             email: {
@@ -56,7 +56,6 @@ const medicalRecordSchema = new mongoose.Schema(
             }
         },
 
-        //medical history (enhanced from form)
         medicalHistory: {
             allergies: {
                 type: String,
@@ -74,54 +73,49 @@ const medicalRecordSchema = new mongoose.Schema(
                 type: String,
                 trim: true
             },
-            //keep existing field for backward compatibility
             general: {
                 type: String,
                 trim: true
             }
         },
 
-        //growth milestones (enhanced from form)
         growthMilestones: {
             height: {
                 type: Number,
-                min: [0, 'Height must be a positive number']
+                min: 0
             },
             weight: {
                 type: Number,
-                min: [0, 'Weight must be a positive number']
+                min: 0
             },
             bmi: {
                 type: Number,
-                min: [0, 'BMI must be a positive number']
+                min: 0
             },
             growthNotes: {
                 type: String,
                 trim: true
             },
-            //keep existing field for backward compatibility
             general: {
                 type: String,
                 trim: true
             }
         },
 
-        //vaccination history (keep existing)
         vaccinationHistory: {
             type: String,
             trim: true
         },
 
-        //current symptoms (enhanced from form)
         currentSymptoms: {
             chiefComplaint: {
                 type: String,
-                required: [true, 'Chief complaint is required'],
+                required: true,
                 trim: true
             },
             symptomsDescription: {
                 type: String,
-                required: [true, 'Symptoms description is required'],
+                required: true,
                 trim: true
             },
             symptomsDuration: {
@@ -130,10 +124,9 @@ const medicalRecordSchema = new mongoose.Schema(
             },
             painScale: {
                 type: Number,
-                min: [1, 'Pain scale must be between 1 and 10'],
-                max: [10, 'Pain scale must be between 1 and 10']
+                min: 1,
+                max: 10
             },
-            //keep existing field for backward compatibility
             general: {
                 type: String,
                 trim: true
@@ -184,7 +177,6 @@ const medicalRecordSchema = new mongoose.Schema(
     }
 );
 
-//virtual for age calculation
 medicalRecordSchema.virtual('personalDetails.age').get(function() {
     if (!this.personalDetails?.dateOfBirth) return null;
     const today = new Date();
@@ -199,7 +191,6 @@ medicalRecordSchema.virtual('personalDetails.age').get(function() {
     return age;
 });
 
-//method to calculate BMI
 medicalRecordSchema.methods.calculateBMI = function() {
     const height = this.growthMilestones?.height;
     const weight = this.growthMilestones?.weight;
@@ -211,25 +202,19 @@ medicalRecordSchema.methods.calculateBMI = function() {
     return null;
 };
 
-//static method to get the next medical record number
 medicalRecordSchema.statics.getNextMedicalRecordNumber = async function() {
-    //find the medical record with the highest number
     const highestMedicalRecord = await this.findOne().sort('-medicalRecordNumber');
     
-    //ff no medical records exist, start with 0001
     if (!highestMedicalRecord || !highestMedicalRecord.medicalRecordNumber) {
         return '0001';
     }
     
-    //get the numeric value and increment
     const currentNumber = parseInt(highestMedicalRecord.medicalRecordNumber, 10);
     const nextNumber = currentNumber + 1;
     
-    //format with leading zeros
     return String(nextNumber).padStart(4, '0');
 };
 
-//pre-validate middleware to ensure medicalRecordNumber is set before validation
 medicalRecordSchema.pre('validate', async function(next) {
     try {
         if (!this.medicalRecordNumber) {
@@ -241,7 +226,6 @@ medicalRecordSchema.pre('validate', async function(next) {
     }
 });
 
-//pre-save middleware to auto-calculate BMI
 medicalRecordSchema.pre('save', function(next) {
     if (this.growthMilestones?.height && 
         this.growthMilestones?.weight && 
@@ -251,7 +235,6 @@ medicalRecordSchema.pre('save', function(next) {
     next();
 });
 
-//indexes for better query performance
 medicalRecordSchema.index({ 'personalDetails.fullName': 1 });
 medicalRecordSchema.index({ 'personalDetails.email': 1 });
 medicalRecordSchema.index({ 'personalDetails.phone': 1 });

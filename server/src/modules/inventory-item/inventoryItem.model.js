@@ -49,12 +49,10 @@ const inventoryItemSchema = new mongoose.Schema(
     }
 );
 
-//virtual for remaining quantity
 inventoryItemSchema.virtual('quantityRemaining').get(function() {
     return this.quantityInStock - this.quantityUsed;
 });
 
-//static to find soon-to-expire items
 inventoryItemSchema.statics.findExpiringSoon = function(days = 30) {
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() + days);

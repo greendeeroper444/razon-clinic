@@ -132,25 +132,19 @@ const appointmentSchema = new mongoose.Schema(
     }
 );
 
-//static method to get the next appointment number
 appointmentSchema.statics.getNextAppointmentNumber = async function() {
-    //find the appointment with the highest number
     const highestAppointment = await this.findOne().sort('-appointmentNumber');
     
-    //ff no appointments exist, start with 0001
     if (!highestAppointment || !highestAppointment.appointmentNumber) {
         return '0001';
     }
     
-    //get the numeric value and increment
     const currentNumber = parseInt(highestAppointment.appointmentNumber, 10);
     const nextNumber = currentNumber + 1;
     
-    //format with leading zeros
     return String(nextNumber).padStart(4, '0');
 };
 
-//pre-validate middleware to ensure appointmentNumber is set before validation
 appointmentSchema.pre('validate', async function(next) {
     try {
         if (!this.appointmentNumber) {
