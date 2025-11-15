@@ -9,10 +9,8 @@ export interface OpenModalProps {
     openModal: (type: ModalType) => void;
 }
 
-//modal context with proper typing
 export const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
-//hook for accessing the modal context
 export const useModal = (): ModalContextType => {
   const context = useContext(ModalContext);
     if (context === undefined) {

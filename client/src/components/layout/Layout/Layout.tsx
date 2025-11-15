@@ -1,20 +1,10 @@
-import React from 'react'
 import '../../../App.css';
 import { LayoutProps } from '../../../types';
-import { OpenModalProps, useModal } from '../../../hooks/hook';
 import Sidebar from '../Sidebar/Sidebar';
 import Navbar from '../Navbar/Navbar';
 import Navigation from '../Navigation/Navigation';
 
 function Layout({children, type, sidebarCollapsed, toggleSidebar, hideNavigation = false}: LayoutProps) {
-    const { openModal } = useModal();
-    
-    const childrenWithProps = React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
-            return React.cloneElement(child, { openModal } as OpenModalProps);
-        }
-        return child;
-    });
   
   return (
     <div className={`app-container ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
@@ -37,7 +27,7 @@ function Layout({children, type, sidebarCollapsed, toggleSidebar, hideNavigation
                         toggleSidebar={toggleSidebar}
                     />
                     <div className='content-area'>
-                        {childrenWithProps} 
+                        {children} 
                     </div>
                 </div>
             ) : (
@@ -51,7 +41,7 @@ function Layout({children, type, sidebarCollapsed, toggleSidebar, hideNavigation
                     }
 
                     <div className='content-area'>
-                        {childrenWithProps} 
+                        {children} 
                     </div>
                 </div>
             )
