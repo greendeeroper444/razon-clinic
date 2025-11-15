@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styles from './MedicalRecordsPage.module.css';
-import { Plus, Download } from 'lucide-react';
+import { Plus, Download, Trash, Edit, View } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { FormDataType, MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
@@ -272,20 +272,8 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                             }}
                             title='Update'
                         >
-                            Update
+                            <Edit size={16} />
                         </button>
-                        <button
-                            type='button'
-                            className={`${styles.actionBtn} ${styles.delete}`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                openModalDelete(record);
-                            }}
-                            title='Delete'
-                        >
-                            Delete
-                        </button>
-
                         <button
                             type='button'
                             onClick={(e) => {
@@ -296,6 +284,17 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                             title="Download Receipt"
                         >
                             <Download size={16} />
+                        </button>
+                        <button
+                            type='button'
+                            className={`${styles.actionBtn} ${styles.delete}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openModalDelete(record);
+                            }}
+                            title='Delete'
+                        >
+                            <Trash size={16} />
                         </button>
                     </div>
                 );

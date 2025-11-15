@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import styles from './BillingsPaymentPage.module.css'
-import { Plus, Download, CreditCard } from 'lucide-react';
+import { Plus, Download, CreditCard, Trash } from 'lucide-react';
 import { BillingFormData, FormDataType, TableColumn } from '../../../types'
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
@@ -290,13 +290,14 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
                     </button>
                      <button 
                         type='button' 
+                        title='Delete'
                         className={`${styles.actionBtn} ${styles.delete}`}
                         onClick={(e) => {
                             e.stopPropagation();
                             openModalDelete(billing);
                         }}
                     >
-                        Delete
+                        <Trash size={16} />
                     </button>
 
                     {
@@ -345,7 +346,6 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
             actions={headerActions}
         />
 
-        {/* summary cards */}
         <div className={styles.contentCards}>
             {
                 summaryCards.map((card, index) => (
@@ -365,12 +365,10 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
             }
         </div>
                 
-        {/* billing table */}
         <div className={styles.section}>
             <div className={styles.sectionHeader}>
                 <div className={styles.sectionTitle}>Billing & Payments</div>
 
-                {/* search and items per page controls */}
                 <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}
