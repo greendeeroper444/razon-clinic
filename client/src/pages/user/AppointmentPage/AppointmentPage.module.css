@@ -111,27 +111,6 @@
     opacity: 0.6;
 }
 
-
-.appointmentsTable {
-  width: 100%;
-  border-collapse: collapse;
-}
-.appointmentsTable th {
-    text-align: center;
-    padding: 12px 15px;
-    font-size: 0.8rem;
-    color: var(--gray);
-    font-weight: 500;
-    border-bottom: 1px solid var(--gray-light);
-}
-.appointmentsTable td {
-    padding: 15px;
-    border-bottom: 1px solid var(--gray-light);
-    vertical-align: middle;
-}
-.appointmentsTable tr:last-child td {
-  border-bottom: none;
-}
 .emptyState {
     padding: 60px 20px !important;
     text-align: center !important;
@@ -140,55 +119,40 @@
     font-style: italic;
 }
 .patientInfo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
+
 .patientAvatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: var(--primary-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary);
-  font-weight: 600;
-  flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-weight: 600;
+    flex-shrink: 0;
 }
+
+.patientText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.1;
+}
+
 .patientName {
-  font-weight: 500;
-  margin-bottom: 3px;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
 }
-.patientId {
-  font-size: 0.75rem;
-  color: var(--gray);
-}
-.medicineIcon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background-color: var(--medical);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  flex-shrink: 0;
-}
-.medicineName {
-  font-weight: 500;
-  margin-bottom: 3px;
-}
-.medicineCategory {
-  font-size: 0.75rem;
-  color: var(--gray);
-}
-.appointmentTime {
-  font-weight: 500;
-}
-.appointmentDate {
-  font-size: 0.8rem;
-  color: var(--gray);
+
+.appointmentId {
+    font-size: 0.75rem;
+    color: var(--gray);
 }
 .appointmentType {
   display: inline-block;

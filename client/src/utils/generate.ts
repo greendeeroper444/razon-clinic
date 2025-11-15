@@ -42,15 +42,26 @@ export const generateTimeSlots = (): string[] => {
 
 
 //generate initials from full name
-export const generateInitials = (firstName: string): string => {
+export const generateInitials = (firstName: string | any): string => {
     if (!firstName || typeof firstName !== 'string') {
         return 'NA';
     }
     
     return firstName
-        .trim() //remove leading/trailing whitespace
-        .split(' ')
-        .map(name => name.charAt(0).toUpperCase())
-        .join('')
-        .substring(0, 2);
+    .trim() //remove leading/trailing whitespace
+    .split(' ')
+    .map(name => name.charAt(0).toUpperCase())
+    .join('')
+    .substring(0, 2);
+};
+
+
+export const generate20Only = (text: string | any): string => {
+    if (!text) return "";
+    
+    if (text.length > 20) {
+        return text.slice(0, 20) + "...";
+    }
+
+    return text;
 };

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styles from './AppointmentPage.module.css'
 import { Plus } from 'lucide-react'
 import { OpenModalProps } from '../../../hooks/hook'
-import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, getStatusClass, getLoadingText } from '../../../utils'
+import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, getStatusClass, getLoadingText, generateInitials, generate20Only } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType, TableColumn } from '../../../types'
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components'
 import { useNavigate } from 'react-router-dom'
@@ -151,21 +151,15 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             render: (appointment) => (
                 <div className={styles.patientInfo}>
                     <div className={styles.patientAvatar}>
-                        {
-                            (() => {
-                                const firstName = appointment.firstName
-                                return firstName 
-                                    ? getFirstLetterOfFirstAndLastName(firstName)
-                                    : 'N/A'
-                            })()
-                        }
+                        {generateInitials(appointment.firstName)}
                     </div>
-                    <div>
+
+                    <div className={styles.patientText}>
                         <div className={styles.patientName}>
-                            {appointment.firstName}
+                            {generate20Only(appointment.firstName)}
                         </div>
-                        <div className={styles.patientId}>
-                            APT-ID: {appointment.appointmentNumber || 'Walk-in'}
+                        <div className={styles.appointmentId}>
+                            APT-ID: {appointment.appointmentNumber}
                         </div>
                     </div>
                 </div>

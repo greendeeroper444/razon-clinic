@@ -5,12 +5,12 @@ import { OpenModalProps } from '../../../hooks/hook';
 import { MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
 import { Header, Loading, Main, Pagination, Searchbar, Table } from '../../../components';
 import { toast } from 'sonner';
-import { calculateAge2, formatDate } from '../../../utils';
+import { calculateAge2, formatDate, generate20Only, generateInitials } from '../../../utils';
 import { useMedicalRecordStore } from '../../../stores';
 import { useNavigate } from 'react-router-dom';
 import { generateMedicalRecordPDF } from '../../../templates';
 
-const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
+const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -108,9 +108,20 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             key: 'patientName',
             header: 'PATIENT NAME',
             render: (record) => (
-                <span className={styles.patientName}>
-                    {record.personalDetails.fullName}
-                </span>
+                <div className={styles.patientInfo}>
+                    <div className={styles.patientAvatar}>
+                        {generateInitials(record.personalDetails.fullName)}
+                    </div>
+
+                    <div className={styles.patientText}>
+                        <div className={styles.patientName}>
+                            {generate20Only(record.personalDetails.fullName)}
+                        </div>
+                        <div className={styles.recordId}>
+                            MDR-ID: {record.medicalRecordNumber}
+                        </div>
+                    </div>
+                </div>
             )
         },
         {
@@ -196,7 +207,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = ({openModal}) => {
             <div className={styles.sectionHeader}>
                 <div className={styles.sectionTitle}>Patient Records</div>
 
-                {/* search and items per page controls */}
                 <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}

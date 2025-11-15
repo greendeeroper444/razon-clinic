@@ -379,6 +379,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         <TextArea
             ref={(el) => { fieldRefs.current['address'] = el; }}
+            label='Address'
             name='address'
             placeholder='Full Address'
             leftIcon='map-pin'

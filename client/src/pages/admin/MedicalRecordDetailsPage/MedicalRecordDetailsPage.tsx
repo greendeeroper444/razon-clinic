@@ -9,7 +9,6 @@ import { useMedicalRecordStore } from '../../../stores';
 
 const MedicalRecordDetailsPage = () => {
     const { medicalRecordId } = useParams();
-    
     //zustand store selectors
     const {
         currentMedicalRecord,
@@ -18,11 +17,11 @@ const MedicalRecordDetailsPage = () => {
         loading,
         error,
         selectedMedicalRecord,
-        isModalOpen,
+        isModalUpdateOpen,
         fetchMedicalRecordById,
         updateMedicalRecordData,
-        openUpdateModal,
-        closeUpdateModal,
+        openModalUpdate,
+        closeModalUpdate,
         clearCurrentMedicalRecord,
         currentOperation
     } = useMedicalRecordStore();
@@ -42,7 +41,7 @@ const MedicalRecordDetailsPage = () => {
 
     const handleMedicalRecordUpdateClick = () => {
         if (currentMedicalRecord) {
-            openUpdateModal(currentMedicalRecord)
+            openModalUpdate(currentMedicalRecord)
         }
     };
 
@@ -461,10 +460,10 @@ const MedicalRecordDetailsPage = () => {
 
         {/* update medical record modal */}
         {
-            isModalOpen && (
+            isModalUpdateOpen && (
                 <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeUpdateModal}
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
                     modalType="medical"
                     onSubmit={handleSubmitUpdate}
                     patients={patients}

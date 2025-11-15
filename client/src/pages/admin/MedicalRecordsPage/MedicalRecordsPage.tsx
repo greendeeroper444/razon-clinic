@@ -5,7 +5,7 @@ import { OpenModalProps } from '../../../hooks/hook';
 import { FormDataType, MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
 import { toast } from 'sonner';
-import { calculateAge2, formatDate, getLoadingText } from '../../../utils';
+import { calculateAge2, formatDate, generate20Only, generateInitials, getLoadingText } from '../../../utils';
 import { useMedicalRecordStore } from '../../../stores';
 import { useNavigate } from 'react-router-dom';
 import { generateMedicalRecordPDF } from '../../../templates';
@@ -201,9 +201,20 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
             key: 'patientName',
             header: 'PATIENT NAME',
             render: (record) => (
-                <span className={styles.patientName}>
-                    {record.personalDetails.fullName}
-                </span>
+                <div className={styles.patientInfo}>
+                    <div className={styles.patientAvatar}>
+                        {generateInitials(record.personalDetails.fullName)}
+                    </div>
+
+                    <div className={styles.patientText}>
+                        <div className={styles.patientName}>
+                            {generate20Only(record.personalDetails.fullName)}
+                        </div>
+                        <div className={styles.recordId}>
+                            MDR-ID: {record.medicalRecordNumber}
+                        </div>
+                    </div>
+                </div>
             )
         },
         {
@@ -319,7 +330,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
             <div className={styles.sectionHeader}>
                 <div className={styles.sectionTitle}>Medical Records</div>
 
-                {/* search and items per page controls */}
                 <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}

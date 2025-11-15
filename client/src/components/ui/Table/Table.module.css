@@ -17,6 +17,7 @@
 }
 
 .table td {
+    text-align: center;
     padding: 15px;
     border-bottom: 1px solid var(--gray-light);
     vertical-align: middle;

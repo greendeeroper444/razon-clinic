@@ -9,7 +9,6 @@ import { useAppointmentStore } from '../../../stores'
 
 const AppointmentDetailsPage = () => {
     const { appointmentId } = useParams();
-
     //zustand store selectors
     const {
         currentAppointment,
@@ -17,12 +16,12 @@ const AppointmentDetailsPage = () => {
         loading,
         error,
         selectedAppointment,
-        isModalOpen,
+        isModalUpdateOpen,
         fetchAppointmentById,
         fetchMyAppointments,
         updateAppointmentData,
-        openUpdateModal,
-        closeUpdateModal,
+        openModalUpdate,
+        closeModalUpdate,
         clearCurrentAppointment,
         currentOperation
     } = useAppointmentStore();
@@ -42,7 +41,7 @@ const AppointmentDetailsPage = () => {
 
     const handleUpdateClick = () => {
         if (currentAppointment) {
-            openUpdateModal(currentAppointment)
+            openModalUpdate(currentAppointment)
         }
     }
 
@@ -220,7 +219,13 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <Hand /> Religion:
                             </span>
-                            <span className={styles.tableValue}>{currentAppointment.religion}</span>
+                            {
+                                currentAppointment.religion ? (
+                                    <span className={styles.tableValue}>{currentAppointment.religion}</span>
+                                ) : (
+                                    <span className={styles.tableValue}>N/A</span>
+                                )
+                            }
                         </div>
                     </div>
 
@@ -237,17 +242,33 @@ const AppointmentDetailsPage = () => {
                                 <span className={styles.tableLabel}>
                                     <User /> Name:
                                 </span>
-                                <span className={styles.tableValue}>{currentAppointment.motherInfo?.name}</span>
+                                {
+                                    currentAppointment.motherInfo?.name ? (
+                                        <span className={styles.tableValue}>{currentAppointment.motherInfo?.name}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                <span className={styles.tableValue}>{currentAppointment.motherInfo?.age} years</span>
+                                {
+                                    currentAppointment.motherInfo?.age ? (
+                                        <span className={styles.tableValue}>{currentAppointment.motherInfo?.age} years</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                <span className={styles.tableValue}>
-                                    {currentAppointment.motherInfo?.occupation === 'n/a' ? 'Not specified' : currentAppointment.motherInfo?.occupation}
-                                </span>
+                                {
+                                    currentAppointment.motherInfo?.occupation ? (
+                                        <span className={styles.tableValue}>{currentAppointment.motherInfo?.occupation}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                         </div>
                         
@@ -258,15 +279,33 @@ const AppointmentDetailsPage = () => {
                                 <span className={styles.tableLabel}>
                                     <User /> Name:
                                 </span>
-                                <span className={styles.tableValue}>{currentAppointment.fatherInfo?.name}</span>
+                                {
+                                    currentAppointment.fatherInfo?.name ? (
+                                        <span className={styles.tableValue}>{currentAppointment.fatherInfo?.name}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                <span className={styles.tableValue}>{currentAppointment.fatherInfo?.age} years</span>
+                                {
+                                    currentAppointment.fatherInfo?.age ? (
+                                        <span className={styles.tableValue}>{currentAppointment.fatherInfo?.age} years</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                <span className={styles.tableValue}>{currentAppointment.fatherInfo?.occupation}</span>
+                                {
+                                    currentAppointment.fatherInfo?.occupation ? (
+                                        <span className={styles.tableValue}>{currentAppointment.fatherInfo?.occupation}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                         </div>
                     </div>
@@ -275,10 +314,10 @@ const AppointmentDetailsPage = () => {
         </div>
 
         {
-            isModalOpen && (
+            isModalUpdateOpen && (
                 <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeUpdateModal}
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
                     modalType="appointment"
                     onSubmit={handleSubmitUpdate}
                     editData={selectedAppointment}

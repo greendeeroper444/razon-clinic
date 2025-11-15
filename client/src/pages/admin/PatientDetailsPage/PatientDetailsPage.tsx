@@ -9,7 +9,6 @@ import { usePatientStore } from '../../../stores';
 
 const PatientDetailsPage = () => {
     const { patientId } = useParams();
-    
     //zustand store selectors
     const {
         currentPatient,
@@ -17,11 +16,11 @@ const PatientDetailsPage = () => {
         loading,
         error,
         selectedPatient,
-        isModalOpen,
+        isModalUpdateOpen,
         fetchPatientById,
         updatePatientData,
-        openUpdateModal,
-        closeUpdateModal,
+        openModalUpdate,
+        closeModalUpdate,
         clearCurrentPatient,
         currentOperation,
     } = usePatientStore();
@@ -40,7 +39,7 @@ const PatientDetailsPage = () => {
 
     const handlePatientUpdateClick = () => {
         if (currentPatient) {
-            openUpdateModal(currentPatient)
+            openModalUpdate(currentPatient)
         }
     };
 
@@ -131,7 +130,13 @@ const PatientDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <Phone /> Contact Number:
                             </span>
-                            <span className={styles.tableValue}>{currentPatient.contactNumber}</span>
+                            {
+                                currentPatient.contactNumber ? (
+                                    <span className={styles.tableValue}>{currentPatient.contactNumber}</span>
+                                ) : (
+                                    <span className={styles.tableValue}>N/A</span>
+                                )
+                            }
                         </div>
                         
                         <div className={styles.tableRow}>
@@ -145,7 +150,13 @@ const PatientDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <Hand /> Religion:
                             </span>
-                            <span className={styles.tableValue}>{currentPatient.religion}</span>
+                            {
+                                currentPatient.religion ? (
+                                    <span className={styles.tableValue}>{currentPatient.religion}</span>
+                                ) : (
+                                    <span className={styles.tableValue}>N/A</span>
+                                )
+                            }
                         </div>
                     </div>
 
@@ -162,17 +173,33 @@ const PatientDetailsPage = () => {
                                 <span className={styles.tableLabel}>
                                     <User /> Name:
                                 </span>
-                                <span className={styles.tableValue}>{currentPatient.motherInfo?.name}</span>
+                                {
+                                    currentPatient.motherInfo?.name ? (
+                                        <span className={styles.tableValue}>{currentPatient.motherInfo?.name}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                <span className={styles.tableValue}>{currentPatient.motherInfo?.age} years</span>
+                                {
+                                    currentPatient.motherInfo?.age ? (
+                                        <span className={styles.tableValue}>{currentPatient.motherInfo?.age} years</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                <span className={styles.tableValue}>
-                                    {currentPatient.motherInfo?.occupation === 'n/a' ? 'Not specified' : currentPatient.motherInfo?.occupation}
-                                </span>
+                                {
+                                    currentPatient.motherInfo?.occupation ? (
+                                        <span className={styles.tableValue}>{currentPatient.motherInfo?.occupation}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                         </div>
                         
@@ -183,15 +210,33 @@ const PatientDetailsPage = () => {
                                 <span className={styles.tableLabel}>
                                     <User /> Name:
                                 </span>
-                                <span className={styles.tableValue}>{currentPatient.fatherInfo?.name}</span>
+                                {
+                                    currentPatient.fatherInfo?.name ? (
+                                        <span className={styles.tableValue}>{currentPatient.fatherInfo?.name}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                <span className={styles.tableValue}>{currentPatient.fatherInfo?.age} years</span>
+                                {
+                                    currentPatient.fatherInfo?.age ? (
+                                        <span className={styles.tableValue}>{currentPatient.fatherInfo?.age} years</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                <span className={styles.tableValue}>{currentPatient.fatherInfo?.occupation}</span>
+                                {
+                                    currentPatient.fatherInfo?.occupation ? (
+                                        <span className={styles.tableValue}>{currentPatient.fatherInfo?.occupation}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                         </div>
                     </div>
@@ -201,10 +246,10 @@ const PatientDetailsPage = () => {
 
         {/* update patient modal */}
         {
-            isModalOpen && (
+            isModalUpdateOpen && (
                 <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeUpdateModal}
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
                     modalType="patient"
                     onSubmit={handleSubmitUpdate}
                     editData={selectedPatient}

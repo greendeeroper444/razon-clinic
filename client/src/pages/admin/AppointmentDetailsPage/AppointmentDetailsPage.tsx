@@ -9,7 +9,6 @@ import { useAppointmentStore } from '../../../stores';
 
 const AppointmentDetailsPage = () => {
     const { appointmentId } = useParams();
-    
     //zustand store selectors
     const {
         currentAppointment,
@@ -17,15 +16,15 @@ const AppointmentDetailsPage = () => {
         loading,
         error,
         selectedAppointment,
-        isModalOpen,
-        isStatusModalOpen,
+        isModalUpdateOpen,
+        isModalStatusOpen,
         fetchAppointmentById,
         updateAppointmentData,
         updateAppointmentStatus,
-        openUpdateModal,
-        closeUpdateModal,
-        openStatusModal,
-        closeStatusModal,
+        openModalUpdate,
+        closeModalUpdate,
+        openModalStatus,
+        closeModalStatus,
         clearCurrentAppointment,
         currentOperation
     } = useAppointmentStore();
@@ -43,13 +42,13 @@ const AppointmentDetailsPage = () => {
 
     const handleUpdateStatusClick = () => {
         if (currentAppointment) {
-            openStatusModal(currentAppointment);
+            openModalStatus(currentAppointment);
         }
     };
 
     const handleAppointmentUpdateClick = () => {
         if (currentAppointment) {
-            openUpdateModal(currentAppointment)
+            openModalUpdate(currentAppointment)
         }
     };
 
@@ -219,19 +218,37 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <Ruler /> Height:
                             </span>
-                            <span className={styles.tableValue}>{currentAppointment.height} cm</span>
+                            {
+                                currentAppointment.height ? (
+                                    <span className={styles.tableValue}>{currentAppointment.height} cm</span>
+                                ) : (
+                                    <span className={styles.tableValue}>N/A</span>
+                                )
+                            }
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <Weight /> Weight:
                             </span>
-                            <span className={styles.tableValue}>{currentAppointment.weight} kg</span>
+                            {
+                                currentAppointment.weight  ? (
+                                    <span className={styles.tableValue}>{currentAppointment.weight} kg</span>
+                                ) : (
+                                    <span className={styles.tableValue}>N/A</span>
+                                )
+                            }
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <Hand /> Religion:
                             </span>
-                            <span className={styles.tableValue}>{currentAppointment.religion}</span>
+                            {
+                                currentAppointment.religion ? (
+                                    <span className={styles.tableValue}>{currentAppointment.religion}</span>
+                                ) : (
+                                    <span className={styles.tableValue}>N/A</span>
+                                )
+                            }
                         </div>
                     </div>
 
@@ -248,17 +265,33 @@ const AppointmentDetailsPage = () => {
                                 <span className={styles.tableLabel}>
                                     <User /> Name:
                                 </span>
-                                <span className={styles.tableValue}>{currentAppointment.motherInfo?.name}</span>
+                                {
+                                    currentAppointment.motherInfo?.name ? (
+                                        <span className={styles.tableValue}>{currentAppointment.motherInfo?.name}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                <span className={styles.tableValue}>{currentAppointment.motherInfo?.age} years</span>
+                                {
+                                    currentAppointment.motherInfo?.age ? (
+                                        <span className={styles.tableValue}>{currentAppointment.motherInfo?.age} years</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                <span className={styles.tableValue}>
-                                    {currentAppointment.motherInfo?.occupation === 'n/a' ? 'Not specified' : currentAppointment.motherInfo?.occupation}
-                                </span>
+                                {
+                                    currentAppointment.motherInfo?.occupation ? (
+                                        <span className={styles.tableValue}>{currentAppointment.motherInfo?.occupation}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                         </div>
                         
@@ -269,15 +302,33 @@ const AppointmentDetailsPage = () => {
                                 <span className={styles.tableLabel}>
                                     <User /> Name:
                                 </span>
-                                <span className={styles.tableValue}>{currentAppointment.fatherInfo?.name}</span>
+                                {
+                                    currentAppointment.fatherInfo?.name ? (
+                                        <span className={styles.tableValue}>{currentAppointment.fatherInfo?.name}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                <span className={styles.tableValue}>{currentAppointment.fatherInfo?.age} years</span>
+                                {
+                                    currentAppointment.fatherInfo?.age ? (
+                                        <span className={styles.tableValue}>{currentAppointment.fatherInfo?.age} years</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                <span className={styles.tableValue}>{currentAppointment.fatherInfo?.occupation}</span>
+                                {
+                                    currentAppointment.fatherInfo?.occupation ? (
+                                        <span className={styles.tableValue}>{currentAppointment.fatherInfo?.occupation}</span>
+                                    ) : (
+                                        <span className={styles.tableValue}>N/A</span>
+                                    )
+                                }
                             </div>
                         </div>
                     </div>
@@ -285,12 +336,11 @@ const AppointmentDetailsPage = () => {
             </div>
         </div>
         
-        {/* update appointment status modal */}
         {
-            isStatusModalOpen && (
+            isModalStatusOpen && (
                 <Modal
-                    isOpen={isStatusModalOpen}
-                    onClose={closeStatusModal}
+                    isOpen={isModalStatusOpen}
+                    onClose={closeModalStatus}
                     modalType='status'
                     onSubmit={handleSubmitStatusUpdate}
                     editData={selectedAppointment}
@@ -299,13 +349,11 @@ const AppointmentDetailsPage = () => {
             )
         }
 
-
-        {/* update appointment modal */}
         {
-            isModalOpen && (
+            isModalUpdateOpen && (
                 <Modal
-                    isOpen={isModalOpen}
-                    onClose={closeUpdateModal}
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
                     modalType="appointment"
                     onSubmit={handleSubmitUpdate}
                     editData={selectedAppointment}
