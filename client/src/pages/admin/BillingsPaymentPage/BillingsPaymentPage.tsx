@@ -4,7 +4,7 @@ import { Plus, Download, CreditCard } from 'lucide-react';
 import { BillingFormData, FormDataType, TableColumn } from '../../../types'
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
-import { formatDate, getFirstLetterOfFirstAndLastName, getLoadingText, getMedicalRecordId, getStatusClass, openModalWithRefresh } from '../../../utils'
+import { formatDate, generate20Only, generateInitials, getLoadingText, getMedicalRecordId, getStatusClass } from '../../../utils'
 import { useBillingStore } from '../../../stores'
 import { getBillingSummaryCards } from '../../../config/billingSummaryCards';
 import { toast } from 'sonner';
@@ -16,7 +16,6 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [selectedBillingId, setSelectedBillingId] = useState<string>('');
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-
     //zustand store selectors
     const {
         billings,
@@ -215,18 +214,11 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
             render: (billing) => (
                 <div className={styles.patientInfo}>
                     <div className={styles.patientAvatar}>
-                        {
-                            (() => {
-                                const patientName = billing.patientName
-                                return patientName 
-                                    ? getFirstLetterOfFirstAndLastName(patientName)
-                                    : 'N/A'
-                            })()
-                        }
+                        {generateInitials(billing.patientName)}
                     </div>
-                    <div>
+                    <div className={styles.patientText}>
                         <div className={styles.patientName}>
-                            {billing.patientName}
+                            {generate20Only(billing.patientName)}
                         </div>
                     </div>
                 </div>
@@ -234,7 +226,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
         },
         {
             key: 'medicalRecordId',
-            header: 'MEDICAL RECORD',
+            header: 'MED. REC. ID',
             render: (billing) => (
                 <span className={styles.medicalRecord}>
                     {getMedicalRecordId(billing.id)}

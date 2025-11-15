@@ -1,199 +1,23 @@
-.btnPrimary {
-  background-color: var(--primary);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btnPrimary:hover {
-  background-color: var(--primary-dark, #4338ca);
-}
-
-.btnOutline {
-  background-color: transparent;
-  color: var(--primary);
-  border: 1px solid var(--primary);
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btnOutline:hover {
-  background-color: rgba(79, 70, 229, 0.1);
-}
-
-.sectionTitle {
-  margin: 25px 0 15px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #374151;
-}
-
-.btnSecondary {
-  background: white;
-  color: var(--dark);
-  border: 2px solid var(--gray-light);
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-}
-
-.btnSecondary:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  transform: translateY(-1px);
-}
-
-
-
-.searchFilterSection {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  align-items: center;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.searchBox {
-  flex: 1;
-  position: relative;
-}
-
-.searchIcon {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--gray);
-  font-size: 16px;
-}
-
-.searchInput {
-  width: 100%;
-  padding: 12px 16px 12px 48px;
-  border: 2px solid var(--gray-light);
-  border-radius: 8px;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.filterBox {
-  position: relative;
-  min-width: 200px;
-}
-
-.filterIcon {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--gray);
-  font-size: 16px;
-  z-index: 1;
-}
-
-
-.filterSelect {
-  width: 100%;
-  padding: 12px 16px 12px 48px;
-  border: 2px solid var(--gray-light);
-  border-radius: 8px;
-  font-size: 14px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.filterSelect:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.patientInfo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.patientAvatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: var(--primary-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary);
-    font-weight: 600;
-    flex-shrink: 0;
-}
-
-.patientText {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    line-height: 1.1;
-}
-
-.patientName {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
-}
-
-.recordId {
-    font-size: 0.75rem;
-    color: var(--gray);
-}
-
-
-.section{
+.section {
     background: white;
     border-radius: var(--border-radius);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
-  
-.sectionHeader{
+
+.sectionHeader {
     display: flex;
     flex-direction: column;
     gap: 16px;
     padding: 20px;
     border-bottom: 1px solid var(--gray-light);
 }
-  
+
 .sectionTitle {
     font-size: 1.1rem;
     font-weight: 600;
     color: #333;
 }
-
 
 .controls {
     display: flex;
@@ -252,81 +76,54 @@
     cursor: not-allowed;
     opacity: 0.6;
 }
-.recordsTable {
-    width: 100%;
-    border-collapse: collapse;
-}
-  
-.recordsTable th {
-    text-align: center;
-    padding: 12px 15px;
-    font-size: 0.8rem;
-    color: var(--gray);
-    font-weight: 500;
-    border-bottom: 1px solid var(--gray-light);
-}
-  
-.recordsTable td {
-    padding: 15px;
-    border-bottom: 1px solid var(--gray-light);
-    vertical-align: middle;
-}
-  
-.recordsTable tr:last-child td {
-    border-bottom: none;
+
+.tableResponsive {
+    overflow-x: auto;
 }
 
-.emptyState {
-    padding: 60px 20px !important;
-    text-align: center !important;
-    color: var(--gray, #64748b);
-    font-size: 16px;
-    font-style: italic;
+.patientInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.diagnosis {
-  font-weight: 500;
-  color: var(--medical);
-  max-width: 180px;
-  word-wrap: break-word;
-  line-height: 1.4;
-}
-
-
-
-.status {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 500;
+.patientAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     background-color: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--primary);
+    font-weight: 600;
+    flex-shrink: 0;
 }
 
-.status.active {
-  background-color: #d6e4f5;
-    color: var(--primary);
+.patientText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.1;
 }
 
-.status.completed {
-    background-color: #ecfdf5;
-    color: var(--success);
+.patientName {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
 }
 
-.status.pending {
-  background-color: #d6d6f5;
-    color: var(--medical);
+.recordId {
+    font-size: 0.75rem;
+    color: var(--gray);
 }
-
-
 
 .actions {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  min-width: 120px;
-  justify-content: center;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    min-width: 120px;
+    justify-content: center;
 }
 
 .actionBtn {
@@ -338,55 +135,66 @@
     cursor: pointer;
     transition: var(--transition);
 }
-  
-.actionBtn.view,
-.actionBtn.primary {
+
+.actionBtn.view {
     background-color: var(--primary-light);
     color: var(--primary);
 }
-.actionBtn.view:hover,
-.actionBtn.primary:hover {
+
+.actionBtn.view:hover {
     background-color: #bfdbfe;
 }
-  
+
 .actionBtn.update {
     background-color: #fef7e2;
     color: var(--warning);
 }
-.actionBtn.update:hover{
+
+.actionBtn.update:hover {
     background-color: #fee6ca;
 }
+
 .actionBtn.delete {
     background-color: #fee2e2;
     color: var(--danger);
 }
+
 .actionBtn.delete:hover {
     background-color: #fecaca;
 }
-  
-.actionBtn.success {
-    background-color: #d1fae5;
-    color: var(--success);
-}
-.actionBtn.success:hover {
-    background-color: #a7f3d0;
+
+.actionBtn.download {
+    background-color: var(--primary-light);
+    color: var(--primary);
 }
 
-
-.downloadBtn {
-  background-color: var(--primary);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: background-color 0.2s;
+.actionBtn.download:hover {
+    background-color: #bfdbfe;
 }
 
-.downloadBtn:hover {
-  background-color: var(--secondary);
+.recordsTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.recordsTable th {
+    text-align: center;
+    padding: 12px 15px;
+    font-size: 0.8rem;
+    color: var(--gray);
+    font-weight: 500;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.recordsTable td {
+    padding: 15px;
+    border-bottom: 1px solid var(--gray-light);
+    vertical-align: middle;
+}
+
+.recordsTable tr:last-child td {
+    border-bottom: none;
+}
+
+.pagination {
 }

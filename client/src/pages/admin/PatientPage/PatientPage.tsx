@@ -203,7 +203,7 @@ const PatientPage: React.FC<OpenModalProps> = () => {
                         <div className={styles.patientName}>
                             {patient.firstName} {patient.lastName}
                         </div>
-                        <div className={styles.patientId}>#{patient.patientNumber}</div>
+                        <div className={styles.patientId}>PT-ID: {patient.patientNumber}</div>
                     </div>
                 </div>
             )

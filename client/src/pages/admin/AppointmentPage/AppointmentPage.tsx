@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styles from './AppointmentPage.module.css'
 import { Plus } from 'lucide-react'
 import { OpenModalProps } from '../../../hooks/hook'
-import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, getStatusClass, getLoadingText, generateInitials, generate20Only } from '../../../utils'
+import { formatDate, formatTime, getStatusClass, getLoadingText, generateInitials, generate20Only } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType, TableColumn } from '../../../types'
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components'
 import { useNavigate } from 'react-router-dom'
@@ -153,7 +153,6 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     <div className={styles.patientAvatar}>
                         {generateInitials(appointment.firstName)}
                     </div>
-
                     <div className={styles.patientText}>
                         <div className={styles.patientName}>
                             {generate20Only(appointment.firstName)}

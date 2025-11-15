@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styles from './MedicalRecordsPage.module.css';
-import { FileText, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
 import { Header, Loading, Main, Pagination, Searchbar, Table } from '../../../components';
@@ -59,10 +59,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
-
-    const handleReport = () => {
-        console.log('Generate report');
-    };
 
     const handleViewClick = (record: MedicalRecordResponse) => {
         navigate(`/user/medical-records/details/${record.id}`)
@@ -187,21 +183,9 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         }
     ];
 
-    const headerActions = [
-        {
-            label: 'Report',
-            icon: <FileText />,
-            onClick: handleReport,
-            type: 'outline' as const
-        }
-    ];
-
   return (
     <Main error={error}>
-        <Header
-            title='Medical Records'
-            actions={headerActions}
-        />
+        <Header title='Medical Records' />
 
         <div className={styles.section}>
             <div className={styles.sectionHeader}>

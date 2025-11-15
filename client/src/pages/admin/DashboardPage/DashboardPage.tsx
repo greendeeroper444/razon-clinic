@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import styles from './DashboardPage.module.css';
 import { ChevronRight, Plus } from 'lucide-react';
 import { AppointmentResponse, InventoryItemFormData, TableColumn } from '../../../types';
-import { getFirstLetterOfFirstAndLastName, formatDate, formatTime, getStatusClass, getItemIcon, getStockStatus, getExpiryStatus} from '../../../utils';
+import { formatDate, formatTime, getStatusClass, getItemIcon, getStockStatus, getExpiryStatus, generateInitials, generate20Only} from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Header, Loading, Main, Table } from '../../../components';
 import { useAppointmentStore, useInventoryStore } from '../../../stores';
@@ -44,21 +44,14 @@ const DashboardPage = () => {
             render: (appointment) => (
                 <div className={styles.patientInfo}>
                     <div className={styles.patientAvatar}>
-                        {
-                            (() => {
-                                const firstName = appointment.firstName
-                                return firstName 
-                                    ? getFirstLetterOfFirstAndLastName(firstName)
-                                    : 'N/A'
-                            })()
-                        }
+                        {generateInitials(appointment.firstName)}
                     </div>
-                    <div>
+                    <div className={styles.patientText}>
                         <div className={styles.patientName}>
-                            {appointment.firstName}
+                            {generate20Only(appointment.firstName)}
                         </div>
-                        <div className={styles.patientId}>
-                            APT-ID: {appointment.appointmentNumber || 'Walk-in'}
+                        <div className={styles.appointmentId}>
+                            APT-ID: {appointment.appointmentNumber}
                         </div>
                     </div>
                 </div>
