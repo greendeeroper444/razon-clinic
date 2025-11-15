@@ -26,22 +26,39 @@ class MedicalRecordService extends BaseService {
         const medicalRecord = new MedicalRecord({
             appointmentId: appointmentId || undefined,
             personalDetails: {
-                fullName, dateOfBirth: new Date(dateOfBirth), gender, bloodType, address, phone, email, emergencyContact
+                fullName,
+                dateOfBirth: new Date(dateOfBirth),
+                gender,
+                bloodType: bloodType || undefined,
+                address: address || undefined,
+                phone,
+                email: email || undefined,
+                emergencyContact: emergencyContact || undefined
             },
-            medicalHistory: { allergies, chronicConditions, previousSurgeries, familyHistory },
+            medicalHistory: {
+                allergies: allergies || undefined,
+                chronicConditions: chronicConditions || undefined,
+                previousSurgeries: previousSurgeries || undefined,
+                familyHistory: familyHistory || undefined
+            },
             growthMilestones: {
                 height: height ? Number(height) : undefined,
                 weight: weight ? Number(weight) : undefined,
                 bmi: bmi ? Number(bmi) : undefined,
-                growthNotes
+                growthNotes: growthNotes || undefined
             },
             currentSymptoms: {
-                chiefComplaint, symptomsDescription, symptomsDuration,
+                chiefComplaint,
+                symptomsDescription,
+                symptomsDuration: symptomsDuration || undefined,
                 painScale: painScale ? Number(painScale) : undefined
             },
-            diagnosis, treatmentPlan, prescribedMedications, consultationNotes,
+            diagnosis: diagnosis || undefined,
+            treatmentPlan: treatmentPlan || undefined,
+            prescribedMedications: prescribedMedications || undefined,
+            consultationNotes: consultationNotes || undefined,
             followUpDate: followUpDate ? new Date(followUpDate) : undefined,
-            vaccinationHistory
+            vaccinationHistory: vaccinationHistory || undefined
         });
 
         return await medicalRecord.save();

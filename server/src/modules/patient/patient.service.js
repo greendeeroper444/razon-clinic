@@ -17,9 +17,9 @@ class PatientService {
         const processedData = {
             firstName: patientData.firstName,
             lastName: patientData.lastName,
-            middleName: patientData.middleName,
-            email: patientData.email,
-            contactNumber: patientData.contactNumber,
+            middleName: patientData.middleName || undefined,
+            email: patientData.email || undefined,
+            contactNumber: patientData.contactNumber || undefined,
             birthdate: patientData.birthdate,
             sex: patientData.sex,
             address: patientData.address,

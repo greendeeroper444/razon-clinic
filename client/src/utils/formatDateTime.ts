@@ -9,6 +9,18 @@ export const formatDate = (dateString: string) => {
     });
 };
 
+export const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+};
+
 export const formatDateWithDay = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import styles from './MedicalRecordDetailsPage.module.css';
 import { useParams } from 'react-router-dom';
 import { Calendar, Clock, User, Phone, FileText, MapPin, Cake, Venus, ArrowLeft, Edit, Ruler, Weight, Users, Droplet, Mail, AlertTriangle, Stethoscope, Pill, ClipboardList, CalendarCheck2, Calculator, History } from 'lucide-react';
-import { formatBirthdate, formatDate, getLoadingText } from '../../../utils';
+import { formatBirthdate, formatDate, formatDateTime, getLoadingText } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { MedicalRecordFormData, FormDataType } from '../../../types';
 import { useMedicalRecordStore } from '../../../stores';
@@ -112,7 +112,7 @@ const MedicalRecordDetailsPage = () => {
                             </span>
                             <span className={styles.tableValue}>
                                 {currentMedicalRecord.personalDetails?.dateOfBirth ? 
-                                    formatBirthdate(String(currentMedicalRecord.personalDetails.dateOfBirth)) : 'Not specified'}
+                                    formatBirthdate(String(currentMedicalRecord.personalDetails.dateOfBirth)) : 'N/A'}
                                 {
                                     currentMedicalRecord.personalDetails?.age && (
                                         <span className={styles.ageLabel}>({currentMedicalRecord.personalDetails.age} years)</span>
@@ -131,7 +131,7 @@ const MedicalRecordDetailsPage = () => {
                                 <Droplet /> Blood Type:
                             </span>
                             <span className={styles.tableValue}>
-                                {currentMedicalRecord.personalDetails?.bloodType || 'Not specified'}
+                                {currentMedicalRecord.personalDetails?.bloodType || 'N/A'}
                             </span>
                         </div>
                         <div className={styles.tableRow}>
@@ -145,7 +145,7 @@ const MedicalRecordDetailsPage = () => {
                                 <Mail /> Email:
                             </span>
                             <span className={styles.tableValue}>
-                                {currentMedicalRecord.personalDetails?.email || 'Not provided'}
+                                {currentMedicalRecord.personalDetails?.email || 'N/A'}
                             </span>
                         </div>
                         <div className={styles.tableRow}>
@@ -153,7 +153,7 @@ const MedicalRecordDetailsPage = () => {
                                 <MapPin /> Address:
                             </span>
                             <span className={styles.tableValue}>
-                                {currentMedicalRecord.personalDetails?.address || 'Not provided'}
+                                {currentMedicalRecord.personalDetails?.address || 'N/A'}
                             </span>
                         </div>
                         <div className={styles.tableRow}>
@@ -161,7 +161,7 @@ const MedicalRecordDetailsPage = () => {
                                 <AlertTriangle /> Emergency Contact:
                             </span>
                             <span className={styles.tableValue}>
-                                {currentMedicalRecord.personalDetails?.emergencyContact || 'Not provided'}
+                                {currentMedicalRecord.personalDetails?.emergencyContact || 'N/A'}
                             </span>
                         </div>
                     </div>
@@ -207,7 +207,7 @@ const MedicalRecordDetailsPage = () => {
                                 <Users/> Family History:
                             </span>
                             <span className={styles.tableValue}>
-                                {currentMedicalRecord.medicalHistory?.familyHistory || 'Not provided'}
+                                {currentMedicalRecord.medicalHistory?.familyHistory || 'N/A'}
                             </span>
                         </div>
                         {
@@ -432,15 +432,15 @@ const MedicalRecordDetailsPage = () => {
                             <span className={styles.tableValue}>
                                 {
                                     currentMedicalRecord.dateRecorded ? 
-                                        new Date(currentMedicalRecord.dateRecorded).toLocaleString() : 
-                                        'Not specified'
+                                        (formatDateTime(currentMedicalRecord.dateRecorded)) : 
+                                        'N/A'
                                 }
                             </span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>Created:</span>
                             <span className={styles.tableValue}>
-                                {new Date(String(currentMedicalRecord.createdAt)).toLocaleString()}
+                                {formatDateTime(String(currentMedicalRecord.createdAt))}
                             </span>
                         </div>
                         {
@@ -448,7 +448,7 @@ const MedicalRecordDetailsPage = () => {
                                 <div className={styles.tableRow}>
                                     <span className={styles.tableLabel}>Last Updated:</span>
                                     <span className={styles.tableValue}>
-                                        {new Date(String(currentMedicalRecord.updatedAt)).toLocaleString()}
+                                        {formatDateTime(String(currentMedicalRecord.updatedAt))}
                                     </span>
                                 </div>
                             )

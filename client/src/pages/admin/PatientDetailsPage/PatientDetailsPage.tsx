@@ -130,13 +130,7 @@ const PatientDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <Phone /> Contact Number:
                             </span>
-                            {
-                                currentPatient.contactNumber ? (
-                                    <span className={styles.tableValue}>{currentPatient.contactNumber}</span>
-                                ) : (
-                                    <span className={styles.tableValue}>N/A</span>
-                                )
-                            }
+                            <span className={styles.tableValue}>{currentPatient?.contactNumber || 'N/A'}</span>
                         </div>
                         
                         <div className={styles.tableRow}>
@@ -150,13 +144,7 @@ const PatientDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <Hand /> Religion:
                             </span>
-                            {
-                                currentPatient.religion ? (
-                                    <span className={styles.tableValue}>{currentPatient.religion}</span>
-                                ) : (
-                                    <span className={styles.tableValue}>N/A</span>
-                                )
-                            }
+                            <span className={styles.tableValue}>{currentPatient?.religion || 'N/A'}</span>
                         </div>
                     </div>
 
@@ -173,33 +161,15 @@ const PatientDetailsPage = () => {
                                 <span className={styles.tableLabel}>
                                     <User /> Name:
                                 </span>
-                                {
-                                    currentPatient.motherInfo?.name ? (
-                                        <span className={styles.tableValue}>{currentPatient.motherInfo?.name}</span>
-                                    ) : (
-                                        <span className={styles.tableValue}>N/A</span>
-                                    )
-                                }
+                                <span className={styles.tableValue}>{currentPatient?.motherInfo?.name || 'N/A'}</span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                {
-                                    currentPatient.motherInfo?.age ? (
-                                        <span className={styles.tableValue}>{currentPatient.motherInfo?.age} years</span>
-                                    ) : (
-                                        <span className={styles.tableValue}>N/A</span>
-                                    )
-                                }
+                                <span className={styles.tableValue}>{currentPatient?.motherInfo?.age || 'N/A'}</span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                {
-                                    currentPatient.motherInfo?.occupation ? (
-                                        <span className={styles.tableValue}>{currentPatient.motherInfo?.occupation}</span>
-                                    ) : (
-                                        <span className={styles.tableValue}>N/A</span>
-                                    )
-                                }
+                                <span className={styles.tableValue}>{currentPatient?.motherInfo?.occupation || 'N/A'}</span>
                             </div>
                         </div>
                         
@@ -210,33 +180,15 @@ const PatientDetailsPage = () => {
                                 <span className={styles.tableLabel}>
                                     <User /> Name:
                                 </span>
-                                {
-                                    currentPatient.fatherInfo?.name ? (
-                                        <span className={styles.tableValue}>{currentPatient.fatherInfo?.name}</span>
-                                    ) : (
-                                        <span className={styles.tableValue}>N/A</span>
-                                    )
-                                }
+                                <span className={styles.tableValue}>{currentPatient?.fatherInfo?.name || 'N/A'}</span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                {
-                                    currentPatient.fatherInfo?.age ? (
-                                        <span className={styles.tableValue}>{currentPatient.fatherInfo?.age} years</span>
-                                    ) : (
-                                        <span className={styles.tableValue}>N/A</span>
-                                    )
-                                }
+                                <span className={styles.tableValue}>{currentPatient?.fatherInfo?.age || 'N/A'}</span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                {
-                                    currentPatient.fatherInfo?.occupation ? (
-                                        <span className={styles.tableValue}>{currentPatient.fatherInfo?.occupation}</span>
-                                    ) : (
-                                        <span className={styles.tableValue}>N/A</span>
-                                    )
-                                }
+                                <span className={styles.tableValue}>{currentPatient?.fatherInfo?.occupation || 'N/A'}</span>
                             </div>
                         </div>
                     </div>

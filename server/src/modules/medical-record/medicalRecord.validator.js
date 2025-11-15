@@ -4,13 +4,14 @@ const { handleValidationErrors } = require('@helpers/validationErrorHandler.help
 
 const validateMedicalRecord = [
     body('appointmentId')
-        .optional()
+        .optional({ values: 'falsy' })
         .custom((value) => {
             if (value && !mongoose.Types.ObjectId.isValid(value)) {
                 throw new Error('Invalid appointment ID format');
             }
             return true;
         }),
+    
     body('fullName')
         .trim()
         .notEmpty().withMessage('Full name is required')
@@ -37,17 +38,31 @@ const validateMedicalRecord = [
         .isIn(['Male', 'Female', 'Other']).withMessage('Gender must be Male, Female, or Other'),
     
     body('bloodType')
-        .optional()
+        .optional({ values: 'falsy' })
         .isIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']).withMessage('Invalid blood type'),
     
     body('address')
-        .optional()
+        .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 200 }).withMessage('Address must not exceed 200 characters'),
     
     body('phone')
         .notEmpty().withMessage('Phone number is required')
-        .matches(/^[0-9]{10,15}$/).withMessage('Phone number must be 10-15 digits'),
+        .custom((value) => {
+            if (!value) return true;
+            const numberStr = String(value);
+            //accept formats: 09XXXXXXXXX or +639XXXXXXXXX or 9XXXXXXXXX or 10-15 digits
+            if (!/^(09|\+639|9)\d{9}$/.test(numberStr) && !/^[0-9]{10,15}$/.test(numberStr)) {
+                throw new Error('Invalid phone number format');
+            }
+            return true;
+        }),
+    
+    body('email')
+        .optional({ values: 'falsy' })
+        .trim()
+        .isEmail().withMessage('Must be a valid email address')
+        .normalizeEmail(),
     
     body('emergencyContact')
         .optional({ values: 'falsy' })
@@ -92,12 +107,12 @@ const validateMedicalRecord = [
         .isLength({ max: 500 }).withMessage('Growth notes must not exceed 500 characters'),
 
     body('chiefComplaint')
-        .optional({ values: 'falsy' })
+        .notEmpty().withMessage('Chief complaint is required')
         .trim()
         .isLength({ min: 1, max: 200 }).withMessage('Chief complaint must not exceed 200 characters'),
     
     body('symptomsDescription')
-        .optional({ values: 'falsy' })
+        .notEmpty().withMessage('Symptoms description is required')
         .trim()
         .isLength({ min: 1, max: 1000 }).withMessage('Symptoms description must not exceed 1000 characters'),
     
@@ -108,7 +123,7 @@ const validateMedicalRecord = [
     
     body('painScale')
         .optional({ values: 'falsy' })
-        .isInt({ min: 0, max: 10 }).withMessage('Pain scale must be between 0 and 10'),
+        .isInt({ min: 1, max: 10 }).withMessage('Pain scale must be between 1 and 10'),
 
     body('diagnosis')
         .optional({ values: 'falsy' })
@@ -140,6 +155,7 @@ const validateMedicalRecord = [
         .isISO8601().withMessage('Follow-up date must be a valid date')
         .toDate()
         .custom((value) => {
+            if (!value) return true;
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (value < today) {
@@ -161,7 +177,7 @@ const validateMedicalRecordUpdate = [
         }),
     
     body('appointmentId')
-        .optional()
+        .optional({ values: 'falsy' })
         .custom((value) => {
             if (value && !mongoose.Types.ObjectId.isValid(value)) {
                 throw new Error('Invalid appointment ID format');
@@ -179,6 +195,7 @@ const validateMedicalRecordUpdate = [
         .isISO8601().withMessage('Date of birth must be a valid date')
         .toDate()
         .custom((value) => {
+            if (!value) return true;
             const today = new Date();
             const age = (today - value) / (365.25 * 24 * 60 * 60 * 1000);
             if (age < 0) {
@@ -194,9 +211,26 @@ const validateMedicalRecordUpdate = [
         .optional()
         .isIn(['Male', 'Female', 'Other']).withMessage('Gender must be Male, Female, or Other'),
     
+    body('bloodType')
+        .optional({ values: 'falsy' })
+        .isIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']).withMessage('Invalid blood type'),
+    
     body('phone')
         .optional()
-        .matches(/^[0-9]{10,15}$/).withMessage('Phone number must be 10-15 digits'),
+        .custom((value) => {
+            if (!value) return true;
+            const numberStr = String(value);
+            if (!/^(09|\+639|9)\d{9}$/.test(numberStr) && !/^[0-9]{10,15}$/.test(numberStr)) {
+                throw new Error('Invalid phone number format');
+            }
+            return true;
+        }),
+    
+    body('email')
+        .optional({ values: 'falsy' })
+        .trim()
+        .isEmail().withMessage('Must be a valid email address')
+        .normalizeEmail(),
     
     body('chiefComplaint')
         .optional({ values: 'falsy' })
@@ -207,6 +241,16 @@ const validateMedicalRecordUpdate = [
         .optional({ values: 'falsy' })
         .trim()
         .isLength({ min: 1, max: 1000 }).withMessage('Symptoms description must not exceed 1000 characters'),
+    
+    body('diagnosis')
+        .optional({ values: 'falsy' })
+        .trim()
+        .isLength({ max: 1000 }).withMessage('Diagnosis must not exceed 1000 characters'),
+    
+    body('treatmentPlan')
+        .optional({ values: 'falsy' })
+        .trim()
+        .isLength({ max: 2000 }).withMessage('Treatment plan must not exceed 2000 characters'),
 
     handleValidationErrors
 ];
@@ -255,7 +299,7 @@ const validateQueryParams = [
     
     query('sortBy')
         .optional()
-        .isIn(['createdAt', 'fullName', 'dateOfBirth', 'updatedAt']).withMessage('Invalid sort field'),
+        .isIn(['createdAt', 'fullName', 'dateOfBirth', 'updatedAt', 'deletedAt']).withMessage('Invalid sort field'),
     
     query('sortOrder')
         .optional()
