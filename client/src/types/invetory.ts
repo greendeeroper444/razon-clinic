@@ -1,4 +1,11 @@
 import { ChangeEvent } from "react";
+import { BlockedTimeSlotFormData } from "./blockedSlot";
+
+
+export interface BlockedTimeSlotFormProps {
+    formData: BlockedTimeSlotFormData;
+    onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+}
 
 export interface InventoryItemFormProps {
     formData: InventoryItemFormData;

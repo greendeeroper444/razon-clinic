@@ -25,6 +25,7 @@ export { default as CalendarDateDetailsPage } from './admin/CalendarDateDetailsP
 export { default as GrowthMilestonePage } from './admin/GrowthMilestonePage/GrowthMilestonePage';
 export { default as ReportPage } from './admin/ReportPage/ReportPage';
 export { default as TrashPage } from './admin/TrashPage/TrashPage';
+export { default as BlockedTimeSlotPage } from './admin/BlockedTimeSlotPage/BlockedTimeSlotPage';
 
 //user pages
 export { default as UserAppointmentPage } from './user/AppointmentPage/AppointmentPage';

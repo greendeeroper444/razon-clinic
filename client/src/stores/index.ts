@@ -6,3 +6,4 @@ export { useMedicalRecordStore } from './medicalRecordStore';
 export { usePatientStore } from './patientStore';
 export { useTrashStore } from './trashStore';
 export { useReportStore } from './reportStore';
+export { useBlockedTimeSlotStore } from './blockedTimeSlotStore';

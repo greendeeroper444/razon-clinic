@@ -2,9 +2,30 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import styles from './Modal.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import { AppointmentForm, BillingsForm, BillingDetailsForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../../features/Forms'
+import { 
+    AppointmentForm, 
+    BillingsForm, 
+    BillingDetailsForm, 
+    BlockedTimeSlotForm,
+    DeleteForm, 
+    InventoryItemForm, 
+    MedicalRecordForm, 
+    PatientForm, 
+    StatusForm 
+} from '../../features/Forms'
 import { formatDateForDisplay, formatDateForInput } from '../../../utils'
-import { AppointmentFormData, AppointmentStatus, BillingFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalProps, Patient, PatientFormData } from '../../../types'
+import { 
+    AppointmentFormData, 
+    AppointmentStatus, 
+    BillingFormData,
+    BlockedTimeSlotFormData,
+    FormDataType, 
+    InventoryItemFormData, 
+    MedicalRecordFormData, 
+    ModalProps, 
+    Patient, 
+    PatientFormData 
+} from '../../../types'
 import Button from '../Button/Button'
 
 
@@ -115,6 +136,15 @@ const Modal: React.FC<ModalProps> = ({
                     expirationDate: '',
                     location: '',
                 } as InventoryItemFormData);
+            } else if (modalType === 'blockedTimeSlot') {
+                setFormData({
+                    startDate: '',
+                    endDate: '',
+                    startTime: '',
+                    endTime: '',
+                    reason: '',
+                    customReason: ''
+                } as BlockedTimeSlotFormData);
             } else if (modalType === 'medical') {
                 setFormData({
                     appointmentId: '',
@@ -251,6 +281,9 @@ const Modal: React.FC<ModalProps> = ({
         case 'item':
             title = editData ? 'Edit Inventory Item' : 'New Inventory Item';
             break;
+        case 'blockedTimeSlot':
+            title = editData ? 'Edit Blocked Time Slot' : 'Block New Time Slot';
+            break;
         case 'medical':
             title = editData ? 'Edit Medical Record' : 'New Medical Record';
             break;
@@ -305,6 +338,13 @@ const Modal: React.FC<ModalProps> = ({
                         onChange={handleChange}
                         isRestockMode={isRestockMode}
                         isAddQuantityMode={isAddQuantityMode}
+                    />
+                );
+            case 'blockedTimeSlot':
+                return (
+                    <BlockedTimeSlotForm
+                        formData={formData as BlockedTimeSlotFormData}
+                        onChange={handleChange}
                     />
                 );
             case 'medical':

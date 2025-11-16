@@ -1,11 +1,12 @@
 import { AppointmentFormData } from "./appointment";
 import { BillingFormData } from "./billing";
+import { BlockedTimeSlotFormData } from "./blockedSlot";
 import { InventoryItemFormData } from "./invetory";
 import { MedicalRecordFormData } from "./medical";
 import { PatientFormData } from "./patient";
 // import { PatientFormData } from "./patient";
 
-export type FormDataType = AppointmentFormData | PatientFormData | InventoryItemFormData | MedicalRecordFormData | BillingFormData;
+export type FormDataType = AppointmentFormData | PatientFormData | InventoryItemFormData | MedicalRecordFormData | BillingFormData | BlockedTimeSlotFormData;
 
 export type OperationType = 
 'update' | 'delete' | 'status' | 

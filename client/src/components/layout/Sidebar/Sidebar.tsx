@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import styles from './Sidebar.module.css';
 import { Link, useLocation } from 'react-router-dom';
-import { Hospital, LayoutDashboard, CalendarCheck, Bed, Pill, Menu, ChevronLeft, FileText, CreditCard, User, ScrollText, Trash } from 'lucide-react';
+import { Hospital, LayoutDashboard, CalendarCheck, Bed, Pill, Menu, ChevronLeft, FileText, CreditCard, User, ScrollText, Trash, BlocksIcon } from 'lucide-react';
 import { SidebarProps } from '../../../types';
 import { useAuthenticationStore } from '../../../stores/authenticationStore';
 
@@ -180,6 +180,14 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                         </Link>
                     )
                }
+                <Link
+                    to='/admin/blocked-slot'
+                    className={`${styles.menuItem} ${isActive('/admin/blocked-slot') ? styles.active : ''}`}
+                    title='Block Slot'
+                >
+                    <BlocksIcon color='#94a3b8' size={20} />
+                    <span className={styles.menuText}>Block Slot</span>
+                </Link>
             </div>
         </div>
     </>

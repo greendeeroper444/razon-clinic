@@ -6,3 +6,4 @@ export { default as StatusForm } from './StatusForm/StatusForm';
 export { default as DeleteForm } from './DeleteForm/DeleteForm';
 export { default as BillingsForm } from './BillingsForm/BillingsForm';
 export { default as BillingDetailsForm } from './BillingDetailsForm/BillingDetailsForm';
+export { default as BlockedTimeSlotForm } from './BlockedTimeSlotForm/BlockedTimeSlotForm';

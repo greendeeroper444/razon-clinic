@@ -1,4 +1,4 @@
-import { DashboardPage, AppointmentPage, AppointmentDetailsPage, PatientPage, InventoryPage, UserManagementPage, MedicalRecordsPage, MedicalRecordDetailsPage, BillingsPaymentPage, CalendarDateDetailsPage, GrowthMilestonePage, PatientDetailsPage, ReportPage, TrashPage, PatientManagementPage } from '../pages';
+import { DashboardPage, AppointmentPage, AppointmentDetailsPage, PatientPage, InventoryPage, UserManagementPage, MedicalRecordsPage, MedicalRecordDetailsPage, BillingsPaymentPage, CalendarDateDetailsPage, GrowthMilestonePage, PatientDetailsPage, ReportPage, TrashPage, PatientManagementPage, BlockedTimeSlotPage } from '../pages';
 import { RouteType } from '../types';
 
 export const adminRoutes: RouteType[] = [
@@ -16,5 +16,6 @@ export const adminRoutes: RouteType[] = [
     { path: '/admin/calendar-date-details', component: CalendarDateDetailsPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
     { path: '/admin/growth-milestone', component: GrowthMilestonePage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
     { path: '/admin/reports', component: ReportPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
-     { path: '/admin/trash', component: TrashPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
+    { path: '/admin/trash', component: TrashPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
+    { path: '/admin/blocked-slot', component: BlockedTimeSlotPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
 ];
