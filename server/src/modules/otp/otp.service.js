@@ -1,0 +1,335 @@
+const OTP = require('./otp.model');
+const User = require('@modules/user/user.model');
+const sendSMS = require('@utils/smsSender');
+const { ApiError } = require('@utils/errors');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
+
+class OTPService {
+    
+    generateOTP() {
+        return crypto.randomInt(100000, 999999).toString();
+    }
+
+    async hashPassword(password) {
+        const salt = await bcrypt.genSalt(10);
+        return await bcrypt.hash(password, salt);
+    }
+
+    async createAndSendOTP(userId, purpose = 'verification') {
+        try {
+            const user = await User.findById(userId);
+            
+            if (!user) {
+                throw new ApiError('User not found', 404);
+            }
+
+            const contactNumber = user.contactNumber;
+            
+            if (!contactNumber) {
+                throw new ApiError('User has no contact number', 400);
+            }
+
+            await OTP.updateMany(
+                { 
+                    userId: userId, 
+                    purpose: purpose,
+                    isUsed: false 
+                },
+                { 
+                    isUsed: true,
+                    usedAt: new Date()
+                }
+            );
+
+            const otpCode = this.generateOTP();
+
+            const otp = await OTP.create({
+                userId: userId,
+                otp: otpCode,
+                purpose: purpose,
+                contactNumber: contactNumber,
+                expiresAt: new Date(Date.now() + 5 * 60 * 1000) //5 minutes
+            });
+
+            const userName = `${user.firstName} ${user.lastName}`;
+            const replacements = {
+                userName: userName,
+                otpNumber: otpCode
+            };
+
+            const smsResult = await sendSMS(contactNumber, 'otpMessage.txt', replacements);
+
+            return {
+                success: true,
+                message: 'OTP sent successfully',
+                otpId: otp._id,
+                expiresAt: otp.expiresAt,
+                smsResult: smsResult
+            };
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async verifyOTP(userId, otpCode, purpose = 'verification') {
+        try {
+            const otp = await OTP.findOne({
+                userId: userId,
+                otp: otpCode,
+                purpose: purpose,
+                isUsed: false
+            }).sort({ createdAt: -1 });
+
+            if (!otp) {
+                throw new ApiError('Invalid OTP code', 400);
+            }
+
+            if (otp.expiresAt < new Date()) {
+                throw new ApiError('OTP has expired', 400);
+            }
+
+            if (otp.attempts >= otp.maxAttempts) {
+                throw new ApiError('Maximum verification attempts exceeded', 400);
+            }
+
+            await otp.markAsUsed();
+
+            return {
+                success: true,
+                message: 'OTP verified successfully',
+                userId: userId
+            };
+
+        } catch (error) {
+            if (error.statusCode !== 404) {
+                const otp = await OTP.findOne({
+                    userId: userId,
+                    otp: otpCode,
+                    purpose: purpose,
+                    isUsed: false
+                }).sort({ createdAt: -1 });
+
+                if (otp && otp.isValid()) {
+                    await otp.incrementAttempts();
+                    const remainingAttempts = otp.maxAttempts - otp.attempts;
+                    
+                    if (remainingAttempts > 0) {
+                        throw new ApiError(
+                            `Invalid OTP code. ${remainingAttempts} attempt(s) remaining`,
+                            400
+                        );
+                    }
+                }
+            }
+            throw error;
+        }
+    }
+
+    async resendOTP(userId, purpose = 'verification') {
+        try {
+            const recentOTP = await OTP.findOne({
+                userId: userId,
+                purpose: purpose,
+                createdAt: { $gte: new Date(Date.now() - 60 * 1000) }
+            });
+
+            if (recentOTP) {
+                throw new ApiError('Please wait before requesting a new OTP', 429);
+            }
+
+            return await this.createAndSendOTP(userId, purpose);
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    generateTemporaryPassword() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+        let password = '';
+        for (let i = 0; i < 8; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return password;
+    }
+
+    async forgotPassword(contactNumber) {
+        try {
+            let normalizedNumber = contactNumber.trim();
+            
+            let user = await User.findOne({ 
+                contactNumber: normalizedNumber,
+                role: 'User'
+            });
+
+            if (!user && normalizedNumber.startsWith('09')) {
+                const withPrefix = '+63' + normalizedNumber.substring(1);
+                user = await User.findOne({ 
+                    contactNumber: withPrefix,
+                    role: 'User'
+                });
+            }
+
+            if (!user && normalizedNumber.startsWith('+63')) {
+                const withoutPrefix = '0' + normalizedNumber.substring(3);
+                user = await User.findOne({ 
+                    contactNumber: withoutPrefix,
+                    role: 'User'
+                });
+            }
+
+            if (!user) {
+                throw new ApiError('No account found with this contact number', 404);
+            }
+
+            if (user.isArchived) {
+                throw new ApiError('This account has been archived. Please contact support.', 403);
+            }
+
+            const temporaryPassword = this.generateTemporaryPassword();
+
+            const hashedPassword = await this.hashPassword(temporaryPassword);
+
+            user.password = hashedPassword;
+            await user.save();
+
+            const userName = `${user.firstName} ${user.lastName}`;
+            const replacements = {
+                userName: userName,
+                temporaryPassword: temporaryPassword
+            };
+
+            const smsResult = await sendSMS(
+                user.contactNumber, 
+                'forgotPasswordMessage.txt', 
+                replacements
+            );
+
+            console.log(`Temporary password sent to ${user.contactNumber} for user ${user.userNumber}`);
+
+            return {
+                success: true,
+                message: 'A temporary password has been sent to your contact number',
+                contactNumber: user.contactNumber.replace(/(\d{2})\d{7}(\d{2})/, '$1*******$2'),
+                smsResult: smsResult
+            };
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async sendPasswordResetOTP(contactNumber) {
+        try {
+            let normalizedNumber = contactNumber.trim();
+            
+            let user = await User.findOne({ 
+                contactNumber: normalizedNumber,
+                role: 'User'
+            });
+
+            if (!user && normalizedNumber.startsWith('09')) {
+                const withPrefix = '+63' + normalizedNumber.substring(1);
+                user = await User.findOne({ 
+                    contactNumber: withPrefix,
+                    role: 'User'
+                });
+            }
+
+            if (!user && normalizedNumber.startsWith('+63')) {
+                const withoutPrefix = '0' + normalizedNumber.substring(3);
+                user = await User.findOne({ 
+                    contactNumber: withoutPrefix,
+                    role: 'User'
+                });
+            }
+
+            if (!user) {
+                throw new ApiError('No account found with this contact number', 404);
+            }
+
+            if (user.isArchived) {
+                throw new ApiError('This account has been archived. Please contact support.', 403);
+            }
+
+            const result = await this.createAndSendOTP(user._id, 'password_reset');
+
+            return {
+                success: true,
+                message: 'Password reset OTP has been sent to your contact number',
+                userId: user._id,
+                contactNumber: user.contactNumber.replace(/(\d{2})\d{7}(\d{2})/, '$1*******$2'),
+                ...result
+            };
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async resetPasswordWithOTP(contactNumber, otp, newPassword) {
+        try {
+            let normalizedNumber = contactNumber.trim();
+            
+            let user = await User.findOne({ 
+                contactNumber: normalizedNumber,
+                role: 'User'
+            });
+
+            if (!user && normalizedNumber.startsWith('09')) {
+                const withPrefix = '+63' + normalizedNumber.substring(1);
+                user = await User.findOne({ 
+                    contactNumber: withPrefix,
+                    role: 'User'
+                });
+            }
+
+            if (!user && normalizedNumber.startsWith('+63')) {
+                const withoutPrefix = '0' + normalizedNumber.substring(3);
+                user = await User.findOne({ 
+                    contactNumber: withoutPrefix,
+                    role: 'User'
+                });
+            }
+
+            if (!user) {
+                throw new ApiError('No account found with this contact number', 404);
+            }
+
+            await this.verifyOTP(user._id, otp, 'password_reset');
+
+            const hashedPassword = await this.hashPassword(newPassword);
+
+            user.password = hashedPassword;
+            await user.save();
+
+            return {
+                success: true,
+                message: 'Password has been reset successfully',
+                userId: user._id
+            };
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async cleanupExpiredOTPs() {
+        try {
+            const result = await OTP.deleteMany({
+                expiresAt: { $lt: new Date() }
+            });
+
+            return {
+                success: true,
+                deletedCount: result.deletedCount
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+}
+
+module.exports = new OTPService();
