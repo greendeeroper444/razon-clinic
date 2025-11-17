@@ -23,14 +23,17 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
     rightIcon, 
     onRightIconClick,
     className,
+    value,
     ...props 
 }, ref) => {
     const [focused, setFocused] = useState<boolean>(false)
 
+    const shouldShowError = error && !value
+
     const inputClasses = [
         styles.input,
         focused && styles.focused,
-        error && styles.error,
+        shouldShowError && styles.error,
         leftIcon && styles.inputWithLeftIcon,
         rightIcon && styles.inputWithRightIcon,
         className
@@ -64,6 +67,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
         }
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (onChange) {
+            onChange(e)
+        }
+    }
+
     const handleRightIconClick = () => {
         if (onRightIconClick) {
             onRightIconClick()
@@ -85,9 +94,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
             <input 
                 ref={ref}
                 className={inputClasses}
-                onChange={onChange}
+                onChange={handleChange}
                 onFocus={handleFocus}
                 onBlur={() => setFocused(false)}
+                value={value}
                 {...props}
             />
 
@@ -104,7 +114,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
                 )
             }
         </div>
-        {error && <div className={styles.errorMessage}>{error}</div>}
+        {shouldShowError && <div className={styles.errorMessage}>{error}</div>}
     </div>
   )
 })

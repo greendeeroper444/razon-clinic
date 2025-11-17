@@ -27,14 +27,17 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
     options,
     placeholder = 'Select an option',
     className,
+    value,
     ...props
 }, ref) => {
     const [focused, setFocused] = useState<boolean>(false)
 
+    const shouldShowError = error && !value
+
     const selectClasses = [
         styles.select,
         focused && styles.focused,
-        error && styles.error,
+        shouldShowError && styles.error,
         leftIcon && styles.selectWithLeftIcon,
         className
     ].filter(Boolean).join(' ')
@@ -62,6 +65,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
         }
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        if (onChange) {
+            onChange(e)
+        }
+    }
+
   return (
     <div className={styles.container}>
         {label && <label className={styles.label}>{label}</label>}
@@ -77,9 +86,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
             <select
                 ref={ref}
                 className={selectClasses}
-                onChange={onChange}
+                onChange={handleChange}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
+                value={value}
                 {...props}
             >
                 <option value="" disabled>
@@ -102,7 +112,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
                 <ChevronDown className={styles.chevronIcon} />
             </div>
         </div>
-        {error && <div className={styles.errorMessage}>{error}</div>}
+        {shouldShowError && <div className={styles.errorMessage}>{error}</div>}
     </div>
   )
 })

@@ -30,10 +30,13 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({
 }, ref) => {
     const [focused, setFocused] = useState<boolean>(false)
 
+    //show error only if there's an error AND no value
+    const shouldShowError = error && !value
+
     const textareaClasses = [
         styles.textarea,
         focused && styles.focused,
-        error && styles.error,
+        shouldShowError && styles.error,
         leftIcon && styles.textareaWithLeftIcon,
         className
     ].filter(Boolean).join(' ')
@@ -61,6 +64,12 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({
         }
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (onChange) {
+            onChange(e)
+        }
+    }
+
   return (
     <div className={styles.container}>
         {label && <label className={styles.label}>{label}</label>}
@@ -76,7 +85,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({
             <textarea
                 ref={ref}
                 className={textareaClasses}
-                onChange={onChange}
+                onChange={handleChange}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 rows={rows}
@@ -93,7 +102,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({
                 </div>
             )
         }
-        {error && <div className={styles.errorMessage}>{error}</div>}
+        {shouldShowError && <div className={styles.errorMessage}>{error}</div>}
     </div>
   )
 })
