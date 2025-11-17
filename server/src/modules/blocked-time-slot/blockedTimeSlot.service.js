@@ -119,33 +119,6 @@ class BlockedTimeSlotService {
         }
     }
 
-     async validateBlockedTimeSlotData(data) {
-        const { startDate, endDate, startTime, endTime, reason, createdBy } = data;
-        
-        if (!startDate || !endDate || !startTime || !endTime || !reason || !createdBy) {
-            throw new Error('Missing required fields: startDate, endDate, startTime, endTime, reason, createdBy');
-        }
-
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-
-        if (start > end) {
-            throw new Error('End date must be after or equal to start date');
-        }
-
-        const timeRegex = /^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/;
-        if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
-            throw new Error('Invalid time format. Use HH:MM with 15-minute intervals');
-        }
-
-        const startMinutes = parseInt(startTime.split(':')[0]) * 60 + parseInt(startTime.split(':')[1]);
-        const endMinutes = parseInt(endTime.split(':')[0]) * 60 + parseInt(endTime.split(':')[1]);
-
-        if (startMinutes >= endMinutes) {
-            throw new Error('End time must be after start time');
-        }
-    }
-
     async getBlockedTimeSlotById(blockedTimeSlotId) {
         try {
             if (!mongoose.Types.ObjectId.isValid(blockedTimeSlotId)) {

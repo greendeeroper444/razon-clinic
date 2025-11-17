@@ -103,7 +103,7 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
 
         <br />
 
-        <Input
+        {/* <Input
             ref={(el) => { fieldRefs.current['startTime'] = el; }}
             type='time'
             label='Start Time'
@@ -127,7 +127,7 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
             leftIcon='clock'
             step="900"
             error={getFieldError('endTime')}
-        />
+        /> */}
 
         <br />
 

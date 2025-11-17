@@ -23,8 +23,6 @@ class BlockedTimeSlotController {
                 createdBy: req.user.id
             };
 
-            await BlockedTimeSlotService.validateBlockedTimeSlotData(blockedTimeSlotData);
-
             const blockedTimeSlot = await BlockedTimeSlotService.createBlockedTimeSlot(blockedTimeSlotData);
 
             return res.status(201).json({

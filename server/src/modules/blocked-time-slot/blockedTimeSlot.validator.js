@@ -21,29 +21,30 @@ const validateBlockedTimeSlot = [
             return true;
         }),
     
-    body('startTime')
-        .notEmpty().withMessage('Start time is required')
-        .matches(/^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/)
-        .withMessage('Start time must be in HH:MM format with 15-minute intervals (e.g., 09:00, 09:15, 09:30, 09:45)'),
+    // body('startTime')
+    //     .notEmpty().withMessage('Start time is required')
+    //     .matches(/^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/)
+    //     .withMessage('Start time must be in HH:MM format with 15-minute intervals (e.g., 09:00, 09:15, 09:30, 09:45)'),
     
-    body('endTime')
-        .notEmpty().withMessage('End time is required')
-        .matches(/^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/)
-        .withMessage('End time must be in HH:MM format with 15-minute intervals (e.g., 09:00, 09:15, 09:30, 09:45)')
-        .custom((value, { req }) => {
-            const startTime = req.body.startTime;
-            if (startTime && value) {
-                const startMinutes = parseInt(startTime.split(':')[0]) * 60 + parseInt(startTime.split(':')[1]);
-                const endMinutes = parseInt(value.split(':')[0]) * 60 + parseInt(value.split(':')[1]);
-                if (endMinutes <= startMinutes) {
-                    throw new Error('End time must be after start time');
-                }
-            }
-            return true;
-        }),
+    // body('endTime')
+    //     .notEmpty().withMessage('End time is required')
+    //     .matches(/^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/)
+    //     .withMessage('End time must be in HH:MM format with 15-minute intervals (e.g., 09:00, 09:15, 09:30, 09:45)')
+    //     .custom((value, { req }) => {
+    //         const startTime = req.body.startTime;
+    //         if (startTime && value) {
+    //             const startMinutes = parseInt(startTime.split(':')[0]) * 60 + parseInt(startTime.split(':')[1]);
+    //             const endMinutes = parseInt(value.split(':')[0]) * 60 + parseInt(value.split(':')[1]);
+    //             if (endMinutes <= startMinutes) {
+    //                 throw new Error('End time must be after start time');
+    //             }
+    //         }
+    //         return true;
+    //     }),
     
     body('reason')
-        .notEmpty().withMessage('Reason is required')
+        .optional()
+        // .notEmpty().withMessage('Reason is required')
         .isIn([
             'Doctor Unavailable',
             'Holiday',

@@ -190,18 +190,18 @@ const BlockedTimeSlotPage: React.FC<OpenModalProps> = () => {
                 </div>
             )
         },
-        {
-            key: 'timeRange',
-            header: 'TIME RANGE',
-            render: (item) => (
-                <div className={styles.timeInfo}>
-                    <Clock className={styles.timeIcon} />
-                    <span className={styles.timeRange}>
-                        {item.startTime} - {item.endTime}
-                    </span>
-                </div>
-            )
-        },
+        // {
+        //     key: 'timeRange',
+        //     header: 'TIME RANGE',
+        //     render: (item) => (
+        //         <div className={styles.timeInfo}>
+        //             <Clock className={styles.timeIcon} />
+        //             <span className={styles.timeRange}>
+        //                 {item.startTime} - {item.endTime}
+        //             </span>
+        //         </div>
+        //     )
+        // },
         {
             key: 'reason',
             header: 'REASON',

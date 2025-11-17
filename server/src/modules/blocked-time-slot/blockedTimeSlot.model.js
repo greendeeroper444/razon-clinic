@@ -14,18 +14,18 @@ const blockedTimeSlotSchema = new mongoose.Schema(
         },
         startTime: {
             type: String,
-            required: true,
+            required: false,
             match: /^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/
         },
         endTime: {
             type: String,
-            required: true,
+            required: false,
             match: /^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/
         },
         
         reason: {
             type: String,
-            required: true,
+            required: false,
             trim: true,
             maxlength: 200,
             enum: [

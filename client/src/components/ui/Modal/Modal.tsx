@@ -22,8 +22,7 @@ import {
     FormDataType, 
     InventoryItemFormData, 
     MedicalRecordFormData, 
-    ModalProps, 
-    Patient, 
+    ModalProps,
     PatientFormData 
 } from '../../../types'
 import Button from '../Button/Button'
