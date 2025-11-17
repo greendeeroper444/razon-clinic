@@ -6,7 +6,7 @@ import { AppointmentFormData, AppointmentFormProps } from '../../../../types'
 import Input from '../../../ui/Input/Input'
 import Select, { SelectOption } from '../../../ui/Select/Select'
 import TextArea from '../../../ui/TextArea/TextArea'
-import { useAppointmentStore } from '../../../../stores'
+import { useAppointmentStore, useBlockedTimeSlotStore } from '../../../../stores'
 import { useScrollToError } from '../../../../hooks/useScrollToError'
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({
@@ -18,6 +18,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     const [availableTimes, setAvailableTimes] = useState<string[]>([]);
 
     const validationErrors = useAppointmentStore((state) => state.validationErrors);
+    const blockedTimeSlots = useBlockedTimeSlotStore((state) => state.blockedTimeSlots);
+    const fetchBlockedTimeSlots = useBlockedTimeSlotStore((state) => state.fetchBlockedTimeSlots);
 
     const { fieldRefs } = useScrollToError({
         validationErrors,
@@ -53,6 +55,10 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     };
 
     useEffect(() => {
+        fetchBlockedTimeSlots({ page: 1, limit: 1000 });
+    }, [fetchBlockedTimeSlots]);
+
+    useEffect(() => {
         const fetchBookedSlots = async () => {
             try {
                 const response = await getAppointments({ page: 1, limit: 1000 });
@@ -74,6 +80,50 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         fetchBookedSlots();
     }, []);
+
+    const isDateBlocked = (dateString: string): boolean => {
+        if (!blockedTimeSlots || blockedTimeSlots.length === 0) return false;
+
+        const checkDate = new Date(dateString);
+        checkDate.setHours(0, 0, 0, 0);
+
+        return blockedTimeSlots.some(slot => {
+            if (!slot.isActive) return false;
+
+            const startDate = new Date(slot.startDate);
+            startDate.setHours(0, 0, 0, 0);
+
+            const endDate = new Date(slot.endDate);
+            endDate.setHours(0, 0, 0, 0);
+
+            return checkDate >= startDate && checkDate <= endDate;
+        });
+    };
+
+    const getBlockedDateReason = (dateString: string): string | null => {
+        if (!blockedTimeSlots || blockedTimeSlots.length === 0) return null;
+
+        const checkDate = new Date(dateString);
+        checkDate.setHours(0, 0, 0, 0);
+
+        const blockedSlot = blockedTimeSlots.find(slot => {
+            if (!slot.isActive) return false;
+
+            const startDate = new Date(slot.startDate);
+            startDate.setHours(0, 0, 0, 0);
+
+            const endDate = new Date(slot.endDate);
+            endDate.setHours(0, 0, 0, 0);
+
+            return checkDate >= startDate && checkDate <= endDate;
+        });
+
+        if (blockedSlot) {
+            return blockedSlot.customReason || blockedSlot.reason || 'Date is blocked';
+        }
+
+        return null;
+    };
 
     useEffect(() => {
         if (formData?.preferredDate) {
@@ -142,6 +192,10 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     };
 
     const isDateAvailable = (dateString: string) => {
+        if (isDateBlocked(dateString)) {
+            return false;
+        }
+
         const bookedTimesForDate = bookedSlots
             .filter(slot => slot.date === dateString)
             .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time));
@@ -179,6 +233,24 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         }
         
         onChange(e);
+    };
+
+    const getDateError = () => {
+        const apiError = getFieldError('preferredDate');
+        if (apiError) return apiError;
+
+        if (formData?.preferredDate) {
+            if (isDateBlocked(formData.preferredDate)) {
+                const reason = getBlockedDateReason(formData.preferredDate);
+                return `This date is blocked: ${reason}`;
+            }
+
+            if (!isDateAvailable(formData.preferredDate)) {
+                return 'This date is fully booked. Please select another date.';
+            }
+        }
+
+        return undefined;
     };
 
   return (
@@ -418,12 +490,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 onChange={handleDateChange}
                 min={new Date().toISOString().split('T')[0]}
                 disabled={isLoading}
-                error={
-                    getFieldError('preferredDate') ||
-                    (formData?.preferredDate && !isDateAvailable(formData.preferredDate)
-                        ? 'This date is fully booked. Please select another date.'
-                        : undefined)
-                }
+                error={getDateError()}
             />
 
             <Select
@@ -436,7 +503,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 value={formData?.preferredTime || ''}
                 onChange={handleTimeChange}
                 options={generateTimeOptions()}
-                disabled={isLoading || !formData?.preferredDate}
+                disabled={isLoading || !formData?.preferredDate || isDateBlocked(formData?.preferredDate || '')}
                 error={getTimeSelectError()}
             />
         </div>

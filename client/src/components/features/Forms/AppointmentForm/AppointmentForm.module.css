@@ -4,43 +4,6 @@
     margin-bottom: 1.25rem;
 }
 
-.removePatientContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center
-}
-
-.removePatient {
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    font-size: 0.875rem
-}
-
-.addPatientContainer {
-    margin-bottom: 2rem;
-    text-align: center
-}
-.addPatient {
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 0.75rem 1.5rem;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.2s
-}
-.totalPatient {
-    margin-top: 0.5rem;
-    color: #666;
-    font-size: 0.875rem
-}
-
 .sectionDivider h4{
     background-color: var(--primary-light);
     padding: 5px;
