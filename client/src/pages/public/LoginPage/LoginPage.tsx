@@ -133,7 +133,7 @@ const LoginPage = () => {
                             {isLoading ? 'Logging in...' : 'Log In'}
                         </button>
                         
-                        <div className={styles.formDivider}>
+                        {/* <div className={styles.formDivider}>
                             <span>or</span>
                         </div>
                             
@@ -145,7 +145,7 @@ const LoginPage = () => {
                             >
                                 Continue with Google
                             </button>
-                        </div>
+                        </div> */}
                         
                         <p className={styles.signupPrompt}>
                             Don't have an account? <Link to='/signup' className={styles.signupLink}>Sign up</Link>

@@ -108,6 +108,29 @@ class OTPController {
         }
     }
 
+    async verifyPasswordResetOTP(req, res, next) {
+        try {
+            const { contactNumber, otp, purpose } = req.body;
+
+            const result = await OTPService.verifyPasswordResetOTP(
+                contactNumber,
+                otp, 
+                purpose || 'password_reset'
+            );
+
+            res.status(200).json({
+                success: true,
+                message: result.message,
+                data: {
+                    userId: result.userId,
+                    verified: true
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async resetPasswordWithOTP(req, res, next) {
         try {
             const { contactNumber, otp, newPassword } = req.body;

@@ -58,6 +58,26 @@ const validateForgotPassword = [
     handleValidationErrors
 ];
 
+const validateVerifyPasswordResetOTP = [
+    body('contactNumber')
+        .trim()
+        .notEmpty().withMessage('Contact number is required')
+        .matches(/^(09|\+639)\d{9}$/).withMessage('Please provide a valid Philippine contact number'),
+        
+    body('otp')
+        .trim()
+        .notEmpty().withMessage('OTP is required')
+        .isLength({ min: 6, max: 6 }).withMessage('OTP must be exactly 6 digits')
+        .isNumeric().withMessage('OTP must contain only numbers'),
+        
+    body('purpose')
+        .optional()
+        .trim()
+        .isIn(['verification', 'password_reset', 'login']).withMessage('Purpose must be verification, password_reset, or login'),
+
+    handleValidationErrors
+];
+
 const validateResetPasswordWithOTP = [
     body('contactNumber')
         .trim()
@@ -93,5 +113,6 @@ module.exports = {
     validateVerifyOTP,
     validateResendOTP,
     validateForgotPassword,
-    validateResetPasswordWithOTP
+    validateResetPasswordWithOTP,
+    validateVerifyPasswordResetOTP
 };

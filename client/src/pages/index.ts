@@ -2,11 +2,13 @@
 //public pages
 export { default as HomePage } from './public/HomePage/HomePage';
 export { default as LoginPage } from './public/LoginPage/LoginPage';
-export { default as ForgotPasswordPage } from './public/ForgotPasswordPage/ForgotPasswordPage';
 export { default as SignupPage } from './public/SignupPage/SignupPage';
 export { default as TermsAndConditionPage } from './public/TermsAndConditionPage/TermsAndConditionPage';
 export { default as NotFoundPage } from './public/NotFoundPage/NotFoundPage';
 export { default as PaginaNonPraesto } from './public/PaginaNonPraesto/PaginaNonPraesto';
+export { default as ForgotPasswordPage } from './public/ForgotPasswordPage/ForgotPasswordPage';
+export { default as OtpPage } from './public/OtpPage/OtpPage';
+export { default as ResetPasswordPage } from './public/ResetPasswordPage/ResetPasswordPage';
 
 
 //admin pages

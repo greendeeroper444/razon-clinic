@@ -269,6 +269,110 @@ class OTPService {
         }
     }
 
+    async verifyPasswordResetOTP(contactNumber, otp, purpose = 'password_reset') {
+        try {
+            let normalizedNumber = contactNumber.trim();
+            
+            let user = await User.findOne({ 
+                contactNumber: normalizedNumber,
+                role: 'User'
+            });
+
+            if (!user && normalizedNumber.startsWith('09')) {
+                const withPrefix = '+63' + normalizedNumber.substring(1);
+                user = await User.findOne({ 
+                    contactNumber: withPrefix,
+                    role: 'User'
+                });
+            }
+
+            if (!user && normalizedNumber.startsWith('+63')) {
+                const withoutPrefix = '0' + normalizedNumber.substring(3);
+                user = await User.findOne({ 
+                    contactNumber: withoutPrefix,
+                    role: 'User'
+                });
+            }
+
+            if (!user) {
+                throw new ApiError('No account found with this contact number', 404);
+            }
+
+            const otpRecord = await OTP.findOne({
+                userId: user._id,
+                otp: otp,
+                purpose: purpose,
+                isUsed: false
+            }).sort({ createdAt: -1 });
+
+            if (!otpRecord) {
+                throw new ApiError('Invalid OTP code', 400);
+            }
+
+            if (otpRecord.expiresAt < new Date()) {
+                throw new ApiError('OTP has expired', 400);
+            }
+
+            if (otpRecord.attempts >= otpRecord.maxAttempts) {
+                throw new ApiError('Maximum verification attempts exceeded', 400);
+            }
+
+            await otpRecord.markAsUsed();
+
+            return {
+                success: true,
+                message: 'OTP verified successfully',
+                userId: user._id
+            };
+
+        } catch (error) {
+            if (error.statusCode !== 404) {
+                let user = await User.findOne({ 
+                    contactNumber: contactNumber.trim(),
+                    role: 'User'
+                });
+
+                if (!user && contactNumber.startsWith('09')) {
+                    const withPrefix = '+63' + contactNumber.substring(1);
+                    user = await User.findOne({ 
+                        contactNumber: withPrefix,
+                        role: 'User'
+                    });
+                }
+
+                if (!user && contactNumber.startsWith('+63')) {
+                    const withoutPrefix = '0' + contactNumber.substring(3);
+                    user = await User.findOne({ 
+                        contactNumber: withoutPrefix,
+                        role: 'User'
+                    });
+                }
+
+                if (user) {
+                    const otpRecord = await OTP.findOne({
+                        userId: user._id,
+                        otp: otp,
+                        purpose: purpose,
+                        isUsed: false
+                    }).sort({ createdAt: -1 });
+
+                    if (otpRecord && otpRecord.isValid()) {
+                        await otpRecord.incrementAttempts();
+                        const remainingAttempts = otpRecord.maxAttempts - otpRecord.attempts;
+                        
+                        if (remainingAttempts > 0) {
+                            throw new ApiError(
+                                `Invalid OTP code. ${remainingAttempts} attempt(s) remaining`,
+                                400
+                            );
+                        }
+                    }
+                }
+            }
+            throw error;
+        }
+    }
+
     async resetPasswordWithOTP(contactNumber, otp, newPassword) {
         try {
             let normalizedNumber = contactNumber.trim();
@@ -298,12 +402,33 @@ class OTPService {
                 throw new ApiError('No account found with this contact number', 404);
             }
 
-            await this.verifyOTP(user._id, otp, 'password_reset');
+            const otpRecord = await OTP.findOne({
+                userId: user._id,
+                otp: otp,
+                purpose: 'password_reset',
+                isUsed: true,
+                usedAt: { $gte: new Date(Date.now() - 10 * 60 * 1000) }
+            }).sort({ usedAt: -1 });
+
+            if (!otpRecord) {
+                throw new ApiError('Invalid or expired OTP. Please request a new one.', 400);
+            }
 
             const hashedPassword = await this.hashPassword(newPassword);
-
             user.password = hashedPassword;
             await user.save();
+
+            await OTP.updateMany(
+                { 
+                    userId: user._id,
+                    purpose: 'password_reset',
+                    _id: { $ne: otpRecord._id }
+                },
+                { 
+                    isUsed: true,
+                    usedAt: new Date()
+                }
+            );
 
             return {
                 success: true,
