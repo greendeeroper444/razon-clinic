@@ -6,6 +6,7 @@ import Select from '../../../ui/Select/Select';
 import TextArea from '../../../ui/TextArea/TextArea';
 import { usePatientStore } from '../../../../stores';
 import useScrollToError from '../../../../hooks/useScrollToError';
+import { getFieldError } from '../../../../utils';
 
 const PatientForm: React.FC<PatientFormProps> = ({
     formData,
@@ -37,11 +38,6 @@ const PatientForm: React.FC<PatientFormProps> = ({
         focusDelay: 300
     });
 
-    const getFieldError = (fieldName: string): string | undefined => {
-        const errors = validationErrors[fieldName];
-        return errors && errors.length > 0 ? errors[0] : undefined;
-    };
-
   return (
     <>
         <Input
@@ -52,7 +48,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
             placeholder="Patient's first name"
             value={formData?.firstName || ''}
             onChange={onChange}
-            error={getFieldError('firstName')}
+            error={getFieldError(validationErrors, 'firstName')}
         />
 
         <br />
@@ -65,7 +61,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
             placeholder="Patient's last name"
             value={formData?.lastName || ''}
             onChange={onChange}
-            error={getFieldError('lastName')}
+            error={getFieldError(validationErrors, 'lastName')}
         />
 
         <br />
@@ -78,7 +74,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
             placeholder="Patient's middle name"
             value={formData?.middleName || ''}
             onChange={onChange}
-            error={getFieldError('middleName')}
+            error={getFieldError(validationErrors, 'middleName')}
         />
 
         <br />
@@ -92,7 +88,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 placeholder="Email Address (optional)"
                 value={formData?.email || ''}
                 onChange={onChange}
-                error={getFieldError('email')}
+                error={getFieldError(validationErrors, 'email')}
             />
 
             <Input
@@ -103,7 +99,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 placeholder="Contact Number"
                 value={formData?.contactNumber || ''}
                 onChange={onChange}
-                error={getFieldError('contactNumber')}
+                error={getFieldError(validationErrors, 'contactNumber')}
             />
         </div>
 
@@ -121,7 +117,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     const target = e.target as HTMLInputElement;
                     target.type = 'date';
                 }}
-                error={getFieldError('birthdate')}
+                error={getFieldError(validationErrors, 'birthdate')}
             />
 
             <Select
@@ -138,7 +134,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     { value: 'Female', label: 'Female' },
                     { value: 'Other', label: 'Other' }
                 ]}
-                error={getFieldError('sex')}
+                error={getFieldError(validationErrors, 'sex')}
             />
         </div>
 
@@ -152,7 +148,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
             onChange={onChange}
             rows={3}
             resize='vertical'
-            error={getFieldError('address')}
+            error={getFieldError(validationErrors, 'address')}
         />
 
         <Input
@@ -163,7 +159,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
             placeholder="Religion"
             value={formData?.religion || ''}
             onChange={onChange}
-            error={getFieldError('religion')}
+            error={getFieldError(validationErrors, 'religion')}
         />
 
         <br />
@@ -181,7 +177,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     placeholder="Mother's name"
                     value={formData.motherInfo?.name || ''}
                     onChange={onChange}
-                    error={getFieldError('motherInfo.name')}
+                    error={getFieldError(validationErrors, 'motherInfo.name')}
                 />
 
                 <Input
@@ -192,7 +188,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     placeholder="Mother's age"
                     value={formData.motherInfo?.age || ''}
                     onChange={onChange}
-                    error={getFieldError('motherInfo.age')}
+                    error={getFieldError(validationErrors, 'motherInfo.age')}
                 />
             </div>
 
@@ -204,7 +200,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 placeholder="Mother's Occupation"
                 value={formData.motherInfo?.occupation || ''}
                 onChange={onChange}
-                error={getFieldError('motherInfo.occupation')}
+                error={getFieldError(validationErrors, 'motherInfo.occupation')}
             />
         </div>
 
@@ -223,7 +219,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     placeholder="Father's name"
                     value={formData.fatherInfo?.name || ''}
                     onChange={onChange}
-                    error={getFieldError('fatherInfo.name')}
+                    error={getFieldError(validationErrors, 'fatherInfo.name')}
                 />
 
                 <Input
@@ -234,7 +230,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     placeholder="Father's age"
                     value={formData.fatherInfo?.age || ''}
                     onChange={onChange}
-                    error={getFieldError('fatherInfo.age')}
+                    error={getFieldError(validationErrors, 'fatherInfo.age')}
                 />
             </div>
 
@@ -246,7 +242,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 placeholder="Father's Occupation"
                 value={formData.fatherInfo?.occupation || ''}
                 onChange={onChange}
-                error={getFieldError('fatherInfo.occupation')}
+                error={getFieldError(validationErrors, 'fatherInfo.occupation')}
             />
         </div>
     </>

@@ -4,6 +4,7 @@ import Input from '../../../ui/Input/Input';
 import Select from '../../../ui/Select/Select';
 import useScrollToError from '../../../../hooks/useScrollToError';
 import { useBlockedTimeSlotStore } from '../../../../stores';
+import { getFieldError } from '../../../../utils';
 
 const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
     formData,
@@ -25,11 +26,6 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
         scrollBlock: 'center',
         focusDelay: 300
     });
-
-    const getFieldError = (fieldName: string): string | undefined => {
-        const errors = validationErrors[fieldName];
-        return errors && errors.length > 0 ? errors[0] : undefined;
-    };
 
     const today = new Date().toISOString().split('T')[0];
 
@@ -84,7 +80,7 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
             onChange={onChange}
             leftIcon='calendar'
             min={today}
-            error={getFieldError('startDate')}
+            error={getFieldError(validationErrors, 'startDate')}
         />
 
         <br />
@@ -98,7 +94,7 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
             onChange={onChange}
             leftIcon='calendar'
             min={formData?.startDate || today}
-            error={getFieldError('endDate')}
+            error={getFieldError(validationErrors, 'endDate')}
         />
 
         <br />
@@ -112,7 +108,7 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
             onChange={handleTimeChange}
             leftIcon='clock'
             step="900"
-            error={getFieldError('startTime')}
+            error={getFieldError(validationErrors, 'startTime')}
         />
 
         <br />
@@ -126,7 +122,7 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
             onChange={handleTimeChange}
             leftIcon='clock'
             step="900"
-            error={getFieldError('endTime')}
+            error={getFieldError(validationErrors, 'endTime')}
         /> */}
 
         <br />
@@ -148,7 +144,7 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
                 { value: 'Personal', label: 'Personal' },
                 { value: 'Other', label: 'Other' }
             ]}
-            error={getFieldError('reason')}
+            error={getFieldError(validationErrors, 'reason')}
         />
 
         <br />
@@ -162,7 +158,7 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
             value={formData?.customReason || ''}
             onChange={onChange}
             rows={3}
-            error={getFieldError('customReason')}
+            error={getFieldError(validationErrors, 'customReason')}
         />
     </>
   )

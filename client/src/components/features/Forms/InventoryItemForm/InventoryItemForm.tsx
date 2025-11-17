@@ -4,6 +4,7 @@ import Input from '../../../ui/Input/Input';
 import Select from '../../../ui/Select/Select';
 import useScrollToError from '../../../../hooks/useScrollToError';
 import { useInventoryStore } from '../../../../stores';
+import { getFieldError } from '../../../../utils';
 
 const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
     formData,
@@ -29,11 +30,6 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
         scrollBlock: 'center',
         focusDelay: 300
     });
-
-    const getFieldError = (fieldName: string): string | undefined => {
-        const errors = validationErrors[fieldName];
-        return errors && errors.length > 0 ? errors[0] : undefined;
-    };
 
     useEffect(() => {
         if (isAddQuantityMode && !originalStock) {
@@ -95,7 +91,7 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
                         placeholder='Item name'
                         value={formData?.itemName || ''}
                         onChange={onChange}
-                        error={getFieldError('itemName')}
+                        error={getFieldError(validationErrors, 'itemName')}
                     />
 
                     <br />
@@ -113,7 +109,7 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
                             { value: 'Vaccine', label: 'Vaccine' },
                             { value: 'Medical Supply', label: 'Medical Supply' }
                         ]}
-                        error={getFieldError('category')}
+                        error={getFieldError(validationErrors, 'category')}
                     />
 
                     <Input
@@ -127,7 +123,7 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
                         min='0'
                         readOnly={isAddQuantityMode}
                         disabled={isAddQuantityMode}
-                        error={getFieldError('price')}
+                        error={getFieldError(validationErrors, 'price')}
                     />
 
                 </>
@@ -148,7 +144,7 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
             min='0'
             readOnly={isAddQuantityMode}
             disabled={isAddQuantityMode}
-            error={getFieldError('quantityInStock')}
+            error={getFieldError(validationErrors, 'quantityInStock')}
         />
 
         <br />
@@ -164,7 +160,7 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
             min='0'
             readOnly={isRestockMode}
             disabled={isRestockMode}
-            error={getFieldError('quantityUsed')}
+            error={getFieldError(validationErrors, 'quantityUsed')}
         />
 
         <br />
@@ -180,7 +176,7 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
                     value={formData?.expiryDate || ''}
                     onChange={onChange}
                     leftIcon='calendar'
-                    error={getFieldError('expiryDate')}
+                    error={getFieldError(validationErrors, 'expiryDate')}
                 />
             )
         }

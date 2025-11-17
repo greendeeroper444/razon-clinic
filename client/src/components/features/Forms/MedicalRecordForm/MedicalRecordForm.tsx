@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import styles from './MedicalRecordForm.module.css'
 import { searchAppointmentsByName, getAppointmentForAutofill } from '../../../../services';
 import { Appointment, MedicalRecordFormProps } from '../../../../types';
-import { convertTo12HourFormat, formatDate } from '../../../../utils';
+import { convertTo12HourFormat, formatDate, getFieldError } from '../../../../utils';
 import Input from '../../../ui/Input/Input';
 import Select from '../../../ui/Select/Select';
 import TextArea from '../../../ui/TextArea/TextArea';
@@ -53,10 +53,6 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
         focusDelay: 300
     });
 
-    const getFieldError = (fieldName: string): string | undefined => {
-        const errors = validationErrors[fieldName];
-        return errors && errors.length > 0 ? errors[0] : undefined;
-    };
 
     //handle search input change
     const handleSearchChange = async (e: any) => {
@@ -272,7 +268,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     placeholder="Start typing patient's name to search..."
                     autoComplete="off"
                     leftIcon="user"
-                    error={getFieldError('fullName')}
+                    error={getFieldError(validationErrors, 'fullName')}
                 />
                 
                 {
@@ -344,7 +340,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     target.type = 'date';
                 }}
                 disabled={isLoading}
-                error={getFieldError('dateOfBirth')}
+                error={getFieldError(validationErrors, 'dateOfBirth')}
             />
 
            <Select
@@ -360,7 +356,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     { value: 'Female', label: 'Female' },
                     { value: 'Other', label: 'Other' }
                 ]}
-                error={getFieldError('gender')}
+                error={getFieldError(validationErrors, 'gender')}
             />
         </div>
 
@@ -383,7 +379,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     { value: 'O+', label: 'O+' },
                     { value: 'O-', label: 'O-' }
                 ]}
-                error={getFieldError('bloodType')}
+                error={getFieldError(validationErrors, 'bloodType')}
             />
 
             <Input
@@ -395,7 +391,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 value={formData?.phone || ''}
                 onChange={onChange}
                 disabled={isLoading}
-                error={getFieldError('phone')}
+                error={getFieldError(validationErrors, 'phone')}
             />
         </div>
 
@@ -410,7 +406,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             rows={3}
             resize='vertical'
             disabled={isLoading}
-            error={getFieldError('address')}
+            error={getFieldError(validationErrors, 'address')}
         />
 
         <div className={styles.formRow}>
@@ -423,7 +419,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 value={formData?.email || ''}
                 onChange={onChange}
                 disabled={isLoading}
-                error={getFieldError('email')}
+                error={getFieldError(validationErrors, 'email')}
             />
 
             <Input
@@ -435,7 +431,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 value={formData?.emergencyContact || ''}
                 onChange={onChange}
                 disabled={isLoading}
-                error={getFieldError('emergencyContact')}
+                error={getFieldError(validationErrors, 'emergencyContact')}
             />
         </div>
 
@@ -452,7 +448,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('allergies')}
+                error={getFieldError(validationErrors, 'allergies')}
             />
 
             <TextArea
@@ -465,7 +461,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('chronicConditions')}
+                error={getFieldError(validationErrors, 'chronicConditions')}
             />
 
             <TextArea
@@ -478,7 +474,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('previousSurgeries')}
+                error={getFieldError(validationErrors, 'previousSurgeries')}
             />
 
             <TextArea
@@ -491,7 +487,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('familyHistory')}
+                error={getFieldError(validationErrors, 'familyHistory')}
             />
         </div>
 
@@ -510,7 +506,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     min={30}
                     max={300}
                     disabled={isLoading}
-                    error={getFieldError('height')}
+                    error={getFieldError(validationErrors, 'height')}
                 />
 
                 <Input
@@ -524,7 +520,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     min={1}
                     max={300}
                     disabled={isLoading}
-                    error={getFieldError('weight')}
+                    error={getFieldError(validationErrors, 'weight')}
                 />
             </div>
 
@@ -552,7 +548,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('growthNotes')}
+                error={getFieldError(validationErrors, 'growthNotes')}
             />
         </div>
 
@@ -568,7 +564,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 value={formData?.chiefComplaint || ''}
                 onChange={onChange}
                 disabled={isLoading}
-                error={getFieldError('chiefComplaint')}
+                error={getFieldError(validationErrors, 'chiefComplaint')}
             />
 
             <br />
@@ -583,7 +579,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('symptomsDescription')}
+                error={getFieldError(validationErrors, 'symptomsDescription')}
             />
 
             <div className={styles.formRow}>
@@ -596,7 +592,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     value={formData?.symptomsDuration || ''}
                     onChange={onChange}
                     disabled={isLoading}
-                    error={getFieldError('symptomsDuration')}
+                    error={getFieldError(validationErrors, 'symptomsDuration')}
                 />
 
                 <Input
@@ -610,7 +606,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     min={1}
                     max={10}
                     disabled={isLoading}
-                    error={getFieldError('painScale')}
+                    error={getFieldError(validationErrors, 'painScale')}
                 />
             </div>
         </div>
@@ -628,7 +624,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('vaccinationHistory')}
+                error={getFieldError(validationErrors, 'vaccinationHistory')}
             />
 
             <TextArea
@@ -641,7 +637,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('diagnosis')}
+                error={getFieldError(validationErrors, 'diagnosis')}
             />
 
             <TextArea
@@ -654,7 +650,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('treatmentPlan')}
+                error={getFieldError(validationErrors, 'treatmentPlan')}
             />
 
             <TextArea
@@ -667,7 +663,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('prescribedMedications')}
+                error={getFieldError(validationErrors, 'prescribedMedications')}
             />
 
             <TextArea
@@ -680,7 +676,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 rows={3}
                 resize='vertical'
                 disabled={isLoading}
-                error={getFieldError('consultationNotes')}
+                error={getFieldError(validationErrors, 'consultationNotes')}
             />
 
             <Input
@@ -693,7 +689,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 min={new Date().toISOString().split('T')[0]}
                 disabled={isLoading}
                 leftIcon='calendar'
-                error={getFieldError('followUpDate')}
+                error={getFieldError(validationErrors, 'followUpDate')}
             />
         </div>
     </div>

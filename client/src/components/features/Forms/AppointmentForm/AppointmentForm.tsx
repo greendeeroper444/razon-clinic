@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from './AppointmentForm.module.css'
 import { getAppointments } from '../../../../services'
-import { convertTo12HourFormat, generateTimeSlots } from '../../../../utils'
+import { convertTo12HourFormat, generateTimeSlots, getFieldError } from '../../../../utils'
 import { AppointmentFormData, AppointmentFormProps } from '../../../../types'
 import Input from '../../../ui/Input/Input'
 import Select, { SelectOption } from '../../../ui/Select/Select'
@@ -49,10 +49,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         focusDelay: 300
     });
 
-    const getFieldError = (fieldName: string): string | undefined => {
-        const errors = validationErrors[fieldName];
-        return errors && errors.length > 0 ? errors[0] : undefined;
-    };
+    
 
     useEffect(() => {
         fetchBlockedTimeSlots({ page: 1, limit: 1000 });
@@ -144,7 +141,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     const getReasonError = () => {
         const reason = formData?.reasonForVisit || '';
         
-        const apiError = getFieldError('reasonForVisit');
+        const apiError = getFieldError(validationErrors,'reasonForVisit');
         if (apiError) return apiError;
         
         if (reason.length > 0 && reason.length < 5) {
@@ -182,7 +179,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     };
 
     const getTimeSelectError = () => {
-        const apiError = getFieldError('preferredTime');
+        const apiError = getFieldError(validationErrors,'preferredTime');
         if (apiError) return apiError;
         
         if (formData?.preferredDate && availableTimes.length === 0) {
@@ -236,7 +233,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     };
 
     const getDateError = () => {
-        const apiError = getFieldError('preferredDate');
+        const apiError = getFieldError(validationErrors,'preferredDate');
         if (apiError) return apiError;
 
         if (formData?.preferredDate) {
@@ -265,7 +262,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             placeholder="Patient's first name"
             value={formData?.firstName || ''}
             onChange={onChange}
-            error={getFieldError('firstName')}
+            error={getFieldError(validationErrors,'firstName')}
         />
 
         <br />
@@ -278,7 +275,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             placeholder="Patient's last name"
             value={formData?.lastName || ''}
             onChange={onChange}
-            error={getFieldError('lastName')}
+            error={getFieldError(validationErrors,'lastName')}
         />
 
         <br />
@@ -291,7 +288,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             placeholder="Patient's middle name (optional)"
             value={formData?.middleName || ''}
             onChange={onChange}
-            error={getFieldError('middleName')}
+            error={getFieldError(validationErrors,'middleName')}
         />
 
         <br />
@@ -310,7 +307,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     const target = e.target as HTMLInputElement;
                     target.type = 'date';
                 }}
-                error={getFieldError('birthdate')}
+                error={getFieldError(validationErrors,'birthdate')}
             />
 
             <Select
@@ -327,7 +324,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     { value: 'Female', label: 'Female' },
                     { value: 'Other', label: 'Other' }
                 ]}
-                error={getFieldError('sex')}
+                error={getFieldError(validationErrors,'sex')}
             />
         </div>
 
@@ -340,7 +337,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 placeholder="Height in cm (optional)"
                 value={formData?.height || ''}
                 onChange={onChange}
-                error={getFieldError('height')}
+                error={getFieldError(validationErrors,'height')}
             />
 
             <Input
@@ -351,7 +348,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 placeholder="Weight in kg (optional)"
                 value={formData?.weight || ''}
                 onChange={onChange}
-                error={getFieldError('weight')}
+                error={getFieldError(validationErrors,'weight')}
             />
         </div>
 
@@ -367,7 +364,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     placeholder="Mother's name"
                     value={formData?.motherName || ''}
                     onChange={onChange}
-                    error={getFieldError('motherName')}
+                    error={getFieldError(validationErrors,'motherName')}
                 />
 
                 <Input
@@ -378,7 +375,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     placeholder="Mother's age"
                     value={formData?.motherAge || ''}
                     onChange={onChange}
-                    error={getFieldError('motherAge')}
+                    error={getFieldError(validationErrors,'motherAge')}
                 />
             </div>
 
@@ -390,7 +387,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 placeholder="Mother's Occupation"
                 value={formData?.motherOccupation || ''}
                 onChange={onChange}
-                error={getFieldError('motherOccupation')}
+                error={getFieldError(validationErrors,'motherOccupation')}
             />
         </div>
 
@@ -408,7 +405,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     placeholder="Father's Name"
                     value={formData?.fatherName || ''}
                     onChange={onChange}
-                    error={getFieldError('fatherName')}
+                    error={getFieldError(validationErrors,'fatherName')}
                 />
                 <Input
                     ref={(el) => { fieldRefs.current['fatherAge'] = el; }}
@@ -418,7 +415,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     placeholder="Father's Age"
                     value={formData?.fatherAge || ''}
                     onChange={onChange}
-                    error={getFieldError('fatherAge')}
+                    error={getFieldError(validationErrors,'fatherAge')}
                 />
             </div>
 
@@ -430,7 +427,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 placeholder="Father's Occupation"
                 value={formData?.fatherOccupation || ''}
                 onChange={onChange}
-                error={getFieldError('fatherOccupation')}
+                error={getFieldError(validationErrors,'fatherOccupation')}
             />
         </div>
 
@@ -444,7 +441,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             placeholder="Contact Number"
             value={formData?.contactNumber || ''}
             onChange={onChange}
-            error={getFieldError('contactNumber')}
+            error={getFieldError(validationErrors,'contactNumber')}
         />
 
         <br />
@@ -459,7 +456,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             onChange={onChange}
             rows={3}
             resize='vertical'
-            error={getFieldError('address')}
+            error={getFieldError(validationErrors,'address')}
         />
         
         <br />
@@ -472,7 +469,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             placeholder="Religion"
             value={formData?.religion || ''}
             onChange={onChange}
-            error={getFieldError('religion')}
+            error={getFieldError(validationErrors,'religion')}
         />
 
         <br />

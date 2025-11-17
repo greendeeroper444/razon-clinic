@@ -6,6 +6,7 @@ import Select from '../../../ui/Select/Select';
 import Input from '../../../ui/Input/Input';
 import { useBillingStore } from '../../../../stores';
 import useScrollToError from '../../../../hooks/useScrollToError';
+import { getFieldError } from '../../../../utils';
 
 const BillingForm: React.FC<BillingFormProps> = ({
     formData,
@@ -29,11 +30,6 @@ const BillingForm: React.FC<BillingFormProps> = ({
         focusDelay: 300
     });
 
-    const getFieldError = (fieldName: string): string | undefined => {
-        const errors = validationErrors[fieldName];
-        return errors && errors.length > 0 ? errors[0] : undefined;
-    };
-    
 
     //fetch data on component mount
     useEffect(() => {
@@ -88,7 +84,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                     name: 'patientName',
                     value: selectedRecord.patientName
                 }
-            } as React.ChangeEvent<HTMLInputElement>);
+            } as any);
         }
     };
 
@@ -103,21 +99,21 @@ const BillingForm: React.FC<BillingFormProps> = ({
                 name: 'itemName',
                 value: [...currentItems, '']
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
         
         onChange({
             target: {
                 name: 'itemQuantity',
                 value: [...currentQuantities, 1]
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
 
         onChange({
             target: {
                 name: 'itemPrices',
                 value: [...currentPrices, 0]
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
     };
 
     const removeItem = (index: number) => {
@@ -134,21 +130,21 @@ const BillingForm: React.FC<BillingFormProps> = ({
                 name: 'itemName',
                 value: newItems
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
         
         onChange({
             target: {
                 name: 'itemQuantity',
                 value: newQuantities
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
 
         onChange({
             target: {
                 name: 'itemPrices',
                 value: newPrices
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
 
         updateTotalAmount(newQuantities, newPrices);
     };
@@ -174,14 +170,14 @@ const BillingForm: React.FC<BillingFormProps> = ({
                 name: 'itemName',
                 value: newItems
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
 
         onChange({
             target: {
                 name: 'itemPrices',
                 value: newPrices
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
 
         updateTotalAmount(formData.itemQuantity || [], newPrices);
     };
@@ -207,7 +203,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                 name: 'itemQuantity',
                 value: newQuantities
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
 
         updateTotalAmount(newQuantities, formData.itemPrices || []);
     };
@@ -222,7 +218,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                 name: 'itemPrices',
                 value: newPrices
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
 
         updateTotalAmount(formData.itemQuantity || [], newPrices);
     };
@@ -237,7 +233,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                 name: 'amount',
                 value: total
             }
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as any);
     };
 
     const getItemTotal = (index: number): number => {
@@ -278,7 +274,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                 value: record.id,
                 label: `${record.patientName} - ${record.date} (${record.diagnosis})`
             }))}
-            error={getFieldError('medicalRecordId')}
+            error={getFieldError(validationErrors, 'medicalRecordId')}
         />
 
         <Input
@@ -291,7 +287,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
             placeholder="Enter patient's full name"
             leftIcon='user'
             maxLength={100}
-            error={getFieldError('patientName')}
+            error={getFieldError(validationErrors, 'patientName')}
         />
 
         <div className={styles.billingSection}>
@@ -413,7 +409,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                 { value: 'Pending', label: 'Pending' },
                 { value: 'Paid', label: 'Paid' }
             ]}
-            error={getFieldError('paymentStatus')}
+            error={getFieldError(validationErrors, 'paymentStatus')}
         />
         <div className={styles.totalSection}>
             <span className={styles.totalLabel}>Total Amount:</span>

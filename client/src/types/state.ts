@@ -1,7 +1,7 @@
 import { AppointmentFormData, AppointmentResponse } from "./appointment"
 import { LoginFormData, SignupFormData, ValidationErrors } from "./auth";
 import { BillingFormData, BillingResponse } from "./billing";
-import { BlockedTimeSlotDeleteData, BlockedTimeSlotFetchParams, BlockedTimeSlotFormData, BlockedTimeSlotOperationType, BlockedTimeSlotPagination, BlockedTimeSlotSummaryStats, BlockedTimeSlotValidationErrors, CheckBlockedResponse } from "./blockedSlot";
+import { BlockedTimeSlotFetchParams, BlockedTimeSlotFormData, BlockedTimeSlotOperationType, BlockedTimeSlotPagination, BlockedTimeSlotSummaryStats, CheckBlockedResponse } from "./blockedSlot";
 import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
 import { DeletedMedicalRecord, MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
@@ -576,7 +576,6 @@ export interface BlockedTimeSlotState {
     deleteBlockedTimeSlotData: { id: string, itemName: string, itemType: string } | null;
     summaryStats: BlockedTimeSlotSummaryStats;
     currentOperation: BlockedTimeSlotOperationType;
-    validationErrors: BlockedTimeSlotValidationErrors;
     pagination: BlockedTimeSlotPagination;
     
     addBlockedTimeSlot: (data: BlockedTimeSlotFormData) => Promise<void>;
@@ -585,15 +584,16 @@ export interface BlockedTimeSlotState {
     updateBlockedTimeSlotData: (id: string, data: BlockedTimeSlotFormData) => Promise<void>;
     deleteBlockedTimeSlot: (id: string) => Promise<void>;
     checkIfTimeBlocked: (preferredDate: string, preferredTime: string) => Promise<CheckBlockedResponse>;
-    
+    validationErrors: Record<string, string[]>;
+    clearValidationErrors: () => void;
+
     openModalCreate: () => void;
     openModalUpdate: (item: BlockedTimeSlotFormData) => void;
     openModalDelete: (item: BlockedTimeSlotFormData) => void;
     closeModalCreate: () => void;
     closeModalUpdate: () => void;
     closeModalDelete: () => void;
-    
-    clearValidationErrors: () => void;
+
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
 }

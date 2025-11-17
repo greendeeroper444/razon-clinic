@@ -16,19 +16,27 @@ export const useScrollToError = ({
     focusDelay = 300,
 }: UseScrollToErrorOptions) => {
     const fieldRefs = useRef<{[key: string]: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;}>({});
+    const previousErrorsRef = useRef<Record<string, string[]>>({});
 
     useEffect(() => {
-        if (validationErrors && Object.keys(validationErrors).length > 0) {
-            //find first field with error based on fieldOrder
-            const firstErrorField = fieldOrder.find((field) => validationErrors[field]);
+        const hadNoErrors = Object.keys(previousErrorsRef.current).length === 0;
+        const hasErrorsNow = validationErrors && Object.keys(validationErrors).length > 0;
+        
+        const isNewErrorBatch = hadNoErrors && hasErrorsNow;
+
+        if (isNewErrorBatch) {
+            const firstErrorField = fieldOrder.find((field) => {
+                const errors = validationErrors[field];
+                return errors && errors.length > 0;
+            });
 
             if (firstErrorField && fieldRefs.current[firstErrorField]) {
                 const element = fieldRefs.current[firstErrorField];
 
                 //scroll into view
                 element?.scrollIntoView({
-                behavior: scrollBehavior,
-                block: scrollBlock,
+                    behavior: scrollBehavior,
+                    block: scrollBlock,
                 });
 
                 setTimeout(() => {
@@ -36,9 +44,11 @@ export const useScrollToError = ({
                 }, focusDelay);
             }
         }
+
+        previousErrorsRef.current = validationErrors || {};
     }, [validationErrors, fieldOrder, scrollBehavior, scrollBlock, focusDelay]);
 
-    return { fieldRefs }
-}
+    return { fieldRefs };
+};
 
-export default useScrollToError
+export default useScrollToError;
