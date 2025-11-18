@@ -34,8 +34,6 @@ get response:
             {
                 "startDate": "2025-11-20T00:00:00.000Z",
                 "endDate": "2025-11-20T00:00:00.000Z",
-                "startTime": "13:00",
-                "endTime": "15:00",
                 "reason": "Meeting",
                 "customReason": "Monthly team meeting",
                 "createdBy": {

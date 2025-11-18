@@ -28,7 +28,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
 }, ref) => {
     const [focused, setFocused] = useState<boolean>(false)
 
-    const shouldShowError = error && !value
+    const shouldShowError = !!error
 
     const inputClasses = [
         styles.input,

@@ -84,7 +84,6 @@ export const useBlockedTimeSlotStore = create<BlockedTimeSlotState>()(
             fetchBlockedTimeSlots: async (params: BlockedTimeSlotFetchParams) => {
                 const currentState = get();
                 
-                // Prevent multiple simultaneous fetches
                 if (currentState.fetchLoading) {
                     console.log('Fetch already in progress, skipping...');
                     return;

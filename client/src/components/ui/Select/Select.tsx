@@ -32,7 +32,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
 }, ref) => {
     const [focused, setFocused] = useState<boolean>(false)
 
-    const shouldShowError = error && !value
+    const shouldShowError = !!error
 
     const selectClasses = [
         styles.select,

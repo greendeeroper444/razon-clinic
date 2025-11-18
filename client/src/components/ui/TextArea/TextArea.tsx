@@ -30,8 +30,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({
 }, ref) => {
     const [focused, setFocused] = useState<boolean>(false)
 
-    //show error only if there's an error AND no value
-    const shouldShowError = error && !value
+    const shouldShowError = !!error
 
     const textareaClasses = [
         styles.textarea,
