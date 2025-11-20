@@ -141,12 +141,10 @@ class AppointmentController {
             const { appointmentId } = req.params;
             const { path } = req.route;
             
-            //check if this is a status-only update
             const isStatusUpdate = path.includes('/status');
             
             const result = await AppointmentService.updateAppointment(appointmentId, req.body, isStatusUpdate);
 
-            //include SMS status in response for better debugging
             const response = {
                 success: true,
                 message: 'Appointment updated successfully',

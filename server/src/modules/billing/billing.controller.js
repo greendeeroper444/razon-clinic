@@ -46,36 +46,6 @@ class BillingController {
         }
     }
 
-    async updateBilling(req, res, next) {
-        try {
-            const { billingId } = req.params;
-            const billing = await BillingService.updateBilling(billingId, req.body);
-
-            return res.status(200).json({
-                success: true,
-                message: 'Billing record updated successfully',
-                data: billing
-            });
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    async deleteBilling(req, res, next) {
-        try {
-            const { billingId } = req.params;
-            const billing = await BillingService.deleteBilling(billingId);
-
-            return res.status(200).json({
-                success: true,
-                message: 'Billing record deleted successfully',
-                data: billing
-            });
-        } catch (error) {
-            next(error);
-        }
-    }
-
     async getMedicalRecordsForBilling(req, res, next) {
         try {
             const medicalRecords = await BillingService.getMedicalRecordsForBilling();
@@ -156,6 +126,43 @@ class BillingController {
                 success: true,
                 message: 'Revenue data retrieved successfully',
                 data: revenueData
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    // ==================== UPDATE ====================
+    async updateBilling(req, res, next) {
+        try {
+            const { billingId } = req.params;
+            const { path } = req.route;
+            
+            const isPaymentStatusUpdate = path.includes('/paymentStatus');
+
+            const billing = await BillingService.updateBilling(billingId, req.body, isPaymentStatusUpdate);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Billing record updated successfully',
+                data: billing
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+    
+
+    // ==================== DELETE ====================
+    async deleteBilling(req, res, next) {
+        try {
+            const { billingId } = req.params;
+            const billing = await BillingService.deleteBilling(billingId);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Billing record deleted successfully',
+                data: billing
             });
         } catch (error) {
             next(error);

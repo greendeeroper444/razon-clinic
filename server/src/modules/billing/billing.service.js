@@ -201,7 +201,7 @@ class BillingService {
         return billing;
     }
 
-    async updateBilling(billingId, updateData) {
+    async updateBilling(billingId, updateData, isPaymentStatusUpdate = false) {
         if (!billingId || !mongoose.Types.ObjectId.isValid(billingId)) {
             throw new Error('Invalid billing ID');
         }
@@ -209,6 +209,12 @@ class BillingService {
         const billing = await Billing.findById(billingId);
         if (!billing) {
             throw new Error('Billing record not found');
+        }
+
+        if (isPaymentStatusUpdate) {
+            billing.paymentStatus = updateData.paymentStatus;
+            await billing.save();
+            return await billing.populate('medicalRecordId', 'personalDetails.fullName dateRecorded');
         }
 
         const updatedBilling = await Billing.findByIdAndUpdate(
@@ -219,6 +225,7 @@ class BillingService {
 
         return updatedBilling;
     }
+
 
     async deleteBilling(billingId) {
         if (!billingId || !mongoose.Types.ObjectId.isValid(billingId)) {

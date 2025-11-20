@@ -54,7 +54,7 @@ const Navigation = () => {
                         isAuthenticated && (
                            <>
                                 <Link to='/user/appointments' className={`${styles.navLink} ${isActive('/user/appointments') ? styles.active : ''}`}>Appointment</Link>
-                                <Link to='/user/medical-records' className={`${styles.navLink} ${isActive('/user/medical-records') ? styles.active : ''}`}>Medical Records</Link>
+                                {/* <Link to='/user/medical-records' className={`${styles.navLink} ${isActive('/user/medical-records') ? styles.active : ''}`}>Medical Records</Link> */}
                            </>
                         )
                     }
@@ -113,12 +113,12 @@ const Navigation = () => {
                                 >
                                     Appointment
                                 </Link>
-                                <Link to='/user/medical-records' 
+                                {/* <Link to='/user/medical-records' 
                                     className={`${styles.navLink} ${isActive('/user/medical-records') ? styles.active : ''}`}
                                     onClick={toggleMenu}
                                 >
                                     Medical Records
-                                </Link>
+                                </Link> */}
                             </>
                         )
                     }

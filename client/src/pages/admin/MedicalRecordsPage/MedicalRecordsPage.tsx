@@ -332,7 +332,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                 <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}
-                        placeholder="Search medicines..."
+                        placeholder="Search records..."
                         disabled={loading}
                         className={styles.searchbar}
                     />

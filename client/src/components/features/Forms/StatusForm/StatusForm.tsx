@@ -7,13 +7,13 @@ import { StatusFormProps } from '../../../../types'
 
 const StatusForm: React.FC<StatusFormProps> = ({currentStatus, onStatusChange}) => {
     const statusOptions = [
-        {
-            value: 'Pending',
-            label: 'Pending',
-            icon: faClock,
-            color: '#8B5CF6',
-            description: 'Appointment is awaiting confirmation'
-        },
+        // {
+        //     value: 'Pending',
+        //     label: 'Pending',
+        //     icon: faClock,
+        //     color: '#8B5CF6',
+        //     description: 'Appointment is awaiting confirmation'
+        // },
         {
             value: 'Scheduled',
             label: 'Approved',
@@ -35,13 +35,13 @@ const StatusForm: React.FC<StatusFormProps> = ({currentStatus, onStatusChange}) 
             color: '#EF4444',
             description: 'Appointment has been cancelled'
         },
-        {
-            value: 'Rebooked',
-            label: 'Rebooked',
-            icon: faRedo,
-            color: '#F59E0B',
-            description: 'Appointment has been rescheduled'
-        }
+        // {
+        //     value: 'Rebooked',
+        //     label: 'Rebooked',
+        //     icon: faRedo,
+        //     color: '#F59E0B',
+        //     description: 'Appointment has been rescheduled'
+        // }
     ];
 
   return (

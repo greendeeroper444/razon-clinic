@@ -33,6 +33,14 @@ router.put(
     billingController.updateBilling
 );
 
+router.patch(
+    '/updateBilling/:billingId/paymentStatus', 
+    authenticate, 
+    validator.validatePaymentStatusUpdate, 
+    billingController.updateBilling
+);
+
+
 router.delete(
     '/deleteBilling/:billingId', 
     authenticate,

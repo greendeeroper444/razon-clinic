@@ -3,12 +3,12 @@ const User = require('@modules/user/user.model');
 const Notification = require('@modules/notification/notification.model');
 const mongoose = require('mongoose');
 const sendSMS = require('@utils/smsSender');
-const { formatDate, formatTime } = require('@utils/display');
+const { formatDate, formatTimeOnly } = require('@utils/display');
 
 class AppointmentService {
     constructor() {
         this.formatDate = formatDate;
-        this.formatTime = formatTime;
+        this.formatTimeOnly = formatTimeOnly;
     }
 
     async createAppointment(appointmentData, createNotifications = true) {
@@ -466,7 +466,7 @@ class AppointmentService {
                 userName: userName,
                 appointmentNumber: appointment.appointmentNumber,
                 preferredDate: this.formatDate(appointment.preferredDate),
-                preferredTime: this.formatTime(appointment.preferredTime),
+                preferredTime: this.formatTimeOnly(appointment.preferredTime),
                 reasonForVisit: appointment.reasonForVisit,
                 status: appointment.status
             };

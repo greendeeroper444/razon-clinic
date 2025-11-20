@@ -81,6 +81,25 @@ export const updateBilling = async (billingId: string, billingData: Partial<Bill
     }
 };
 
+export const updateBillingPaymentStatus = async (billingId: string, paymentStatus: string) => {
+    try {
+        const response = await axios.patch(
+            `${API_BASE_URL}/api/billings/updateBilling/${billingId}/paymentStatus`,
+            { paymentStatus }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating billing payment status:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+
+        throw error;
+    }
+};
+
+
 //get medical records for dropdown
 export const getMedicalRecordsForBilling = async () => {
     try {

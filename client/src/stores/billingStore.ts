@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { toast } from 'sonner';
 import { BillingState, OperationType, BillingFormData, FetchParams } from '../types';
-import { getBillings, addBilling, updateBilling, deleteBilling, getBillingById, exportBillings } from '../services';
+import { getBillings, addBilling, updateBilling, deleteBilling, getBillingById, exportBillings, updateBillingPaymentStatus as updateBillingPaymentStatusService } from '../services';
 import { handleStoreError } from '../utils';
 
 export const useBillingStore = create<BillingState>()(
@@ -261,26 +261,25 @@ export const useBillingStore = create<BillingState>()(
             processPayment: async (billId: string) => {
                 try {
                     set({ statusLoading: true, isProcessing: true });
-                    
-                    
-                    await updateBilling(billId, { paymentStatus: 'Paid' });
-                    
+
+                    await updateBillingPaymentStatusService(billId, 'Paid');
+
                     await get().fetchBillings({});
-                    
+
                     toast.success('Payment processed successfully!');
-                    
+
                     setTimeout(() => {
-                        set({ 
+                        set({
                             statusLoading: false,
-                            isProcessing: false
-                        })
+                            isProcessing: false,
+                        });
                     }, 500);
                 } catch (error) {
                     console.error('Error processing payment:', error);
                     toast.error('Failed to process payment');
-                    set({ 
+                    set({
                         statusLoading: false,
-                        isProcessing: false
+                        isProcessing: false,
                     });
                 }
             },
