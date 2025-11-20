@@ -251,7 +251,7 @@ class AuthController {
             const { emailOrContactNumber } = req.body;
             
             if (!emailOrContactNumber) {
-                throw new ApiError('Email or contact number is required', 400);
+                throw new ApiError('Contact number is required', 400);
             }
             
             res.status(200).json({

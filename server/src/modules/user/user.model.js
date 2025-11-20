@@ -145,7 +145,7 @@ UserSchema.pre('validate', async function(next) {
 
 UserSchema.pre('save', function(next) {
     if (!this.email && !this.contactNumber) {
-        return next(new Error('Either email or contact number is required'));
+        return next(new Error('Contact number is required'));
     }
     next();
 });

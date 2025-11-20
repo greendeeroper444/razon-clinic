@@ -19,13 +19,13 @@ const validateRegistration = [
         
     body('emailOrContactNumber')
         .trim()
-        .notEmpty().withMessage('Email or Contact Number is required')
+        .notEmpty().withMessage('Contact Number is required')
         .custom((value) => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const contactNumberRegex = /^(09|\+639)\d{9}$/;
             
             if (!emailRegex.test(value) && !contactNumberRegex.test(value)) {
-                throw new Error('Must provide a valid email or contact number');
+                throw new Error('Must provide a valid contact number');
             }
             return true;
         }),
@@ -107,13 +107,13 @@ const validateRegistration = [
 const validateLogin = [
     body('emailOrContactNumber')
         .trim()
-        .notEmpty().withMessage('Email or Contact Number is required')
+        .notEmpty().withMessage('Contact Number is required')
         .custom((value) => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const contactNumberRegex = /^(09|\+639)\d{9}$/;
             
             if (!emailRegex.test(value) && !contactNumberRegex.test(value)) {
-                throw new Error('Must provide a valid email or contact number');
+                throw new Error('Must provide a valid contact number');
             }
             return true;
         }),
@@ -215,13 +215,13 @@ const validateProfileUpdate = [
 const validatePasswordReset = [
     body('emailOrContactNumber')
         .trim()
-        .notEmpty().withMessage('Email or contact number is required')
+        .notEmpty().withMessage('contact number is required')
         .custom((value) => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const contactNumberRegex = /^(09|\+639)\d{9}$/;
             
             if (!emailRegex.test(value) && !contactNumberRegex.test(value)) {
-                throw new Error('Must provide a valid email or contact number');
+                throw new Error('Must provide a valid contact number');
             }
             return true;
         }),

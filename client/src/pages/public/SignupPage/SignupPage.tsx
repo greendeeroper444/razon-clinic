@@ -78,7 +78,7 @@ const SignupPage = () => {
                     stepErrors.lastName = 'Last name is required'
                 }
                 if (!signupForm.emailOrContactNumber.trim()) {
-                    stepErrors.emailOrContactNumber = 'Email or contact number is required'
+                    stepErrors.emailOrContactNumber = 'Contact number is required'
                 }
                 break
                 
@@ -219,10 +219,10 @@ const SignupPage = () => {
                         />
 
                         <Input
-                            type='text'
+                            type='number'
                             name='emailOrContactNumber'
-                            placeholder='Email Address / Contact Number'
-                            leftIcon='email'
+                            placeholder='Contact Number'
+                            leftIcon='phone'
                             value={signupForm.emailOrContactNumber}
                             onChange={handleChange}
                             error={validationErrors.emailOrContactNumber}
@@ -302,7 +302,34 @@ const SignupPage = () => {
                             resize='vertical'
                         />
 
-                        <Input
+                        <Select
+                            name='religion'
+                            leftIcon='users'
+                            placeholder='Select Religion'
+                            value={signupForm.religion}
+                            onChange={handleChange}
+                            options={[
+                                { value: 'Roman Catholic', label: 'Roman Catholic' },
+                                { value: 'Protestant', label: 'Protestant' },
+                                { value: 'Evangelical / Born Again', label: 'Evangelical / Born Again' },
+                                { value: 'Iglesia ni Cristo', label: 'Iglesia ni Cristo' },
+                                { value: 'Seventh-day Adventist', label: 'Seventh-day Adventist' },
+                                { value: 'Baptist', label: 'Baptist' },
+                                { value: 'Methodist', label: 'Methodist' },
+                                { value: 'Pentecostal', label: 'Pentecostal' },
+                                { value: 'Lutheran', label: 'Lutheran' },
+                                { value: 'Muslim', label: 'Muslim' },
+                                { value: 'Buddhism', label: 'Buddhism' },
+                                { value: 'Hinduism', label: 'Hinduism' },
+                                { value: 'Judaism', label: 'Judaism' },
+                                { value: 'Taoism', label: 'Taoism' },
+                                { value: 'Non-religious', label: 'Non-religious' },
+                                { value: 'Others', label: 'Others' },
+                                { value: 'Unknown', label: 'Unknown' },
+                            ]}
+                        />
+
+                        {/* <Input
                             type='text'
                             name='religion'
                             placeholder='Religion (Optional)'
@@ -310,7 +337,8 @@ const SignupPage = () => {
                             value={signupForm.religion}
                             onChange={handleChange}
                             error={validationErrors.religion}
-                        />
+                        /> */}
+
                     </>
                 )
 
@@ -324,7 +352,7 @@ const SignupPage = () => {
                             <p><strong>First Name:</strong> {signupForm.firstName}</p>
                             <p><strong>Last Name:</strong> {signupForm.lastName}</p>
                             <p><strong>Middle Name:</strong> {signupForm.middleName || 'N/A'}</p>
-                            <p><strong>Email/Contact:</strong> {signupForm.emailOrContactNumber}</p>
+                            <p><strong>Contact Number:</strong> {signupForm.emailOrContactNumber}</p>
                         </div>
 
                         <div className={styles.reviewSection}>

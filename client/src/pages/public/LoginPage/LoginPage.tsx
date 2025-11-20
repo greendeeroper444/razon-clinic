@@ -88,10 +88,10 @@ const LoginPage = () => {
                         <p className={styles.formSubtitle}>Log in to your account</p>
                         
                         <Input
-                            type='text'
+                            type='number'
                             name='emailOrContactNumber'
-                            placeholder='Email Address / Contact Number'
-                            leftIcon='email'
+                            placeholder='Contact Number'
+                            leftIcon='phone'
                             value={loginForm.emailOrContactNumber}
                             onChange={handleChange}
                             error={validationErrors.emailOrContactNumber}

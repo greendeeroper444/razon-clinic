@@ -1,8 +1,8 @@
 import { useState, InputHTMLAttributes, ReactNode, forwardRef } from 'react'
 import styles from './Input.module.css'
-import { User, EyeOff, Eye, Lock, Mail, Calendar, Church } from 'lucide-react'
+import { User, EyeOff, Eye, Lock, Mail, Calendar, Church, Phone } from 'lucide-react'
 
-type IconType = 'user' | 'email' | 'lock' | 'eye' | 'eye-slash' | 'calendar' | 'church'
+type IconType = 'user' | 'email' | 'lock' | 'eye' | 'eye-slash' | 'calendar' | 'church' | 'phone'
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onFocus'> {
     label?: string | ReactNode;
@@ -45,6 +45,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
                 return <User className={styles.icon} />
             case 'email': 
                 return <Mail className={styles.icon} />
+            case 'phone': 
+                return <Phone className={styles.icon} />
             case 'lock': 
                 return <Lock className={styles.icon} />
             case 'eye': 

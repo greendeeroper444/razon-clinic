@@ -15,15 +15,15 @@ export const validateSignupForm = (formData: SignupFormData): ValidationErrors =
     }
     
     
-    //validate email or contact number
+    //validate Contact number
     if (!formData.emailOrContactNumber.trim()) {
-        errors.emailOrContactNumber = 'Email or contact number is required';
+        errors.emailOrContactNumber = 'Contact number is required';
     } else {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const contactNumberRegex = /^(09|\+639)\d{9}$/;
         
         if (!emailRegex.test(formData.emailOrContactNumber) && !contactNumberRegex.test(formData.emailOrContactNumber)) {
-            errors.emailOrContactNumber = 'Please enter a valid email or contact number';
+            errors.emailOrContactNumber = 'Please enter a valid Contact number';
         }
     }
     
@@ -75,15 +75,15 @@ export const validateSignupForm = (formData: SignupFormData): ValidationErrors =
 export const validateLoginForm = (formData: LoginFormData): ValidationErrors => {
     const errors: ValidationErrors = {};
     
-    //validate email or contact number
+    //validate Contact number
     if (!formData.emailOrContactNumber.trim()) {
-        errors.emailOrContactNumber = 'Email or contact number is required';
+        errors.emailOrContactNumber = 'Contact number is required';
     } else {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const contactNumberRegex = /^(09|\+639)\d{9}$/;
         
         if (!emailRegex.test(formData.emailOrContactNumber) && !contactNumberRegex.test(formData.emailOrContactNumber)) {
-            errors.emailOrContactNumber = 'Please enter a valid email or contact number';
+            errors.emailOrContactNumber = 'Please enter a valid contact number';
         }
     }
     
