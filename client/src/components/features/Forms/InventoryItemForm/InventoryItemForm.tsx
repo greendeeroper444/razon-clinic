@@ -86,7 +86,7 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
                     <Input
                         ref={(el) => { fieldRefs.current['itemName'] = el; }}
                         type='text'
-                        label='Item Name'
+                        label='Item Name *'
                         name='itemName'
                         placeholder='Item name'
                         value={formData?.itemName || ''}
@@ -99,7 +99,7 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
                     <Select
                         ref={(el) => { fieldRefs.current['category'] = el; }}
                         name='category'
-                        label='Category'
+                        label='Category *'
                         title='Select Category'
                         leftIcon='pill'
                         placeholder='Select Category'
@@ -171,7 +171,7 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
                 <Input
                     ref={(el) => { fieldRefs.current['expiryDate'] = el; }}
                     type='date'
-                    label='Expiry Date'
+                    label='Expiry Date *'
                     name='expiryDate'
                     value={formData?.expiryDate || ''}
                     onChange={onChange}

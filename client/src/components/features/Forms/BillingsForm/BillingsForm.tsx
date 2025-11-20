@@ -264,7 +264,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
     <>
         <Select
             ref={(el) => { fieldRefs.current['medicalRecordId'] = el; }}
-            label='Select Medical Record'
+            label='Select Medical Record *'
             name='medicalRecordId'
             value={formData?.medicalRecordId || ''}
             onChange={handleMedicalRecordChange}

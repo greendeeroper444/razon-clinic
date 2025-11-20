@@ -72,7 +72,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
         <Input
             ref={(el) => { fieldRefs.current['firstName'] = el; }}
             type='text'
-            label='First Name'
+            label='First Name *'
             name='firstName'
             placeholder="Patient's first name"
             value={formData?.firstName || ''}
@@ -85,7 +85,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
         <Input
             ref={(el) => { fieldRefs.current['lastName'] = el; }}
             type='text'
-            label='Last Name'
+            label='Last Name *'
             name='lastName'
             placeholder="Patient's last name"
             value={formData?.lastName || ''}
@@ -98,7 +98,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
         <Input
             ref={(el) => { fieldRefs.current['middleName'] = el; }}
             type='text'
-            label='Middle Name'
+            label='Middle Name (Optional)'
             name='middleName'
             placeholder="Patient's middle name"
             value={formData?.middleName || ''}
@@ -136,7 +136,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
             <Input
                 ref={(el) => { fieldRefs.current['birthdate'] = el; }}
                 type='date'
-                label='Birthday'
+                label='Birthday *'
                 name='birthdate'
                 placeholder={formData.birthdate ? undefined : 'Select your birthdate'}
                 leftIcon='calendar'
@@ -152,7 +152,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
             <Select
                 ref={(el) => { fieldRefs.current['sex'] = el; }}
                 name='sex'
-                label='Gender'
+                label='Gender *'
                 title='Select Gender'
                 leftIcon='users'
                 placeholder='Select Gender'
@@ -170,7 +170,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
         <TextArea
             ref={(el) => { fieldRefs.current['address'] = el; }}
             name='address'
-            label='Address'
+            label='Address *'
             placeholder='Address'
             leftIcon='map-pin'
             value={formData?.address || ''}

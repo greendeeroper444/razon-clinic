@@ -259,7 +259,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 <Input
                     ref={(el) => { fieldRefs.current['fullName'] = el; }}
                     type='text'
-                    label='Full Name'
+                    label='Full Name *'
                     name='fullName'
                     value={formData?.fullName || ''}
                     onChange={handleSearchChange}
@@ -329,7 +329,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             <Input
                 ref={(el) => { fieldRefs.current['dateOfBirth'] = el; }}
                 type='date'
-                label='Date of Birth'
+                label='Date of Birth *'
                 name='dateOfBirth'
                 placeholder={formData.dateOfBirth ? undefined : 'Select date of birth'}
                 leftIcon='calendar'
@@ -346,7 +346,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
            <Select
                 ref={(el) => { fieldRefs.current['gender'] = el; }}
                 name='gender'
-                label='Gender'
+                label='Gender *'
                 leftIcon='users'
                 placeholder='Select Gender'
                 value={formData.gender || ''}
@@ -385,7 +385,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             <Input
                 ref={(el) => { fieldRefs.current['phone'] = el; }}
                 type='tel'
-                label='Phone'
+                label='Phone Number *'
                 name='phone'
                 placeholder="Enter a phone number"
                 value={formData?.phone || ''}
@@ -413,7 +413,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             <Input
                 ref={(el) => { fieldRefs.current['email'] = el; }}
                 type='email'
-                label='Email Address'
+                label='Email Address (Optional)'
                 name='email'
                 placeholder="Enter an email address"
                 value={formData?.email || ''}
@@ -425,7 +425,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             <Input
                 ref={(el) => { fieldRefs.current['emergencyContact'] = el; }}
                 type='text'
-                label='Emergency Contact'
+                label='Emergency Contact (Optional)'
                 name='emergencyContact'
                 placeholder="Emergency contact person"
                 value={formData?.emergencyContact || ''}
@@ -558,7 +558,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             <Input
                 ref={(el) => { fieldRefs.current['chiefComplaint'] = el; }}
                 type='text'
-                label='Chief Complaint'
+                label='Chief Complaint *'
                 name='chiefComplaint'
                 placeholder="Main reason for visit"
                 value={formData?.chiefComplaint || ''}
@@ -572,7 +572,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             <TextArea
                 ref={(el) => { fieldRefs.current['symptomsDescription'] = el; }}
                 name='symptomsDescription'
-                label='Symptoms Description'
+                label='Symptoms Description *'
                 placeholder='Detailed description of symptoms'
                 value={formData?.symptomsDescription || ''}
                 onChange={onChange}

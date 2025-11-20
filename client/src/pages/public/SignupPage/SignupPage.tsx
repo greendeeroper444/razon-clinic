@@ -194,7 +194,7 @@ const SignupPage = () => {
                         <Input
                             type='text'
                             name='firstName'
-                            placeholder='First Name'
+                            placeholder='First Name *'
                             leftIcon='user'
                             value={signupForm.firstName}
                             onChange={handleChange}
@@ -204,7 +204,7 @@ const SignupPage = () => {
                         <Input
                             type='text'
                             name='lastName'
-                            placeholder='Last Name'
+                            placeholder='Last Name *'
                             leftIcon='user'
                             value={signupForm.lastName}
                             onChange={handleChange}
@@ -224,7 +224,7 @@ const SignupPage = () => {
                         <Input
                             type='number'
                             name='emailOrContactNumber'
-                            placeholder='Contact Number'
+                            placeholder='Contact Number *'
                             leftIcon='phone'
                             value={signupForm.emailOrContactNumber}
                             onChange={handleChange}
@@ -239,7 +239,7 @@ const SignupPage = () => {
                         <Input
                             type={showPassword ? 'text' : 'password'}
                             name='password'
-                            placeholder='Password'
+                            placeholder='Password *'
                             leftIcon='lock'
                             rightIcon={showPassword ? 'eye-slash' : 'eye'}
                             onRightIconClick={togglePasswordVisibility}
@@ -251,7 +251,7 @@ const SignupPage = () => {
                         <Input
                             type={showConfirmPassword ? 'text' : 'password'}
                             name='confirmPassword'
-                            placeholder='confirmPassword'
+                            placeholder='Confirm Password *'
                             leftIcon='lock'
                             rightIcon={showConfirmPassword ? 'eye-slash' : 'eye'}
                             onRightIconClick={toggleConfirmPasswordVisibility}
@@ -268,7 +268,7 @@ const SignupPage = () => {
                         <Input
                             type={signupForm.birthdate ? 'date' : 'text'}
                             name='birthdate'
-                            placeholder={signupForm.birthdate ? undefined : 'Select your birthdate'}
+                            placeholder={signupForm.birthdate ? undefined : 'Birthdate *'}
                             leftIcon='calendar'
                             value={signupForm.birthdate}
                             onChange={handleChange}
@@ -283,7 +283,7 @@ const SignupPage = () => {
                             name='sex'
                             title='Select Gender'
                             leftIcon='users'
-                            placeholder='Select Gender'
+                            placeholder='Select Gender *'
                             value={signupForm.sex}
                             onChange={handleChange}
                             error={validationErrors.sex}
@@ -296,7 +296,7 @@ const SignupPage = () => {
 
                         <TextArea
                             name='address'
-                            placeholder='Full Address'
+                            placeholder='Full Address *'
                             leftIcon='map-pin'
                             value={signupForm.address}
                             onChange={handleChange}

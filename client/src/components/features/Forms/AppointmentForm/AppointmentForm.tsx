@@ -284,7 +284,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <Input
             ref={(el) => { fieldRefs.current['firstName'] = el; }}
             type='text'
-            label='First Name'
+            label='First Name *'
             name='firstName'
             placeholder="Patient's first name"
             value={formData?.firstName || ''}
@@ -297,7 +297,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <Input
             ref={(el) => { fieldRefs.current['lastName'] = el; }}
             type='text'
-            label='Last Name'
+            label='Last Name *'
             name='lastName'
             placeholder="Patient's last name"
             value={formData?.lastName || ''}
@@ -324,7 +324,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             <Input
                 ref={(el) => { fieldRefs.current['birthdate'] = el; }}
                 type='date'
-                label='Birthday'
+                label='Birthday *'
                 name='birthdate'
                 placeholder={formData?.birthdate ? undefined : 'Select your birthdate'}
                 leftIcon='calendar'
@@ -339,7 +339,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
             <Select
                 ref={(el) => { fieldRefs.current['sex'] = el; }}
-                label='Gender'
+                label='Gender *'
                 name='sex'
                 title='Select Gender'
                 leftIcon='users'
@@ -463,7 +463,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <Input
             ref={(el) => { fieldRefs.current['contactNumber'] = el; }}
             type='tel'
-            label="Contact"
+            label="Contact Number *"
             name='contactNumber'
             placeholder="Contact Number"
             value={formData?.contactNumber || ''}
@@ -475,7 +475,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         <TextArea
             ref={(el) => { fieldRefs.current['address'] = el; }}
-            label='Address'
+            label='Address *'
             name='address'
             placeholder='Full Address'
             leftIcon='map-pin'
