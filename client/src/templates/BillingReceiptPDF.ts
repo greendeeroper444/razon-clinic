@@ -62,7 +62,7 @@ export class BillingReceiptPDF extends BasePDFTemplate {
         const tableData = this.prepareTableData();
         
         this.drawTable(
-            ['Item', 'Quantity', 'Unit Price', 'Subtotal'],
+            ['Item', 'Doc. Fee', 'Quantity', 'Unit Price', 'Subtotal'],
             tableData,
             {
                 0: { halign: 'left', cellWidth: 'auto' },
@@ -135,26 +135,56 @@ export class BillingReceiptPDF extends BasePDFTemplate {
                 const price = this.billing.itemPrices?.[index] || 0;
                 const subtotal = quantity * price;
 
+                const doctorFee = this.billing.doctorFee
+                    ? `P ${this.billing.doctorFee.toLocaleString('en-PH', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })}`
+                    : 'P 0.00';
+
                 data.push([
-                    item,
-                    quantity.toString(),
-                    `P ${price.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-                    `P ${subtotal.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                    item,                                   // item
+                    doctorFee,                              // doc. fee
+                    quantity.toString(),                    // quantity
+                    `P ${price.toLocaleString('en-PH', {    // unit Price
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })}`,
+                    `P ${subtotal.toLocaleString('en-PH', { // subtotal
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })}`
                 ]);
             });
         }
 
+        //fallback if no items
         if (data.length === 0) {
+            const doctorFee = this.billing.doctorFee
+                ? `P ${this.billing.doctorFee.toLocaleString('en-PH', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })}`
+                : 'P 0.00';
+
             data.push([
                 'Medical Services',
+                doctorFee,
                 '1',
-                `P ${this.billing.amount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-                `P ${this.billing.amount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                `P ${this.billing.amount.toLocaleString('en-PH', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })}`,
+                `P ${this.billing.amount.toLocaleString('en-PH', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })}`
             ]);
         }
 
         return data;
     }
+
 
     private formatCurrency(amount: number): string {
         return `P ${amount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

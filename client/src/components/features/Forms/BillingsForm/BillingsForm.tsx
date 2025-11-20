@@ -23,6 +23,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
         fieldOrder: [
             'medicalRecordId',
             'patientName',
+            'doctorFee',
             'paymentStatus'
         ],
         scrollBehavior: 'smooth',
@@ -146,7 +147,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
             }
         } as any);
 
-        updateTotalAmount(newQuantities, newPrices);
+        updateTotalAmount(newQuantities, newPrices, formData.doctorFee || 0);
     };
 
     const updateItemName = (index: number, itemName: string) => {
@@ -179,7 +180,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
             }
         } as any);
 
-        updateTotalAmount(formData.itemQuantity || [], newPrices);
+        updateTotalAmount(formData.itemQuantity || [], newPrices, formData.doctorFee || 0);
     };
 
     const updateQuantity = (index: number, quantity: number) => {
@@ -205,7 +206,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
             }
         } as any);
 
-        updateTotalAmount(newQuantities, formData.itemPrices || []);
+        updateTotalAmount(newQuantities, formData.itemPrices || [], formData.doctorFee || 0);
     };
 
     const updateUnitPrice = (index: number, price: number) => {
@@ -220,13 +221,28 @@ const BillingForm: React.FC<BillingFormProps> = ({
             }
         } as any);
 
-        updateTotalAmount(formData.itemQuantity || [], newPrices);
+        updateTotalAmount(formData.itemQuantity || [], newPrices, formData.doctorFee || 0);
     };
 
-    const updateTotalAmount = (quantities: number[], prices: number[]) => {
-        const total = quantities.reduce((sum, qty, index) => {
+    const handleDoctorFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const doctorFee = parseFloat(e.target.value) || 0;
+        
+        onChange({
+            target: {
+                name: 'doctorFee',
+                value: doctorFee
+            }
+        } as any);
+
+        updateTotalAmount(formData.itemQuantity || [], formData.itemPrices || [], doctorFee);
+    };
+
+    const updateTotalAmount = (quantities: number[], prices: number[], doctorFee: number) => {
+        const itemsTotal = quantities.reduce((sum, qty, index) => {
             return sum + (qty * (prices[index] || 0));
         }, 0);
+
+        const total = itemsTotal + (doctorFee || 0);
 
         onChange({
             target: {
@@ -245,6 +261,14 @@ const BillingForm: React.FC<BillingFormProps> = ({
     const getAvailableStock = (itemName: string): number => {
         const item = availableItems.find(item => item.name === itemName);
         return item?.availableQuantity || 0;
+    };
+
+    const getItemsSubtotal = (): number => {
+        const quantities = formData.itemQuantity || [];
+        const prices = formData.itemPrices || [];
+        return quantities.reduce((sum, qty, index) => {
+            return sum + (qty * (prices[index] || 0));
+        }, 0);
     };
 
     if (loading) {
@@ -395,6 +419,20 @@ const BillingForm: React.FC<BillingFormProps> = ({
             }
         </div>
 
+        <Input
+            ref={(el) => { fieldRefs.current['doctorFee'] = el; }}
+            type='number'
+            label='Doctor Fee'
+            name='doctorFee'
+            value={formData?.doctorFee || ''}
+            onChange={handleDoctorFeeChange}
+            placeholder="Enter doctor's fee"
+            leftIcon='dollar'
+            min={0}
+            step={0.01}
+            error={getFieldError(validationErrors, 'doctorFee')}
+        />
+
         <Select
             ref={(el) => { fieldRefs.current['paymentStatus'] = el; }}
             name='paymentStatus'
@@ -411,11 +449,29 @@ const BillingForm: React.FC<BillingFormProps> = ({
             ]}
             error={getFieldError(validationErrors, 'paymentStatus')}
         />
+
         <div className={styles.totalSection}>
-            <span className={styles.totalLabel}>Total Amount:</span>
-            <span className={styles.totalAmount}>
-                ₱{(formData.amount || 0).toFixed(2)}
-            </span>
+            <div className={styles.totalBreakdown}>
+                <div className={styles.subtotalRow}>
+                    <span className={styles.subtotalLabel}>Items Subtotal:</span>
+                    <span className={styles.subtotalAmount}>
+                        ₱{getItemsSubtotal().toFixed(2)}
+                    </span>
+                </div>
+                <div className={styles.subtotalRow}>
+                    <span className={styles.subtotalLabel}>Doctor Fee:</span>
+                    <span className={styles.subtotalAmount}>
+                        ₱{(formData.doctorFee || 0).toFixed(2)}
+                    </span>
+                </div>
+                <div className={styles.totalDivider}></div>
+                <div className={styles.totalRow}>
+                    <span className={styles.totalLabel}>Total Amount:</span>
+                    <span className={styles.totalAmount}>
+                        ₱{(formData.amount || 0).toFixed(2)}
+                    </span>
+                </div>
+            </div>
         </div>
     </>
   )

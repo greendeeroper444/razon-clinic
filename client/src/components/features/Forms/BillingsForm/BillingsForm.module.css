@@ -199,6 +199,53 @@
     color: #333;
 }
 
+.totalBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.subtotalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+}
+
+.subtotalLabel {
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.subtotalAmount {
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.totalDivider {
+  height: 1px;
+  background: #ddd;
+  margin: 0.5rem 0;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.totalLabel {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
 .totalAmount {
     font-size: 18px;
     font-weight: 700;

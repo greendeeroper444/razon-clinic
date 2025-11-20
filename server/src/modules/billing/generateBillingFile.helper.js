@@ -41,9 +41,9 @@ class GenerateBillingFile {
 
     generateCSV(records) {
         const headers = [
-            // 'MEDICAL RECORD ID',
             'PATIENT NAME',
             'ITEMS',
+            'DOCTOR FEE',
             'TOTAL AMOUNT',
             'PAYMENT STATUS',
             'MEDICAL RECORD DATE',
@@ -55,9 +55,9 @@ class GenerateBillingFile {
 
         records.forEach(record => {
             const row = [
-                // record.medicalRecordId?.medicalRecordId.medicalRecordNumber || record.medicalRecordId.id || '',
                 record.patientName || record.medicalRecordId?.personalDetails?.fullName || '',
                 this.formatItems(record.itemName, record.itemQuantity, record.itemPrices),
+                record.doctorFee || 0,
                 record.amount || 0,
                 record.paymentStatus || '',
                 this.safeFormatDate(record.medicalRecordDate),
@@ -86,6 +86,7 @@ class GenerateBillingFile {
             { header: 'QUANTITY', key: 'itemQuantity', width: 12 },
             { header: 'UNIT PRICE', key: 'unitPrice', width: 15 },
             { header: 'SUBTOTAL', key: 'subtotal', width: 15 },
+            { header: 'DOCTOR FEE', key: 'doctorFee', width: 15 },
             { header: 'TOTAL AMOUNT', key: 'totalAmount', width: 15 },
             { header: 'PAYMENT STATUS', key: 'paymentStatus', width: 15 },
             { header: 'MEDICAL RECORD DATE', key: 'medicalRecordDate', width: 18 },
@@ -118,13 +119,14 @@ class GenerateBillingFile {
                     const subtotal = quantity * unitPrice;
 
                     worksheet.addRow({
-                        medicalRecordNumber: index === 0 ? medicalRecordNumber : '',
+                        // medicalRecordNumber: index === 0 ? medicalRecordNumber : '',
                         patientName: index === 0 ? patientName : '',
                         diagnosis: index === 0 ? diagnosis : '',
                         itemName: itemName,
                         itemQuantity: quantity,
                         unitPrice: `₱${unitPrice.toFixed(2)}`,
                         subtotal: `₱${subtotal.toFixed(2)}`,
+                        doctorFee: index === 0 ? `₱${(record.doctorFee || 0).toFixed(2)}` : '',
                         totalAmount: index === 0 ? `₱${record.amount.toFixed(2)}` : '',
                         paymentStatus: index === 0 ? record.paymentStatus : '',
                         medicalRecordDate: index === 0 ? this.safeFormatDate(record.medicalRecordDate) : '',

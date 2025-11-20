@@ -12,6 +12,7 @@ class BillingService {
             itemName,
             itemQuantity,
             itemPrices,
+            doctorFee,
             amount,
             paymentStatus,
             medicalRecordDate
@@ -46,6 +47,7 @@ class BillingService {
             itemName: itemName || [],
             itemQuantity: itemQuantity || [],
             itemPrices: itemPrices || [],
+            doctorFee: doctorFee || 0,
             amount,
             paymentStatus: paymentStatus || 'Unpaid',
             medicalRecordDate: medicalRecordDate || medicalRecord.dateRecorded

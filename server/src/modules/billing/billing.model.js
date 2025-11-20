@@ -20,6 +20,11 @@ const billingSchema = new mongoose.Schema(
             type: [Number],
             default: []
         },
+        doctorFee: {
+            type: Number,
+            default: 0,
+            min: 0
+        },
         amount: {
             type: Number,
             required: true,

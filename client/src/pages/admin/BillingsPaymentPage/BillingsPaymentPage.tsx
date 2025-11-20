@@ -234,6 +234,15 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
             )
         },
         {
+            key: 'doctorFee',
+            header: 'DOC. FEE',
+            render: (billing) => (
+                <span className={styles.doctorFee}>
+                    ₱{(billing.doctorFee || 0).toFixed(2)}
+                </span>
+            )
+        },
+        {
             key: 'amount',
             header: 'AMOUNT',
             render: (billing) => (

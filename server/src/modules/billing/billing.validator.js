@@ -64,6 +64,16 @@ const validateBilling = [
             return true;
         }),
     
+    body('doctorFee')
+        .optional()
+        .isFloat({ min: 0 }).withMessage('Doctor fee must be a non-negative number')
+        .custom((value) => {
+            if (value < 0) {
+                throw new Error('Doctor fee cannot be negative');
+            }
+            return true;
+        }),
+    
     body('amount')
         .notEmpty().withMessage('Amount is required')
         .isFloat({ min: 0 }).withMessage('Amount must be a non-negative number')
