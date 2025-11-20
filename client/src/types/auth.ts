@@ -14,6 +14,7 @@ export interface SignupFormData {
     fatherInfo?: ParentInfo;
     religion?: string;
     agreeToTerms: boolean;
+    religionOther?: string;
 }
 
 export interface ValidationErrors {
@@ -34,6 +35,7 @@ export interface ValidationErrors {
     'fatherInfo.occupation'?: string;
     religion?: string;
     agreeToTerms?: string;
+    religionOther?: string;
 }
 
 export interface SignupResponse {

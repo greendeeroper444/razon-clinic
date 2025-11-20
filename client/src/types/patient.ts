@@ -37,6 +37,7 @@ export interface PatientFormData {
         firstName: string
         lastName: string
     }
+    religionOther?: string;
 }
 
 

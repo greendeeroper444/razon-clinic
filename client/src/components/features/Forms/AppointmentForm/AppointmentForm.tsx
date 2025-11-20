@@ -49,8 +49,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         focusDelay: 300
     });
 
-    
-
     useEffect(() => {
         fetchBlockedTimeSlots({ page: 1, limit: 1000 });
     }, [fetchBlockedTimeSlots]);
@@ -200,6 +198,35 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         const allTimes = generateTimeSlots();
         return allTimes.some(time => !bookedTimesForDate.includes(time));
     };
+
+    const handleReligionChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        
+        if (name === 'religion') {
+            if (value !== 'Others') {
+                onChange({
+                    target: {
+                        name: 'religionOther',
+                        value: ''
+                    }
+                } as React.ChangeEvent<HTMLInputElement>);
+            }
+            onChange(e);
+        } else if (name === 'religionOther') {
+            onChange(e);
+            onChange({
+                target: {
+                    name: 'religion',
+                    value: value
+                }
+            } as React.ChangeEvent<HTMLInputElement>);
+        }
+    };
+
+    const predefinedReligions = [
+        'Roman Catholic', 'Islam', 'Iglesia ni Cristo', 'Evangelical / Born Again',
+        'Seventh-day Adventist', 'Protestant', 'Baptist', 'Buddhism', 'Non-religious'
+    ];
 
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedDate = e.target.value;
@@ -461,16 +488,49 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         
         <br />
 
-        <Input
+        <Select
             ref={(el) => { fieldRefs.current['religion'] = el; }}
-            type='text'
-            label="Religion"
+            label='Religion'
             name='religion'
-            placeholder="Religion"
-            value={formData?.religion || ''}
-            onChange={onChange}
+            leftIcon='users'
+            placeholder='Select Religion'
+            value={formData?.religion && predefinedReligions.includes(formData.religion) 
+                ? formData.religion 
+                : formData?.religion && !predefinedReligions.includes(formData.religion)
+                ? 'Others'
+                : ''}
+            onChange={handleReligionChange}
+            options={[
+                { value: 'Roman Catholic', label: 'Roman Catholic' },
+                { value: 'Islam', label: 'Islam' },
+                { value: 'Iglesia ni Cristo', label: 'Iglesia ni Cristo' },
+                { value: 'Evangelical / Born Again', label: 'Evangelical / Born Again' },
+                { value: 'Seventh-day Adventist', label: 'Seventh-day Adventist' },
+                { value: 'Protestant', label: 'Protestant' },
+                { value: 'Baptist', label: 'Baptist' },
+                { value: 'Buddhism', label: 'Buddhism' },
+                { value: 'Non-religious', label: 'Non-religious' },
+                { value: 'Others', label: 'Others (Please specify)' },
+            ]}
             error={getFieldError(validationErrors,'religion')}
         />
+
+        {
+            (formData?.religion === 'Others' || 
+            (formData?.religion && 
+            !['Roman Catholic', 'Islam', 'Iglesia ni Cristo', 'Evangelical / Born Again', 
+                'Seventh-day Adventist', 'Protestant', 'Baptist', 'Buddhism', 'Non-religious'].includes(formData.religion))) && (
+                <Input
+                    type='text'
+                    name='religionOther'
+                    placeholder='Please specify your religion'
+                    leftIcon='church'
+                    value={formData?.religionOther || (formData?.religion !== 'Others' ? formData?.religion : '')}
+                    onChange={handleReligionChange}
+                    error={getFieldError(validationErrors,'religion')}
+                />
+            )
+        }
 
         <br />
 

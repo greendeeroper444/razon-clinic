@@ -57,6 +57,7 @@ export interface AppointmentFormData {
     }[];
     createdAt?: string;
     updatedAt?: string;
+    religionOther?: string;
 }
 
 export interface UserId {

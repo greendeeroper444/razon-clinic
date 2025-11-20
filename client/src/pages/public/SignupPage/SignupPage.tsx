@@ -105,6 +105,9 @@ const SignupPage = () => {
                 if (!signupForm.address.trim()) {
                     stepErrors.address = 'Address is required'
                 }
+                if (signupForm.religion === 'Others' && !signupForm.religionOther?.trim()) {
+                    stepErrors.religionOther = 'Please specify your religion'
+                }
                 break
                 
             case 4:
@@ -161,7 +164,7 @@ const SignupPage = () => {
                         birthdate: signupForm.birthdate,
                         sex: signupForm.sex,
                         address: signupForm.address,
-                        religion: signupForm.religion
+                        religion: signupForm.religion === 'Others' ? signupForm.religionOther : signupForm.religion
                     }
 
                     await register(cleanedData)
@@ -306,38 +309,35 @@ const SignupPage = () => {
                             name='religion'
                             leftIcon='users'
                             placeholder='Select Religion'
-                            value={signupForm.religion}
+                            value={signupForm.religion === 'Others' ? 'Others' : signupForm.religion}
                             onChange={handleChange}
                             options={[
                                 { value: 'Roman Catholic', label: 'Roman Catholic' },
-                                { value: 'Protestant', label: 'Protestant' },
-                                { value: 'Evangelical / Born Again', label: 'Evangelical / Born Again' },
+                                { value: 'Islam', label: 'Islam' },
                                 { value: 'Iglesia ni Cristo', label: 'Iglesia ni Cristo' },
+                                { value: 'Evangelical / Born Again', label: 'Evangelical / Born Again' },
                                 { value: 'Seventh-day Adventist', label: 'Seventh-day Adventist' },
+                                { value: 'Protestant', label: 'Protestant' },
                                 { value: 'Baptist', label: 'Baptist' },
-                                { value: 'Methodist', label: 'Methodist' },
-                                { value: 'Pentecostal', label: 'Pentecostal' },
-                                { value: 'Lutheran', label: 'Lutheran' },
-                                { value: 'Muslim', label: 'Muslim' },
                                 { value: 'Buddhism', label: 'Buddhism' },
-                                { value: 'Hinduism', label: 'Hinduism' },
-                                { value: 'Judaism', label: 'Judaism' },
-                                { value: 'Taoism', label: 'Taoism' },
                                 { value: 'Non-religious', label: 'Non-religious' },
-                                { value: 'Others', label: 'Others' },
-                                { value: 'Unknown', label: 'Unknown' },
+                                { value: 'Others', label: 'Others (Please specify)' },
                             ]}
                         />
 
-                        {/* <Input
-                            type='text'
-                            name='religion'
-                            placeholder='Religion (Optional)'
-                            leftIcon='church'
-                            value={signupForm.religion}
-                            onChange={handleChange}
-                            error={validationErrors.religion}
-                        /> */}
+                        {
+                            signupForm.religion === 'Others' && (
+                                <Input
+                                    type='text'
+                                    name='religionOther'
+                                    placeholder='Please specify your religion'
+                                    leftIcon='church'
+                                    value={signupForm.religionOther || ''}
+                                    onChange={handleChange}
+                                    error={validationErrors.religionOther}
+                                />
+                            )
+                        }
 
                     </>
                 )
@@ -360,7 +360,7 @@ const SignupPage = () => {
                             <p><strong>Birthdate:</strong> {signupForm.birthdate}</p>
                             <p><strong>Gender:</strong> {signupForm.sex}</p>
                             <p><strong>Address:</strong> {signupForm.address}</p>
-                            <p><strong>Religion:</strong> {signupForm.religion || 'N/A'}</p>
+                            <p><strong>Religion:</strong> {signupForm.religion === 'Others' ? (signupForm.religionOther || 'Others') : (signupForm.religion || 'N/A')}</p>
                         </div>
 
                         <div className={styles.formOptions}>
