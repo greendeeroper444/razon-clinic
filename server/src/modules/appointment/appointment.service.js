@@ -977,6 +977,8 @@ class AppointmentService {
                 contactNumber: appointment.contactNumber ? String(appointment.contactNumber) : undefined,
                 birthdate: appointment.birthdate,
                 sex: appointment.sex,
+                height: appointment.height,
+                weight: appointment.weight,
                 address: appointment.address,
                 religion: appointment.religion || '',
                 motherInfo: {

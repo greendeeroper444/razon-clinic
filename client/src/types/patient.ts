@@ -20,25 +20,30 @@ export interface PatientFormData {
     sex: 'Male' | 'Female' | 'Other' | '';
     address: string;
     religion?: string;
-    height? : number;
-    weight?: number;
+    height?: number | string;
+    weight?: number | string;
+    bloodPressure?: {
+        systolic?: number | string;
+        diastolic?: number | string;
+    };
+    temperature?: number | string;
     motherInfo?: {
         name?: string;
-        age?: number;
+        age?: number | string;
         occupation?: string;
     };
     fatherInfo?: {
         name?: string;
-        age?: number;
+        age?: number | string;
         occupation?: string;
     };
-    isArchived?: boolean
-    archivedAt?: string
+    isArchived?: boolean;
+    archivedAt?: string;
     archivedBy?: {
-        id: string
-        firstName: string
-        lastName: string
-    }
+        id: string;
+        firstName: string;
+        lastName: string;
+    };
     religionOther?: string;
 }
 

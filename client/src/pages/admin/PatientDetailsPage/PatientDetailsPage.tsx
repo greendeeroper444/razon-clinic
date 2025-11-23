@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import styles from './PatientDetailsPage.module.css';
 import { useParams } from 'react-router-dom';
-import { Calendar, User, Phone, MapPin, Cake, Venus, ArrowLeft, Edit, Users, Hand } from 'lucide-react';
-import { calculateAge, formatBirthdate, getLoadingText, getMiddleNameInitial } from '../../../utils';
+import { Calendar, User, Phone, MapPin, Cake, Venus, ArrowLeft, Edit, Users, Hand, Activity, Thermometer } from 'lucide-react';
+import { calculateAge, formatBirthdate, getLoadingText } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { FormDataType, PatientFormData } from '../../../types';
 import { usePatientStore } from '../../../stores';
@@ -106,13 +106,9 @@ const PatientDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <User /> Full Name:
                             </span>
-                            {/* <span className={styles.tableValue}>
-                                {currentPatient.firstName}, {currentPatient.lastName}
-                                {currentPatient.middleName ? `, ${getMiddleNameInitial(currentPatient.middleName)}` : ''}
-                            </span> */}
                             <span className={styles.tableValue}>
                                 {currentPatient.firstName}, {currentPatient.lastName},
-                                {/* {currentPatient.middleName ? `, ${getMiddleNameInitial(currentPatient.middleName)}` : ''} */} {currentPatient.middleName} {currentPatient.suffix}
+                                {currentPatient.middleName} {currentPatient.suffix}
                             </span>
                         </div>
                         <div className={styles.tableRow}>
@@ -152,7 +148,46 @@ const PatientDetailsPage = () => {
                         </div>
                     </div>
 
-                    {/* family info sex */}
+                    {/* vital signs section */}
+                    <div className={styles.tableSection}>
+                        <h3 className={styles.sectionTitle}>
+                            <Activity /> Vital Signs
+                        </h3>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>Height:</span>
+                            <span className={styles.tableValue}>
+                                {currentPatient?.height ? `${currentPatient.height} cm` : 'N/A'}
+                            </span>
+                        </div>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>Weight:</span>
+                            <span className={styles.tableValue}>
+                                {currentPatient?.weight ? `${currentPatient.weight} kg` : 'N/A'}
+                            </span>
+                        </div>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <Activity /> Blood Pressure:
+                            </span>
+                            <span className={styles.tableValue}>
+                                {
+                                    currentPatient?.bloodPressure?.systolic && currentPatient?.bloodPressure?.diastolic
+                                        ? `${currentPatient.bloodPressure.systolic}/${currentPatient.bloodPressure.diastolic} mmHg`
+                                        : 'N/A'
+                                }
+                            </span>
+                        </div>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <Thermometer /> Temperature:
+                            </span>
+                            <span className={styles.tableValue}>
+                                {currentPatient?.temperature ? `${currentPatient.temperature}°C` : 'N/A'}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* family info section */}
                     <div className={styles.tableSection}>
                         <h3 className={styles.sectionTitle}>
                             <Users /> Family Information
@@ -200,7 +235,6 @@ const PatientDetailsPage = () => {
             </div>
         </div>
 
-        {/* update patient modal */}
         {
             isModalUpdateOpen && (
                 <Modal

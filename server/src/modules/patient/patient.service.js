@@ -5,14 +5,6 @@ const { ApiError } = require('@utils/errors');
 
 class PatientService {
 
-    // async createPatient(patientData) {
-    //     try {
-    //         const patient = new Patient(patientData);
-    //         return await patient.save();
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
     async createPatient(patientData) {
         const processedData = {
             firstName: patientData.firstName,
@@ -23,6 +15,13 @@ class PatientService {
             contactNumber: patientData.contactNumber || undefined,
             birthdate: patientData.birthdate,
             sex: patientData.sex,
+            height: patientData.height || undefined,
+            weight: patientData.weight || undefined,
+            bloodPressure: {
+                systolic: patientData.bloodPressure?.systolic || null,
+                diastolic: patientData.bloodPressure?.diastolic || null
+            },
+            temperature: patientData.temperature || undefined,
             address: patientData.address,
             motherInfo: {
                 name: patientData.motherInfo?.name || '',

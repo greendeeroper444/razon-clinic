@@ -25,6 +25,11 @@ const PatientForm: React.FC<PatientFormProps> = ({
             'contactNumber',
             'birthdate',
             'sex',
+            'height',
+            'weight',
+            'bloodPressure.systolic',
+            'bloodPressure.diastolic',
+            'temperature',
             'address',
             'religion',
             'motherInfo.name',
@@ -188,6 +193,68 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 error={getFieldError(validationErrors, 'sex')}
             />
         </div>
+
+        <div className={styles.formRow}>
+            <Input
+                ref={(el) => { fieldRefs.current['height'] = el; }}
+                type='number'
+                label='Height (cm)'
+                name='height'
+                placeholder="Height in cm"
+                value={formData?.height || ''}
+                onChange={onChange}
+                error={getFieldError(validationErrors,'height')}
+            />
+
+            <Input
+                ref={(el) => { fieldRefs.current['weight'] = el; }}
+                type='number'
+                label='Weight (kg)'
+                name='weight'
+                placeholder="Weight in kg"
+                value={formData?.weight || ''}
+                onChange={onChange}
+                error={getFieldError(validationErrors,'weight')}
+            />
+        </div>
+
+        <div className={styles.formRow}>
+            <Input
+                ref={(el) => { fieldRefs.current['bloodPressure.systolic'] = el; }}
+                type='number'
+                label='Blood Pressure - Systolic (mmHg)'
+                name='bloodPressure.systolic'
+                placeholder="e.g., 120"
+                value={formData?.bloodPressure?.systolic || ''}
+                onChange={onChange}
+                error={getFieldError(validationErrors,'bloodPressure.systolic')}
+            />
+
+            <Input
+                ref={(el) => { fieldRefs.current['bloodPressure.diastolic'] = el; }}
+                type='number'
+                label='Blood Pressure - Diastolic (mmHg)'
+                name='bloodPressure.diastolic'
+                placeholder="e.g., 80"
+                value={formData?.bloodPressure?.diastolic || ''}
+                onChange={onChange}
+                error={getFieldError(validationErrors,'bloodPressure.diastolic')}
+            />
+        </div>
+
+        <Input
+            ref={(el) => { fieldRefs.current['temperature'] = el; }}
+            type='number'
+            label='Temperature (°C)'
+            name='temperature'
+            placeholder="e.g., 36.5"
+            step="0.1"
+            value={formData?.temperature || ''}
+            onChange={onChange}
+            error={getFieldError(validationErrors,'temperature')}
+        />
+
+        <br />
 
         <TextArea
             ref={(el) => { fieldRefs.current['address'] = el; }}

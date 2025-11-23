@@ -62,6 +62,26 @@ const validatePatient = [
         .notEmpty().withMessage('Sex is required')
         .isIn(['Male', 'Female', 'Other']).withMessage('Sex must be Male, Female, or Other'),
     
+    body('height')
+        .optional()
+        .isFloat({ min: 30, max: 300 }).withMessage('Height must be between 30 and 300 cm'),
+    
+    body('weight')
+        .optional()
+        .isFloat({ min: 1, max: 500 }).withMessage('Weight must be between 1 and 500 kg'),
+    
+    body('bloodPressure.systolic')
+        .optional()
+        .isInt({ min: 40, max: 300 }).withMessage('Systolic pressure must be between 40 and 300 mmHg'),
+    
+    body('bloodPressure.diastolic')
+        .optional()
+        .isInt({ min: 20, max: 200 }).withMessage('Diastolic pressure must be between 20 and 200 mmHg'),
+    
+    body('temperature')
+        .optional()
+        .isFloat({ min: 30, max: 45 }).withMessage('Temperature must be between 30 and 45°C'),
+    
     body('address')
         .notEmpty().withMessage('Address is required')
         .trim()
@@ -73,7 +93,7 @@ const validatePatient = [
         .isLength({ max: 50 }).withMessage('Mother\'s name must not exceed 50 characters'),
     
     body('motherInfo.age')
-        .optional()
+        .optional({ nullable: true, checkFalsy: true })
         .isInt({ min: 15, max: 120 }).withMessage('Mother\'s age must be between 15 and 120'),
     
     body('motherInfo.occupation')
@@ -87,7 +107,7 @@ const validatePatient = [
         .isLength({ max: 50 }).withMessage('Father\'s name must not exceed 50 characters'),
     
     body('fatherInfo.age')
-        .optional()
+        .optional({ nullable: true, checkFalsy: true })
         .isInt({ min: 15, max: 120 }).withMessage('Father\'s age must be between 15 and 120'),
     
     body('fatherInfo.occupation')
@@ -116,19 +136,6 @@ const validatePatientId = [
 ];
 
 const validateQueryParams = [
-    // query('page')
-    //     .optional()
-    //     .isInt({ min: 1 }).withMessage('Page must be a positive integer'),
-    
-    // query('limit')
-    //     .optional()
-    //     .isInt({ min: 1, max: 1000 }).withMessage('Limit must be between 1 and 1000'),
-    
-    // query('search')
-    //     .optional()
-    //     .trim()
-    //     .isLength({ min: 1, max: 100 }).withMessage('Search term must be between 1 and 100 characters'),
-    
     query('email')
         .optional()
         .trim()

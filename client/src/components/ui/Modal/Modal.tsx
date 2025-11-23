@@ -111,14 +111,21 @@ const Modal: React.FC<ModalProps> = ({
                     sex: '',
                     address: '',
                     religion: '',
+                    height: '',
+                    weight: '',
+                    bloodPressure: {
+                        systolic: '',
+                        diastolic: ''
+                    },
+                    temperature: '',
                     motherInfo: {
                         name: '',
-                        age: undefined,
+                        age: '',
                         occupation: ''
                     },
                     fatherInfo: {
                         name: '',
-                        age: undefined,
+                        age: '',
                         occupation: ''
                     }
                 } as PatientFormData);

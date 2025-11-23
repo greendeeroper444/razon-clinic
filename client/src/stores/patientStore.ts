@@ -533,20 +533,28 @@ export const usePatientStore = create<PatientState>()(
                     firstName: patient.firstName,
                     lastName: patient.lastName,
                     middleName: patient.middleName,
+                    suffix: patient.suffix,
                     email: patient.email,
                     contactNumber: patient.contactNumber,
                     birthdate: patient.birthdate,
                     sex: patient.sex,
                     address: patient.address,
                     religion: patient.religion || '',
+                    height: patient.height || '',
+                    weight: patient.weight || '',
+                    bloodPressure: {
+                        systolic: patient.bloodPressure?.systolic || '',
+                        diastolic: patient.bloodPressure?.diastolic || ''
+                    },
+                    temperature: patient.temperature || '',
                     motherInfo: patient.motherInfo || {
                         name: '',
-                        age: undefined,
+                        age: '',
                         occupation: ''
                     },
                     fatherInfo: patient.fatherInfo || {
                         name: '',
-                        age: undefined,
+                        age: '',
                         occupation: ''
                     },
                     isArchived: patient.isArchived

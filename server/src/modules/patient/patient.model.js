@@ -44,6 +44,38 @@ const PatientSchema = new mongoose.Schema(
             required: true,
             enum: ['Male', 'Female', 'Other']
         },
+        height: {
+            type: Number,
+            required: false,
+            min: 30,
+            max: 300
+        },
+        weight: {
+            type: Number,
+            required: false,
+            min: 1,
+            max: 500
+        },
+        bloodPressure: {
+            systolic: {
+                type: Number,
+                required: false,
+                min: 40,
+                max: 300
+            },
+            diastolic: {
+                type: Number,
+                required: false,
+                min: 20,
+                max: 200
+            }
+        },
+        temperature: {
+            type: Number,
+            required: false,
+            min: 30,
+            max: 45
+        },
         address: {
             type: String,
             required: true,
