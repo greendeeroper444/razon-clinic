@@ -11,6 +11,7 @@ export interface PatientFormData {
     firstName: string;
     lastName: string;
     middleName?: string | null;
+    suffix?: string | null;
     email: string;
     contactNumber: string;
     birthdate: string;

@@ -157,7 +157,8 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
 
                     <div className={styles.patientText}>
                         <div className={styles.patientName}>
-                            {generate20Only(appointment.firstName)}
+                            {/* {generate20Only(appointment.firstName)} */}
+                            {appointment.firstName} {appointment.lastName} {appointment.suffix}
                         </div>
                         <div className={styles.appointmentId}>
                             APT-ID: {appointment.appointmentNumber}

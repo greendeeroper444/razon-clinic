@@ -25,6 +25,12 @@ const validateAppointment = [
         .optional()
         .trim()
         .isLength({ max: 50 }).withMessage('Middle name must not exceed 50 characters'),
+
+    body('suffix')
+        .optional({ nullable: true, checkFalsy: true })
+        .trim()
+        .isLength({ max: 10 }).withMessage('Suffix must not exceed 10 characters')
+        .isIn(['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']).withMessage('Invalid suffix value'),
     
     body('birthdate')
         .notEmpty().withMessage('Birth date is required')

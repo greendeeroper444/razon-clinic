@@ -18,6 +18,7 @@ class PatientService {
             firstName: patientData.firstName,
             lastName: patientData.lastName,
             middleName: patientData.middleName || undefined,
+            suffix: patientData.suffix || undefined,
             email: patientData.email || undefined,
             contactNumber: patientData.contactNumber || undefined,
             birthdate: patientData.birthdate,

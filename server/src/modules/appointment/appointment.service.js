@@ -36,6 +36,7 @@ class AppointmentService {
             firstName: appointmentData.firstName,
             lastName: appointmentData.lastName,
             middleName: appointmentData.middleName || null,
+            suffix: appointmentData.suffix || null,
             preferredDate: appointmentData.preferredDate,
             preferredTime: appointmentData.preferredTime,
             reasonForVisit: appointmentData.reasonForVisit?.trim(),
@@ -192,7 +193,7 @@ class AppointmentService {
                     .sort(sort)
                     .skip(skip)
                     .limit(itemsPerPage)
-                    .populate('userId', 'firstName lastName middleName email contactNumber userNumber');
+                    .populate('userId', 'firstName lastName middleName suffix email contactNumber userNumber');
 
                 const startIndex = totalItems > 0 ? skip + 1 : 0;
                 const endIndex = Math.min(skip + itemsPerPage, totalItems);
@@ -215,7 +216,7 @@ class AppointmentService {
             } else {
                 appointments = await Appointment.find(filter)
                     .sort(sort)
-                    .populate('userId', 'firstName lastName middleName email contactNumber userNumber');
+                    .populate('userId', 'firstName lastName middleName suffix email contactNumber userNumber');
 
                 pagination = {
                     currentPage: 1,
@@ -253,7 +254,7 @@ class AppointmentService {
         }
 
         const appointment = await Appointment.findById(appointmentId)
-            .populate('userId', 'firstName lastName middleName email contactNumber birthdate sex address dateRegistered userNumber');
+            .populate('userId', 'firstName lastName middleName suffix email contactNumber birthdate sex address dateRegistered userNumber');
         
         if (!appointment) {
             throw new Error('Appointment not found');
@@ -283,7 +284,7 @@ class AppointmentService {
         
         const appointments = await Appointment.find(filter)
             .sort({ preferredTime: 1 })
-            .populate('userId', 'firstName lastName middleName email contactNumber userNumber');
+            .populate('userId', 'firstName lastName middleName suffix email contactNumber userNumber');
         
         const timeSlots = appointments.reduce((acc, appointment) => {
             const timeKey = appointment.preferredTime;
@@ -320,7 +321,7 @@ class AppointmentService {
         
         const appointments = await Appointment.find(filter)
             .sort({ createdAt: -1 })
-            .populate('userId', 'firstName lastName middleName email contactNumber userNumber');
+            .populate('userId', 'firstName lastName middleName suffix email contactNumber userNumber');
         
         return {
             appointments,
@@ -361,6 +362,7 @@ class AppointmentService {
             if (updateData.firstName) appointment.firstName = updateData.firstName;
             if (updateData.lastName) appointment.lastName = updateData.lastName;
             if (updateData.middleName !== undefined) appointment.middleName = updateData.middleName;
+            if (updateData.suffix !== undefined) appointment.suffix = updateData.suffix;
             if (updateData.preferredDate) appointment.preferredDate = updateData.preferredDate;
             if (updateData.preferredTime) appointment.preferredTime = updateData.preferredTime;
             if (updateData.reasonForVisit) appointment.reasonForVisit = updateData.reasonForVisit;

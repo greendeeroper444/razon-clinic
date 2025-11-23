@@ -4,7 +4,7 @@ export interface SignupFormData {
     firstName: string;
     lastName: string;
     middleName: string;
-    suffix?: string;
+    suffix?: string | null;
     emailOrContactNumber: string;
     password: string;
     confirmPassword: string;

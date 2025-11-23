@@ -23,6 +23,12 @@ const PatientSchema = new mongoose.Schema(
             minlength: 3,
             maxlength: 50
         },
+        suffix: {
+            type: String,
+            maxlength: 10,
+            trim: true,
+            enum: ['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']
+        },
         email: {
             type: String,
         },

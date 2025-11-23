@@ -22,6 +22,12 @@ const appointmentSchema = new mongoose.Schema(
             type: String,
             required: false
         },
+        suffix: {
+            type: String,
+            maxlength: 10,
+            trim: true,
+            enum: ['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']
+        },
         birthdate: {
             type: Date,
             required: true

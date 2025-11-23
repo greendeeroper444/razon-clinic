@@ -14,6 +14,7 @@ export interface AppointmentFormData {
     firstName?: string;
     lastName?: string;
     middleName?: string | null;
+    suffix?: string | null;
     sex?: string;
     height?: number | string;
     weight?: number | string;
