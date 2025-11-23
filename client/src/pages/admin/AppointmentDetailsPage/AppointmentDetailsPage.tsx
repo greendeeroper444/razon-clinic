@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand } from 'lucide-react';
-import { calculateAge, formatBirthdate, formatDate, formatTime, getStatusClass, getLoadingText, getMiddleNameInitial, formatDateTime } from '../../../utils';
+import { calculateAge, formatBirthdate, formatDate, formatTime, getStatusClass, getLoadingText, formatDateTime } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { AppointmentFormData, FormDataType } from '../../../types';
 import { useAppointmentStore } from '../../../stores';
 
 const AppointmentDetailsPage = () => {
     const { appointmentId } = useParams();
+    const navigate = useNavigate();
     //zustand store selectors
     const {
         currentAppointment,
@@ -72,6 +73,23 @@ const AppointmentDetailsPage = () => {
         }
 
         await updateAppointmentStatus(appointmentId, data.status);
+
+        if (data.status === 'Scheduled' && currentAppointment) {
+            // setTimeout(() => {
+            //     navigate('/admin/patients');
+            // }, 1000);
+            setTimeout(() => {
+                navigate('/admin/patients', {
+                    state: {
+                        highlightPatient: {
+                            firstName: currentAppointment.firstName,
+                            lastName: currentAppointment.lastName,
+                            birthdate: currentAppointment.birthdate
+                        }
+                    }
+                });
+            }, 1000);
+        }
     };
 
     //don't render if appointment is still loading

@@ -7,12 +7,14 @@ import { FormDataType, PatientDisplayData, PatientFormData, TableColumn } from '
 import { calculateAge2, generateInitials, getLoadingText } from '../../../utils';
 import { getPatientSummaryCards } from '../../../config/patientSummaryCards';
 import { useAuthenticationStore, usePatientStore } from '../../../stores';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const PatientPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const [highlightedPatientId, setHighlightedPatientId] = useState<string | null>(null);
     //zustand store selectors
     const {
         patients,
@@ -57,6 +59,31 @@ const PatientPage: React.FC<OpenModalProps> = () => {
             setIsInitialLoad(false);
         }
     }, [isInitialLoad, fetchData]);
+
+    //handle patient highlighting from navigation state
+    useEffect(() => {
+        if (location.state?.highlightPatient && patients.length > 0) {
+            const { firstName, lastName, birthdate } = location.state.highlightPatient;
+            
+            //find the patient that matches the appointment data
+            const matchingPatient = patients.find(patient => 
+                patient.firstName === firstName &&
+                patient.lastName === lastName &&
+                patient.birthdate === birthdate
+            );
+
+            if (matchingPatient && matchingPatient.id) {
+                setHighlightedPatientId(matchingPatient.id);
+                
+                //remove highlight after 3 seconds
+                setTimeout(() => {
+                    setHighlightedPatientId(null);
+                    //clear navigation state
+                    navigate(location.pathname, { replace: true, state: {} });
+                }, 3000);
+            }
+        }
+    }, [location.state, patients, navigate, location.pathname]);
 
     const handleSearch = useCallback((term: string) => {
         setSearchTerm(term);
@@ -367,6 +394,7 @@ const PatientPage: React.FC<OpenModalProps> = () => {
                             emptyMessage='No patients found. Click "New Patient" to get started.'
                             searchTerm={searchTerm}
                             getRowKey={(patient) => patient.id || ''}
+                            highlightRowId={highlightedPatientId}
                         />
 
                         {

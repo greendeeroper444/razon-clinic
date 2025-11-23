@@ -100,34 +100,6 @@
 }
 
 
-
-@media (max-width: 768px) {
-    .statusOptionsGrid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-    
-    .statusOption {
-        padding: 1rem;
-    }
-    
-    .statusOptionHeader {
-        gap: 0.5rem;
-    }
-    
-    .statusOptionIcon {
-        font-size: 1.125rem;
-    }
-    
-    .statusOptionLabel {
-        font-size: 0.9375rem;
-    }
-    
-    .statusOptionDescription {
-        font-size: 0.75rem;
-    }
-}
-
 /* animation for status change */
 .statusOption.statusOptionActive {
   animation: statusSelect 0.3s ease-out;
@@ -159,4 +131,34 @@
 
 .statusOption[data-status="Rebooked"] {
   --status-color: #f59e0b;
+}
+
+
+
+
+@media (max-width: 768px) {
+    .statusOptionsGrid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .statusOption {
+        padding: 1rem;
+    }
+    
+    .statusOptionHeader {
+        gap: 0.5rem;
+    }
+    
+    .statusOptionIcon {
+        font-size: 1.125rem;
+    }
+    
+    .statusOptionLabel {
+        font-size: 0.9375rem;
+    }
+    
+    .statusOptionDescription {
+        font-size: 0.75rem;
+    }
 }

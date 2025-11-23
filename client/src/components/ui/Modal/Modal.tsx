@@ -2,17 +2,7 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import styles from './Modal.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import { 
-    AppointmentForm, 
-    BillingsForm, 
-    BillingDetailsForm, 
-    BlockedTimeSlotForm,
-    DeleteForm, 
-    InventoryItemForm, 
-    MedicalRecordForm, 
-    PatientForm, 
-    StatusForm 
-} from '../../features/Forms'
+import { AppointmentForm, BillingsForm, BillingDetailsForm, BlockedTimeSlotForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../../features/Forms'
 import { formatDateForDisplay, formatDateForInput } from '../../../utils'
 import { 
     AppointmentFormData, 

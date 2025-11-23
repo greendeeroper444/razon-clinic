@@ -2,7 +2,8 @@ import React from 'react'
 import styles from './StatusForm.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarCheck, faCheckCircle, faTimes, faRedo, faClock } from '@fortawesome/free-solid-svg-icons'
-import { StatusFormProps } from '../../../../types'
+import { AppointmentStatus, StatusFormProps } from '../../../../types'
+import { getStatusColor } from '../../../../utils'
 
 
 const StatusForm: React.FC<StatusFormProps> = ({currentStatus, onStatusChange}) => {
@@ -92,15 +93,10 @@ const StatusForm: React.FC<StatusFormProps> = ({currentStatus, onStatusChange}) 
             currentStatus && (
                 <div className={styles.currentStatusIndicator}>
                     <span>Current Status: </span>
-                    <strong
-                        className={
-                            currentStatus
-                                ? styles[`statusColor${currentStatus}`]
-                                : ''
-                        }
-                    >
-                        {currentStatus}
-                    </strong>
+                   <strong style={{ color: getStatusColor(currentStatus as AppointmentStatus) }}>
+                    {currentStatus}
+                </strong>
+
                 </div>
             )
         }

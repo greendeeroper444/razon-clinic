@@ -105,4 +105,5 @@ export interface TableProps<T> {
     className?: string;
     onRowClick?: (item: T) => void;
     getRowKey: (item: T) => string | number;
+    highlightRowId?: string | null;
 }

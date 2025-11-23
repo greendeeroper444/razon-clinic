@@ -8,11 +8,12 @@ function Table<T>({
     searchTerm = '',
     className = '',
     onRowClick,
-    getRowKey
+    getRowKey,
+    highlightRowId
 }: TableProps<T>) {
     const handleRowClick = (item: T) => {
         if (onRowClick) {
-        onRowClick(item);
+            onRowClick(item);
         }
     };
 
@@ -43,21 +44,29 @@ function Table<T>({
                         </td>
                     </tr>
                 ) : (
-                    data.map((item) => (
-                        <tr 
-                            key={getRowKey(item)}
-                            onClick={() => handleRowClick(item)}
-                            className={onRowClick ? styles.clickableRow : ''}
-                        >
-                            {
-                                columns.map((column) => (
-                                    <td key={column.key} className={column.className}>
-                                        {column.render(item)}
-                                    </td>
-                                ))
-                            }
-                        </tr>
-                    ))
+                    data.map((item: any) => {
+                        const rowKey = getRowKey(item);
+                        const isHighlighted = highlightRowId === rowKey;
+                        
+                        return (
+                            <tr 
+                                key={rowKey}
+                                onClick={() => handleRowClick(item)}
+                                className={`
+                                    ${onRowClick ? styles.clickableRow : ''} 
+                                    ${isHighlighted ? styles.highlightedRow : ''}
+                                `.trim()}
+                            >
+                                {
+                                    columns.map((column) => (
+                                        <td key={column.key} className={column.className}>
+                                            {column.render(item)}
+                                        </td>
+                                    ))
+                                }
+                            </tr>
+                        );
+                    })
                 )
             }
             </tbody>
