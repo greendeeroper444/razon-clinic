@@ -16,6 +16,13 @@ const validateRegistration = [
         .optional({ nullable: true, checkFalsy: true })
         .trim()
         .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
+
+    body('suffix')
+        .optional({ nullable: true, checkFalsy: true })
+        .trim()
+        .isLength({ max: 10 }).withMessage('Suffix must not exceed 10 characters')
+        .isIn(['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']).withMessage('Invalid suffix value'),
+        
         
     body('emailOrContactNumber')
         .trim()
@@ -166,7 +173,13 @@ const validateProfileUpdate = [
         .optional({ nullable: true, checkFalsy: true })
         .trim()
         .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
-        
+    
+    body('suffix')
+        .optional({ nullable: true, checkFalsy: true })
+        .trim()
+        .isLength({ max: 10 }).withMessage('Suffix must not exceed 10 characters')
+        .isIn(['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']).withMessage('Invalid suffix value'),
+
     body('email')
         .optional()
         .trim()

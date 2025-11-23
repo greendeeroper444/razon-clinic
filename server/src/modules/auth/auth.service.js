@@ -17,6 +17,7 @@ class AuthService extends BaseService {
                 firstName,
                 lastName,
                 middleName,
+                suffix,
                 emailOrContactNumber,
                 password,
                 birthdate,
@@ -29,7 +30,7 @@ class AuthService extends BaseService {
             
             const userExists = await this.checkUserExists(emailOrContactNumber, isEmail, User, Admin);
             if (userExists) {
-                throw new ApiError('User with this email or contact number already exists', 400);
+                throw new ApiError('User with this contact number already exists', 400);
             }
             
             const hashedPassword = await this.hashPassword(password);
@@ -38,6 +39,7 @@ class AuthService extends BaseService {
                 firstName,
                 lastName,
                 middleName: middleName || null,
+                suffix,
                 password: hashedPassword,
                 birthdate: new Date(birthdate),
                 sex,

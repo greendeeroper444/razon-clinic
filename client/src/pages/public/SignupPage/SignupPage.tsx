@@ -221,6 +221,24 @@ const SignupPage = () => {
                             error={validationErrors.middleName}
                         />
 
+                        <Select
+                            name='suffix'
+                            leftIcon='user'
+                            placeholder='Suffix (Optional)'
+                            value={signupForm.suffix || ''}
+                            onChange={handleChange}
+                            error={validationErrors.suffix}
+                            options={[
+                                { value: '', label: 'None' },
+                                { value: 'Jr.', label: 'Jr.' },
+                                { value: 'Sr.', label: 'Sr.' },
+                                { value: 'II', label: 'II' },
+                                { value: 'III', label: 'III' },
+                                { value: 'IV', label: 'IV' },
+                                { value: 'V', label: 'V' }
+                            ]}
+                        />
+
                         <Input
                             type='number'
                             name='emailOrContactNumber'
@@ -352,6 +370,7 @@ const SignupPage = () => {
                             <p><strong>First Name:</strong> {signupForm.firstName}</p>
                             <p><strong>Last Name:</strong> {signupForm.lastName}</p>
                             <p><strong>Middle Name:</strong> {signupForm.middleName || 'N/A'}</p>
+                            <p><strong>Suffix:</strong> {signupForm.suffix || 'N/A'}</p>
                             <p><strong>Contact Number:</strong> {signupForm.emailOrContactNumber}</p>
                         </div>
 

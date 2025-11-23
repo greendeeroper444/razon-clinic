@@ -4,6 +4,7 @@ export interface SignupFormData {
     firstName: string;
     lastName: string;
     middleName: string;
+    suffix?: string;
     emailOrContactNumber: string;
     password: string;
     confirmPassword: string;
@@ -21,6 +22,7 @@ export interface ValidationErrors {
     firstName?: string;
     lastName?: string;
     middleName?: string;
+    suffix?: string;
     emailOrContactNumber?: string;
     password?: string;
     confirmPassword?: string;

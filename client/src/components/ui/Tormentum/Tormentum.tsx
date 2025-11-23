@@ -5,7 +5,7 @@ import { routeText, titleText, tormentumText } from '../../../constants/messages
 
 //settarget date and time here (format: YYYY, MM-1, DD, HH, MM)
 // month is 0-indexed (0 = January, 9 = October)
-const TORMENTUM_DATE = new Date(2026, 2, 1, 12, 0, 0); //march 1, 2026 at 12:00 PM
+const TORMENTUM_DATE = new Date(2026, 4, 1, 12, 0, 0); //may 1, 2026 at 12:00 PM
 
 export const isTormentumArrived = (): boolean => {
     return Date.now() >= TORMENTUM_DATE.getTime();
