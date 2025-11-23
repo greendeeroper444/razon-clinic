@@ -53,6 +53,39 @@ class MedicalRecordController {
         }
     }
 
+    async searchPatientsByName(req, res, next) {
+        try {
+            const { searchTerm } = req.query;
+            const results = await MedicalRecordService.searchPatientsByName(searchTerm);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Patients searched successfully',
+                data: {
+                    patients: results,
+                    count: results.length
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getPatientForAutofill(req, res, next) {
+        try {
+            const { patientId } = req.params;
+            const autofillData = await MedicalRecordService.getPatientForAutofill(patientId);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Patient data retrieved successfully',
+                data: autofillData
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getMedicalRecords(req, res, next) {
         try {
             const isMyMedicalRecordsRoute = req.route.path === '/getMyMedicalRecords';

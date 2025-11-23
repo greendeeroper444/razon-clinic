@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styles from './MedicalRecordForm.module.css'
-import { searchAppointmentsByName, getAppointmentForAutofill } from '../../../../services';
-import { Appointment, MedicalRecordFormProps } from '../../../../types';
+import { searchPatientsByName, getPatientForAutofill } from '../../../../services';
+import { MedicalRecordFormProps, PatientData } from '../../../../types';
 import { convertTo12HourFormat, formatDate, getFieldError } from '../../../../utils';
 import Input from '../../../ui/Input/Input';
 import Select from '../../../ui/Select/Select';
@@ -14,7 +14,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
     const [searchResults, setSearchResults] = useState<any>([]);
     const [showSearchDropdown, setShowSearchDropdown] = useState<boolean>(false);
     const [searchLoading, setSearchLoading] = useState<boolean>(false);
-    const [selectedAppointmentId, setSelectedAppointmentId] = useState<string>('');
+    const [selectedPatientId, setSelectedPatientId] = useState<string>('');
     const searchTimeoutRef = useRef<number | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const validationErrors = useMedicalRecordStore((state) => state.validationErrors);
@@ -82,9 +82,9 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
         searchTimeoutRef.current = window.setTimeout(async () => {
             try {
                 setSearchLoading(true);
-                const response = await searchAppointmentsByName(value);
+                const response = await searchPatientsByName(value);
                 
-                const results = response.data?.appointments || [];
+                const results = response.data?.patients || [];
                 setSearchResults(results);
                 setShowSearchDropdown(true);
                 
@@ -109,7 +109,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
     };
 
     //handle selection from search results
-    const handleSelectAppointment = async (appointment: Appointment) => {
+    const handleSelectPatient = async (patient: PatientData) => {
         try {
             setSearchLoading(true);
             
@@ -117,29 +117,29 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             setShowSearchDropdown(false);
             setSearchResults([]);
 
-            //IMPORTANT: store the appointmentId
-            const appointmentIdToStore = String(appointment.id || appointment.appointmentId);
-            setSelectedAppointmentId(appointmentIdToStore);
+            //store the patientId
+            const patientIdToStore = String(patient.id || patient.patientId);
+            setSelectedPatientId(patientIdToStore);
             
-            //Update the appointmentId in form data immediately
-            updateFormField('appointmentId', appointmentIdToStore);
+            //Update the patientId in form data immediately
+            updateFormField('patientId', patientIdToStore);
 
-            //first, try to get full appointment data for autofill
+            //first, try to get full patient data for autofill
             let autofillSuccessful = false;
             
             if (onAutofill) {
                 try {
-                    const response = await getAppointmentForAutofill(appointmentIdToStore);
+                    const response = await getPatientForAutofill(patientIdToStore);
                     const autofillData = response.data;
 
-                    //add appointmentId to autofill data
-                    const dataWithAppointmentId = {
+                    //add patientId to autofill data
+                    const dataWithPatientId = {
                         ...autofillData,
-                        appointmentId: appointmentIdToStore
+                        patientId: patientIdToStore
                     };
 
                     //call the parent's autofill function
-                    onAutofill(dataWithAppointmentId);
+                    onAutofill(dataWithPatientId);
                     autofillSuccessful = true;
                 } catch (autofillError) {
                     console.log('Autofill API not available, falling back to direct field updates', autofillError);
@@ -150,28 +150,28 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             if (!autofillSuccessful) {
                 //format date properly for date input (YYYY-MM-DD)
                 let formattedDate = '';
-                if (appointment.dateOfBirth) {
-                    const date = new Date(appointment.dateOfBirth);
+                if (patient.dateOfBirth) {
+                    const date = new Date(patient.dateOfBirth);
                     if (!isNaN(date.getTime())) {
                         formattedDate = date.toISOString().split('T')[0];
                     }
                 }
                 
-                //create the data object with all available fields INCLUDING appointmentId
+                //create the data object with all available fields INCLUDING patientId
                 const fieldsToUpdate = {
-                    appointmentId: appointmentIdToStore,
-                    fullName: appointment.fullName || 
-                    `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}${appointment.suffix ? ' ' + appointment.suffix : ''}`.trim(),
+                    patientId: patientIdToStore,
+                    fullName: patient.fullName || 
+                    `${patient.firstName || ''} ${patient.middleName ? patient.middleName + ' ' : ''}${patient.lastName || ''}${patient.suffix ? ' ' + patient.suffix : ''}`.trim(),
                     dateOfBirth: formattedDate,
-                    gender: appointment.gender || '',
-                    phone: appointment.phone || '',
-                    address: appointment.address || '',
-                    email: appointment.email || '',
-                    height: appointment.height ? appointment.height.toString() : '',
-                    weight: appointment.weight ? appointment.weight.toString() : '',
-                    bloodType: appointment.bloodType || '',
-                    preferredDate: appointment.preferredDate || '',
-                    preferredTime: appointment.preferredTime || ''
+                    gender: patient.gender || '',
+                    phone: patient.phone || '',
+                    address: patient.address || '',
+                    email: patient.email || '',
+                    height: patient.height ? patient.height.toString() : '',
+                    weight: patient.weight ? patient.weight.toString() : '',
+                    bloodType: patient.bloodType || '',
+                    preferredDate: patient.preferredDate || '',
+                    preferredTime: patient.preferredTime || ''
                 };
 
                 //update each field individually with a small delay to ensure proper state updates
@@ -185,13 +185,13 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             }
 
         } catch (error) {
-            console.error('Error selecting appointment:', error);
-            //even if there's an error, still update the name field and appointmentId
-            const appointmentIdToStore = String(appointment.id || appointment.appointmentId);
-            updateFormField('appointmentId', appointmentIdToStore);
+            console.error('Error selecting patient:', error);
+            //even if there's an error, still update the name field and patientId
+            const patientIdToStore = String(patient.id || patient.patientId);
+            updateFormField('patientId', patientIdToStore);
             
-            const fallbackName = appointment.fullName || 
-                `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}${appointment.suffix ? ' ' + appointment.suffix : ''}`.trim();
+            const fallbackName = patient.fullName || 
+                `${patient.firstName || ''} ${patient.middleName ? patient.middleName + ' ' : ''}${patient.lastName || ''}${patient.suffix ? ' ' + patient.suffix : ''}`.trim();
             
             if (fallbackName) {
                 updateFormField('fullName', fallbackName);
@@ -249,8 +249,8 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
   return (
     <div className={styles.sectionDivider}>
         {
-            selectedAppointmentId && (
-                <input type="hidden" name="appointmentId" value={selectedAppointmentId} />
+            selectedPatientId && (
+                <input type="hidden" name="patientId" value={selectedPatientId} />
             )
         }
 
@@ -279,11 +279,11 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                             searchLoading ? (
                                 <div className={styles.searchLoading}>Searching...</div>
                             ) : searchResults.length > 0 ? (
-                                searchResults.map((appointment: Appointment) => (
+                                searchResults.map((patient: PatientData) => (
                                 <div
-                                    key={appointment.id}
+                                    key={patient.id}
                                     className={styles.searchItem}
-                                    onClick={() => handleSelectAppointment(appointment)}
+                                    onClick={() => handleSelectPatient(patient)}
                                     onMouseEnter={(e) => {
                                         (e.target as HTMLDivElement).style.backgroundColor = '#f8f9fa';
                                     }}
@@ -293,31 +293,31 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                                 >
                                     <div>
                                         <strong>
-                                            {appointment.fullName || 
-                                            `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}${appointment.suffix ? ' ' + appointment.suffix : ''}`.trim() ||
+                                            {patient.fullName || 
+                                            `${patient.firstName || ''} ${patient.middleName ? patient.middleName + ' ' : ''}${patient.lastName || ''}${patient.suffix ? ' ' + patient.suffix : ''}`.trim() ||
                                             'Unknown Name'}
                                         </strong>
                                     </div>
-                                    <div>
-                                        Appointment Day: {formatDate(String(appointment.preferredDate))} - {convertTo12HourFormat(String(appointment.preferredTime))}
-                                    </div>
-                                    <div className={styles.appointmentBirthGender}>
-                                         {appointment.gender}
+                                    {/* <div>
+                                        Patient Day: {formatDate(String(patient.preferredDate))} - {convertTo12HourFormat(String(patient.preferredTime))}
+                                    </div> */}
+                                    <div className={styles.patientBirthGender}>
+                                         {patient.gender}
                                     </div>
                                     {
-                                        appointment.phone && (
-                                            <div className={styles.appointmentContact}>{appointment.phone}</div>
+                                        patient.phone && (
+                                            <div className={styles.patientContact}>{patient.phone}</div>
                                         )
                                     }
                                     {
-                                        appointment.address && (
-                                            <div className={styles.appointmentContact}>{appointment.address}</div>
+                                        patient.address && (
+                                            <div className={styles.patientContact}>{patient.address}</div>
                                         )
                                     }
                                 </div>
                                 ))
                             ) : formData?.fullName && formData.fullName.length >= 2 && !searchLoading ? (
-                                <div className={styles.noResults}>No appointments found</div>
+                                <div className={styles.noResults}>No patients found</div>
                             ) : null
                         }
                         </div>

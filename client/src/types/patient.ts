@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react";
+import { UserId } from "./appointment";
 
 export interface PatientFormProps {
     formData: PatientFormData;
@@ -141,6 +142,46 @@ export interface Patient {
         lastName: string
     }
     lastActiveAt: string
+}
+
+export interface PatientData {
+    id: string;
+    patientId?: string;
+    userId: UserId;
+    fullName: string;
+    firstName?: string;
+    middleName?: string | null;
+    suffix?: string | null;
+    lastName?: string;
+    dateOfBirth?: string;
+    birthdate: string;
+    sex?: 'Male' | 'Female';
+    gender?: string;
+    phone?: string;
+    address?: string;
+    religion?: string;
+    email?: string;
+    height?: number | string;
+    weight?: number | string;
+    bloodType?: string;
+    appointmentNumber: string;
+    reasonForVisit: string;
+    contactNumber: string;
+    motherInfo?: {
+        name: string;
+        age?: number | string;
+        occupation: string;
+    };
+    fatherInfo?: {
+        name: string;
+        age?: number | string;
+        occupation: string;
+    };
+    status: 'Pending' | 'Scheduled' | 'Completed' | 'Cancelled' | 'Rebooked';
+    preferredTime?: number | string;
+    preferredDate: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 // export interface PatientFormData {

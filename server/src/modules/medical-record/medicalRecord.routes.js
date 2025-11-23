@@ -3,6 +3,7 @@ const router = express.Router();
 const { authenticate } = require('@middlewares/auth.middleware');
 const { validateMedicalRecord, validateMedicalRecordUpdate, validateMedicalRecordId, validateAppointmentId, validateSearchQuery, validateQueryParams } = require('./medicalRecord.validator');
 const medicalRecordController = require('./medicalRecord.controller');
+const { validatePatientId } = require('../patient/patient.validator');
 
 // ==================== CREATE ====================
 router.post(
@@ -40,6 +41,21 @@ router.get(
     validateAppointmentId,
     medicalRecordController.getAppointmentForAutofill
 );
+
+router.get(
+    '/searchPatientsByName',
+    authenticate,
+    validateSearchQuery,
+    medicalRecordController.searchPatientsByName
+);
+
+router.get(
+    '/getPatientForAutofill/:patientId',
+    authenticate,
+    validatePatientId,
+    medicalRecordController.getPatientForAutofill
+);
+
 
 router.get(
     '/getMedicalRecordById/:medicalRecordId',

@@ -147,12 +147,12 @@ textarea.formControl {
     font-style: italic
 }
 
-.appointmentBirthGender {
+.patientBirthGender {
     font-size: 0.9em;
     color: #666;
 }
 
-.appointmentContact {
+.patientContact {
     font-size: 0.8em;
     color: #888;
 }

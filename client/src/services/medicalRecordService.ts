@@ -147,7 +147,6 @@ export const softDeleteMedicalRecord = async (medicalRecordId: string) => {
 };
 
 
-//search appointments by name
 export const searchAppointmentsByName = async (searchTerm: string) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/api/medicalRecords/searchAppointments?searchTerm=${encodeURIComponent(searchTerm)}`);
@@ -164,7 +163,6 @@ export const searchAppointmentsByName = async (searchTerm: string) => {
 };
 
 
-//get appointment data for autofill
 export const getAppointmentForAutofill = async (appointmentId: string) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/api/medicalRecords/getAppointmentForAutofill/${appointmentId}`);
@@ -172,6 +170,37 @@ export const getAppointmentForAutofill = async (appointmentId: string) => {
         return response.data;
     } catch (error) {
         console.error('Error getting appointment for auto fill:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+
+        throw error;
+    }
+};
+
+
+export const searchPatientsByName = async (searchTerm: string) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/medicalRecords/searchPatientsByName?searchTerm=${encodeURIComponent(searchTerm)}`);
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error searching patient name:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+
+        throw error;
+    }
+};
+
+export const getPatientForAutofill = async (patientId: string) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/medicalRecords/getPatientForAutofill/${patientId}`);
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error getting patient for auto fill:', error);
         if (axios.isAxiosError(error)) {
             throw error.response?.data || error.message;
         }

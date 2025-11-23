@@ -2,6 +2,7 @@ const MedicalRecord = require('./medicalRecord.model');
 const Appointment = require('@modules/appointment/appointment.model');
 const BaseService = require('@services/base.service');
 const mongoose = require('mongoose');
+const Patient = require('../patient/patient.model');
 
 class MedicalRecordService extends BaseService {
 
@@ -143,6 +144,87 @@ class MedicalRecordService extends BaseService {
             weight: appointment.weight || '',
             preferredDate: appointment.preferredDate || '',
             preferredTime: appointment.preferredTime || ''
+        };
+    }
+
+    async searchPatientsByName(searchTerm) {
+        const searchRegex = new RegExp(searchTerm.trim(), 'i');
+
+        const patients = await Patient.find({
+            isArchived: false,
+            $or: [
+                { firstName: searchRegex },
+                { lastName: searchRegex },
+                { middleName: searchRegex },
+                { suffix: searchRegex },
+                {
+                    $expr: {
+                        $regexMatch: {
+                            input: {
+                                $concat: [
+                                    "$firstName", " ",
+                                    { $ifNull: ["$middleName", ""] },
+                                    { $cond: [{ $ne: ["$middleName", null] }, " ", ""] },
+                                    "$lastName",
+                                    { $cond: [{ $ne: ["$suffix", null] }, " ", ""] },
+                                    { $ifNull: ["$suffix", ""] }
+                                ]
+                            },
+                            regex: searchTerm.trim(),
+                            options: "i"
+                        }
+                    }
+                }
+            ]
+        })
+        .select('firstName lastName middleName suffix birthdate sex address contactNumber height weight preferredDate preferredTime')
+        .limit(10)
+        .sort({ createdAt: -1 });
+
+        return patients.map(patient => {
+            const fullName = `${patient.firstName} ${patient.middleName ? patient.middleName + ' ' : ''}${patient.lastName}${patient.suffix ? ' ' + patient.suffix : ''}`.trim();
+            
+            return {
+                id: patient._id,
+                patientId: patient._id,
+                fullName,
+                firstName: patient.firstName,
+                lastName: patient.lastName,
+                middleName: patient.middleName,
+                suffix: patient.suffix,
+                dateOfBirth: patient.birthdate,
+                gender: patient.sex,
+                address: patient.address,
+                phone: patient.contactNumber?.toString(),
+                height: patient.height,
+                weight: patient.weight,
+                preferredDate: patient.preferredDate,
+                preferredTime: patient.preferredTime
+            };
+        });
+    }
+
+    async getPatientForAutofill(patientId) {
+        const patient = await Patient.findById(patientId)
+            .select('firstName lastName middleName suffix birthdate sex address contactNumber height weight motherInfo fatherInfo religion preferredDate preferredTime');
+
+        if (!patient) {
+            throw new Error('Patient not found');
+        }
+
+        const fullName = `${patient.firstName} ${patient.middleName ? patient.middleName + ' ' : ''}${patient.lastName}${patient.suffix ? ' ' + patient.suffix : ''}`.trim();
+        
+        return {
+            patientId: patient._id,
+            fullName,
+            dateOfBirth: patient.birthdate ? patient.birthdate.toISOString().split('T')[0] : '',
+            gender: patient.sex || '',
+            address: patient.address || '',
+            phone: patient.contactNumber?.toString() || '',
+            height: patient.height || '',
+            weight: patient.weight || '',
+            preferredDate: patient.preferredDate || '',
+            preferredTime: patient.preferredTime || ''
         };
     }
 
