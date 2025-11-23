@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styles from './AppointmentPage.module.css'
 import { Plus } from 'lucide-react'
 import { OpenModalProps } from '../../../hooks/hook'
-import { formatDate, formatTime, getStatusClass, getLoadingText, generateInitials, generate20Only } from '../../../utils'
+import { formatDate, formatTime, getStatusClass, getLoadingText, generateInitials } from '../../../utils'
 import { AppointmentFormData, AppointmentResponse, FormDataType, TableColumn } from '../../../types'
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components'
 import { useNavigate } from 'react-router-dom'
@@ -235,7 +235,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
     const headerActions = [
         {
             id: 'newAppointmentBtn',
-            label: 'New Appointment',
+            label: 'Walk-In Appointment',
             icon: <Plus />,
             onClick: handleCreateClick,
             type: 'primary' as const
