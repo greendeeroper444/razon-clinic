@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { getInventoryReport, getInventorySummary, getSalesReport, getSalesSummary, getDashboardReport } from '../services/reportService'
+import { getInventoryReport, getInventorySummary, getSalesReport, getSalesSummary, getDashboardReport, exportSalesReport, exportInventoryReport } from '../services/reportService'
 import { DashboardReport, ReportParams, ReportState } from '../types'
+import { toast } from 'sonner'
 
 
 export const useReportStore = create<ReportState>()(
@@ -290,6 +291,70 @@ export const useReportStore = create<ReportState>()(
                         loading: false,
                         fetchLoading: false
                     })
+                }
+            },
+
+
+            // ==================== EXPORT FUNCTIONS ====================
+            exportInventoryReport: async () => {
+                const currentState = get()
+                
+                try {
+                    set({ loading: true })
+                    
+                    const exportParams: ReportParams = {
+                        period: currentState.period !== 'custom' ? currentState.period : undefined,
+                        fromDate: currentState.period === 'custom' ? currentState.fromDate || undefined : undefined,
+                        toDate: currentState.period === 'custom' ? currentState.toDate || undefined : undefined,
+                        category: currentState.category || undefined,
+                        search: currentState.searchTerm || undefined
+                    }
+
+                    const result = await exportInventoryReport(exportParams)
+                    
+                    if (result.success) {
+                        toast.success('Export completed successfully!', {
+                            description: `Downloaded: ${result.filename}`
+                        })
+                    }
+                } catch (error) {
+                    console.error('Error exporting inventory report:', error)
+                    toast.error('Failed to export inventory report', {
+                        description: error instanceof Error ? error.message : 'An error occurred'
+                    })
+                } finally {
+                    set({ loading: false })
+                }
+            },
+
+            exportSalesReport: async () => {
+                const currentState = get()
+                
+                try {
+                    set({ loading: true })
+                    
+                    const exportParams: ReportParams = {
+                        period: currentState.period !== 'custom' ? currentState.period : undefined,
+                        fromDate: currentState.period === 'custom' ? currentState.fromDate || undefined : undefined,
+                        toDate: currentState.period === 'custom' ? currentState.toDate || undefined : undefined,
+                        paymentStatus: currentState.paymentStatus || undefined,
+                        search: currentState.searchTerm || undefined
+                    }
+
+                    const result = await exportSalesReport(exportParams)
+                    
+                    if (result.success) {
+                        toast.success('Export completed successfully!', {
+                            description: `Downloaded: ${result.filename}`
+                        })
+                    }
+                } catch (error) {
+                    console.error('Error exporting sales report:', error)
+                    toast.error('Failed to export sales report', {
+                        description: error instanceof Error ? error.message : 'An error occurred'
+                    })
+                } finally {
+                    set({ loading: false })
                 }
             },
 

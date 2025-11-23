@@ -38,3 +38,7 @@ GET /api/reports/getSalesSummary
 # DASHBOARD REPORT
 # Get Combined Dashboard Report
 GET /api/reports/getDashboardReport
+
+# EXPORT INVENTORY AND SALES REPORT
+GET /api/reports/exportInventoryReport
+GET /api/reports/exportSalesReport

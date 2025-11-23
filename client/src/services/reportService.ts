@@ -94,3 +94,103 @@ export const getDashboardReport = async () => {
         throw error
     }
 }
+
+
+// ==================== EXPORT FUNCTIONS ====================
+export const exportInventoryReport = async (params: ReportParams = {}) => {
+    try {
+        const queryParams = { ...params }
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/reports/exportInventoryReport`,
+            { 
+                params: queryParams,
+                responseType: 'blob'
+            }
+        )
+
+        const blob = new Blob([response.data], {
+            type: response.headers['content-type']
+        })
+
+        const contentDisposition = response.headers['content-disposition']
+        let filename = `inventory_report_${new Date().toISOString().split('T')[0]}.xlsx`
+        
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i)
+            if (filenameMatch && filenameMatch[1]) {
+                filename = filenameMatch[1]
+            }
+        }
+
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = filename
+        document.body.appendChild(link)
+        link.click()
+        
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+
+        return {
+            success: true,
+            filename
+        }
+    } catch (error) {
+        console.error('Error exporting inventory report:', error)
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message
+        }
+        throw error
+    }
+}
+
+export const exportSalesReport = async (params: ReportParams = {}) => {
+    try {
+        const queryParams = { ...params }
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/reports/exportSalesReport`,
+            { 
+                params: queryParams,
+                responseType: 'blob' 
+            }
+        )
+
+        const blob = new Blob([response.data], {
+            type: response.headers['content-type']
+        })
+
+        const contentDisposition = response.headers['content-disposition']
+        let filename = `sales_report_${new Date().toISOString().split('T')[0]}.xlsx`
+        
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i)
+            if (filenameMatch && filenameMatch[1]) {
+                filename = filenameMatch[1]
+            }
+        }
+
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = filename
+        document.body.appendChild(link)
+        link.click()
+        
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+
+        return {
+            success: true,
+            filename
+        }
+    } catch (error) {
+        console.error('Error exporting sales report:', error)
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message
+        }
+        throw error
+    }
+}

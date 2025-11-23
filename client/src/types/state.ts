@@ -529,11 +529,11 @@ export interface TrashState {
 export interface ReportState {
     inventoryReportItems: InventoryReportItem[]
     inventorySummary: InventorySummary | null
-    
     salesReportItems: SalesReportItem[]
     salesSummary: SalesSummary | null
-    
     dashboardReport: DashboardReport | null
+    exportInventoryReport: () => Promise<void>;
+    exportSalesReport: () => Promise<void>;
     
     loading: boolean
     fetchLoading: boolean

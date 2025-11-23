@@ -207,6 +207,15 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.filterContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
 .periodFilters {
     display: flex;
     gap: 8px;
@@ -239,6 +248,35 @@
     color: white;
     border-color: var(--primary);
 }
+
+.exportBtn {
+    padding: 8px 24px;
+    border-radius: 6px;
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.exportBtn:active {
+    transform: translateY(0);
+}
+
+.exportBtn:disabled {
+    background: #e0e0e0;
+    border-color: #e0e0e0;
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
+}
+
 
 .actionFilters {
     display: flex;

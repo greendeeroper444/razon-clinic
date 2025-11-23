@@ -33,6 +33,8 @@ const ReportPage = () => {
         fetchInventoryReport,
         fetchSalesReport,
         fetchDashboardReport,
+        exportInventoryReport, 
+        exportSalesReport,
         setActiveTab,
         setPeriod,
         setDateRange,
@@ -104,6 +106,18 @@ const ReportPage = () => {
             setShowDatePicker(false)
         }
     }
+
+    const handleExport = async (reportType: 'inventory' | 'sales') => {
+        try {
+            if (reportType === 'inventory') {
+                await exportInventoryReport();
+            } else if (reportType === 'sales') {
+                await exportSalesReport();
+            }
+        } catch (error) {
+            console.error('Export error:', error);
+        }
+    };
 
     const tabs = [
         { key: 'dashboard', label: 'Dashboard Report', count: null },
@@ -409,37 +423,54 @@ const ReportPage = () => {
                     }
 
                     <div className={styles.filtersSection}>
-                        <div className={styles.periodFilters}>
-                            <button type='submit'
-                                className={`${styles.periodBtn} ${period === 'today' ? styles.active : ''}`}
-                                onClick={() => setPeriod('today')}
-                            >
-                                Today
-                            </button>
-                            <button type='submit'
-                                className={`${styles.periodBtn} ${period === 'week' ? styles.active : ''}`}
-                                onClick={() => setPeriod('week')}
-                            >
-                                This Week
-                            </button>
-                            <button type='submit'
-                                className={`${styles.periodBtn} ${period === 'month' ? styles.active : ''}`}
-                                onClick={() => setPeriod('month')}
-                            >
-                                This Month
-                            </button>
-                            <button type='submit'
-                                className={`${styles.periodBtn} ${period === 'year' ? styles.active : ''}`}
-                                onClick={() => setPeriod('year')}
-                            >
-                                This Year
-                            </button>
-                            <button type='submit'
-                                className={`${styles.periodBtn} ${period === 'custom' ? styles.active : ''}`}
-                                onClick={() => setShowDatePicker(!showDatePicker)}
-                            >
-                                <Calendar size={16} /> Custom
-                            </button>
+                        <div className={styles.filterContent}>
+                            <div className={styles.periodFilters}>
+                                <button 
+                                    type='button'
+                                    className={`${styles.periodBtn} ${period === 'today' ? styles.active : ''}`}
+                                    onClick={() => setPeriod('today')}
+                                >
+                                    Today
+                                </button>
+                                <button 
+                                    type='button'
+                                    className={`${styles.periodBtn} ${period === 'week' ? styles.active : ''}`}
+                                    onClick={() => setPeriod('week')}
+                                >
+                                    This Week
+                                </button>
+                                <button 
+                                    type='button'
+                                    className={`${styles.periodBtn} ${period === 'month' ? styles.active : ''}`}
+                                    onClick={() => setPeriod('month')}
+                                >
+                                    This Month
+                                </button>
+                                <button 
+                                    type='button'
+                                    className={`${styles.periodBtn} ${period === 'year' ? styles.active : ''}`}
+                                    onClick={() => setPeriod('year')}
+                                >
+                                    This Year
+                                </button>
+                                <button 
+                                    type='button'
+                                    className={`${styles.periodBtn} ${period === 'custom' ? styles.active : ''}`}
+                                    onClick={() => setShowDatePicker(!showDatePicker)}
+                                >
+                                    <Calendar size={16} /> Custom
+                                </button>
+                            </div>
+                            
+                            <div className={styles.exportBtnContainer}>
+                                <button
+                                    type='button'
+                                    className={styles.exportBtn}
+                                    onClick={() => handleExport('inventory')}
+                                >
+                                    Export Inventory Report
+                                </button>
+                            </div>
                         </div>
 
                         <div className={styles.actionFilters}>
@@ -582,42 +613,53 @@ const ReportPage = () => {
                     }
 
                     <div className={styles.filtersSection}>
-                        <div className={styles.periodFilters}>
-                            <button
-                                type='submit'
-                                className={`${styles.periodBtn} ${period === 'today' ? styles.active : ''}`}
-                                onClick={() => setPeriod('today')}
-                            >
-                                Today
-                            </button>
-                            <button
-                                type='submit'
-                                className={`${styles.periodBtn} ${period === 'week' ? styles.active : ''}`}
-                                onClick={() => setPeriod('week')}
-                            >
-                                This Week
-                            </button>
-                            <button
-                                type='submit'
-                                className={`${styles.periodBtn} ${period === 'month' ? styles.active : ''}`}
-                                onClick={() => setPeriod('month')}
-                            >
-                                This Month
-                            </button>
-                            <button
-                                type='submit'
-                                className={`${styles.periodBtn} ${period === 'year' ? styles.active : ''}`}
-                                onClick={() => setPeriod('year')}
-                            >
-                                This Year
-                            </button>
-                            <button
-                                type='submit'
-                                className={`${styles.periodBtn} ${period === 'custom' ? styles.active : ''}`}
-                                onClick={() => setShowDatePicker(!showDatePicker)}
-                            >
-                                <Calendar size={16} /> Custom
-                            </button>
+                        <div className={styles.filterContent}>
+                            <div className={styles.periodFilters}>
+                                <button
+                                    type='submit'
+                                    className={`${styles.periodBtn} ${period === 'today' ? styles.active : ''}`}
+                                    onClick={() => setPeriod('today')}
+                                >
+                                    Today
+                                </button>
+                                <button
+                                    type='submit'
+                                    className={`${styles.periodBtn} ${period === 'week' ? styles.active : ''}`}
+                                    onClick={() => setPeriod('week')}
+                                >
+                                    This Week
+                                </button>
+                                <button
+                                    type='submit'
+                                    className={`${styles.periodBtn} ${period === 'month' ? styles.active : ''}`}
+                                    onClick={() => setPeriod('month')}
+                                >
+                                    This Month
+                                </button>
+                                <button
+                                    type='submit'
+                                    className={`${styles.periodBtn} ${period === 'year' ? styles.active : ''}`}
+                                    onClick={() => setPeriod('year')}
+                                >
+                                    This Year
+                                </button>
+                                <button
+                                    type='submit'
+                                    className={`${styles.periodBtn} ${period === 'custom' ? styles.active : ''}`}
+                                    onClick={() => setShowDatePicker(!showDatePicker)}
+                                >
+                                    <Calendar size={16} /> Custom
+                                </button>
+                            </div>
+                            <div>
+                                <button
+                                    type='button'
+                                    className={styles.exportBtn}
+                                    onClick={() => handleExport('sales')}
+                                >
+                                    Export Sales Report
+                                </button>
+                            </div>
                         </div>
 
                         <div className={styles.actionFilters}>

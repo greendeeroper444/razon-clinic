@@ -36,4 +36,17 @@ router.get(
     reportController.getDashboardReport
 );
 
+
+router.get(
+    '/exportInventoryReport',
+    authenticate,
+    reportController.exportInventoryReport
+);
+
+router.get(
+    '/exportSalesReport',
+    authenticate,
+    reportController.exportSalesReport
+);
+
 module.exports = router;
