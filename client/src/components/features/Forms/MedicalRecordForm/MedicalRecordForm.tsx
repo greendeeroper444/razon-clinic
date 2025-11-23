@@ -161,7 +161,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                 const fieldsToUpdate = {
                     appointmentId: appointmentIdToStore,
                     fullName: appointment.fullName || 
-                    `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}`.trim(),
+                    `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}${appointment.suffix ? ' ' + appointment.suffix : ''}`.trim(),
                     dateOfBirth: formattedDate,
                     gender: appointment.gender || '',
                     phone: appointment.phone || '',
@@ -191,7 +191,8 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
             updateFormField('appointmentId', appointmentIdToStore);
             
             const fallbackName = appointment.fullName || 
-                                `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}`.trim();
+                `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}${appointment.suffix ? ' ' + appointment.suffix : ''}`.trim();
+            
             if (fallbackName) {
                 updateFormField('fullName', fallbackName);
             }
@@ -293,7 +294,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                                     <div>
                                         <strong>
                                             {appointment.fullName || 
-                                            `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}`.trim() ||
+                                            `${appointment.firstName || ''} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName || ''}${appointment.suffix ? ' ' + appointment.suffix : ''}`.trim() ||
                                             'Unknown Name'}
                                         </strong>
                                     </div>

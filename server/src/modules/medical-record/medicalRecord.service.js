@@ -74,6 +74,7 @@ class MedicalRecordService extends BaseService {
                 { firstName: searchRegex },
                 { lastName: searchRegex },
                 { middleName: searchRegex },
+                { suffix: searchRegex },
                 {
                     $expr: {
                         $regexMatch: {
@@ -82,7 +83,9 @@ class MedicalRecordService extends BaseService {
                                     "$firstName", " ",
                                     { $ifNull: ["$middleName", ""] },
                                     { $cond: [{ $ne: ["$middleName", null] }, " ", ""] },
-                                    "$lastName"
+                                    "$lastName",
+                                    { $cond: [{ $ne: ["$suffix", null] }, " ", ""] },
+                                    { $ifNull: ["$suffix", ""] }
                                 ]
                             },
                             regex: searchTerm.trim(),
@@ -92,12 +95,12 @@ class MedicalRecordService extends BaseService {
                 }
             ]
         })
-        .select('firstName lastName middleName birthdate sex address contactNumber height weight preferredDate preferredTime')
+        .select('firstName lastName middleName suffix birthdate sex address contactNumber height weight preferredDate preferredTime')
         .limit(10)
         .sort({ createdAt: -1 });
 
         return appointments.map(appointment => {
-            const fullName = `${appointment.firstName} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName}`.trim();
+            const fullName = `${appointment.firstName} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName}${appointment.suffix ? ' ' + appointment.suffix : ''}`.trim();
             
             return {
                 id: appointment._id,
@@ -106,6 +109,7 @@ class MedicalRecordService extends BaseService {
                 firstName: appointment.firstName,
                 lastName: appointment.lastName,
                 middleName: appointment.middleName,
+                suffix: appointment.suffix,
                 dateOfBirth: appointment.birthdate,
                 gender: appointment.sex,
                 address: appointment.address,
@@ -120,13 +124,13 @@ class MedicalRecordService extends BaseService {
 
     async getAppointmentForAutofill(appointmentId) {
         const appointment = await Appointment.findById(appointmentId)
-            .select('firstName lastName middleName birthdate sex address contactNumber height weight motherInfo fatherInfo religion preferredDate preferredTime');
+            .select('firstName lastName middleName suffix birthdate sex address contactNumber height weight motherInfo fatherInfo religion preferredDate preferredTime');
 
         if (!appointment) {
             throw new Error('Appointment not found');
         }
 
-        const fullName = `${appointment.firstName} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName}`.trim();
+        const fullName = `${appointment.firstName} ${appointment.middleName ? appointment.middleName + ' ' : ''}${appointment.lastName}${appointment.suffix ? ' ' + appointment.suffix : ''}`.trim();
         
         return {
             appointmentId: appointment._id,
@@ -197,7 +201,7 @@ class MedicalRecordService extends BaseService {
             sortOrder,
             populate: {
                 path: 'appointmentId',
-                select: 'appointmentNumber firstName lastName middleName preferredDate preferredTime status'
+                select: 'appointmentNumber firstName lastName middleName suffix preferredDate preferredTime status'
             },
             searchTerm
         });
@@ -212,7 +216,7 @@ class MedicalRecordService extends BaseService {
         const medicalRecord = await MedicalRecord.findOne({ 
             _id: medicalRecordId, 
             deletedAt: null 
-        }).populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status reasonForVisit');
+        }).populate('appointmentId', 'appointmentNumber firstName lastName middleName suffix preferredDate preferredTime status reasonForVisit');
 
         if (!medicalRecord) {
             throw new Error('Medical record not found');
@@ -269,7 +273,7 @@ class MedicalRecordService extends BaseService {
             sortOrder,
             populate: {
                 path: 'appointmentId',
-                select: 'appointmentNumber firstName lastName middleName preferredDate preferredTime status'
+                select: 'appointmentNumber firstName lastName middleName suffix preferredDate preferredTime status'
             },
             searchTerm
         });
@@ -294,7 +298,7 @@ class MedicalRecordService extends BaseService {
             { _id: medicalRecordId, deletedAt: null },
             updateData,
             { new: true, runValidators: true }
-        ).populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status');
+        ).populate('appointmentId', 'appointmentNumber firstName lastName middleName suffix preferredDate preferredTime status');
 
         if (!medicalRecord) {
             throw new Error('Medical record not found');
@@ -308,7 +312,7 @@ class MedicalRecordService extends BaseService {
             { _id: medicalRecordId, deletedAt: { $ne: null } },
             { deletedAt: null },
             { new: true }
-        ).populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status');
+        ).populate('appointmentId', 'appointmentNumber firstName lastName middleName suffix preferredDate preferredTime status');
 
         if (!medicalRecord) {
             throw new Error('Deleted medical record not found');
@@ -389,7 +393,7 @@ class MedicalRecordService extends BaseService {
 
     async getMedicalRecordsByAppointmentId(appointmentId) {
         return await MedicalRecord.find({ appointmentId, deletedAt: null })
-            .populate('appointmentId', 'appointmentNumber firstName lastName middleName preferredDate preferredTime status')
+            .populate('appointmentId', 'appointmentNumber firstName lastName middleName suffix preferredDate preferredTime status')
             .sort({ createdAt: -1 });
     } 
 }

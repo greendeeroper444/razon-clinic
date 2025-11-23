@@ -106,9 +106,13 @@ const PatientDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <User /> Full Name:
                             </span>
-                            <span className={styles.tableValue}>
+                            {/* <span className={styles.tableValue}>
                                 {currentPatient.firstName}, {currentPatient.lastName}
                                 {currentPatient.middleName ? `, ${getMiddleNameInitial(currentPatient.middleName)}` : ''}
+                            </span> */}
+                            <span className={styles.tableValue}>
+                                {currentPatient.firstName}, {currentPatient.lastName},
+                                {/* {currentPatient.middleName ? `, ${getMiddleNameInitial(currentPatient.middleName)}` : ''} */} {currentPatient.middleName} {currentPatient.suffix}
                             </span>
                         </div>
                         <div className={styles.tableRow}>

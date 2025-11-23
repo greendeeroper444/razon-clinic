@@ -74,6 +74,7 @@ export interface Appointment {
     fullName: string;
     firstName?: string;
     middleName?: string | null;
+    suffix?: string | null;
     lastName?: string;
     dateOfBirth?: string;
     birthdate: string;

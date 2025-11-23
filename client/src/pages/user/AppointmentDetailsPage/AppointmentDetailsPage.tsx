@@ -152,7 +152,7 @@ const AppointmentDetailsPage = () => {
                                 <User /> Full Name:
                             </span>
                             <span className={styles.tableValue}>
-                                {currentAppointment.firstName}, {currentAppointment.lastName}
+                                {currentAppointment.firstName}, {currentAppointment.lastName},
                                 {/* {currentAppointment.middleName ? `, ${getMiddleNameInitial(currentAppointment.middleName)}` : ''} */} {currentAppointment.middleName} {currentAppointment.suffix}
                             </span>
                         </div>
