@@ -327,6 +327,7 @@ import { devtools, persist } from 'zustand/middleware'
 import { toast } from 'sonner'
 import { AuthenticationState, LoginFormData, SignupFormData } from '../types'
 import { getProfile, login, logout, register } from '../services'
+import { handleStoreError } from '../utils'
 
 const STORAGE_KEY = 'signup_form_data'
 const STORAGE_TIMESTAMP_KEY = 'signup_form_timestamp'
@@ -371,9 +372,14 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                 showConfirmPassword: false,
                 validationErrors: {},
 
+                clearValidationErrors: () => set({ validationErrors: {} }),
+
                 register: async (userData) => {
                     try {
-                        set({ isLoading: true })
+                        set({ 
+                            isLoading: true,
+                            validationErrors: {}
+                        })
                         
                         await register(userData)
                         
@@ -392,10 +398,12 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                         await get().login(credentials)
                         
                     } catch (error) {
-                        console.error('Error registering user:', error)
-                        const errorMessage = error instanceof Error ? error.message : 'An error occurred during registration'
-                        toast.error(errorMessage)
+                        handleStoreError(error, {
+                            set,
+                            defaultMessage: 'Failed to register'
+                        });
                         set({ isLoading: false })
+                        throw error;
                     }
                 },
 
@@ -411,7 +419,10 @@ export const useAuthenticationStore = create<AuthenticationState>()(
 
                 login: async (credentials) => {
                     try {
-                        set({ isLoading: true })
+                        set({ 
+                            isLoading: true,
+                            validationErrors: {}
+                        })
                         
                         await login(credentials)
                         
@@ -430,14 +441,16 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                         toast.success('Login successful!')
                         
                     } catch (error) {
-                        console.error('Error during login:', error)
-                        const errorMessage = error instanceof Error ? error.message : 'Invalid credentials'
-                        toast.error(errorMessage)
+                        handleStoreError(error, {
+                            set,
+                            defaultMessage: 'Failed to login'
+                        });
                         set({ 
                             isLoading: false,
                             isAuthenticated: false,
                             user: null
                         })
+                        throw error;
                     }
                 },
 
@@ -487,14 +500,18 @@ export const useAuthenticationStore = create<AuthenticationState>()(
                 },
 
                 clearLoginForm: () => {
-                    set({ loginForm: initialLoginForm })
+                    set({ 
+                        loginForm: initialLoginForm,
+                        validationErrors: {}
+                    })
                 },
 
                 clearSignupForm: () => {
                     set({ 
                         signupForm: initialSignupForm,
                         signupStep: 1,
-                        completedSteps: new Set()
+                        completedSteps: new Set(),
+                        validationErrors: {}
                     })
                 },
 

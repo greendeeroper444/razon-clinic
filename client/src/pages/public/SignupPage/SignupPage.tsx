@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { SectionFeatures, Footer, Input, Select, TextArea, TermsAndCondition } from '../../../components'
 import { useAuthenticationStore } from '../../../stores'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
+import { validateAllSteps, validateSignupStep } from './signupStepValidation'
 
 const STEPS = [
     { id: 1, title: 'Basic Info', description: 'Your personal details' },
@@ -17,7 +18,6 @@ const STEPS = [
 const SignupPage = () => {
     const navigate = useNavigate()
     
-    //zustand store 
     const {
         signupForm,
         signupStep,
@@ -40,6 +40,7 @@ const SignupPage = () => {
         clearSavedFormData,
         initializeAuth
     } = useAuthenticationStore();
+    
     const [showTermsModal, setShowTermsModal] = useState(false);
 
     useEffect(() => {
@@ -66,57 +67,21 @@ const SignupPage = () => {
         updateSignupForm(name as keyof typeof signupForm, newValue)
     }
 
+    //optional: real time field validation
+    // const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    //     const { name } = e.target
+    //     const fieldError = validateField(name as keyof typeof signupForm, signupForm[name as keyof typeof signupForm], signupForm)
+        
+    //     if (fieldError) {
+    //         setValidationErrors({ ...validationErrors, [name]: fieldError })
+    //     } else {
+    //         const { [name]: removed, ...rest } = validationErrors
+    //         setValidationErrors(rest)
+    //     }
+    // }
+
     const validateCurrentStep = (): boolean => {
-        const stepErrors: Record<string, string> = {}
-        
-        switch (signupStep) {
-            case 1:
-                if (!signupForm.firstName.trim()) {
-                    stepErrors.firstName = 'First name is required'
-                }
-                if (!signupForm.lastName.trim()) {
-                    stepErrors.lastName = 'Last name is required'
-                }
-                if (!signupForm.emailOrContactNumber.trim()) {
-                    stepErrors.emailOrContactNumber = 'Contact number is required'
-                }
-                break
-                
-            case 2:
-                if (!signupForm.password) {
-                    stepErrors.password = 'Password is required'
-                } else if (signupForm.password.length < 8) {
-                    stepErrors.password = 'Password must be at least 8 characters'
-                }
-                if (!signupForm.confirmPassword) {
-                    stepErrors.confirmPassword = 'Please confirm your password'
-                } else if (signupForm.password !== signupForm.confirmPassword) {
-                    stepErrors.confirmPassword = 'Passwords do not match'
-                }
-                break
-                
-            case 3:
-                if (!signupForm.birthdate) {
-                    stepErrors.birthdate = 'Birthdate is required'
-                }
-                if (!signupForm.sex) {
-                    stepErrors.sex = 'Gender selection is required'
-                }
-                if (!signupForm.address.trim()) {
-                    stepErrors.address = 'Address is required'
-                }
-                if (signupForm.religion === 'Others' && !signupForm.religionOther?.trim()) {
-                    stepErrors.religionOther = 'Please specify your religion'
-                }
-                break
-                
-            case 4:
-                if (!signupForm.agreeToTerms) {
-                    stepErrors.agreeToTerms = 'You must agree to the terms and conditions'
-                }
-                break
-        }
-        
+        const stepErrors = validateSignupStep(signupStep, signupForm)
         setValidationErrors(stepErrors)
         return Object.keys(stepErrors).length === 0
     }
@@ -152,8 +117,9 @@ const SignupPage = () => {
         e.preventDefault()
         
         if (signupStep === STEPS.length) {
-            //final submission
-            if (validateCurrentStep()) {
+            const allErrors = validateAllSteps(signupForm)
+            
+            if (Object.keys(allErrors).length === 0) {
                 try {
                     const cleanedData = {
                         firstName: signupForm.firstName,
@@ -175,6 +141,13 @@ const SignupPage = () => {
                 } catch (error) {
                     console.log(error);
                 }
+            } else {
+                setValidationErrors(allErrors)
+                Object.values(allErrors).forEach(error => {
+                    if (error) {
+                        toast.error(error)
+                    }
+                })
             }
         } else {
             nextStep()

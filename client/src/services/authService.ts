@@ -10,11 +10,12 @@ export const register = async (userData: Omit<SignupFormData, 'confirmPassword' 
         );
         return response.data;
     } catch (error) {
+        console.error('Error register:', error);
         if (axios.isAxiosError(error)) {
-            const message = error.response?.data?.message || 'Registration failed';
-            throw new Error(message);
+            throw error.response?.data || error.message;
         }
-        throw new Error('An error occurred during registration');
+
+        throw error;
     }
 };
 
@@ -26,11 +27,12 @@ export const login = async (loginData: Omit<LoginFormData, 'rememberMe'>) => {
         );
         return response.data;
     } catch (error) {
+        console.error('Error login:', error);
         if (axios.isAxiosError(error)) {
-            const message = error.response?.data?.message || 'Login failed';
-            throw new Error(message);
+            throw error.response?.data || error.message;
         }
-        throw new Error('An error occurred during login');
+
+        throw error;
     }
 };
 
@@ -39,11 +41,12 @@ export const getProfile = async () => {
         const response = await axios.get(`${API_BASE_URL}/api/auth/me`);
         return response.data;
     } catch (error) {
+        console.error('Error fetch profile:', error);
         if (axios.isAxiosError(error)) {
-            const message = error.response?.data?.message || 'Failed to fetch profile';
-            throw new Error(message);
+            throw error.response?.data || error.message;
         }
-        throw new Error('An error occurred while fetching profile');
+
+        throw error;
     }
 };
 
@@ -52,10 +55,11 @@ export const logout = async () => {
         const response = await axios.post(`${API_BASE_URL}/api/auth/logout`);
         return response.data;
     } catch (error) {
+        console.error('Error logout:', error);
         if (axios.isAxiosError(error)) {
-            const message = error.response?.data?.message || 'Logout failed';
-            throw new Error(message);
+            throw error.response?.data || error.message;
         }
-        throw new Error('An error occurred during logout');
+
+        throw error;
     }
 };

@@ -1,9 +1,33 @@
-import { LoginFormData, SignupFormData, ValidationErrors } from '../types/auth';
+import { SignupFormData, ValidationErrors } from '../../../types/auth';
 
-
-export const validateSignupForm = (formData: SignupFormData): ValidationErrors => {
-    const errors: ValidationErrors = {};
+export const validateSignupStep = (
+    step: number,
+    formData: SignupFormData
+): ValidationErrors => {
+    const stepErrors: ValidationErrors = {};
     
+    switch (step) {
+        case 1:
+            return validateBasicInfo(formData);
+            
+        case 2:
+            return validateAccountSecurity(formData);
+            
+        case 3:
+            return validatePersonalDetails(formData);
+            
+        case 4:
+            return validateReviewStep(formData);
+            
+        default:
+            return stepErrors;
+    }
+};
+
+//step 1
+const validateBasicInfo = (formData: SignupFormData): ValidationErrors => {
+    const errors: ValidationErrors = {};
+
     if (!formData.firstName.trim()) {
         errors.firstName = 'First name is required';
     } else if (formData.firstName.trim().length < 3) {
@@ -36,7 +60,7 @@ export const validateSignupForm = (formData: SignupFormData): ValidationErrors =
             errors.suffix = 'Invalid suffix value';
         }
     }
-    
+
     if (!formData.emailOrContactNumber.trim()) {
         errors.emailOrContactNumber = 'Contact number is required';
     } else {
@@ -47,17 +71,31 @@ export const validateSignupForm = (formData: SignupFormData): ValidationErrors =
             errors.emailOrContactNumber = 'Must provide a valid contact number';
         }
     }
-    
+
+    return errors;
+};
+
+//step 2
+const validateAccountSecurity = (formData: SignupFormData): ValidationErrors => {
+    const errors: ValidationErrors = {};
+
     if (!formData.password) {
         errors.password = 'Password is required';
     } else if (formData.password.length < 6) {
         errors.password = 'Password must be at least 6 characters long';
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
         errors.confirmPassword = 'Passwords do not match';
     }
-    
+
+    return errors;
+};
+
+//step 3
+const validatePersonalDetails = (formData: SignupFormData): ValidationErrors => {
+    const errors: ValidationErrors = {};
+
     if (!formData.birthdate) {
         errors.birthdate = 'Birthdate is required';
     } else {
@@ -74,13 +112,13 @@ export const validateSignupForm = (formData: SignupFormData): ValidationErrors =
             }
         }
     }
-    
+
     if (!formData.sex) {
         errors.sex = 'Sex is required';
     } else if (!['Male', 'Female', 'Other'].includes(formData.sex)) {
         errors.sex = 'Sex must be Male, Female, or Other';
     }
-    
+
     if (!formData.address.trim()) {
         errors.address = 'Address is required';
     } else if (formData.address.trim().length < 10) {
@@ -102,32 +140,55 @@ export const validateSignupForm = (formData: SignupFormData): ValidationErrors =
             errors.religionOther = 'Religion must not exceed 30 characters';
         }
     }
-    
-    if (!formData.agreeToTerms) {
-        errors.agreeToTerms = 'You must agree to the terms and conditions';
-    }
-    
+
     return errors;
 };
 
-
-export const validateLoginForm = (formData: LoginFormData): ValidationErrors => {
+///step 4
+const validateReviewStep = (formData: SignupFormData): ValidationErrors => {
     const errors: ValidationErrors = {};
-    
-    if (!formData.emailOrContactNumber.trim()) {
-        errors.emailOrContactNumber = 'Contact number is required';
-    } else {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const contactNumberRegex = /^(09|\+639)\d{9}$/;
-        
-        if (!emailRegex.test(formData.emailOrContactNumber) && !contactNumberRegex.test(formData.emailOrContactNumber)) {
-            errors.emailOrContactNumber = 'Please enter a valid contact number';
-        }
+
+    if (!formData.agreeToTerms) {
+        errors.agreeToTerms = 'You must agree to the terms and conditions';
     }
-    
-    if (!formData.password) {
-        errors.password = 'Password is required';
-    }
-    
+
     return errors;
+};
+
+export const validateAllSteps = (formData: SignupFormData): ValidationErrors => {
+    const allErrors: ValidationErrors = {
+        ...validateBasicInfo(formData),
+        ...validateAccountSecurity(formData),
+        ...validatePersonalDetails(formData),
+        ...validateReviewStep(formData),
+    };
+
+    return allErrors;
+};
+
+export const validateField = (
+    fieldName: keyof SignupFormData,
+    value: any,
+    formData: SignupFormData
+): string | undefined => {
+    const tempFormData = { ...formData, [fieldName]: value };
+    
+    const step1Fields = ['firstName', 'lastName', 'middleName', 'suffix', 'emailOrContactNumber'];
+    const step2Fields = ['password', 'confirmPassword'];
+    const step3Fields = ['birthdate', 'sex', 'address', 'religion', 'religionOther'];
+    const step4Fields = ['agreeToTerms'];
+    
+    let errors: ValidationErrors = {};
+    
+    if (step1Fields.includes(fieldName)) {
+        errors = validateBasicInfo(tempFormData);
+    } else if (step2Fields.includes(fieldName)) {
+        errors = validateAccountSecurity(tempFormData);
+    } else if (step3Fields.includes(fieldName)) {
+        errors = validatePersonalDetails(tempFormData);
+    } else if (step4Fields.includes(fieldName)) {
+        errors = validateReviewStep(tempFormData);
+    }
+    
+    return errors[fieldName];
 };

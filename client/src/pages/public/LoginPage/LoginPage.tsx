@@ -1,10 +1,10 @@
 import { FormEvent, useEffect } from 'react'
 import styles from './LoginPage.module.css'
 import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'sonner'
 import { SectionFeatures, Footer, Input } from '../../../components'
 import { useAuthenticationStore } from '../../../stores'
-import { validateLoginForm } from '../../../utils'
+import { getFieldError } from '../../../utils'
+import useScrollToError from '../../../hooks/useScrollToError'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
 
 const LoginPage = () => {
@@ -19,13 +19,22 @@ const LoginPage = () => {
         user,
         updateLoginForm,
         togglePasswordVisibility,
-        setValidationErrors,
-        clearAllValidationErrors,
+        clearValidationErrors,
         login,
         initializeAuth
     } = useAuthenticationStore()
 
-    
+    const { fieldRefs } = useScrollToError({
+        validationErrors,
+        fieldOrder: [
+            'emailOrContactNumber',
+            'password'
+        ],
+        scrollBehavior: 'smooth',
+        scrollBlock: 'center',
+        focusDelay: 300
+    })
+
     useEffect(() => {
         initializeAuth()
     }, [initializeAuth])
@@ -53,28 +62,15 @@ const LoginPage = () => {
         e.preventDefault()
         
         //clear previous errors
-        clearAllValidationErrors()
+        clearValidationErrors()
         
-        //validate form
-        const errors = validateLoginForm(loginForm)
-        setValidationErrors(errors)
-        
-        if (Object.keys(errors).length === 0) {
-            try {
-                await login({
-                    emailOrContactNumber: loginForm.emailOrContactNumber,
-                    password: loginForm.password
-                })
-                
-            } catch (error) {
-                console.log(error);
-            }
-        } else {
-            Object.values(errors).forEach(error => {
-                if (error) {
-                    toast.error(error)
-                }
+        try {
+            await login({
+                emailOrContactNumber: loginForm.emailOrContactNumber,
+                password: loginForm.password
             })
+        } catch (error) {
+            console.log(error)
         }
     }
 
@@ -88,16 +84,18 @@ const LoginPage = () => {
                         <p className={styles.formSubtitle}>Log in to your account</p>
                         
                         <Input
+                            ref={(el) => { fieldRefs.current['emailOrContactNumber'] = el; }}
                             type='number'
                             name='emailOrContactNumber'
                             placeholder='Contact Number'
                             leftIcon='phone'
                             value={loginForm.emailOrContactNumber}
                             onChange={handleChange}
-                            error={validationErrors.emailOrContactNumber}
+                            error={getFieldError(validationErrors, 'emailOrContactNumber')}
                         />
                         
                         <Input
+                            ref={(el) => { fieldRefs.current['password'] = el; }}
                             type={showPassword ? 'text' : 'password'}
                             name='password'
                             placeholder='Password'
@@ -106,7 +104,7 @@ const LoginPage = () => {
                             onRightIconClick={togglePasswordVisibility}
                             value={loginForm.password}
                             onChange={handleChange}
-                            error={validationErrors.password}
+                            error={getFieldError(validationErrors, 'password')}
                         />
 
                         <div className={styles.formOptions}>

@@ -398,7 +398,7 @@ export interface AuthenticationState {
     //ui state
     showPassword: boolean
     showConfirmPassword: boolean
-    validationErrors: ValidationErrors
+    // validationErrors: ValidationErrors
     
     //actions
     login: (credentials: Omit<LoginFormData, 'rememberMe'>) => Promise<void>
@@ -411,6 +411,8 @@ export interface AuthenticationState {
     updateSignupForm: (field: keyof SignupFormData, value: string | boolean) => void
     clearLoginForm: () => void
     clearSignupForm: () => void
+    validationErrors: Record<string, string[]> | ValidationErrors | any;
+    clearValidationErrors: () => void;
     
     //step navigation
     setSignupStep: (step: number) => void

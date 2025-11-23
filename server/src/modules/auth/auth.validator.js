@@ -114,7 +114,7 @@ const validateRegistration = [
 const validateLogin = [
     body('emailOrContactNumber')
         .trim()
-        .notEmpty().withMessage('Contact Number is required')
+        .notEmpty().withMessage('Contact number is required')
         .custom((value) => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const contactNumberRegex = /^(09|\+639)\d{9}$/;
