@@ -277,6 +277,15 @@
     background-color: #bfdbfe;
 }
 
+.actionBtn.update {
+    background-color: #fef7e2;
+    color: var(--warning);
+}
+
+.actionBtn.update:hover {
+    background-color: #fee6ca;
+}
+
 .actionBtn.download {
     background-color: var(--primary-light);
     color: var(--primary);

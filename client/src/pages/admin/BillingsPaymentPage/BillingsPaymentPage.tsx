@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import styles from './BillingsPaymentPage.module.css'
-import { Plus, Download, CreditCard, Trash } from 'lucide-react';
+import { Plus, Download, CreditCard, Trash, Edit } from 'lucide-react';
 import { BillingFormData, FormDataType, TableColumn } from '../../../types'
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
@@ -16,6 +16,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [selectedBillingId, setSelectedBillingId] = useState<string>('');
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+    
     //zustand store selectors
     const {
         billings,
@@ -31,6 +32,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
         isProcessing,
         fetchBillings,
         openModalCreate,
+        openModalUpdate,
         openModalDelete,
         closeModalCreate,
         closeModalUpdate,
@@ -44,7 +46,6 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
         currentOperation
     } = useBillingStore();
 
-    //calculate summary stats using useMemo for performance
     const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
         try {
             await fetchBillings({ page, limit, search });
@@ -73,7 +74,6 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
 
-   
     const handleCreateClick = useCallback(() => {
         openModalCreate();
     }, [openModalCreate]);
@@ -131,11 +131,12 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
                     storePagination?.itemsPerPage || 10, 
                     searchTerm
                 );
+                closeModalUpdate();
             }, 600);
         } catch (error) {
             console.error('Error updating billing:', error);
         }
-    }, [selectedBilling, updateBillingData, addBilling, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+    }, [selectedBilling, updateBillingData, addBilling, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalUpdate]);
 
     const handleProcessPayment = async (billId: string) => {
         await processPayment(billId);
@@ -171,7 +172,6 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
             console.error('Error deleting billing:', error);
         }
     }, [deleteBilling, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
-
 
     const handleDownloadReceipt = useCallback((billing: BillingFormData) => {
         if (!billing) {
@@ -285,7 +285,17 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
                     >
                         View
                     </button>
-
+                    <button
+                        type='button'
+                        className={`${styles.actionBtn} ${styles.update}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            openModalUpdate(billing);
+                        }}
+                        title='Update Billing'
+                    >
+                        <Edit size={16} />
+                    </button>
                     <button
                         type='button'
                         onClick={(e) => {
@@ -294,12 +304,13 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
                         }}
                         className={`${styles.actionBtn} ${styles.download}`}
                         title="Download Receipt"
+                        disabled={isGeneratingPDF}
                     >
                         <Download size={16} />
                     </button>
-                     <button 
+                    <button 
                         type='button' 
-                        title='Delete'
+                        title='Delete Billing'
                         className={`${styles.actionBtn} ${styles.delete}`}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -321,7 +332,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
                                 title="Process Payment"
                                 disabled={isProcessing}
                             >
-                                <CreditCard />
+                                <CreditCard size={16} />
                             </button>
                         )
                     }
@@ -348,159 +359,157 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
 
     const summaryCards = getBillingSummaryCards(summaryStats);
 
-  return (
-    <Main error={error}>
-        <Header
-            title='Billing & Payments'
-            actions={headerActions}
-        />
+    return (
+        <Main error={error}>
+            <Header
+                title='Billing & Payments'
+                actions={headerActions}
+            />
 
-        <div className={styles.contentCards}>
-            {
-                summaryCards.map((card, index) => (
-                    <div className={styles.card} key={index}>
-                        <div className={styles.cardHeader}>
-                            <div className={styles.cardTitle}>{card.title}</div>
-                            <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
-                                <card.icon /> 
+            <div className={styles.contentCards}>
+                {
+                    summaryCards.map((card, index) => (
+                        <div className={styles.card} key={index}>
+                            <div className={styles.cardHeader}>
+                                <div className={styles.cardTitle}>{card.title}</div>
+                                <div className={`${styles.cardIcon} ${styles[card.iconColor]}`}>
+                                    <card.icon /> 
+                                </div>
+                            </div>
+                            <div className={styles.cardValue}>{card.value}</div>
+                            <div className={styles.cardFooter}>
+                                <span>{card.footer}</span>
                             </div>
                         </div>
-                        <div className={styles.cardValue}>{card.value}</div>
-                        <div className={styles.cardFooter}>
-                            <span>{card.footer}</span>
+                    ))
+                }
+            </div>
+                    
+            <div className={styles.section}>
+                <div className={styles.sectionHeader}>
+                    <div className={styles.sectionTitle}>Billing & Payments</div>
+
+                    <div className={styles.controls}>
+                        <Searchbar
+                            onSearch={handleSearch}
+                            placeholder="Search billing and payments"
+                            disabled={loading}
+                            className={styles.searchbar}
+                        />
+                        
+                        <div className={styles.itemsPerPageControl}>
+                            <label htmlFor="itemsPerPage">Items per page:</label>
+                            <select
+                                id="itemsPerPage"
+                                value={storePagination?.itemsPerPage || 10}
+                                onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                                disabled={loading}
+                                className={styles.itemsPerPageSelect}
+                            >
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
                         </div>
                     </div>
-                ))
-            }
-        </div>
-                
-        <div className={styles.section}>
-            <div className={styles.sectionHeader}>
-                <div className={styles.sectionTitle}>Billing & Payments</div>
-
-                <div className={styles.controls}>
-                    <Searchbar
-                        onSearch={handleSearch}
-                        placeholder="Search billing and payments"
-                        disabled={loading}
-                        className={styles.searchbar}
-                    />
-                    
-                    <div className={styles.itemsPerPageControl}>
-                        <label htmlFor="itemsPerPage">Items per page:</label>
-                        <select
-                            id="itemsPerPage"
-                            value={storePagination?.itemsPerPage || 10}
-                            onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                            disabled={loading}
-                            className={styles.itemsPerPageSelect}
-                        >
-                            <option value={5}>5</option>
-                            <option value={10}>10</option>
-                            <option value={20}>20</option>
-                            <option value={50}>50</option>
-                        </select>
-                    </div>
                 </div>
-            </div>
-            {
-                loading ? (
-                    <div className={styles.tableResponsive}>
-                        <Loading
-                            type='skeleton'
-                            rows={7}
-                            message='Loading billings data...'
-                            delay={0}
-                            minDuration={1000}
-                        />
-                    </div>
-                ) : (
-                    <>
-                        <Table
-                            columns={billingColumns}
-                            data={billings}
-                            emptyMessage='No billings found. Click "New Billing" to get started.'
-                            searchTerm={searchTerm}
-                            getRowKey={(bill) => bill.id || ''}
-                        />
+                {
+                    loading ? (
+                        <div className={styles.tableResponsive}>
+                            <Loading
+                                type='skeleton'
+                                rows={7}
+                                message='Loading billings data...'
+                                delay={0}
+                                minDuration={1000}
+                            />
+                        </div>
+                    ) : (
+                        <>
+                            <Table
+                                columns={billingColumns}
+                                data={billings}
+                                emptyMessage='No billings found. Click "New Billing" to get started.'
+                                searchTerm={searchTerm}
+                                getRowKey={(bill) => bill.id || ''}
+                            />
 
-                        {
-                            storePagination && storePagination.totalPages > 1 && (
-                                <Pagination
-                                    currentPage={storePagination.currentPage}
-                                    totalPages={storePagination.totalPages}
-                                    totalItems={storePagination.totalItems}
-                                    itemsPerPage={storePagination.itemsPerPage}
-                                    onPageChange={handlePageChange}
-                                    disabled={loading || isProcessing}
-                                />
-                            )
-                        }
-                    </>
+                            {
+                                storePagination && storePagination.totalPages > 1 && (
+                                    <Pagination
+                                        currentPage={storePagination.currentPage}
+                                        totalPages={storePagination.totalPages}
+                                        totalItems={storePagination.totalItems}
+                                        itemsPerPage={storePagination.itemsPerPage}
+                                        onPageChange={handlePageChange}
+                                        disabled={loading || isProcessing}
+                                    />
+                                )
+                            }
+                        </>
+                    )
+                }
+            </div>
+
+            {
+                isModalCreateOpen && (
+                    <Modal
+                        isOpen={isModalCreateOpen}
+                        onClose={closeModalCreate}
+                        modalType="billing"
+                        onSubmit={handleSubmitCreate}
+                        isProcessing={submitLoading}
+                    />
                 )
             }
 
-        </div>
+            {
+                isModalUpdateOpen && (
+                    <Modal
+                        isOpen={isModalUpdateOpen}
+                        onClose={closeModalUpdate}
+                        modalType='billing'
+                        onSubmit={handleSubmitUpdate}
+                        editData={selectedBilling}
+                        isProcessing={submitLoading}
+                    />
+                )
+            }
 
-        {
-            isModalCreateOpen && (
-                <Modal
-                    isOpen={isModalCreateOpen}
-                    onClose={closeModalCreate}
-                    modalType="billing"
-                    onSubmit={handleSubmitCreate}
-                    isProcessing={submitLoading}
-                />
-            )
-        }
+            {
+                isModalDeleteOpen && deleteBillingData && (
+                    <Modal
+                        isOpen={isModalDeleteOpen}
+                        onClose={closeModalDelete}
+                        modalType='delete'
+                        onSubmit={handleConfirmDelete}
+                        deleteData={deleteBillingData}
+                        isProcessing={isProcessing}
+                    />
+                )
+            }
 
-        {
-            isModalUpdateOpen && (
-                <Modal
-                    isOpen={isModalUpdateOpen}
-                    onClose={closeModalUpdate}
-                    modalType='billing'
-                    onSubmit={handleSubmitUpdate}
-                    editData={selectedBilling}
-                    isProcessing={isProcessing}
-                />
-            )
-        }
+            {
+                isDetailsModalOpen && (
+                    <Modal
+                        isOpen={isDetailsModalOpen}
+                        onClose={handleCloseDetailsModal}
+                        modalType='billing-details'
+                        onSubmit={() => {}}
+                        billingId={selectedBillingId}
+                    />
+                )
+            }
 
-        {
-            isModalDeleteOpen && deleteBillingData && (
-                <Modal
-                    isOpen={isModalDeleteOpen}
-                    onClose={closeModalDelete}
-                    modalType='delete'
-                    onSubmit={handleConfirmDelete}
-                    deleteData={deleteBillingData}
-                    isProcessing={isProcessing}
-                />
-            )
-        }
-
-
-        {
-            isDetailsModalOpen && (
-                <Modal
-                    isOpen={isDetailsModalOpen}
-                    onClose={handleCloseDetailsModal}
-                    modalType='billing-details'
-                    onSubmit={() => {}}
-                    billingId={selectedBillingId}
-                />
-            )
-        }
-
-        <SubmitLoading
-            isLoading={submitLoading}
-            loadingText={getLoadingText(currentOperation, 'billing')}
-            size='medium'
-            variant='overlay'
-        />
-    </Main>
-  )
+            <SubmitLoading
+                isLoading={submitLoading}
+                loadingText={getLoadingText(currentOperation, 'billing')}
+                size='medium'
+                variant='overlay'
+            />
+        </Main>
+    )
 }
 
 export default BillingsPaymentPage

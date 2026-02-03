@@ -200,8 +200,15 @@ export const useBillingStore = create<BillingState>()(
                         validationErrors: {}
                     });
                     
-                    await updateBilling(id, data);
-                    await get().fetchBillings();
+                    const cleanedData = { ...data };
+                    
+                    if (cleanedData.medicalRecordId && typeof cleanedData.medicalRecordId === 'object') {
+                        cleanedData.medicalRecordId = (cleanedData.medicalRecordId as any).id || 
+                                                    (cleanedData.medicalRecordId as any)._id;
+                    }
+                    
+                    await updateBilling(id, cleanedData);
+                    await get().fetchBillings({});
 
                     toast.success('Billing updated successfully!');
                     set({ isModalUpdateOpen: false, selectedBilling: null });
