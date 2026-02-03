@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 class BillingService {
 
-    async createBilling(billingData) {
+    async createBilling(billingData, user) {
         const {
             medicalRecordId,
             patientName,
@@ -50,7 +50,10 @@ class BillingService {
             doctorFee: doctorFee || 0,
             amount,
             paymentStatus: paymentStatus || 'Unpaid',
-            medicalRecordDate: medicalRecordDate || medicalRecord.dateRecorded
+            medicalRecordDate: medicalRecordDate || medicalRecord.dateRecorded,
+            processedBy: user.userId,
+            processedName: `${user.firstName} ${user.lastName}`,
+            processedRole: user.role
         });
 
         const savedBilling = await newBilling.save();
@@ -105,6 +108,7 @@ class BillingService {
                     { patientName: { $regex: search, $options: 'i' } },
                     { itemName: { $in: [new RegExp(search, 'i')] } },
                     { paymentStatus: { $regex: search, $options: 'i' } },
+                    { processedName: { $regex: search, $options: 'i' } },
                     { medicalRecordId: mongoose.Types.ObjectId.isValid(search) ? search : null }.medicalRecordId ? { medicalRecordId: search } : {}
                 ].filter(condition => Object.keys(condition).length > 0);
             }
@@ -134,6 +138,7 @@ class BillingService {
                 
                 billings = await Billing.find(filter)
                     .populate('medicalRecordId', 'personalDetails.fullName dateRecorded diagnosis')
+                    .populate('processedBy', 'firstName lastName role')
                     .sort(sort)
                     .skip(skip)
                     .limit(itemsPerPage);
@@ -159,6 +164,7 @@ class BillingService {
             } else {
                 billings = await Billing.find(filter)
                     .populate('medicalRecordId', 'personalDetails.fullName dateRecorded diagnosis')
+                    .populate('processedBy', 'firstName lastName role')
                     .sort(sort);
 
                 pagination = {
@@ -194,7 +200,8 @@ class BillingService {
         }
 
         const billing = await Billing.findById(billingId)
-            .populate('medicalRecordId', 'personalDetails.fullName dateRecorded diagnosis treatmentPlan');
+            .populate('medicalRecordId', 'personalDetails.fullName dateRecorded diagnosis treatmentPlan')
+            .populate('processedBy', 'firstName lastName role email contactNumber');
 
         if (!billing) {
             throw new Error('Billing record not found');
@@ -203,7 +210,7 @@ class BillingService {
         return billing;
     }
 
-    async updateBilling(billingId, updateData, isPaymentStatusUpdate = false) {
+    async updateBilling(billingId, updateData, user, isPaymentStatusUpdate = false) {
         if (!billingId || !mongoose.Types.ObjectId.isValid(billingId)) {
             throw new Error('Invalid billing ID');
         }
@@ -215,19 +222,28 @@ class BillingService {
 
         if (isPaymentStatusUpdate) {
             billing.paymentStatus = updateData.paymentStatus;
+            billing.processedBy = user.userId;
+            billing.processedName = `${user.firstName} ${user.lastName}`;
+            billing.processedRole = user.role;
             await billing.save();
             return await billing.populate('medicalRecordId', 'personalDetails.fullName dateRecorded');
         }
+
+        //processed information to update data
+        updateData.processedBy = user.userId;
+        updateData.processedName = `${user.firstName} ${user.lastName}`;
+        updateData.processedRole = user.role;
 
         const updatedBilling = await Billing.findByIdAndUpdate(
             billingId,
             updateData,
             { new: true, runValidators: true }
-        ).populate('medicalRecordId', 'personalDetails.fullName dateRecorded');
+        )
+        .populate('medicalRecordId', 'personalDetails.fullName dateRecorded')
+        .populate('processedBy', 'firstName lastName role');
 
         return updatedBilling;
     }
-
 
     async deleteBilling(billingId) {
         if (!billingId || !mongoose.Types.ObjectId.isValid(billingId)) {
@@ -372,6 +388,7 @@ class BillingService {
 
         return await Billing.find({ medicalRecordId })
             .populate('medicalRecordId', 'personalDetails.fullName dateRecorded')
+            .populate('processedBy', 'firstName lastName role')
             .sort({ createdAt: -1 });
     }
 
@@ -383,6 +400,7 @@ class BillingService {
 
         return await Billing.find({ paymentStatus })
             .populate('medicalRecordId', 'personalDetails.fullName dateRecorded')
+            .populate('processedBy', 'firstName lastName role')
             .sort({ createdAt: -1 });
     }
 

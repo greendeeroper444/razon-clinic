@@ -38,6 +38,17 @@ const billingSchema = new mongoose.Schema(
         medicalRecordDate: {
             type: Date,
             default: Date.now
+        },
+        processedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Admin'
+        },
+        processedName: {
+            type: String
+        },
+        processedRole: {
+            type: String,
+            enum: ['Doctor', 'Staff']
         }
     },
     {
@@ -57,6 +68,7 @@ billingSchema.index({ medicalRecordId: 1 });
 billingSchema.index({ paymentStatus: 1 });
 billingSchema.index({ patientName: 1 });
 billingSchema.index({ createdAt: -1 });
+billingSchema.index({ processedBy: 1 });
 
 const Billing = mongoose.model('Billing', billingSchema);
 

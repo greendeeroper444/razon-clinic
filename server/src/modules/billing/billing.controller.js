@@ -5,7 +5,7 @@ class BillingController {
 
     async addBilling(req, res, next) {
         try {
-            const billing = await BillingService.createBilling(req.body);
+            const billing = await BillingService.createBilling(req.body, req.user);
 
             return res.status(201).json({
                 success: true,
@@ -80,7 +80,6 @@ class BillingController {
         }
     }
 
-
     async getBillingsByMedicalRecord(req, res, next) {
         try {
             const { medicalRecordId } = req.params;
@@ -140,7 +139,12 @@ class BillingController {
             
             const isPaymentStatusUpdate = path.includes('/paymentStatus');
 
-            const billing = await BillingService.updateBilling(billingId, req.body, isPaymentStatusUpdate);
+            const billing = await BillingService.updateBilling(
+                billingId, 
+                req.body, 
+                req.user, 
+                isPaymentStatusUpdate
+            );
 
             return res.status(200).json({
                 success: true,
@@ -152,7 +156,6 @@ class BillingController {
         }
     }
     
-
     // ==================== DELETE ====================
     async deleteBilling(req, res, next) {
         try {
@@ -168,7 +171,6 @@ class BillingController {
             next(error);
         }
     }
-
 
     // ==================== EXPORT ====================
     async exportBillings(req, res, next) {

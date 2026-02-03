@@ -151,6 +151,27 @@ const BillingDetailsForm: React.FC<BillingDetailsFormProps> = ({ billingId }) =>
             </div>
         </div>
 
+        <div className={style.section}>
+            <div className={style.sectionHeader}>
+                <DollarSign size={18} />
+                <h3>Payment Processed</h3>
+            </div>
+            <div className={style.detailsGrid}>
+                <div className={style.detailItem}>
+                    <span className={style.label}>Processed By:</span>
+                    <span className={style.value}>
+                        {currentBilling.processedName}
+                    </span>
+                </div>
+                <div className={style.detailItem}>
+                    <span className={style.label}>Processed Role:</span>
+                    <span className={style.value}>
+                        {currentBilling.processedRole}
+                    </span>
+                </div>
+            </div>
+        </div>
+
         {
             currentBilling.notes && (
                 <div className={style.section}>

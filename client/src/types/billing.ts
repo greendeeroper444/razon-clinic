@@ -42,6 +42,9 @@ export interface BillingResponse {
         treatmentPlan?: string;
     };
     items: any[];
+    processedBy?: string;
+    processedName?: string;
+    processedRole?: string;
 }
 
 export interface MedicalRecordOption {

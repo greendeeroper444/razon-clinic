@@ -1,4 +1,4 @@
-import { BasePDFTemplate, Colors } from './basePdfTemplate';
+import { BasePDFTemplate, Colors, Config } from './basePdfTemplate';
 import { BillingFormData } from '../types';
 
 export class BillingReceiptPDF extends BasePDFTemplate {
@@ -19,6 +19,8 @@ export class BillingReceiptPDF extends BasePDFTemplate {
         this.drawSummarySection();
 
         this.drawPaymentStatus();
+
+        this.drawProcessedBySection();
 
         this.drawNotesSection();
 
@@ -116,6 +118,48 @@ export class BillingReceiptPDF extends BasePDFTemplate {
         this.currentY += 20;
     }
 
+    private drawProcessedBySection(): void {
+        if (!this.billing.processedName && !this.billing.processedRole) {
+            return;
+        }
+
+        const boxX = Config.margins.left;
+        const boxY = this.currentY;
+        const boxWidth = 170;
+        const boxHeight = 22;
+
+        //draw box background
+        this.doc.setFillColor(245, 247, 250); //light blue-gray background
+        this.doc.setDrawColor(...Colors.lightGray);
+        this.doc.roundedRect(boxX, boxY, boxWidth, boxHeight, 2, 2, 'FD');
+
+        //draw content
+        this.doc.setFont('helvetica', 'bold');
+        this.doc.setFontSize(10);
+        this.doc.setTextColor(...Colors.primary);
+        this.doc.text('Payment Processed By:', boxX + 5, boxY + 8);
+
+        this.doc.setFont('helvetica', 'normal');
+        this.doc.setTextColor(...Colors.black);
+        this.doc.setFontSize(9);
+        
+        const processedName = this.billing.processedName || 'N/A';
+        const processedRole = this.billing.processedRole || 'N/A';
+        const processedInfo = `${processedName} (${processedRole})`;
+        
+        this.doc.text(processedInfo, boxX + 5, boxY + 15);
+
+        //timestamp if available
+        if (this.billing.updatedAt || this.billing.createdAt) {
+            const timestamp = this.formatDateTime(this.billing.updatedAt || this.billing.createdAt);
+            this.doc.setFontSize(8);
+            this.doc.setTextColor(...Colors.gray);
+            this.doc.text(`Processed on: ${timestamp}`, boxX + boxWidth - 5, boxY + 15, { align: 'right' });
+        }
+
+        this.currentY = boxY + boxHeight + 10;
+    }
+
     private drawNotesSection(): void {
         const notes = [
             'Please retain this receipt for your records.',
@@ -185,13 +229,26 @@ export class BillingReceiptPDF extends BasePDFTemplate {
         return data;
     }
 
-
     private formatCurrency(amount: number): string {
         return `P ${amount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
     private formatDate(date: string | Date): string {
-        return new Date(date).toLocaleDateString();
+        return new Date(date).toLocaleDateString('en-PH', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    private formatDateTime(date: string | Date): string {
+        return new Date(date).toLocaleString('en-PH', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     }
 }
 
