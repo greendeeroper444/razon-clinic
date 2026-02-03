@@ -378,6 +378,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                                                     onChange={(e) => updateQuantity(index, parseInt(e.target.value) || 1)}
                                                     className={styles.quantityInput}
                                                     disabled={!item}
+                                                    placeholder='Quantity'
                                                 />
                                             </td>
 
@@ -390,6 +391,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                                                     onChange={(e) => updateUnitPrice(index, parseFloat(e.target.value) || 0)}
                                                     className={styles.priceInput}
                                                     placeholder="₱0"
+                                                    readOnly
                                                 />
                                             </td>
 
