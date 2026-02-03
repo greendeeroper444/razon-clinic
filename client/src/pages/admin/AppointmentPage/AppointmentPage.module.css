@@ -33,7 +33,7 @@
     max-width: 400px;
 }
 
-.itemsPerPageControl {
+.selectControl {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -41,13 +41,13 @@
     flex-shrink: 0;
 }
 
-.itemsPerPageControl label {
+.selectControl label {
     font-size: 14px;
     color: var(--gray, #64748b);
     font-weight: 500;
 }
 
-.itemsPerPageSelect {
+.selectOption {
     padding: 8px 12px;
     border: 1px solid var(--gray-light, #e2e8f0);
     border-radius: var(--border-radius, 6px);
@@ -60,17 +60,17 @@
     min-width: 80px;
 }
 
-.itemsPerPageSelect:hover {
+.selectOption:hover {
     border-color: var(--gray, #cbd5e0);
 }
 
-.itemsPerPageSelect:focus {
+.selectOption:focus {
     outline: none;
     border-color: var(--primary, #3b82f6);
     box-shadow: 0 0 0 3px rgba(var(--primary-rgb, 59, 130, 246), 0.1);
 }
 
-.itemsPerPageSelect:disabled {
+.selectOption:disabled {
     background: #f8fafc;
     color: var(--gray, #94a3b8);
     cursor: not-allowed;

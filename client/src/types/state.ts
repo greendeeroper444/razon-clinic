@@ -15,6 +15,7 @@ export interface FetchParams {
     limit?: number;
     search?: string;
     isArchived?: boolean;
+    status?: string;
 }
 
 

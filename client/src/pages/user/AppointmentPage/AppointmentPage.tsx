@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 const AppointmentPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     //zustand store selectors
     const {
@@ -39,9 +40,9 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         currentOperation
     } = useAppointmentStore();
 
-    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
+    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '', status: string = '') => {
         try {
-            await fetchMyAppointments({ page, limit, search });
+            await fetchMyAppointments({ page, limit, search, status });
         } catch (error) {
             console.error('Error fetching appointments:', error);
         }
@@ -58,6 +59,11 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         setSearchTerm(term);
         fetchData(1, storePagination?.itemsPerPage || 10, term);
     }, [fetchData, storePagination?.itemsPerPage]);
+
+    const handleStatusChange = useCallback((status: string) => {
+        setStatusFilter(status);
+        fetchData(1, storePagination?.itemsPerPage || 10, searchTerm, status);
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
 
     const handlePageChange = useCallback((page: number) => {
         fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
@@ -275,14 +281,33 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                         className={styles.searchbar}
                     />
                     
-                    <div className={styles.itemsPerPageControl}>
+                    {/* select status */}
+                    <div className={styles.selectControl}>
+                        <label htmlFor="statusFilter">Status:</label>
+                        <select
+                            id="statusFilter"
+                            value={statusFilter}
+                            onChange={(e) => handleStatusChange(e.target.value)}
+                            disabled={loading}
+                            className={styles.selectOption}
+                        >
+                            <option value="">All Status</option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Rebooked">Rebooked</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div className={styles.selectControl}>
                         <label htmlFor="itemsPerPage">Items per page:</label>
                         <select
                             id="itemsPerPage"
                             value={storePagination?.itemsPerPage || 10}
                             onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
                             disabled={loading}
-                            className={styles.itemsPerPageSelect}
+                            className={styles.selectOption}
                         >
                             <option value={5}>5</option>
                             <option value={10}>10</option>

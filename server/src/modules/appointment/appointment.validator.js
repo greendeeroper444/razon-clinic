@@ -200,7 +200,7 @@ const validateQueryParams = [
     
     query('status')
         .optional()
-        .isIn(['Pending', 'Scheduled', 'Completed', 'Cancelled', 'Rebooked'])
+        .isIn([ '', 'Pending', 'Scheduled', 'Completed', 'Cancelled', 'Rebooked'])
         .withMessage('Invalid status value'),
     
     query('fromDate')

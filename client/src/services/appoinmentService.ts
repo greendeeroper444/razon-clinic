@@ -42,7 +42,8 @@ export const getAppointments = async (params = {}) => {
         const defaultParams = {
             page: 1,
             limit: 10,
-            search: ''
+            search: '',
+            status: ''
         };
 
         const queryParams = { ...defaultParams, ...params };
@@ -68,7 +69,8 @@ export const getMyAppointments = async (params = {}) => {
         const defaultParams = {
             page: 1,
             limit: 10,
-            search: ''
+            search: '',
+            status: ''
         };
 
         const queryParams = { ...defaultParams, ...params };

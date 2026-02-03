@@ -11,6 +11,7 @@ import { useAppointmentStore } from '../../../stores'
 const AppointmentPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     //zustand store selectors
     const {
@@ -38,9 +39,9 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         currentOperation
     } = useAppointmentStore();
 
-    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
+    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '', status: string = '') => {
         try {
-            await fetchAppointments({ page, limit, search });
+            await fetchAppointments({ page, limit, search, status });
         } catch (error) {
             console.error('Error fetching appointments:', error);
         }
@@ -48,23 +49,28 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
 
     useEffect(() => {
         if (isInitialLoad) {
-            fetchData(1, 10, '');
+            fetchData(1, 10, '', '');
             setIsInitialLoad(false);
         }
     }, [isInitialLoad, fetchData]);
 
     const handleSearch = useCallback((term: string) => {
         setSearchTerm(term);
-        fetchData(1, storePagination?.itemsPerPage || 10, term);
-    }, [fetchData, storePagination?.itemsPerPage]);
+        fetchData(1, storePagination?.itemsPerPage || 10, term, statusFilter);
+    }, [fetchData, storePagination?.itemsPerPage, statusFilter]);
 
-    const handlePageChange = useCallback((page: number) => {
-        fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
+    const handleStatusChange = useCallback((status: string) => {
+        setStatusFilter(status);
+        fetchData(1, storePagination?.itemsPerPage || 10, searchTerm, status);
     }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
 
+    const handlePageChange = useCallback((page: number) => {
+        fetchData(page, storePagination?.itemsPerPage || 10, searchTerm, statusFilter);
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm, statusFilter]);
+
     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
-        fetchData(1, itemsPerPage, searchTerm);
-    }, [fetchData, searchTerm]);
+        fetchData(1, itemsPerPage, searchTerm, statusFilter);
+    }, [fetchData, searchTerm, statusFilter]);
 
     const handleCreateClick = useCallback(() => {
         openModalCreate();
@@ -89,14 +95,15 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                 fetchData(
                     storePagination?.currentPage || 1, 
                     storePagination?.itemsPerPage || 10, 
-                    searchTerm
+                    searchTerm,
+                    statusFilter
                 );
                 closeModalCreate();
             }, 600);
         } catch (error) {
             console.error('Error adding appointment:', error);
         }
-    }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
+    }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, statusFilter, closeModalCreate])
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !selectedAppointment?.id) {
@@ -113,13 +120,14 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                 fetchData(
                     storePagination?.currentPage || 1, 
                     storePagination?.itemsPerPage || 10, 
-                    searchTerm
+                    searchTerm,
+                    statusFilter
                 );
             }, 600);
         } catch (error) {
             console.error('Error updating appointment:', error);
         }
-    }, [selectedAppointment, updateAppointmentData, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm])
+    }, [selectedAppointment, updateAppointmentData, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, statusFilter])
 
     const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
          if (typeof data !== 'string') {
@@ -134,14 +142,15 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                 fetchData(
                     storePagination?.currentPage || 1, 
                     storePagination?.itemsPerPage || 10, 
-                    searchTerm
+                    searchTerm,
+                    statusFilter
                 );
             }, 600);
 
         } catch (error) {
             console.error('Error deleting appointment:', error);
         }
-    }, [deleteAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+    }, [deleteAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, statusFilter]);
 
     //table columns
     const appointmentColumns: TableColumn<AppointmentResponse>[] = [
@@ -263,14 +272,33 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                         className={styles.searchbar}
                     />
                     
-                    <div className={styles.itemsPerPageControl}>
+                    {/* select status */}
+                    <div className={styles.selectControl}>
+                        <label htmlFor="statusFilter">Status:</label>
+                        <select
+                            id="statusFilter"
+                            value={statusFilter}
+                            onChange={(e) => handleStatusChange(e.target.value)}
+                            disabled={loading}
+                            className={styles.selectOption}
+                        >
+                            <option value="">All Status</option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Rebooked">Rebooked</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div className={styles.selectControl}>
                         <label htmlFor="itemsPerPage">Items per page:</label>
                         <select
                             id="itemsPerPage"
                             value={storePagination?.itemsPerPage || 10}
                             onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
                             disabled={loading}
-                            className={styles.itemsPerPageSelect}
+                            className={styles.selectOption}
                         >
                             <option value={5}>5</option>
                             <option value={10}>10</option>
@@ -297,7 +325,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                         <Table
                             columns={appointmentColumns}
                             data={appointments}
-                            emptyMessage='No appointments found. Click "New Appointment" to get started.'
+                            emptyMessage='No appointments found. Click "Walk-In Appointment" to get started.'
                             searchTerm={searchTerm}
                             getRowKey={(appointment) => appointment.id}
                         />

@@ -381,7 +381,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
                 <div className={styles.controls}>
                     <Searchbar
                         onSearch={handleSearch}
-                        placeholder="Search medicines..."
+                        placeholder="Search billing and payments"
                         disabled={loading}
                         className={styles.searchbar}
                     />
