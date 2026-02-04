@@ -16,6 +16,129 @@ class OTPService {
         return await bcrypt.hash(password, salt);
     }
 
+    /**
+     * Send OTP for registration verification (before user is created)
+     * Stores pending registration data temporarily
+     */
+    async sendRegistrationOTP(contactNumber, userData) {
+        try {
+            // Check if contact number already exists
+            const existingUser = await User.findOne({ contactNumber: contactNumber });
+            if (existingUser) {
+                throw new ApiError('Contact number already registered', 400);
+            }
+
+            // Invalidate any previous registration OTPs for this contact number
+            await OTP.updateMany(
+                { 
+                    contactNumber: contactNumber,
+                    purpose: 'registration',
+                    isUsed: false 
+                },
+                { 
+                    isUsed: true,
+                    usedAt: new Date()
+                }
+            );
+
+            const otpCode = this.generateOTP();
+
+            // Create OTP record without userId (since user doesn't exist yet)
+            const otp = await OTP.create({
+                userId: null, // No user yet
+                otp: otpCode,
+                purpose: 'registration',
+                contactNumber: contactNumber,
+                expiresAt: new Date(Date.now() + 5 * 60 * 1000), //5 minutes
+                // Store registration data temporarily in metadata
+                metadata: {
+                    pendingUserData: userData
+                }
+            });
+
+            const userName = `${userData.firstName} ${userData.lastName}`;
+            const replacements = {
+                userName: userName,
+                otpNumber: otpCode
+            };
+
+            const smsResult = await sendSMS(contactNumber, 'registrationOTP.txt', replacements);
+
+            return {
+                success: true,
+                message: 'Registration OTP sent successfully',
+                otpId: otp._id,
+                expiresAt: otp.expiresAt,
+                contactNumber: contactNumber.replace(/(\d{2})\d{7}(\d{2})/, '$1*******$2'),
+                smsResult: smsResult
+            };
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * Verify registration OTP and return the pending user data
+     */
+    async verifyRegistrationOTP(contactNumber, otpCode) {
+        try {
+            const otpRecord = await OTP.findOne({
+                contactNumber: contactNumber,
+                otp: otpCode,
+                purpose: 'registration',
+                isUsed: false
+            }).sort({ createdAt: -1 });
+
+            if (!otpRecord) {
+                throw new ApiError('Invalid OTP code', 400);
+            }
+
+            if (otpRecord.expiresAt < new Date()) {
+                throw new ApiError('OTP has expired', 400);
+            }
+
+            if (otpRecord.attempts >= otpRecord.maxAttempts) {
+                throw new ApiError('Maximum verification attempts exceeded', 400);
+            }
+
+            // Mark OTP as used
+            await otpRecord.markAsUsed();
+
+            // Return the pending user data stored in metadata
+            return {
+                success: true,
+                message: 'OTP verified successfully. You can now complete registration.',
+                pendingUserData: otpRecord.metadata?.pendingUserData,
+                otpId: otpRecord._id
+            };
+
+        } catch (error) {
+            // If OTP is invalid, increment attempts
+            if (error.message !== 'Invalid OTP code') {
+                const otpRecord = await OTP.findOne({
+                    contactNumber: contactNumber,
+                    otp: otpCode,
+                    purpose: 'registration',
+                    isUsed: false
+                }).sort({ createdAt: -1 });
+
+                if (otpRecord && otpRecord.isValid()) {
+                    await otpRecord.incrementAttempts();
+                    const remainingAttempts = otpRecord.maxAttempts - otpRecord.attempts;
+                    
+                    if (remainingAttempts > 0) {
+                        throw new ApiError(
+                            `Invalid OTP code. ${remainingAttempts} attempt(s) remaining`,
+                            400
+                        );
+                    }
+                }
+            }
+            throw error;
+        }
+    }
+
     async createAndSendOTP(userId, purpose = 'verification') {
         try {
             const user = await User.findById(userId);
@@ -140,6 +263,38 @@ class OTPService {
             }
 
             return await this.createAndSendOTP(userId, purpose);
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * Resend registration OTP
+     */
+    async resendRegistrationOTP(contactNumber) {
+        try {
+            const recentOTP = await OTP.findOne({
+                contactNumber: contactNumber,
+                purpose: 'registration',
+                createdAt: { $gte: new Date(Date.now() - 60 * 1000) }
+            });
+
+            if (recentOTP) {
+                throw new ApiError('Please wait before requesting a new OTP', 429);
+            }
+
+            // Get the pending user data from the most recent OTP
+            const lastOTP = await OTP.findOne({
+                contactNumber: contactNumber,
+                purpose: 'registration'
+            }).sort({ createdAt: -1 });
+
+            if (!lastOTP || !lastOTP.metadata?.pendingUserData) {
+                throw new ApiError('No pending registration found. Please start registration again.', 400);
+            }
+
+            return await this.sendRegistrationOTP(contactNumber, lastOTP.metadata.pendingUserData);
 
         } catch (error) {
             throw error;

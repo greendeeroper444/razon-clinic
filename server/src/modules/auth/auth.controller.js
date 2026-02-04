@@ -1,8 +1,130 @@
 const AuthService = require('./auth.service');
+const OTPService = require('@modules/otp/otp.service');
 const TokenHelper = require('@helpers/token.helper');
 const { ApiError } = require('@utils/errors');
 
 class AuthController {
+
+    async sendRegistrationOTP(req, res, next) {
+        try {
+            const { 
+                firstName, 
+                lastName,
+                middleName,
+                suffix,
+                emailOrContactNumber, 
+                password,
+                birthdate,
+                sex,
+                address,
+                religion
+            } = req.body;
+
+            //validate required fields
+            if (!firstName || !lastName || !emailOrContactNumber || !password || !birthdate || !sex || !address) {
+                throw new ApiError('All required fields must be provided', 400);
+            }
+
+            //validate that emailOrContactNumber is a contact number (not email)
+            const contactNumberRegex = /^(09|\+639)\d{9}$/;
+            if (!contactNumberRegex.test(emailOrContactNumber)) {
+                throw new ApiError('Please provide a valid contact number for registration', 400);
+            }
+
+            //prepare user data to store temporarily
+            const userData = {
+                firstName,
+                lastName,
+                middleName: middleName || null,
+                suffix: suffix || '',
+                password,
+                birthdate,
+                sex,
+                address,
+                religion: religion || null
+            };
+
+            //send OTP
+            const result = await OTPService.sendRegistrationOTP(emailOrContactNumber, userData);
+
+            res.status(200).json({
+                success: true,
+                message: result.message,
+                data: {
+                    otpId: result.otpId,
+                    expiresAt: result.expiresAt,
+                    contactNumber: result.contactNumber
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+    async verifyRegistrationOTP(req, res, next) {
+        try {
+            const { contactNumber, otp } = req.body;
+
+            if (!contactNumber || !otp) {
+                throw new ApiError('Contact number and OTP are required', 400);
+            }
+
+            //verify OTP and get pending user data
+            const verificationResult = await OTPService.verifyRegistrationOTP(contactNumber, otp);
+
+            if (!verificationResult.pendingUserData) {
+                throw new ApiError('Registration data not found. Please start registration again.', 400);
+            }
+
+            //create the user with the pending data
+            const userData = {
+                ...verificationResult.pendingUserData,
+                emailOrContactNumber: contactNumber
+            };
+
+            const result = await AuthService.createUser(userData);
+
+            //generate tokens for auto-login
+            const tokens = TokenHelper.generateTokens(result.user);
+            TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
+
+            res.status(201).json({
+                success: true,
+                message: 'Registration completed successfully',
+                data: {
+                    user: result.user,
+                    tokens: tokens
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async resendRegistrationOTP(req, res, next) {
+        try {
+            const { contactNumber } = req.body;
+
+            if (!contactNumber) {
+                throw new ApiError('Contact number is required', 400);
+            }
+
+            const result = await OTPService.resendRegistrationOTP(contactNumber);
+
+            res.status(200).json({
+                success: true,
+                message: result.message,
+                data: {
+                    otpId: result.otpId,
+                    expiresAt: result.expiresAt,
+                    contactNumber: result.contactNumber
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 
     async register(req, res, next) {
         try {

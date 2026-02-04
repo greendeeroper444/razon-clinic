@@ -5,7 +5,7 @@ const OTPSchema = new mongoose.Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
-            required: true
+            required: false 
         },
         otp: {
             type: String,
@@ -14,7 +14,7 @@ const OTPSchema = new mongoose.Schema(
         purpose: {
             type: String,
             required: true,
-            enum: ['verification', 'password_reset', 'login'],
+            enum: ['verification', 'password_reset', 'login', 'registration'],
             default: 'verification'
         },
         contactNumber: {
@@ -41,6 +41,10 @@ const OTPSchema = new mongoose.Schema(
         maxAttempts: {
             type: Number,
             default: 3
+        },
+        metadata: {
+            type: mongoose.Schema.Types.Mixed,
+            default: null
         }
     },
     {
@@ -49,6 +53,7 @@ const OTPSchema = new mongoose.Schema(
 );
 
 OTPSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+OTPSchema.index({ contactNumber: 1, purpose: 1 });
 
 OTPSchema.methods.isValid = function() {
     return !this.isUsed && this.expiresAt > new Date() && this.attempts < this.maxAttempts;

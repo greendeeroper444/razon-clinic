@@ -5,6 +5,9 @@ const { authenticate, authenticateRefresh, requireAdmin, requireDoctor, requireS
 const authController = require('./auth.controller');
 
 router.post('/register', validator.validateRegistration, authController.register);
+router.post('/register/send-otp', validator.validateRegistration, authController.sendRegistrationOTP);
+router.post('/register/verify-otp', authController.verifyRegistrationOTP);
+router.post('/register/resend-otp',  authController.resendRegistrationOTP);
 router.post('/login', validator.validateLogin, authController.login);
 router.post('/verifyToken', authController.verifyToken);
 router.post('/requestPasswordReset', authController.requestPasswordReset);
