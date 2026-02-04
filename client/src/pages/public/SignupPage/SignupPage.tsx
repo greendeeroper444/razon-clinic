@@ -3,7 +3,7 @@ import styles from './SignupPage.module.css'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { SectionFeatures, Footer, Input, Select, TextArea, TermsAndCondition } from '../../../components'
+import { SectionFeatures, Footer, Input, Select, TextArea, TermsAndCondition, Button } from '../../../components'
 import { useAuthenticationStore } from '../../../stores'
 import backgroundImage from '../../../assets/backgrounds/background2.png'
 import { validateAllSteps, validateSignupStep } from './signupStepValidation'
@@ -12,7 +12,8 @@ const STEPS = [
     { id: 1, title: 'Basic Info', description: 'Your personal details' },
     { id: 2, title: 'Account Security', description: 'Password and verification' },
     { id: 3, title: 'Personal Details', description: 'Additional information' },
-    { id: 4, title: 'Review', description: 'Carefully review and confirm your information before proceeding.' }
+    { id: 4, title: 'Review', description: 'Carefully review and confirm your information before proceeding.' },
+    { id: 5, title: 'Verify OTP', description: 'Enter the OTP sent to your contact number' }
 ]
 
 const SignupPage = () => {
@@ -27,6 +28,9 @@ const SignupPage = () => {
         showConfirmPassword,
         validationErrors,
         user,
+        otpSent,
+        otpVerified,
+        registrationContactNumber,
         updateSignupForm,
         setSignupStep,
         nextSignupStep,
@@ -35,13 +39,18 @@ const SignupPage = () => {
         togglePasswordVisibility,
         toggleConfirmPasswordVisibility,
         setValidationErrors,
-        register,
+        sendRegistrationOTP,
+        verifyRegistrationOTP,
+        resendRegistrationOTP,
         loadFormData,
         clearSavedFormData,
         initializeAuth
     } = useAuthenticationStore();
     
     const [showTermsModal, setShowTermsModal] = useState(false);
+    const [otp, setOtp] = useState('');
+    const [timer, setTimer] = useState(60);
+    const [canResend, setCanResend] = useState(false);
 
     useEffect(() => {
         initializeAuth()
@@ -61,24 +70,37 @@ const SignupPage = () => {
         }
     }, [user, navigate])
 
+    //OTP Timer
+    useEffect(() => {
+        if (signupStep === 5 && otpSent) {
+            setTimer(60);
+            setCanResend(false);
+            
+            const countdown = setInterval(() => {
+                setTimer((prev) => {
+                    if (prev <= 1) {
+                        setCanResend(true);
+                        clearInterval(countdown);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+
+            return () => clearInterval(countdown);
+        }
+    }, [signupStep, otpSent]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target as HTMLInputElement
         const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
         updateSignupForm(name as keyof typeof signupForm, newValue)
     }
 
-    //optional: real time field validation
-    // const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    //     const { name } = e.target
-    //     const fieldError = validateField(name as keyof typeof signupForm, signupForm[name as keyof typeof signupForm], signupForm)
-        
-    //     if (fieldError) {
-    //         setValidationErrors({ ...validationErrors, [name]: fieldError })
-    //     } else {
-    //         const { [name]: removed, ...rest } = validationErrors
-    //         setValidationErrors(rest)
-    //     }
-    // }
+    const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+        setOtp(value);
+    };
 
     const validateCurrentStep = (): boolean => {
         const stepErrors = validateSignupStep(signupStep, signupForm)
@@ -103,52 +125,104 @@ const SignupPage = () => {
 
     const prevStep = () => {
         if (signupStep > 1) {
+            //if going back from OTP step, allow them to edit form
+            if (signupStep === 5) {
+                setOtp('');
+            }
             prevSignupStep()
         }
     }
 
     const goToStep = (stepNumber: number) => {
+        //don't allow jumping to OTP step directly
+        if (stepNumber === 5) return;
+        
         if (stepNumber <= signupStep || completedSteps.has(stepNumber - 1)) {
             setSignupStep(stepNumber)
         }
     }
 
+    const handleSendOTP = async () => {
+        const allErrors = validateAllSteps(signupForm)
+        
+        if (Object.keys(allErrors).length === 0) {
+            try {
+                const cleanedData = {
+                    firstName: signupForm.firstName,
+                    lastName: signupForm.lastName,
+                    middleName: signupForm.middleName,
+                    suffix: signupForm.suffix,
+                    emailOrContactNumber: signupForm.emailOrContactNumber,
+                    password: signupForm.password,
+                    birthdate: signupForm.birthdate,
+                    sex: signupForm.sex,
+                    address: signupForm.address,
+                    religion: signupForm.religion === 'Others' ? signupForm.religionOther : signupForm.religion
+                }
+
+                const success = await sendRegistrationOTP(cleanedData);
+                
+                if (success) {
+                    //move to OTP verification step
+                    completeStep(4);
+                    setSignupStep(5);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            setValidationErrors(allErrors)
+            Object.values(allErrors).forEach(error => {
+                if (error) {
+                    toast.error(error)
+                }
+            })
+        }
+    };
+
+    const handleVerifyOTP = async () => {
+        if (otp.length !== 6) {
+            toast.error('Please enter a valid 6-digit OTP');
+            return;
+        }
+
+        try {
+            const success = await verifyRegistrationOTP(registrationContactNumber, otp);
+            
+            if (success) {
+                //registration complete, redirect after a short delay
+                setTimeout(() => {
+                    navigate('/user/appointments');
+                }, 2000);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleResendOTP = async () => {
+        try {
+            const success = await resendRegistrationOTP(registrationContactNumber);
+            
+            if (success) {
+                setOtp('');
+                setTimer(60);
+                setCanResend(false);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         
-        if (signupStep === STEPS.length) {
-            const allErrors = validateAllSteps(signupForm)
-            
-            if (Object.keys(allErrors).length === 0) {
-                try {
-                    const cleanedData = {
-                        firstName: signupForm.firstName,
-                        lastName: signupForm.lastName,
-                        middleName: signupForm.middleName,
-                        emailOrContactNumber: signupForm.emailOrContactNumber,
-                        password: signupForm.password,
-                        birthdate: signupForm.birthdate,
-                        sex: signupForm.sex,
-                        address: signupForm.address,
-                        religion: signupForm.religion === 'Others' ? signupForm.religionOther : signupForm.religion
-                    }
-
-                    await register(cleanedData)
-                    
-                    setTimeout(() => {
-                        navigate('/login')
-                    }, 2000)
-                } catch (error) {
-                    console.log(error);
-                }
-            } else {
-                setValidationErrors(allErrors)
-                Object.values(allErrors).forEach(error => {
-                    if (error) {
-                        toast.error(error)
-                    }
-                })
-            }
+        if (signupStep === 4) {
+            //review step - send OTP
+            await handleSendOTP();
+        } else if (signupStep === 5) {
+            //OTP verification step
+            await handleVerifyOTP();
         } else {
             nextStep()
         }
@@ -382,6 +456,48 @@ const SignupPage = () => {
                     </div>
                 )
 
+            case 5:
+                return (
+                    <div className={styles.otpStep}>
+                        <p className={styles.otpInstructions}>
+                            We've sent a 6-digit verification code to<br />
+                            <strong>{registrationContactNumber}</strong>
+                        </p>
+
+                        <Input
+                            type='text'
+                            placeholder='Enter 6-digit OTP'
+                            leftIcon='lock'
+                            value={otp}
+                            onChange={handleOtpChange}
+                            maxLength={6}
+                            disabled={isLoading}
+                        />
+
+                        <div className={styles.timerSection}>
+                            {
+                                !canResend ? (
+                                    <p className={styles.timerText}>
+                                        Resend OTP in {timer} seconds
+                                    </p>
+                                ) : (
+                                    <Button
+                                        type="button"
+                                        variant="secondary"
+                                        onClick={handleResendOTP}
+                                        disabled={isLoading}
+                                        isLoading={isLoading}
+                                        loadingText="Sending..."
+                                        className={styles.resendButton}
+                                    >
+                                        Resend OTP
+                                    </Button>
+                                )
+                            }
+                        </div>
+                    </div>
+                )
+
             default:
                 return null
         }
@@ -393,18 +509,20 @@ const SignupPage = () => {
             <div className={styles.loginContainer}>
                 <div className={styles.loginFormSection}>
                     <form className={styles.loginForm} onSubmit={handleSubmit}>
-                        {/* auto-save indicator */}
-                        <div className={styles.autoSaveIndicator}>
-                            <small>✓ Form data is automatically saved for 1 hour</small>
-                            <button 
-                                type='button' 
-                                onClick={handleClearSavedData}
-                                className={styles.clearDataButton}
-                                title='Clear saved form data'
-                            >
-                                Clear Data
-                            </button>
-                        </div>
+                        {/* auto-save indicator - hide on OTP step */}
+                        {signupStep !== 5 && (
+                            <div className={styles.autoSaveIndicator}>
+                                <small>✓ Form data is automatically saved for 1 hour</small>
+                                <button 
+                                    type='button' 
+                                    onClick={handleClearSavedData}
+                                    className={styles.clearDataButton}
+                                    title='Clear saved form data'
+                                >
+                                    Clear Data
+                                </button>
+                            </div>
+                        )}
 
                         {/* step progress indicator */}
                         <div className={styles.stepIndicator}>
@@ -416,6 +534,8 @@ const SignupPage = () => {
                                             signupStep === step.id ? styles.active : ''
                                         } ${
                                             completedSteps.has(step.id) ? styles.completed : ''
+                                        } ${
+                                            step.id === 5 ? styles.otpStepItem : ''
                                         }`}
                                         onClick={() => goToStep(step.id)}
                                     >
@@ -456,6 +576,7 @@ const SignupPage = () => {
                                         type='button' 
                                         className={styles.prevButton}
                                         onClick={prevStep}
+                                        disabled={isLoading}
                                     >
                                         <ArrowLeft className='w-4 h-4 mr-1' /> Previous
                                     </button>
@@ -465,11 +586,16 @@ const SignupPage = () => {
                             <button 
                                 type='submit' 
                                 className={styles.nextButton}
-                                disabled={isLoading}
+                                disabled={isLoading || (signupStep === 5 && otp.length !== 6)}
                             >
                                 {
-                                    isLoading ? 'Creating Account...' : 
-                                    signupStep === STEPS.length ? 'Create Account' : 
+                                    isLoading ? (
+                                        signupStep === 5 ? 'Verifying...' : 
+                                        signupStep === 4 ? 'Sending OTP...' :
+                                        'Loading...'
+                                    ) : 
+                                    signupStep === 5 ? 'Verify & Create Account' :
+                                    signupStep === 4 ? 'Send OTP' : 
                                     <>
                                         Next <ArrowRight className='w-4 h-4 ml-1' />
                                     </>

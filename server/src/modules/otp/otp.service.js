@@ -16,19 +16,16 @@ class OTPService {
         return await bcrypt.hash(password, salt);
     }
 
-    /**
-     * Send OTP for registration verification (before user is created)
-     * Stores pending registration data temporarily
-     */
+    
     async sendRegistrationOTP(contactNumber, userData) {
         try {
-            // Check if contact number already exists
+            //check if contact number already exists
             const existingUser = await User.findOne({ contactNumber: contactNumber });
             if (existingUser) {
                 throw new ApiError('Contact number already registered', 400);
             }
 
-            // Invalidate any previous registration OTPs for this contact number
+            //invalidate any previous registration OTPs for this contact number
             await OTP.updateMany(
                 { 
                     contactNumber: contactNumber,
@@ -43,14 +40,14 @@ class OTPService {
 
             const otpCode = this.generateOTP();
 
-            // Create OTP record without userId (since user doesn't exist yet)
+            // create OTP record without userId (since user doesn't exist yet)
             const otp = await OTP.create({
                 userId: null, // No user yet
                 otp: otpCode,
                 purpose: 'registration',
                 contactNumber: contactNumber,
                 expiresAt: new Date(Date.now() + 5 * 60 * 1000), //5 minutes
-                // Store registration data temporarily in metadata
+                //store registration data temporarily in metadata
                 metadata: {
                     pendingUserData: userData
                 }
@@ -78,9 +75,7 @@ class OTPService {
         }
     }
 
-    /**
-     * Verify registration OTP and return the pending user data
-     */
+
     async verifyRegistrationOTP(contactNumber, otpCode) {
         try {
             const otpRecord = await OTP.findOne({
@@ -102,10 +97,10 @@ class OTPService {
                 throw new ApiError('Maximum verification attempts exceeded', 400);
             }
 
-            // Mark OTP as used
+            //mark OTP as used
             await otpRecord.markAsUsed();
 
-            // Return the pending user data stored in metadata
+            //return the pending user data stored in metadata
             return {
                 success: true,
                 message: 'OTP verified successfully. You can now complete registration.',
@@ -114,7 +109,7 @@ class OTPService {
             };
 
         } catch (error) {
-            // If OTP is invalid, increment attempts
+            //if OTP is invalid, increment attempts
             if (error.message !== 'Invalid OTP code') {
                 const otpRecord = await OTP.findOne({
                     contactNumber: contactNumber,

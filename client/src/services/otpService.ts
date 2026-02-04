@@ -1,6 +1,58 @@
 import axios from './httpClient'
 import API_BASE_URL from "../ApiBaseUrl";
 
+// ============================================
+// REGISTRATION OTP ENDPOINTS
+// ============================================
+
+export const sendRegistrationOTP = async (userData: any) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/auth/register/send-otp`, userData);
+        return response.data;
+    } catch (error) {
+        console.error('Error sending registration OTP:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+        throw error;
+    }
+};
+
+export const verifyRegistrationOTP = async (contactNumber: string, otp: string) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/auth/register/verify-otp`, {
+            contactNumber,
+            otp
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error verifying registration OTP:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+        throw error;
+    }
+};
+
+export const resendRegistrationOTP = async (contactNumber: string) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/auth/register/resend-otp`, {
+            contactNumber
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error resending registration OTP:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+        throw error;
+    }
+};
+
+// ============================================
+// PASSWORD RESET OTP ENDPOINTS
+// ============================================
+
 export const sendPasswordResetOTP = async (contactNumber: string) => {
     try {
         const response = await axios.post(`${API_BASE_URL}/api/otp/sendPasswordResetOTP`, {

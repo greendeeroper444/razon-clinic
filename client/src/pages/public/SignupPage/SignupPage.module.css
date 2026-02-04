@@ -277,6 +277,41 @@
     color: var(--primary);
 }
 
+.otpStep {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 1rem 0;
+}
+
+.otpInstructions {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.otpInstructions strong {
+    color: #374151;
+    font-weight: 600;
+}
+
+.timerSection {
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.timerText {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.resendButton {
+    width: 100%;
+}
+
 .stepNavigation {
     display: flex;
     justify-content: space-between;
