@@ -354,9 +354,13 @@ const BillingForm: React.FC<BillingFormProps> = ({
                                                     <option value="">Select item...</option>
                                                     {
                                                         availableItems.map((availableItem) => (
-                                                            <option key={`${availableItem.name}-${availableItem.category}`} value={availableItem.name}>
-                                                                {availableItem.name} ({availableItem.category}) 
-                                                                {/* - Stock: {availableItem.availableQuantity} */}
+                                                            <option 
+                                                                key={`${availableItem.name}-${availableItem.category}`} 
+                                                                value={availableItem.name}
+                                                                disabled={availableItem.availableQuantity === 0}
+                                                                className={availableItem.availableQuantity === 0 ? styles.outOfStock : ''}
+                                                            >
+                                                                {availableItem.name} ({availableItem.availableQuantity} {availableItem.availableQuantity === 0 ? 'out of stock' : 'stocks'})
                                                             </option>
                                                         ))
                                                     }

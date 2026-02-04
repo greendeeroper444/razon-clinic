@@ -131,6 +131,11 @@
     color: #666;
 }
 
+.outOfStock {
+    color: #dc2626 !important;
+    font-style: italic;
+}
+
 .quantityInput {
     width: 60px;
     padding: 6px 8px;
