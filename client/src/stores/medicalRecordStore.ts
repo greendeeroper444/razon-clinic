@@ -406,33 +406,33 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     id: record.id,
                     
                     //personal details
-                    fullName: record.personalDetails.fullName,
-                    dateOfBirth: record.personalDetails.dateOfBirth.split('T')[0],
-                    gender: record.personalDetails.gender,
-                    bloodType: record.personalDetails.bloodType || '',
-                    phone: record.personalDetails.phone,
-                    email: record.personalDetails.email || '',
-                    address: record.personalDetails.address || '',
-                    emergencyContact: record.personalDetails.emergencyContact || '',
-        
+                    fullName: record.personalDetails?.fullName || '',
+                    dateOfBirth: record.personalDetails?.dateOfBirth?.split('T')[0] || '',
+                    gender: record.personalDetails?.gender || '',
+                    bloodType: record.personalDetails?.bloodType || '',
+                    phone: record.personalDetails?.phone || '',
+                    email: record.personalDetails?.email || '',
+                    address: record.personalDetails?.address || '',
+                    emergencyContact: record.personalDetails?.emergencyContact || '',
+
                     //current symptoms
-                    chiefComplaint: record.currentSymptoms.chiefComplaint,
-                    symptomsDescription: record.currentSymptoms.symptomsDescription,
-                    symptomsDuration: record.currentSymptoms.symptomsDuration || '',
-                    painScale: record.currentSymptoms.painScale || 0,
-        
+                    chiefComplaint: record.currentSymptoms?.chiefComplaint || '',
+                    symptomsDescription: record.currentSymptoms?.symptomsDescription || '',
+                    symptomsDuration: record.currentSymptoms?.symptomsDuration || '',
+                    painScale: record.currentSymptoms?.painScale || 0,
+
                     //medical history
-                    allergies: record.medicalHistory.allergies || '',
-                    chronicConditions: record.medicalHistory.chronicConditions || '',
-                    previousSurgeries: record.medicalHistory.previousSurgeries || '',
-                    familyHistory: record.medicalHistory.familyHistory || '',
-        
+                    allergies: record.medicalHistory?.allergies || '',
+                    chronicConditions: record.medicalHistory?.chronicConditions || '',
+                    previousSurgeries: record.medicalHistory?.previousSurgeries || '',
+                    familyHistory: record.medicalHistory?.familyHistory || '',
+
                     //growth Milestones
-                    height: record.growthMilestones.height || 0,
-                    weight: record.growthMilestones.weight || 0,
-                    bmi: record.growthMilestones.bmi || '',
-                    growthNotes: record.growthMilestones.growthNotes || '',
-        
+                    height: record.growthMilestones?.height || 0,
+                    weight: record.growthMilestones?.weight || 0,
+                    bmi: record.growthMilestones?.bmi || '',
+                    growthNotes: record.growthMilestones?.growthNotes || '',
+
                     //clinical Information
                     diagnosis: record.diagnosis || '',
                     treatmentPlan: record.treatmentPlan || '',
