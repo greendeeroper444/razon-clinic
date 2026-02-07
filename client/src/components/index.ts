@@ -14,6 +14,7 @@ export { default as Searchbar } from './ui/Searchbar/Searchbar';
 export { default as Table } from './ui/Table/Table';
 export { default as Tormentum } from './ui/Tormentum/Tormentum';
 export { default as Tab } from './ui/Tab/Tab';
+export { DateRangeFilter } from './ui/DateRangeFilter/DateRangeFilter';
 
 //layout components
 export { default as Footer } from './layout/Footer/Footer';

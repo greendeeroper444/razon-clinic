@@ -3,18 +3,31 @@ import styles from './MedicalRecordsPage.module.css';
 import { Plus, Download, Trash, Edit } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { FormDataType, MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
-import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
+import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table, DateRangeFilter } from '../../../components';
 import { toast } from 'sonner';
 import { calculateAge2, formatDate, generate20Only, generateInitials, getLoadingText } from '../../../utils';
 import { useMedicalRecordStore } from '../../../stores';
 import { useNavigate } from 'react-router-dom';
 import { generateMedicalRecordPDF } from '../../../templates';
+import { useDateRange } from '../../../hooks/useDateRange';
 
 const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+    //custom date range hook
+    const {
+        dateRange,
+        customFromDate,
+        customToDate,
+        setDateRange,
+        setCustomFromDate,
+        setCustomToDate,
+        getDateParams
+    } = useDateRange('all');
+
     //zustand store selectors
     const {
         medicalRecords,
@@ -43,15 +56,19 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         exportMedicalRecords
     } = useMedicalRecordStore();
 
-
-    //calculate summary stats using useMemo for performance
     const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
         try {
-            await fetchMedicalRecords({ page, limit, search });
+            const dateParams = getDateParams();
+            await fetchMedicalRecords({ 
+                page, 
+                limit, 
+                search,
+                ...dateParams
+            });
         } catch (error) {
             console.error('Error fetching medical records:', error);
         }
-    }, [fetchMedicalRecords]);
+    }, [fetchMedicalRecords, getDateParams]);
 
     useEffect(() => {
         if (isInitialLoad) {
@@ -72,6 +89,17 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
+
+    const handleDateRangeChange = useCallback((range: string) => {
+        setDateRange(range as any);
+        if (range !== 'custom') {
+            fetchData(1, storePagination?.itemsPerPage || 10, searchTerm);
+        }
+    }, [setDateRange, fetchData, storePagination?.itemsPerPage, searchTerm]);
+
+    const handleApplyCustomRange = useCallback(() => {
+        fetchData(1, storePagination?.itemsPerPage || 10, searchTerm);
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
 
     const handleCreateClick = useCallback(() => {
         openModalCreate();
@@ -167,7 +195,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
             return;
         }
 
-        //prevent multiple simultaneous downloads
         if (isGeneratingPDF) {
             toast.warning('Please wait, generating receipt...');
             return;
@@ -335,6 +362,17 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                         placeholder="Search records..."
                         disabled={loading}
                         className={styles.searchbar}
+                    />
+
+                    <DateRangeFilter
+                        dateRange={dateRange}
+                        customFromDate={customFromDate}
+                        customToDate={customToDate}
+                        onDateRangeChange={handleDateRangeChange}
+                        onCustomFromDateChange={setCustomFromDate}
+                        onCustomToDateChange={setCustomToDate}
+                        onApplyCustomRange={handleApplyCustomRange}
+                        disabled={loading}
                     />
                     
                     <div className={styles.itemsPerPageControl}>

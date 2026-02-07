@@ -306,12 +306,32 @@ const validateQueryParams = [
         .isIn(['asc', 'desc']).withMessage('Sort order must be asc or desc'),
     
     query('fromDate')
-        .optional()
-        .isISO8601().withMessage('From date must be a valid date'),
+        .optional({ values: 'falsy' }) //this allows empty strings to pass
+        .custom((value) => {
+            //skip validation if empty string or null
+            if (!value || value === '') return true;
+            
+            //validate if value exists
+            const date = new Date(value);
+            if (isNaN(date.getTime())) {
+                throw new Error('From date must be a valid date');
+            }
+            return true;
+        }),
     
     query('toDate')
-        .optional()
-        .isISO8601().withMessage('To date must be a valid date'),
+        .optional({ values: 'falsy' })
+        .custom((value) => {
+            //skip validation if empty string or null
+            if (!value || value === '') return true;
+            
+            //validate if value exists
+            const date = new Date(value);
+            if (isNaN(date.getTime())) {
+                throw new Error('To date must be a valid date');
+            }
+            return true;
+        }),
     
     query('gender')
         .optional()
