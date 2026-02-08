@@ -603,7 +603,12 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     name='painScale'
                     placeholder="Rate pain 1-10"
                     value={formData?.painScale || ''}
-                    onChange={onChange}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '' || (Number(value) >= 1 && Number(value) <= 10)) {
+                            onChange(e);
+                        }
+                    }}
                     min={1}
                     max={10}
                     disabled={isLoading}
