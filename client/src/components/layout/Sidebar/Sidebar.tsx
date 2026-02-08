@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import styles from './Sidebar.module.css';
 import { Link, useLocation } from 'react-router-dom';
-import { Hospital, LayoutDashboard, CalendarCheck, Bed, Pill, Menu, ChevronLeft, FileText, CreditCard, User, ScrollText, Trash, BlocksIcon } from 'lucide-react';
+import { Hospital, LayoutDashboard, CalendarCheck, Bed, Pill, Menu, ChevronLeft, FileText, CreditCard, User, ScrollText, Trash, BlocksIcon, User2 } from 'lucide-react';
 import { SidebarProps } from '../../../types';
 import { useAuthenticationStore } from '../../../stores/authenticationStore';
 
@@ -116,14 +116,14 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                                 <FileText color='#94a3b8' size={20} />
                                 <span className={styles.menuText}>Medical Records</span>
                             </Link>
-                            {/* <Link
-                                to='/admin/growth-milestone'
-                                className={`${styles.menuItem} ${isActive('/admin/growth-milestone') ? styles.active : ''}`}
-                                title='Growth Milestone'
+                            <Link
+                                to='/admin/personnel-management'
+                                className={`${styles.menuItem} ${isActive('/admin/personnel-management') ? styles.active : ''}`}
+                                title='Personnel Management'
                             >
-                                <TrendingUp color='#94a3b8' size={20} />
-                                <span className={styles.menuText}>Growth Milestone</span>
-                            </Link> */}
+                                <User2 color='#94a3b8' size={20} />
+                                <span className={styles.menuText}>Personnel Management</span>
+                            </Link>
                         </>
                     ) : (
                         <Link

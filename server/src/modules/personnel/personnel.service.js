@@ -6,25 +6,25 @@ class PersonnelService {
     
     async createPersonnel(personnelData) {
         try {
-            const { emailOrContactNumber, password, ...restData } = personnelData;
+            const { contactNumber, password, ...restData } = personnelData;
 
-            //determine if emailOrContactNumber is email or contact number
-            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrContactNumber);
+            //determine if contactNumber is email or contact number
+            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactNumber);
             
             const dataToSave = {
                 ...restData,
-                email: isEmail ? emailOrContactNumber : undefined,
-                contactNumber: !isEmail ? emailOrContactNumber : undefined
+                email: isEmail ? contactNumber : undefined,
+                contactNumber: !isEmail ? contactNumber : undefined
             };
 
             //check if email or contact number already exists
             if (isEmail) {
-                const existingEmail = await Admin.findOne({ email: emailOrContactNumber });
+                const existingEmail = await Admin.findOne({ email: contactNumber });
                 if (existingEmail) {
                     throw new Error('Email already exists');
                 }
             } else {
-                const existingContact = await Admin.findOne({ contactNumber: emailOrContactNumber });
+                const existingContact = await Admin.findOne({ contactNumber: contactNumber });
                 if (existingContact) {
                     throw new Error('Contact number already exists');
                 }
@@ -163,19 +163,41 @@ class PersonnelService {
                 throw new Error('Invalid personnel ID format');
             }
 
-            //handle emailOrContactNumber if provided
-            if (updateData.emailOrContactNumber) {
-                const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(updateData.emailOrContactNumber);
+            //get current personnel data to check for existing contact info
+            const currentPersonnel = await Admin.findById(personnelId);
+            if (!currentPersonnel) {
+                throw new Error('Personnel not found');
+            }
+
+            //handle contactNumber if provided
+            if (updateData.contactNumber) {
+                const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(updateData.contactNumber);
                 
+                //check for duplicates (excluding current personnel)
                 if (isEmail) {
-                    updateData.email = updateData.emailOrContactNumber;
-                    updateData.contactNumber = undefined;
+                    const existingEmail = await Admin.findOne({ 
+                        email: updateData.contactNumber,
+                        _id: { $ne: personnelId }
+                    });
+                    if (existingEmail) {
+                        throw new Error('Email already exists');
+                    }
+                    
+                    //set email and clear contactNumber
+                    updateData.email = updateData.contactNumber;
+                    updateData.contactNumber = null;
                 } else {
-                    updateData.contactNumber = updateData.emailOrContactNumber;
-                    updateData.email = undefined;
+                    const existingContact = await Admin.findOne({ 
+                        contactNumber: updateData.contactNumber,
+                        _id: { $ne: personnelId }
+                    });
+                    if (existingContact) {
+                        throw new Error('Contact number already exists');
+                    }
+                    
+                    //keep contactNumber and clear email
+                    updateData.email = null;
                 }
-                
-                delete updateData.emailOrContactNumber;
             }
 
             //hash password if provided
@@ -246,10 +268,10 @@ class PersonnelService {
     }
 
     async validatePersonnelData(data) {
-        const { firstName, lastName, emailOrContactNumber, password, birthdate, sex, address, role } = data;
+        const { firstName, lastName, contactNumber, password, birthdate, sex, address, role } = data;
         
-        if (!firstName || !lastName || !emailOrContactNumber || !password || !birthdate || !sex || !address || !role) {
-            throw new Error('Missing required fields: firstName, lastName, emailOrContactNumber, password, birthdate, sex, address, role');
+        if (!firstName || !lastName || !contactNumber || !password || !birthdate || !sex || !address || !role) {
+            throw new Error('Missing required fields: firstName, lastName, contactNumber, password, birthdate, sex, address, role');
         }
 
         //validate role
@@ -268,9 +290,9 @@ class PersonnelService {
             throw new Error('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character');
         }
 
-        //validate emailOrContactNumber format
-        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrContactNumber);
-        const isPhoneNumber = /^(09|\+639)\d{9}$/.test(emailOrContactNumber);
+        //validate contactNumber format
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactNumber);
+        const isPhoneNumber = /^(09|\+639)\d{9}$/.test(contactNumber);
         
         if (!isEmail && !isPhoneNumber) {
             throw new Error('Please provide a valid email address or Philippine contact number');

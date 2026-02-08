@@ -8,3 +8,4 @@ export { useTrashStore } from './trashStore';
 export { useReportStore } from './reportStore';
 export { useBlockedTimeSlotStore } from './blockedTimeSlotStore';
 export { useOTPStore } from './otpStore';
+export { usePersonnelStore } from './personnelStore';

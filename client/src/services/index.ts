@@ -7,3 +7,4 @@ export * from './notificationService';
 export * from './userService';
 export * from './patientService';
 export * from './blockedTimeSlotService';
+export * from './personnelService';

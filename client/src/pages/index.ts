@@ -28,6 +28,8 @@ export { default as GrowthMilestonePage } from './admin/GrowthMilestonePage/Grow
 export { default as ReportPage } from './admin/ReportPage/ReportPage';
 export { default as TrashPage } from './admin/TrashPage/TrashPage';
 export { default as BlockedTimeSlotPage } from './admin/BlockedTimeSlotPage/BlockedTimeSlotPage';
+export { default as PersonnelManagementPage } from './admin/PersonnelManagementPage/PersonnelManagementPage';
+
 
 //user pages
 export { default as UserAppointmentPage } from './user/AppointmentPage/AppointmentPage';

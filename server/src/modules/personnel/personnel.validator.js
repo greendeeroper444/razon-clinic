@@ -18,7 +18,7 @@ const validatePersonnel = [
         .trim()
         .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
     
-    body('emailOrContactNumber')
+    body('contactNumber')
         .notEmpty().withMessage('Email or contact number is required')
         .trim()
         .custom((value) => {
@@ -86,7 +86,7 @@ const validatePersonnelUpdate = [
         .trim()
         .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
     
-    body('emailOrContactNumber')
+    body('contactNumber')
         .optional()
         .trim()
         .custom((value) => {
@@ -155,10 +155,10 @@ const validateQueryParams = [
         .optional()
         .isIn(['Doctor', 'Staff']).withMessage('Role must be either Doctor or Staff'),
     
-    query('search')
-        .optional()
-        .trim()
-        .isLength({ min: 1, max: 100 }).withMessage('Search term must be between 1 and 100 characters'),
+    // query('search')
+    //     .optional()
+    //     .trim()
+    //     .isLength({ min: 1, max: 100 }).withMessage('Search term must be between 1 and 100 characters'),
     
     query('sortBy')
         .optional()

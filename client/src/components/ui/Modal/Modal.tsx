@@ -2,9 +2,9 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import styles from './Modal.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import { AppointmentForm, BillingsForm, BillingDetailsForm, BlockedTimeSlotForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../../features/Forms'
+import { AppointmentForm, BillingsForm, BillingDetailsForm, BlockedTimeSlotForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, PersonnelForm, StatusForm } from '../../features/Forms'
 import { formatDateForDisplay, formatDateForInput } from '../../../utils'
-import { AppointmentFormData, AppointmentStatus, BillingFormData, BlockedTimeSlotFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalProps, PatientFormData } from '../../../types'
+import { AppointmentFormData, AppointmentStatus, BillingFormData, BlockedTimeSlotFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalProps, PatientFormData, PersonnelFormData } from '../../../types'
 import Button from '../Button/Button'
 
 
@@ -34,8 +34,16 @@ const Modal: React.FC<ModalProps> = ({
         if (editData) {
             //format birthdate for input field if it exists
             const processedEditData = { ...editData };
-            if ((modalType === 'appointment' || modalType === 'patient') && 'birthdate' in processedEditData && processedEditData.birthdate) {
+            if ((modalType === 'appointment' || modalType === 'patient' || modalType === 'personnel') && 'birthdate' in processedEditData && processedEditData.birthdate) {
                 processedEditData.birthdate = formatDateForInput(processedEditData.birthdate as string);
+            }
+            
+            //for personnel modal, ensure contactNumber is populated from either email or contactNumber field
+            if (modalType === 'personnel') {
+                const personnelData = processedEditData as any;
+                if (!personnelData.contactNumber && personnelData.email) {
+                    processedEditData.contactNumber = personnelData.email;
+                }
             }
             
             setFormData(processedEditData);
@@ -113,6 +121,18 @@ const Modal: React.FC<ModalProps> = ({
                         occupation: ''
                     }
                 } as PatientFormData);
+            } else if (modalType === 'personnel') {
+                setFormData({
+                    firstName: '',
+                    lastName: '',
+                    middleName: '',
+                    emailOrContactNumber: '',
+                    password: '',
+                    birthdate: '',
+                    sex: '',
+                    address: '',
+                    role: ''
+                } as PersonnelFormData);
             } else if (modalType === 'item') {
                 setFormData({
                     itemName: '',
@@ -282,6 +302,9 @@ const Modal: React.FC<ModalProps> = ({
         case 'patient':
             title = editData ? 'Edit Patient' : 'New Patient';
             break;
+        case 'personnel':
+            title = editData ? 'Edit Personnel' : 'New Personnel';
+            break;
         case 'item':
             title = editData ? 'Edit Inventory Item' : 'New Inventory Item';
             break;
@@ -334,6 +357,13 @@ const Modal: React.FC<ModalProps> = ({
                             onChange={handleChange}
                         />
                     </>
+                );
+            case 'personnel':
+                return (
+                    <PersonnelForm
+                        formData={formData as PersonnelFormData}
+                        onChange={handleChange}
+                    />
                 );
             case 'item':
                 return (
