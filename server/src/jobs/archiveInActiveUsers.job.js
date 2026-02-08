@@ -3,10 +3,6 @@ const moment = require('moment-timezone');
 const User = require('@modules/user/user.model');
 const logger = require('@utils/logger');
 
-/**
- * archive users who have been inactive for 1 year
- * runs daily at 2:00 AM Singapore time
- */
 const archiveInactiveUsers = cron.schedule('0 2 * * *', async () => {
     try {
         const now = moment().tz('Asia/Singapore');

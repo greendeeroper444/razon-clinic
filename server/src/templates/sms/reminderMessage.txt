@@ -1,0 +1,12 @@
+Hello {{userName}},
+
+This is a reminder about your appointment tomorrow:
+
+Date: {{preferredDate}}
+Time: {{preferredTime}}
+Purpose: {{reasonForVisit}}
+Appointment #: {{appointmentNumber}}
+
+Please arrive 10 minutes before your scheduled time. If you need to reschedule, please contact us as soon as possible.
+
+Thank you!

@@ -10,6 +10,7 @@ const setupMiddleware = require('@middlewares/middleware');
 const setupRoutes = require('@routes');
 const errorHandler = require('@middlewares/errorHandler.middleware');
 const { startArchiveJob } = require('@jobs/archiveInActivePatients.job');
+const { startAppointmentRemindersJob } = require('@jobs/appointmentReminders.job');
 
 
 //initialize express app
@@ -32,6 +33,7 @@ const startServer = async () => {
         
         //start cron jobs
         startArchiveJob();
+        startAppointmentRemindersJob();
 
         //start server
         const PORT = config.port || 3000;
@@ -56,7 +58,7 @@ process.on('unhandledRejection', (err) => {
 //handle uncaught exceptions
 process.on('uncaughtException', (err) => {
   logger.error('Uncaught Exception', err);
-  //cracefully shutdown in case of uncaught exception
+  //gracefully shutdown in case of uncaught exception
   process.exit(1);
 });
 
