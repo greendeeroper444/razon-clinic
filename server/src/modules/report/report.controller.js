@@ -153,6 +153,81 @@ class ReportController {
         }
     }
 
+    // ==================== MEDICAL RECORDS REPORTS ====================
+    async getMedicalRecordsReport(req, res, next) {
+        try {
+            const result = await ReportService.getMedicalRecordsReport(req.query);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Medical records report retrieved successfully',
+                data: result
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getMedicalRecordsSummary(req, res, next) {
+        try {
+            const summary = await ReportService.getMedicalRecordsSummary();
+
+            return res.status(200).json({
+                success: true,
+                message: 'Medical records summary retrieved successfully',
+                data: summary
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async exportMedicalRecordsReport(req, res, next) {
+        try {
+            const {
+                search,
+                gender,
+                period,
+                fromDate,
+                toDate,
+                sortBy,
+                sortOrder
+            } = req.query;
+
+            const queryParams = {
+                search,
+                gender,
+                period,
+                fromDate,
+                toDate,
+                sortBy,
+                sortOrder,
+                page: null,
+                limit: null
+            };
+
+            const result = await ReportService.getMedicalRecordsReport(queryParams);
+            const records = result.medicalRecords;
+
+            if (!records || records.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'No medical records found to export'
+                });
+            }
+
+            const timestamp = new Date().toISOString().split('T')[0];
+            const xlsxData = await GenerateReportFile.generateMedicalRecordsXLSX(records);
+            
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename="medical_records_report_${timestamp}.xlsx"`);
+            
+            return res.status(200).send(xlsxData);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     // ==================== DASHBOARD REPORT ====================
     async getDashboardReport(req, res, next) {
         try {

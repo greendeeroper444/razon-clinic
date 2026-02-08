@@ -1,5 +1,6 @@
 const InventoryItem = require('@modules/inventory-item/inventoryItem.model');
 const Billing = require('@modules/billing/billing.model');
+const MedicalRecord = require('@modules/medical-record/medicalRecord.model');
 const BaseService = require('@services/base.service');
 
 class ReportService extends BaseService {
@@ -297,12 +298,170 @@ class ReportService extends BaseService {
         };
     }
 
+    // ==================== MEDICAL RECORDS REPORTS ====================
+    async getMedicalRecordsReport(queryParams) {
+        const {
+            search, page, limit, gender, period, fromDate, toDate,
+            sortBy = 'dateRecorded', sortOrder = 'desc'
+        } = queryParams;
+
+        const filter = { deletedAt: null };
+
+        let dateRange;
+        if (period) {
+            dateRange = this.getDateRange(period);
+        } else if (fromDate || toDate) {
+            dateRange = { 
+                fromDate: fromDate ? new Date(fromDate) : null, 
+                toDate: toDate ? new Date(toDate) : null 
+            };
+        }
+
+        if (dateRange) {
+            const dateFilter = this.buildDateRangeFilter(
+                dateRange.fromDate, 
+                dateRange.toDate, 
+                'dateRecorded'
+            );
+            if (dateFilter) Object.assign(filter, dateFilter);
+        }
+
+        if (search) {
+            const searchFilter = this.buildSearchFilter(search, ['personalDetails.fullName', 'diagnosis', 'medicalRecordNumber']);
+            Object.assign(filter, searchFilter);
+        }
+
+        if (gender) {
+            filter['personalDetails.gender'] = gender;
+        }
+
+        const searchTerm = search || null;
+
+        const result = await this.paginate(MedicalRecord, filter, {
+            page,
+            limit,
+            sortBy,
+            sortOrder,
+            populate: {
+                path: 'appointmentId',
+                select: 'appointmentDate status'
+            },
+            searchTerm
+        });
+
+        const statistics = await this.getMedicalRecordsStatistics(filter);
+
+        return {
+            medicalRecords: result.data,
+            pagination: result.pagination,
+            statistics
+        };
+    }
+
+    async getMedicalRecordsStatistics(filter = {}) {
+        const records = await MedicalRecord.find(filter);
+
+        const totalRecords = records.length;
+        
+        const malePatients = records.filter(r => r.personalDetails?.gender === 'Male').length;
+        const femalePatients = records.filter(r => r.personalDetails?.gender === 'Female').length;
+        const otherPatients = records.filter(r => r.personalDetails?.gender === 'Other').length;
+
+        //age distribution
+        const pediatric = records.filter(r => {
+            const age = r.personalDetails?.age;
+            return age !== null && age < 18;
+        }).length;
+
+        const adult = records.filter(r => {
+            const age = r.personalDetails?.age;
+            return age !== null && age >= 18 && age < 65;
+        }).length;
+
+        const senior = records.filter(r => {
+            const age = r.personalDetails?.age;
+            return age !== null && age >= 65;
+        }).length;
+
+        //follow-up tracking
+        const thirtyDaysFromNow = new Date();
+        thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+        
+        const upcomingFollowUps = records.filter(r => 
+            r.followUpDate && 
+            new Date(r.followUpDate) <= thirtyDaysFromNow &&
+            new Date(r.followUpDate) >= new Date()
+        ).length;
+
+        const overdueFollowUps = records.filter(r => 
+            r.followUpDate && 
+            new Date(r.followUpDate) < new Date()
+        ).length;
+
+        return {
+            totalRecords,
+            genderDistribution: {
+                male: malePatients,
+                female: femalePatients,
+                other: otherPatients
+            },
+            ageDistribution: {
+                pediatric,
+                adult,
+                senior
+            },
+            followUps: {
+                upcoming: upcomingFollowUps,
+                overdue: overdueFollowUps
+            }
+        };
+    }
+
+    async getMedicalRecordsSummary() {
+        const allRecords = await MedicalRecord.find({ deletedAt: null });
+        
+        const todayRange = this.getDateRange('today');
+        const weekRange = this.getDateRange('week');
+        const monthRange = this.getDateRange('month');
+        const yearRange = this.getDateRange('year');
+
+        const todayRecords = await MedicalRecord.countDocuments({
+            deletedAt: null,
+            dateRecorded: { $gte: todayRange.fromDate, $lte: todayRange.toDate }
+        });
+
+        const weekRecords = await MedicalRecord.countDocuments({
+            deletedAt: null,
+            dateRecorded: { $gte: weekRange.fromDate, $lte: weekRange.toDate }
+        });
+
+        const monthRecords = await MedicalRecord.countDocuments({
+            deletedAt: null,
+            dateRecorded: { $gte: monthRange.fromDate, $lte: monthRange.toDate }
+        });
+
+        const yearRecords = await MedicalRecord.countDocuments({
+            deletedAt: null,
+            dateRecorded: { $gte: yearRange.fromDate, $lte: yearRange.toDate }
+        });
+
+        return {
+            total: allRecords.length,
+            today: todayRecords,
+            week: weekRecords,
+            month: monthRecords,
+            year: yearRecords
+        };
+    }
+
     // ==================== COMBINED DASHBOARD REPORT ====================
     async getDashboardReport() {
         const inventorySummary = await this.getInventorySummary();
         const salesSummary = await this.getSalesSummary();
+        const medicalRecordsSummary = await this.getMedicalRecordsSummary();
         const inventoryStats = await this.getInventoryStatistics({ isArchived: false });
         const salesStats = await this.getSalesStatistics({});
+        const medicalRecordsStats = await this.getMedicalRecordsStatistics({ deletedAt: null });
 
         return {
             inventory: {
@@ -312,6 +471,10 @@ class ReportService extends BaseService {
             sales: {
                 summary: salesSummary,
                 statistics: salesStats
+            },
+            medicalRecords: {
+                summary: medicalRecordsSummary,
+                statistics: medicalRecordsStats
             },
             generatedAt: new Date()
         };

@@ -24,6 +24,20 @@ class GenerateReportFile {
         }
     }
 
+    calculateAge(dateOfBirth) {
+        if (!dateOfBirth) return '';
+        const today = new Date();
+        const birthDate = new Date(dateOfBirth);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        
+        return age;
+    }
+
     // ==================== INVENTORY REPORT XLSX ====================
     async generateInventoryXLSX(records) {
         const ExcelJS = require('exceljs');
@@ -246,6 +260,120 @@ class GenerateReportFile {
                             type: 'pattern',
                             pattern: 'solid',
                             fgColor: { argb: 'FFFFF9C4' }
+                        };
+                    }
+                }
+            });
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        return buffer;
+    }
+
+    // ==================== MEDICAL RECORDS REPORT XLSX ====================
+    async generateMedicalRecordsXLSX(records) {
+        const ExcelJS = require('exceljs');
+        
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Medical Records Report');
+
+        worksheet.columns = [
+            { header: 'MR NUMBER', key: 'medicalRecordNumber', width: 15 },
+            { header: 'PATIENT NAME', key: 'patientName', width: 25 },
+            { header: 'AGE', key: 'age', width: 8 },
+            { header: 'GENDER', key: 'gender', width: 12 },
+            { header: 'BLOOD TYPE', key: 'bloodType', width: 12 },
+            { header: 'CONTACT', key: 'phone', width: 15 },
+            { header: 'CHIEF COMPLAINT', key: 'chiefComplaint', width: 30 },
+            { header: 'DIAGNOSIS', key: 'diagnosis', width: 30 },
+            { header: 'TREATMENT PLAN', key: 'treatmentPlan', width: 35 },
+            { header: 'MEDICATIONS', key: 'medications', width: 30 },
+            { header: 'FOLLOW-UP DATE', key: 'followUpDate', width: 15 },
+            { header: 'FOLLOW-UP STATUS', key: 'followUpStatus', width: 15 },
+            { header: 'DATE RECORDED', key: 'dateRecorded', width: 18 },
+            { header: 'LAST UPDATED', key: 'updatedAt', width: 18 }
+        ];
+
+        worksheet.getRow(1).font = { bold: true, size: 11, color: { argb: 'FFFFFFFF' } };
+        worksheet.getRow(1).fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FF7B1FA2' } //purple for medical records
+        };
+        worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+
+        records.forEach(record => {
+            const age = this.calculateAge(record.personalDetails?.dateOfBirth);
+            
+            let followUpStatus = 'No Follow-up';
+            if (record.followUpDate) {
+                const followUpDate = new Date(record.followUpDate);
+                const today = new Date();
+                
+                if (followUpDate < today) {
+                    followUpStatus = 'Overdue';
+                } else {
+                    const daysUntil = Math.ceil((followUpDate - today) / (1000 * 60 * 60 * 24));
+                    if (daysUntil <= 7) {
+                        followUpStatus = 'Due Soon';
+                    } else {
+                        followUpStatus = 'Scheduled';
+                    }
+                }
+            }
+
+            worksheet.addRow({
+                medicalRecordNumber: record.medicalRecordNumber || '',
+                patientName: record.personalDetails?.fullName || '',
+                age: age,
+                gender: record.personalDetails?.gender || '',
+                bloodType: record.personalDetails?.bloodType || '',
+                phone: record.personalDetails?.phone || '',
+                chiefComplaint: record.currentSymptoms?.chiefComplaint || '',
+                diagnosis: record.diagnosis || '',
+                treatmentPlan: record.treatmentPlan || '',
+                medications: record.prescribedMedications || '',
+                followUpDate: this.safeFormatDate(record.followUpDate),
+                followUpStatus: followUpStatus,
+                dateRecorded: this.safeFormatDate(record.dateRecorded),
+                updatedAt: this.safeFormatTime(record.updatedAt)
+            });
+        });
+
+        worksheet.eachRow((row, rowNumber) => {
+            row.eachCell((cell, colNumber) => {
+                cell.alignment = { 
+                    vertical: 'top', 
+                    horizontal: colNumber === 3 ? 'center' : 'left',
+                    wrapText: true 
+                };
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+
+                //highlight follow-up status column
+                if (rowNumber > 1 && colNumber === 12) {
+                    const status = cell.value;
+                    if (status === 'Scheduled' || status === 'No Follow-up') {
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: 'FFC8E6C9' } //green
+                        };
+                    } else if (status === 'Due Soon') {
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: 'FFFFF9C4' } //yellow
+                        };
+                    } else if (status === 'Overdue') {
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: 'FFFFCDD2' } //red
                         };
                     }
                 }

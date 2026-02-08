@@ -1,6 +1,17 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { getInventoryReport, getInventorySummary, getSalesReport, getSalesSummary, getDashboardReport, exportSalesReport, exportInventoryReport } from '../services/reportService'
+import { 
+    getInventoryReport, 
+    getInventorySummary, 
+    getSalesReport, 
+    getSalesSummary, 
+    getMedicalRecordsReport,
+    getMedicalRecordsSummary,
+    getDashboardReport, 
+    exportSalesReport, 
+    exportInventoryReport,
+    exportMedicalRecordsReport
+} from '../services/reportService'
 import { DashboardReport, ReportParams, ReportState } from '../types'
 import { toast } from 'sonner'
 
@@ -12,6 +23,8 @@ export const useReportStore = create<ReportState>()(
             inventorySummary: null,
             salesReportItems: [],
             salesSummary: null,
+            medicalRecordsReportItems: [],
+            medicalRecordsSummary: null,
             dashboardReport: null,
             loading: false,
             fetchLoading: false,
@@ -22,9 +35,10 @@ export const useReportStore = create<ReportState>()(
             toDate: null,
             category: null,
             paymentStatus: null,
+            gender: null,
             searchTerm: '',
             inventoryPagination: {
-               currentPage: 1,
+                currentPage: 1,
                 totalPages: 1,
                 totalItems: 0,
                 itemsPerPage: 10,
@@ -39,6 +53,21 @@ export const useReportStore = create<ReportState>()(
                 searchTerm: null
             },
             salesPagination: {
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: 0,
+                itemsPerPage: 10,
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startIndex: 1,
+                endIndex: 0,
+                isUnlimited: false,
+                nextPage: null,
+                previousPage: null,
+                remainingItems: 0,
+                searchTerm: null
+            },
+            medicalRecordsPagination: {
                 currentPage: 1,
                 totalPages: 1,
                 totalItems: 0,
@@ -231,6 +260,90 @@ export const useReportStore = create<ReportState>()(
                 }
             },
 
+            fetchMedicalRecordsReport: async (params = {}) => {
+                const currentState = get()
+                
+                if (currentState.fetchLoading) {
+                    console.log('Fetch already in progress, skipping...')
+                    return
+                }
+
+                try {
+                    set({ fetchLoading: true, loading: true, error: null })
+
+                    const queryParams: ReportParams = {
+                        period: currentState.period !== 'custom' ? currentState.period : undefined,
+                        fromDate: currentState.period === 'custom' ? currentState.fromDate || undefined : undefined,
+                        toDate: currentState.period === 'custom' ? currentState.toDate || undefined : undefined,
+                        gender: currentState.gender || undefined,
+                        search: currentState.searchTerm || undefined,
+                        ...params
+                    }
+
+                    const response = await getMedicalRecordsReport(queryParams)
+                    
+                    const items = response.data.medicalRecords || []
+                    const pagination = response.data.pagination || {}
+                    const statistics = response.data.statistics || {}
+
+                    console.log('Medical Records Report Response:', response.data)
+                    console.log('Medical Records Items:', items)
+
+                    set({
+                        medicalRecordsReportItems: items,
+                        loading: false,
+                        fetchLoading: false,
+                        medicalRecordsPagination: {
+                            currentPage: pagination.currentPage || 1,
+                            totalPages: pagination.totalPages || 1,
+                            totalItems: pagination.totalItems || 0,
+                            itemsPerPage: pagination.itemsPerPage || 10,
+                            hasNextPage: pagination.hasNextPage || false,
+                            hasPreviousPage: pagination.hasPreviousPage || false,
+                            startIndex: pagination.startIndex || 1,
+                            endIndex: pagination.endIndex || 0,
+                            isUnlimited: pagination.isUnlimited || false,
+                            nextPage: pagination.nextPage,
+                            previousPage: pagination.previousPage,
+                            remainingItems: pagination.remainingItems || 0,
+                            searchTerm: pagination.searchTerm || null
+                        },
+                        medicalRecordsSummary: {
+                            totalRecords: statistics.totalRecords || 0,
+                            genderDistribution: statistics.genderDistribution || { male: 0, female: 0, other: 0 },
+                            ageDistribution: statistics.ageDistribution || { pediatric: 0, adult: 0, senior: 0 },
+                            followUps: statistics.followUps || { upcoming: 0, overdue: 0 }
+                        }
+                    })
+                } catch (error) {
+                    console.error('Error fetching medical records report:', error)
+                    set({
+                        error: 'An error occurred while fetching medical records report',
+                        loading: false,
+                        fetchLoading: false
+                    })
+                }
+            },
+
+            fetchMedicalRecordsSummary: async () => {
+                try {
+                    const response = await getMedicalRecordsSummary()
+                    
+                    const summary = response.data
+                    
+                    set({ 
+                        medicalRecordsSummary: {
+                            totalRecords: summary.total || 0,
+                            genderDistribution: { male: 0, female: 0, other: 0 },
+                            ageDistribution: { pediatric: 0, adult: 0, senior: 0 },
+                            followUps: { upcoming: 0, overdue: 0 }
+                        }
+                    })
+                } catch (error) {
+                    console.error('Error fetching medical records summary:', error)
+                }
+            },
+
             fetchDashboardReport: async () => {
                 try {
                     set({ fetchLoading: true, loading: true, error: null })
@@ -263,17 +376,32 @@ export const useReportStore = create<ReportState>()(
                             }
                         },
                         sales: {
-                            total: dashboardData.sales?.total || { count: 0, revenue: 0 },
-                            today: dashboardData.sales?.today || { count: 0, revenue: 0 },
-                            week: dashboardData.sales?.week || { count: 0, revenue: 0 },
-                            month: dashboardData.sales?.month || { count: 0, revenue: 0 },
-                            year: dashboardData.sales?.year || { count: 0, revenue: 0 },
+                            total: dashboardData.sales?.summary?.total || { count: 0, revenue: 0 },
+                            today: dashboardData.sales?.summary?.today || { count: 0, revenue: 0 },
+                            week: dashboardData.sales?.summary?.week || { count: 0, revenue: 0 },
+                            month: dashboardData.sales?.summary?.month || { count: 0, revenue: 0 },
+                            year: dashboardData.sales?.summary?.year || { count: 0, revenue: 0 },
                             statistics: dashboardData.sales?.statistics || {
                                 totalSales: 0,
                                 totalRevenue: 0,
                                 paid: { count: 0, amount: 0 },
                                 unpaid: { count: 0, amount: 0 },
                                 pending: { count: 0, amount: 0 }
+                            }
+                        },
+                        medicalRecords: {
+                            summary: dashboardData.medicalRecords?.summary || {
+                                total: 0,
+                                today: 0,
+                                week: 0,
+                                month: 0,
+                                year: 0
+                            },
+                            statistics: dashboardData.medicalRecords?.statistics || {
+                                totalRecords: 0,
+                                genderDistribution: { male: 0, female: 0, other: 0 },
+                                ageDistribution: { pediatric: 0, adult: 0, senior: 0 },
+                                followUps: { upcoming: 0, overdue: 0 }
                             }
                         },
                         generatedAt: dashboardData.generatedAt || new Date().toISOString()
@@ -358,6 +486,37 @@ export const useReportStore = create<ReportState>()(
                 }
             },
 
+            exportMedicalRecordsReport: async () => {
+                const currentState = get()
+                
+                try {
+                    set({ loading: true })
+                    
+                    const exportParams: ReportParams = {
+                        period: currentState.period !== 'custom' ? currentState.period : undefined,
+                        fromDate: currentState.period === 'custom' ? currentState.fromDate || undefined : undefined,
+                        toDate: currentState.period === 'custom' ? currentState.toDate || undefined : undefined,
+                        gender: currentState.gender || undefined,
+                        search: currentState.searchTerm || undefined
+                    }
+
+                    const result = await exportMedicalRecordsReport(exportParams)
+                    
+                    if (result.success) {
+                        toast.success('Export completed successfully!', {
+                            description: `Downloaded: ${result.filename}`
+                        })
+                    }
+                } catch (error) {
+                    console.error('Error exporting medical records report:', error)
+                    toast.error('Failed to export medical records report', {
+                        description: error instanceof Error ? error.message : 'An error occurred'
+                    })
+                } finally {
+                    set({ loading: false })
+                }
+            },
+
             setActiveTab: (tab) => {
                 set({ activeTab: tab })
                 
@@ -365,6 +524,8 @@ export const useReportStore = create<ReportState>()(
                     get().fetchInventoryReport({ page: 1 })
                 } else if (tab === 'sales') {
                     get().fetchSalesReport({ page: 1 })
+                } else if (tab === 'medicalRecords') {
+                    get().fetchMedicalRecordsReport({ page: 1 })
                 } else if (tab === 'dashboard') {
                     get().fetchDashboardReport()
                 }
@@ -378,6 +539,8 @@ export const useReportStore = create<ReportState>()(
                     get().fetchInventoryReport({ page: 1 })
                 } else if (activeTab === 'sales') {
                     get().fetchSalesReport({ page: 1 })
+                } else if (activeTab === 'medicalRecords') {
+                    get().fetchMedicalRecordsReport({ page: 1 })
                 }
             },
 
@@ -389,6 +552,8 @@ export const useReportStore = create<ReportState>()(
                     get().fetchInventoryReport({ page: 1 })
                 } else if (activeTab === 'sales') {
                     get().fetchSalesReport({ page: 1 })
+                } else if (activeTab === 'medicalRecords') {
+                    get().fetchMedicalRecordsReport({ page: 1 })
                 }
             },
 
@@ -402,6 +567,11 @@ export const useReportStore = create<ReportState>()(
                 get().fetchSalesReport({ page: 1 })
             },
 
+            setGender: (gender) => {
+                set({ gender })
+                get().fetchMedicalRecordsReport({ page: 1 })
+            },
+
             setSearchTerm: (term) => {
                 set({ searchTerm: term })
             },
@@ -413,6 +583,7 @@ export const useReportStore = create<ReportState>()(
                     toDate: null,
                     category: null,
                     paymentStatus: null,
+                    gender: null,
                     searchTerm: ''
                 })
                 
@@ -421,6 +592,8 @@ export const useReportStore = create<ReportState>()(
                     get().fetchInventoryReport({ page: 1 })
                 } else if (activeTab === 'sales') {
                     get().fetchSalesReport({ page: 1 })
+                } else if (activeTab === 'medicalRecords') {
+                    get().fetchMedicalRecordsReport({ page: 1 })
                 }
             }
         }),

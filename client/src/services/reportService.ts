@@ -80,6 +80,45 @@ export const getSalesSummary = async () => {
     }
 }
 
+export const getMedicalRecordsReport = async (params: ReportParams = {}) => {
+    try {
+        const defaultParams = {
+            page: 1,
+            limit: 10
+        }
+
+        const queryParams = { ...defaultParams, ...params }
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/reports/getMedicalRecordsReport`,
+            { params: queryParams }
+        )
+        
+        return response.data
+    } catch (error) {
+        console.error('Error fetching medical records report:', error)
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message
+        }
+        throw error
+    }
+}
+
+export const getMedicalRecordsSummary = async () => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/api/reports/getMedicalRecordsSummary`
+        )
+        return response.data
+    } catch (error) {
+        console.error('Error fetching medical records summary:', error)
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message
+        }
+        throw error
+    }
+}
+
 export const getDashboardReport = async () => {
     try {
         const response = await axios.get(
@@ -188,6 +227,55 @@ export const exportSalesReport = async (params: ReportParams = {}) => {
         }
     } catch (error) {
         console.error('Error exporting sales report:', error)
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message
+        }
+        throw error
+    }
+}
+
+export const exportMedicalRecordsReport = async (params: ReportParams = {}) => {
+    try {
+        const queryParams = { ...params }
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/reports/exportMedicalRecordsReport`,
+            { 
+                params: queryParams,
+                responseType: 'blob' 
+            }
+        )
+
+        const blob = new Blob([response.data], {
+            type: response.headers['content-type']
+        })
+
+        const contentDisposition = response.headers['content-disposition']
+        let filename = `medical_records_report_${new Date().toISOString().split('T')[0]}.xlsx`
+        
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i)
+            if (filenameMatch && filenameMatch[1]) {
+                filename = filenameMatch[1]
+            }
+        }
+
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = filename
+        document.body.appendChild(link)
+        link.click()
+        
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+
+        return {
+            success: true,
+            filename
+        }
+    } catch (error) {
+        console.error('Error exporting medical records report:', error)
         if (axios.isAxiosError(error)) {
             throw error.response?.data || error.message
         }

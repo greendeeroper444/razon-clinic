@@ -16,6 +16,12 @@ router.get(
     reportController.getInventorySummary
 );
 
+router.get(
+    '/exportInventoryReport',
+    authenticate,
+    reportController.exportInventoryReport
+);
+
 // ==================== SALES REPORTS ====================
 router.get(
     '/getSalesReport',
@@ -29,24 +35,36 @@ router.get(
     reportController.getSalesSummary
 );
 
+router.get(
+    '/exportSalesReport',
+    authenticate,
+    reportController.exportSalesReport
+);
+
+// ==================== MEDICAL RECORDS REPORTS ====================
+router.get(
+    '/getMedicalRecordsReport',
+    authenticate,
+    reportController.getMedicalRecordsReport
+);
+
+router.get(
+    '/getMedicalRecordsSummary',
+    authenticate,
+    reportController.getMedicalRecordsSummary
+);
+
+router.get(
+    '/exportMedicalRecordsReport',
+    authenticate,
+    reportController.exportMedicalRecordsReport
+);
+
 // ==================== DASHBOARD REPORT ====================
 router.get(
     '/getDashboardReport',
     authenticate,
     reportController.getDashboardReport
-);
-
-
-router.get(
-    '/exportInventoryReport',
-    authenticate,
-    reportController.exportInventoryReport
-);
-
-router.get(
-    '/exportSalesReport',
-    authenticate,
-    reportController.exportSalesReport
 );
 
 module.exports = router;

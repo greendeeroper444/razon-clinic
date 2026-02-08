@@ -4,7 +4,7 @@ import { BillingFormData, BillingResponse } from "./billing";
 import { BlockedTimeSlotFetchParams, BlockedTimeSlotFormData, BlockedTimeSlotOperationType, BlockedTimeSlotPagination, BlockedTimeSlotSummaryStats, CheckBlockedResponse } from "./blockedSlot";
 import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
-import { DeletedMedicalRecord, MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
+import { DeletedMedicalRecord, MedicalRecord, MedicalRecordFormData, MedicalRecordReportItem, MedicalRecordResponse, MedicalRecordsSummary } from "./medical";
 import { Pagination } from "./pagination";
 import { Patient, PatientFormData, PatientResponse } from "./patient"
 import { DashboardReport, InventoryReportItem, InventorySummary, ReportParams, SalesReportItem, SalesSummary } from "./report";
@@ -515,7 +515,7 @@ export interface TrashState {
         startIndex: number
         endIndex: number
     }
-    activeTab: 'medical-records'
+    activeTab: 'medicalRecords'
     
     fetchDeletedRecords: (page?: number, limit?: number) => Promise<void>
     restoreSingleRecord: (id: string) => Promise<void>
@@ -523,44 +523,59 @@ export interface TrashState {
     bulkPermanentDelete: () => Promise<void>
     toggleRecordSelection: (id: string) => void
     toggleSelectAll: () => void
-    setActiveTab: (tab: 'medical-records') => void
+    setActiveTab: (tab: 'medicalRecords') => void
     clearSelection: () => void
 }
 
 export interface ReportState {
     inventoryReportItems: InventoryReportItem[]
     inventorySummary: InventorySummary | null
+    inventoryPagination: Pagination
+    
     salesReportItems: SalesReportItem[]
     salesSummary: SalesSummary | null
+    salesPagination: Pagination
+    
+    medicalRecordsReportItems: MedicalRecordReportItem[]
+    medicalRecordsSummary: MedicalRecordsSummary | null
+    medicalRecordsPagination: Pagination
+    
     dashboardReport: DashboardReport | null
-    exportInventoryReport: () => Promise<void>;
-    exportSalesReport: () => Promise<void>;
     
     loading: boolean
     fetchLoading: boolean
     error: string | null
-    activeTab: 'inventory' | 'sales' | 'dashboard'
+    
+    activeTab: 'inventory' | 'sales' | 'dashboard' | 'medicalRecords'
     
     period: 'today' | 'week' | 'month' | 'year' | 'custom'
     fromDate: string | null
     toDate: string | null
     category: string | null
     paymentStatus: string | null
+    gender: string | null
     searchTerm: string
-    
-    inventoryPagination: Pagination
-    salesPagination: Pagination
     
     fetchInventoryReport: (params?: ReportParams) => Promise<void>
     fetchInventorySummary: () => Promise<void>
+    exportInventoryReport: () => Promise<void>
+    
     fetchSalesReport: (params?: ReportParams) => Promise<void>
     fetchSalesSummary: () => Promise<void>
+    exportSalesReport: () => Promise<void>
+    
+    fetchMedicalRecordsReport: (params?: ReportParams) => Promise<void>
+    fetchMedicalRecordsSummary: () => Promise<void>
+    exportMedicalRecordsReport: () => Promise<void>
+    
     fetchDashboardReport: () => Promise<void>
-    setActiveTab: (tab: 'inventory' | 'sales' | 'dashboard') => void
+    
+    setActiveTab: (tab: 'inventory' | 'sales' | 'dashboard' | 'medicalRecords') => void
     setPeriod: (period: 'today' | 'week' | 'month' | 'year' | 'custom') => void
     setDateRange: (fromDate: string, toDate: string) => void
     setCategory: (category: string | null) => void
     setPaymentStatus: (status: string | null) => void
+    setGender: (gender: string | null) => void
     setSearchTerm: (term: string) => void
     resetFilters: () => void
 }
