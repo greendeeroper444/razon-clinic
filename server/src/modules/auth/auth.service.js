@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { ApiError } = require('@utils/errors');
 const BaseService = require('@services/base.service');
-const Admin = require('./admin.model');
+const Admin = require('@modules/personnel/admin.model');
 const User = require('@modules/user/user.model');
 
 class AuthService extends BaseService {

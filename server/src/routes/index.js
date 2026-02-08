@@ -9,6 +9,7 @@ const billingRoutes = require('@modules/billing/billing.routes');
 const reportRoutes = require('@modules/report/report.routes');
 const blockedTimeSlotRoutes = require('@modules/blocked-time-slot/blockedTimeSlot.routes');
 const otpRoutes = require('@modules/otp/otp.routes');
+const personnelRoutes = require('@modules/personnel/personnel.routes');
 const { ApiError } = require('@utils/errors');
 
 
@@ -24,6 +25,7 @@ const setupRoutes = (app) => {
     app.use('/api/reports', reportRoutes);
     app.use('/api/blockedTimeSlots', blockedTimeSlotRoutes);
     app.use('/api/otp', otpRoutes);
+    app.use('/api/personnels', personnelRoutes);
     
     app.use((req, res, next) => {
        next(new ApiError(`Resource not found: ${req.originalUrl}`, 404));
