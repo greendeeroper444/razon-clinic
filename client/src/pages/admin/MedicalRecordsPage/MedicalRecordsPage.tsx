@@ -119,14 +119,14 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
 
     const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
-            console.error('Invalid data for adding billing')
+            console.error('Invalid data for adding medical record')
             return
         }
 
-        const billingData = data as MedicalRecordFormData;
+        const medicalData = data as MedicalRecordFormData;
 
         try {
-            await addMedicalRecord(billingData)
+            await addMedicalRecord(medicalData)
 
             setTimeout(() => {
                 fetchData(
@@ -150,9 +150,13 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         const medicalData = data as MedicalRecordFormData;
 
         try {
-            if (selectedMedicalRecord?.id) {
+            if (!medicalData.id && selectedMedicalRecord?.id) {
+                await addMedicalRecord(medicalData);
+                toast.success('New medical record created successfully');
+            } else if (selectedMedicalRecord?.id) {
                 await updateMedicalRecordData(selectedMedicalRecord.id, medicalData);
             } else {
+                //fallback to create if no ID exists
                 await addMedicalRecord(medicalData);
             }
 
@@ -162,11 +166,12 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                     storePagination?.itemsPerPage || 10, 
                     searchTerm
                 );
+                closeModalUpdate();
             }, 600);
         } catch (error) {
             console.error('Error processing medical record:', error);
         }
-    }, [selectedMedicalRecord, updateMedicalRecordData, addMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+    }, [selectedMedicalRecord, updateMedicalRecordData, addMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalUpdate]);
 
     const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {

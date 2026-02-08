@@ -4,17 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { AppointmentForm, BillingsForm, BillingDetailsForm, BlockedTimeSlotForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, StatusForm } from '../../features/Forms'
 import { formatDateForDisplay, formatDateForInput } from '../../../utils'
-import { 
-    AppointmentFormData, 
-    AppointmentStatus, 
-    BillingFormData,
-    BlockedTimeSlotFormData,
-    FormDataType, 
-    InventoryItemFormData, 
-    MedicalRecordFormData, 
-    ModalProps,
-    PatientFormData 
-} from '../../../types'
+import { AppointmentFormData, AppointmentStatus, BillingFormData, BlockedTimeSlotFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalProps, PatientFormData } from '../../../types'
 import Button from '../Button/Button'
 
 
@@ -33,10 +23,14 @@ const Modal: React.FC<ModalProps> = ({
     const [formData, setFormData] = useState<FormDataType>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
+    const [saveAsNew, setSaveAsNew] = useState<boolean>(false);
 
 
     //initialize form with edit data if provided or reset when modal type changes
     useEffect(() => {
+        //reset saveAsNew flag when modal opens/closes or editData changes
+        setSaveAsNew(false);
+        
         if (editData) {
             //format birthdate for input field if it exists
             const processedEditData = { ...editData };
@@ -201,6 +195,7 @@ const Modal: React.FC<ModalProps> = ({
 
     //create a custom event when modal closes
     const handleClose = () => {
+        setSaveAsNew(false);
         onClose();
         //dispatch a custom event that the modal has been closed
         window.dispatchEvent(new CustomEvent('modal-closed'));
@@ -241,6 +236,10 @@ const Modal: React.FC<ModalProps> = ({
             onSubmit(deleteData.id);
         } else if (modalType === 'status') {
             onSubmit({ ...editData, status: selectedStatus } as any);
+        } else if (modalType === 'medical' && saveAsNew) {
+            // Remove the id to create a new record instead of updating
+            const { id, ...dataWithoutId } = formData as any;
+            onSubmit(dataWithoutId);
         } else {
             onSubmit(formData);
             
@@ -253,6 +252,15 @@ const Modal: React.FC<ModalProps> = ({
             }
         }
         // handleClose();
+    };
+
+    //handler for "Save as New" button
+    const handleSaveAsNew = (e: FormEvent) => {
+        e.preventDefault();
+        setSaveAsNew(true);
+        //trigger form submission
+        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+        e.currentTarget.closest('form')?.dispatchEvent(submitEvent);
     };
 
     
@@ -443,13 +451,29 @@ const Modal: React.FC<ModalProps> = ({
                     >
                         Cancel
                     </Button>
+                    
+                    {
+                        modalType === 'medical' && editData && (
+                            <Button
+                                variant='outline'
+                                type='button'
+                                onClick={handleSaveAsNew}
+                                isLoading={isProcessing && saveAsNew}
+                                loadingText='Creating New...'
+                                title='Save as a new record instead of updating the existing one'
+                            >
+                                Save as New
+                            </Button>
+                        )
+                    }
+                    
                     <Button
                         variant='primary'
                         type='submit'
-                        isLoading={isProcessing}
-                        loadingText='Saving...'
+                        isLoading={isProcessing && !saveAsNew}
+                        loadingText={editData ? 'Updating...' : 'Saving...'}
                     >
-                        Save
+                        {editData ? 'Update' : 'Save'}
                     </Button>
                 </div>
             </form>
