@@ -265,11 +265,11 @@ export const useBillingStore = create<BillingState>()(
                 }
             },
 
-            processPayment: async (billId: string) => {
+            processPayment: async (billId: string, amountPaid?: number, change?: number) => {
                 try {
                     set({ statusLoading: true, isProcessing: true });
 
-                    await updateBillingPaymentStatusService(billId, 'Paid');
+                    await updateBillingPaymentStatusService(billId, 'Paid', amountPaid, change);
 
                     await get().fetchBillings({});
 

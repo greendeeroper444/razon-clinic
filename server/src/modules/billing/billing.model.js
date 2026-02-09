@@ -25,9 +25,24 @@ const billingSchema = new mongoose.Schema(
             default: 0,
             min: 0
         },
+        discount: {
+            type: Number,
+            default: 0,
+            min: 0
+        },
         amount: {
             type: Number,
             required: true,
+            min: 0
+        },
+        amountPaid: {
+            type: Number,
+            default: 0,
+            min: 0
+        },
+        change: {
+            type: Number,
+            default: 0,
             min: 0
         },
         paymentStatus: {

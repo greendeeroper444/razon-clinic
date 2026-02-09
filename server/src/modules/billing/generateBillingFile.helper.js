@@ -44,7 +44,10 @@ class GenerateBillingFile {
             'PATIENT NAME',
             'ITEMS',
             'DOCTOR FEE',
+            'DISCOUNT',
             'TOTAL AMOUNT',
+            'AMOUNT PAID',
+            'CHANGE',
             'PAYMENT STATUS',
             'MEDICAL RECORD DATE',
             'BILLING CREATED AT',
@@ -58,7 +61,10 @@ class GenerateBillingFile {
                 record.patientName || record.medicalRecordId?.personalDetails?.fullName || '',
                 this.formatItems(record.itemName, record.itemQuantity, record.itemPrices),
                 record.doctorFee || 0,
+                record.discount || 0,
                 record.amount || 0,
+                record.amountPaid || 0,
+                record.change || 0,
                 record.paymentStatus || '',
                 this.safeFormatDate(record.medicalRecordDate),
                 this.safeFormatTime(record.createdAt),
@@ -79,7 +85,6 @@ class GenerateBillingFile {
 
         //define columns based on billing model
         worksheet.columns = [
-            // { header: 'MEDICAL RECORD #', key: 'medicalRecordNumber', width: 18 },
             { header: 'PATIENT NAME', key: 'patientName', width: 25 },
             { header: 'DIAGNOSIS', key: 'diagnosis', width: 30 },
             { header: 'ITEM NAME', key: 'itemName', width: 20 },
@@ -87,7 +92,10 @@ class GenerateBillingFile {
             { header: 'UNIT PRICE', key: 'unitPrice', width: 15 },
             { header: 'SUBTOTAL', key: 'subtotal', width: 15 },
             { header: 'DOCTOR FEE', key: 'doctorFee', width: 15 },
+            { header: 'DISCOUNT', key: 'discount', width: 15 },
             { header: 'TOTAL AMOUNT', key: 'totalAmount', width: 15 },
+            { header: 'AMOUNT PAID', key: 'amountPaid', width: 15 },
+            { header: 'CHANGE', key: 'change', width: 15 },
             { header: 'PAYMENT STATUS', key: 'paymentStatus', width: 15 },
             { header: 'MEDICAL RECORD DATE', key: 'medicalRecordDate', width: 18 },
             { header: 'BILLING CREATED', key: 'createdAt', width: 18 },
@@ -105,7 +113,6 @@ class GenerateBillingFile {
 
         //data rows
         records.forEach(record => {
-            const medicalRecordNumber = record.medicalRecordId?.medicalRecordNumber || '';
             const patientName = record.patientName || record.medicalRecordId?.personalDetails?.fullName || '';
             const diagnosis = record.medicalRecordId?.diagnosis || '';
             const itemNames = record.itemName || [];
@@ -119,7 +126,6 @@ class GenerateBillingFile {
                     const subtotal = quantity * unitPrice;
 
                     worksheet.addRow({
-                        // medicalRecordNumber: index === 0 ? medicalRecordNumber : '',
                         patientName: index === 0 ? patientName : '',
                         diagnosis: index === 0 ? diagnosis : '',
                         itemName: itemName,
@@ -127,7 +133,10 @@ class GenerateBillingFile {
                         unitPrice: `₱${unitPrice.toFixed(2)}`,
                         subtotal: `₱${subtotal.toFixed(2)}`,
                         doctorFee: index === 0 ? `₱${(record.doctorFee || 0).toFixed(2)}` : '',
+                        discount: index === 0 ? `₱${(record.discount || 0).toFixed(2)}` : '',
                         totalAmount: index === 0 ? `₱${record.amount.toFixed(2)}` : '',
+                        amountPaid: index === 0 ? `₱${(record.amountPaid || 0).toFixed(2)}` : '',
+                        change: index === 0 ? `₱${(record.change || 0).toFixed(2)}` : '',
                         paymentStatus: index === 0 ? record.paymentStatus : '',
                         medicalRecordDate: index === 0 ? this.safeFormatDate(record.medicalRecordDate) : '',
                         createdAt: index === 0 ? this.safeFormatTime(record.createdAt) : '',
@@ -136,14 +145,17 @@ class GenerateBillingFile {
                 });
             } else {
                 worksheet.addRow({
-                    medicalRecordNumber: medicalRecordNumber,
                     patientName: patientName,
                     diagnosis: diagnosis,
                     itemName: 'No items',
                     itemQuantity: 0,
                     unitPrice: '₱0.00',
                     subtotal: '₱0.00',
+                    doctorFee: `₱${(record.doctorFee || 0).toFixed(2)}`,
+                    discount: `₱${(record.discount || 0).toFixed(2)}`,
                     totalAmount: `₱${record.amount.toFixed(2)}`,
+                    amountPaid: `₱${(record.amountPaid || 0).toFixed(2)}`,
+                    change: `₱${(record.change || 0).toFixed(2)}`,
                     paymentStatus: record.paymentStatus,
                     medicalRecordDate: this.safeFormatDate(record.medicalRecordDate),
                     createdAt: this.safeFormatTime(record.createdAt),
@@ -157,7 +169,7 @@ class GenerateBillingFile {
             row.eachCell((cell, colNumber) => {
                 cell.alignment = { 
                     vertical: 'top', 
-                    horizontal: colNumber >= 5 && colNumber <= 8 ? 'right' : 'left',
+                    horizontal: colNumber >= 4 && colNumber <= 11 ? 'right' : 'left',
                     wrapText: true 
                 };
                 cell.border = {
@@ -168,7 +180,7 @@ class GenerateBillingFile {
                 };
 
                 //highlight payment status
-                if (rowNumber > 1 && colNumber === 9) {
+                if (rowNumber > 1 && colNumber === 12) {
                     const status = cell.value;
                     if (status === 'Paid') {
                         cell.fill = {

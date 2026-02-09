@@ -81,11 +81,30 @@ export const updateBilling = async (billingId: string, billingData: Partial<Bill
     }
 };
 
-export const updateBillingPaymentStatus = async (billingId: string, paymentStatus: string) => {
+export const updateBillingPaymentStatus = async (
+    billingId: string, 
+    paymentStatus: string,
+    amountPaid?: number,
+    change?: number
+) => {
     try {
+        const payload: { 
+            paymentStatus: string; 
+            amountPaid?: number; 
+            change?: number; 
+        } = { paymentStatus };
+        
+        if (amountPaid !== undefined) {
+            payload.amountPaid = amountPaid;
+        }
+        
+        if (change !== undefined) {
+            payload.change = change;
+        }
+
         const response = await axios.patch(
             `${API_BASE_URL}/api/billings/updateBilling/${billingId}/paymentStatus`,
-            { paymentStatus }
+            payload
         );
 
         return response.data;

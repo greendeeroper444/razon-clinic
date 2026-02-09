@@ -64,7 +64,7 @@ export class BillingReceiptPDF extends BasePDFTemplate {
         const tableData = this.prepareTableData();
         
         this.drawTable(
-            ['Item', 'Doc. Fee', 'Quantity', 'Unit Price', 'Subtotal'],
+            ['Item', 'Quantity', 'Unit Price', 'Subtotal'],
             tableData,
             {
                 0: { halign: 'left', cellWidth: 'auto' },
@@ -77,21 +77,32 @@ export class BillingReceiptPDF extends BasePDFTemplate {
     }
 
     private drawSummarySection(): void {
-        const taxRate = 0;
-        const taxAmount = this.billing.amount * taxRate;
-        const total = this.billing.amount + taxAmount;
+        const itemsSubtotal = this.calculateItemsSubtotal();
+        const doctorFee = this.billing.doctorFee || 0;
+        const discount = this.billing.discount || 0;
+        const total = this.billing.amount;
+        const amountPaid = this.billing.amountPaid || 0;
+        const change = this.billing.change || 0;
 
         const summaryX = 120;
         const valueX = 185;
 
         const summaryItems = [
-            { label: 'Subtotal:', value: this.formatCurrency(this.billing.amount) },
+            { label: 'Items Subtotal:', value: this.formatCurrency(itemsSubtotal) },
         ];
 
-        if (taxRate > 0) {
+        if (doctorFee > 0) {
             summaryItems.push({
-                label: `Tax (${(taxRate * 100).toFixed(0)}%):`,
-                value: this.formatCurrency(taxAmount)
+                label: 'Doctor Fee:',
+                value: this.formatCurrency(doctorFee)
+            });
+        }
+
+        if (discount > 0) {
+            summaryItems.push({
+                label: 'Discount:',
+                value: `-${this.formatCurrency(discount)}`,
+                color: Colors.success as [number, number, number]
             });
         }
 
@@ -106,6 +117,25 @@ export class BillingReceiptPDF extends BasePDFTemplate {
         });
 
         this.drawSummaryBox(summaryItems);
+
+        //add payment information if paid
+        if (this.billing.paymentStatus === 'Paid' && amountPaid > 0) {
+            this.currentY += 5;
+            
+            const paymentItems = [
+                { label: 'Amount Paid:', value: this.formatCurrency(amountPaid) },
+            ];
+
+            if (change > 0) {
+                paymentItems.push({
+                    label: 'Change:',
+                    value: this.formatCurrency(change),
+                    color: Colors.info as [number, number, number]
+                });
+            }
+
+            this.drawSummaryBox(paymentItems);
+        }
 
         this.doc.setDrawColor(...Colors.primary);
         this.doc.line(summaryX, this.currentY, valueX + 5, this.currentY);
@@ -179,22 +209,14 @@ export class BillingReceiptPDF extends BasePDFTemplate {
                 const price = this.billing.itemPrices?.[index] || 0;
                 const subtotal = quantity * price;
 
-                const doctorFee = this.billing.doctorFee
-                    ? `P ${this.billing.doctorFee.toLocaleString('en-PH', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    })}`
-                    : 'P 0.00';
-
                 data.push([
-                    item,                                   // item
-                    doctorFee,                              // doc. fee
-                    quantity.toString(),                    // quantity
-                    `P ${price.toLocaleString('en-PH', {    // unit Price
+                    item,                                       // item
+                    quantity.toString(),                        // quantity
+                    `P ${price.toLocaleString('en-PH', {        // unit Price
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     })}`,
-                    `P ${subtotal.toLocaleString('en-PH', { // subtotal
+                    `P ${subtotal.toLocaleString('en-PH', {     // subtotal
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     })}`
@@ -204,16 +226,8 @@ export class BillingReceiptPDF extends BasePDFTemplate {
 
         //fallback if no items
         if (data.length === 0) {
-            const doctorFee = this.billing.doctorFee
-                ? `P ${this.billing.doctorFee.toLocaleString('en-PH', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                })}`
-                : 'P 0.00';
-
             data.push([
                 'Medical Services',
-                doctorFee,
                 '1',
                 `P ${this.billing.amount.toLocaleString('en-PH', {
                     minimumFractionDigits: 2,
@@ -227,6 +241,18 @@ export class BillingReceiptPDF extends BasePDFTemplate {
         }
 
         return data;
+    }
+
+    private calculateItemsSubtotal(): number {
+        if (!this.billing.itemName || !Array.isArray(this.billing.itemName)) {
+            return 0;
+        }
+
+        return this.billing.itemName.reduce((sum, _, index) => {
+            const quantity = this.billing.itemQuantity?.[index] || 1;
+            const price = this.billing.itemPrices?.[index] || 0;
+            return sum + (quantity * price);
+        }, 0);
     }
 
     private formatCurrency(amount: number): string {

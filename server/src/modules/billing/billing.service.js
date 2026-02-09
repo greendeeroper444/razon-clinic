@@ -13,7 +13,10 @@ class BillingService {
             itemQuantity,
             itemPrices,
             doctorFee,
+            discount,
             amount,
+            amountPaid,
+            change,
             paymentStatus,
             medicalRecordDate
         } = billingData;
@@ -28,6 +31,28 @@ class BillingService {
 
         if (!amount || amount < 0) {
             throw new Error('Valid amount is required');
+        }
+
+        //validate discount
+        if (discount && discount < 0) {
+            throw new Error('Discount cannot be negative');
+        }
+
+        //validate amountPaid and change relationship
+        if (amountPaid !== undefined && amountPaid < 0) {
+            throw new Error('Amount paid cannot be negative');
+        }
+
+        if (change !== undefined && change < 0) {
+            throw new Error('Change cannot be negative');
+        }
+
+        //validate that change = amountPaid - amount (if both provided)
+        if (amountPaid !== undefined && change !== undefined) {
+            const calculatedChange = amountPaid - amount;
+            if (Math.abs(calculatedChange - change) > 0.01) { //allow for floating point precision
+                throw new Error('Change amount does not match: amountPaid - totalAmount');
+            }
         }
 
         const medicalRecord = await MedicalRecord.findById(medicalRecordId);
@@ -48,7 +73,10 @@ class BillingService {
             itemQuantity: itemQuantity || [],
             itemPrices: itemPrices || [],
             doctorFee: doctorFee || 0,
+            discount: discount || 0,
             amount,
+            amountPaid: amountPaid || 0,
+            change: change || 0,
             paymentStatus: paymentStatus || 'Unpaid',
             medicalRecordDate: medicalRecordDate || medicalRecord.dateRecorded,
             processedBy: user.userId,
@@ -222,11 +250,53 @@ class BillingService {
 
         if (isPaymentStatusUpdate) {
             billing.paymentStatus = updateData.paymentStatus;
+            
+            //if marking as Paid, allow updating amountPaid and change
+            if (updateData.paymentStatus === 'Paid') {
+                if (updateData.amountPaid !== undefined) {
+                    billing.amountPaid = updateData.amountPaid;
+                }
+                if (updateData.change !== undefined) {
+                    billing.change = updateData.change;
+                }
+                
+                //validate change calculation if both provided
+                if (updateData.amountPaid !== undefined && updateData.change !== undefined) {
+                    const calculatedChange = updateData.amountPaid - billing.amount;
+                    if (Math.abs(calculatedChange - updateData.change) > 0.01) {
+                        throw new Error('Change amount does not match: amountPaid - totalAmount');
+                    }
+                }
+            }
+            
             billing.processedBy = user.userId;
             billing.processedName = `${user.firstName} ${user.lastName}`;
             billing.processedRole = user.role;
             await billing.save();
             return await billing.populate('medicalRecordId', 'personalDetails.fullName dateRecorded');
+        }
+
+        //validate discount if being updated
+        if (updateData.discount !== undefined && updateData.discount < 0) {
+            throw new Error('Discount cannot be negative');
+        }
+
+        //validate amountPaid and change if being updated
+        if (updateData.amountPaid !== undefined && updateData.amountPaid < 0) {
+            throw new Error('Amount paid cannot be negative');
+        }
+
+        if (updateData.change !== undefined && updateData.change < 0) {
+            throw new Error('Change cannot be negative');
+        }
+
+        //validate change calculation if both provided
+        if (updateData.amountPaid !== undefined && updateData.change !== undefined) {
+            const totalAmount = updateData.amount !== undefined ? updateData.amount : billing.amount;
+            const calculatedChange = updateData.amountPaid - totalAmount;
+            if (Math.abs(calculatedChange - updateData.change) > 0.01) {
+                throw new Error('Change amount does not match: amountPaid - totalAmount');
+            }
         }
 
         //processed information to update data

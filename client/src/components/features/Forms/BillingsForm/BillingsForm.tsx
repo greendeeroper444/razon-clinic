@@ -24,6 +24,9 @@ const BillingForm: React.FC<BillingFormProps> = ({
             'medicalRecordId',
             'patientName',
             'doctorFee',
+            'discount',
+            'amountPaid',
+            'change',
             'paymentStatus'
         ],
         scrollBehavior: 'smooth',
@@ -147,7 +150,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
             }
         } as any);
 
-        updateTotalAmount(newQuantities, newPrices, formData.doctorFee || 0);
+        updateTotalAmount(newQuantities, newPrices, formData.doctorFee || 0, formData.discount || 0);
     };
 
     const updateItemName = (index: number, itemName: string) => {
@@ -180,7 +183,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
             }
         } as any);
 
-        updateTotalAmount(formData.itemQuantity || [], newPrices, formData.doctorFee || 0);
+        updateTotalAmount(formData.itemQuantity || [], newPrices, formData.doctorFee || 0, formData.discount || 0);
     };
 
     const updateQuantity = (index: number, quantity: number) => {
@@ -206,7 +209,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
             }
         } as any);
 
-        updateTotalAmount(newQuantities, formData.itemPrices || [], formData.doctorFee || 0);
+        updateTotalAmount(newQuantities, formData.itemPrices || [], formData.doctorFee || 0, formData.discount || 0);
     };
 
     const updateUnitPrice = (index: number, price: number) => {
@@ -221,7 +224,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
             }
         } as any);
 
-        updateTotalAmount(formData.itemQuantity || [], newPrices, formData.doctorFee || 0);
+        updateTotalAmount(formData.itemQuantity || [], newPrices, formData.doctorFee || 0, formData.discount || 0);
     };
 
     const handleDoctorFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -234,15 +237,51 @@ const BillingForm: React.FC<BillingFormProps> = ({
             }
         } as any);
 
-        updateTotalAmount(formData.itemQuantity || [], formData.itemPrices || [], doctorFee);
+        updateTotalAmount(formData.itemQuantity || [], formData.itemPrices || [], doctorFee, formData.discount || 0);
     };
 
-    const updateTotalAmount = (quantities: number[], prices: number[], doctorFee: number) => {
+    const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const discount = parseFloat(e.target.value) || 0;
+        
+        onChange({
+            target: {
+                name: 'discount',
+                value: discount
+            }
+        } as any);
+
+        updateTotalAmount(formData.itemQuantity || [], formData.itemPrices || [], formData.doctorFee || 0, discount);
+    };
+
+    const handleAmountPaidChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const amountPaid = parseFloat(e.target.value) || 0;
+        
+        onChange({
+            target: {
+                name: 'amountPaid',
+                value: amountPaid
+            }
+        } as any);
+
+        //auto-calculate change
+        const totalAmount = formData.amount || 0;
+        const calculatedChange = Math.max(0, amountPaid - totalAmount);
+        
+        onChange({
+            target: {
+                name: 'change',
+                value: calculatedChange
+            }
+        } as any);
+    };
+
+    const updateTotalAmount = (quantities: number[], prices: number[], doctorFee: number, discount: number) => {
         const itemsTotal = quantities.reduce((sum, qty, index) => {
             return sum + (qty * (prices[index] || 0));
         }, 0);
 
-        const total = itemsTotal + (doctorFee || 0);
+        const subtotal = itemsTotal + (doctorFee || 0);
+        const total = Math.max(0, subtotal - (discount || 0));
 
         onChange({
             target: {
@@ -250,6 +289,17 @@ const BillingForm: React.FC<BillingFormProps> = ({
                 value: total
             }
         } as any);
+
+        //auto-recalculate change if amountPaid exists
+        if (formData.amountPaid !== undefined && formData.amountPaid > 0) {
+            const calculatedChange = Math.max(0, formData.amountPaid - total);
+            onChange({
+                target: {
+                    name: 'change',
+                    value: calculatedChange
+                }
+            } as any);
+        }
     };
 
     const getItemTotal = (index: number): number => {
@@ -439,6 +489,24 @@ const BillingForm: React.FC<BillingFormProps> = ({
             error={getFieldError(validationErrors, 'doctorFee')}
         />
 
+        <br />
+        
+        <Input
+            ref={(el) => { fieldRefs.current['discount'] = el; }}
+            type='number'
+            label='Discount'
+            name='discount'
+            value={formData?.discount || ''}
+            onChange={handleDiscountChange}
+            placeholder="Enter discount amount"
+            leftIcon='dollar'
+            min={0}
+            step={0.01}
+            error={getFieldError(validationErrors, 'discount')}
+        />
+
+        <br />
+
         <Select
             ref={(el) => { fieldRefs.current['paymentStatus'] = el; }}
             name='paymentStatus'
@@ -456,6 +524,41 @@ const BillingForm: React.FC<BillingFormProps> = ({
             error={getFieldError(validationErrors, 'paymentStatus')}
         />
 
+        {
+            formData.paymentStatus === 'Paid' && (
+                <>
+                    <Input
+                        ref={(el) => { fieldRefs.current['amountPaid'] = el; }}
+                        type='number'
+                        label='Amount Paid'
+                        name='amountPaid'
+                        value={formData?.amountPaid || ''}
+                        onChange={handleAmountPaidChange}
+                        placeholder="Enter amount paid"
+                        leftIcon='dollar'
+                        min={0}
+                        step={0.01}
+                        error={getFieldError(validationErrors, 'amountPaid')}
+                    />
+
+                    <Input
+                        ref={(el) => { fieldRefs.current['change'] = el; }}
+                        type='number'
+                        label='Change'
+                        name='change'
+                        value={formData?.change || ''}
+                        onChange={onChange}
+                        placeholder="Change amount"
+                        leftIcon='dollar'
+                        min={0}
+                        step={0.01}
+                        readOnly
+                        error={getFieldError(validationErrors, 'change')}
+                    />
+                </>
+            )
+        }
+
         <div className={styles.totalSection}>
             <div className={styles.totalBreakdown}>
                 <div className={styles.subtotalRow}>
@@ -470,6 +573,16 @@ const BillingForm: React.FC<BillingFormProps> = ({
                         ₱{(formData.doctorFee || 0).toFixed(2)}
                     </span>
                 </div>
+                {
+                    formData.discount > 0 && (
+                        <div className={styles.subtotalRow}>
+                            <span className={styles.subtotalLabel}>Discount:</span>
+                            <span className={styles.subtotalAmount} style={{ color: '#22c55e' }}>
+                                -₱{(formData.discount || 0).toFixed(2)}
+                            </span>
+                        </div>
+                    )
+                }
                 <div className={styles.totalDivider}></div>
                 <div className={styles.totalRow}>
                     <span className={styles.totalLabel}>Total Amount:</span>
@@ -477,6 +590,24 @@ const BillingForm: React.FC<BillingFormProps> = ({
                         ₱{(formData.amount || 0).toFixed(2)}
                     </span>
                 </div>
+                {
+                    formData.paymentStatus === 'Paid' && formData.amountPaid > 0 && (
+                        <>
+                            <div className={styles.subtotalRow}>
+                                <span className={styles.subtotalLabel}>Amount Paid:</span>
+                                <span className={styles.subtotalAmount}>
+                                    ₱{(formData.amountPaid || 0).toFixed(2)}
+                                </span>
+                            </div>
+                            <div className={styles.subtotalRow}>
+                                <span className={styles.subtotalLabel}>Change:</span>
+                                <span className={styles.subtotalAmount} style={{ color: '#3b82f6' }}>
+                                    ₱{(formData.change || 0).toFixed(2)}
+                                </span>
+                            </div>
+                        </>
+                    )
+                }
             </div>
         </div>
     </>

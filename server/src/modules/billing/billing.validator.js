@@ -74,6 +74,16 @@ const validateBilling = [
             return true;
         }),
     
+    body('discount')
+        .optional()
+        .isFloat({ min: 0 }).withMessage('Discount must be a non-negative number')
+        .custom((value) => {
+            if (value < 0) {
+                throw new Error('Discount cannot be negative');
+            }
+            return true;
+        }),
+    
     body('amount')
         .notEmpty().withMessage('Amount is required')
         .isFloat({ min: 0 }).withMessage('Amount must be a non-negative number')
@@ -81,6 +91,35 @@ const validateBilling = [
             if (value < 0) {
                 throw new Error('Amount cannot be negative');
             }
+            return true;
+        }),
+    
+    body('amountPaid')
+        .optional()
+        .isFloat({ min: 0 }).withMessage('Amount paid must be a non-negative number')
+        .custom((value) => {
+            if (value < 0) {
+                throw new Error('Amount paid cannot be negative');
+            }
+            return true;
+        }),
+    
+    body('change')
+        .optional()
+        .isFloat({ min: 0 }).withMessage('Change must be a non-negative number')
+        .custom((value, { req }) => {
+            if (value < 0) {
+                throw new Error('Change cannot be negative');
+            }
+            
+            // Validate change = amountPaid - amount
+            if (req.body.amountPaid !== undefined && req.body.amount !== undefined) {
+                const calculatedChange = req.body.amountPaid - req.body.amount;
+                if (Math.abs(calculatedChange - value) > 0.01) {
+                    throw new Error('Change must equal amountPaid minus totalAmount');
+                }
+            }
+            
             return true;
         }),
     
@@ -122,19 +161,6 @@ const validateBillingId = [
 ];
 
 const validateQueryParams = [
-    // query('page')
-    //     .optional()
-    //     .isInt({ min: 1 }).withMessage('Page must be a positive integer'),
-    
-    // query('limit')
-    //     .optional()
-    //     .isInt({ min: 1, max: 1000 }).withMessage('Limit must be between 1 and 1000'),
-    
-    // query('search')
-    //     .optional()
-    //     .trim()
-    //     .isLength({ min: 1, max: 100 }).withMessage('Search term must be between 1 and 100 characters'),
-    
     query('paymentStatus')
         .optional()
         .isIn(['Paid', 'Unpaid', 'Pending', 'all']).withMessage('Payment status must be Paid, Unpaid, Pending, or all'),
@@ -201,6 +227,14 @@ const validatePaymentStatusUpdate = [
     body('paymentStatus')
         .notEmpty().withMessage('Payment status is required')
         .isIn(['Paid', 'Unpaid', 'Pending']).withMessage('Payment status must be Paid, Unpaid, or Pending'),
+    
+    body('amountPaid')
+        .optional()
+        .isFloat({ min: 0 }).withMessage('Amount paid must be a non-negative number'),
+    
+    body('change')
+        .optional()
+        .isFloat({ min: 0 }).withMessage('Change must be a non-negative number'),
     
     handleValidationErrors
 ];
