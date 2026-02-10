@@ -2,7 +2,7 @@ import { useEffect, useCallback, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styles from './ReportPage.module.css'
 import { useReportStore } from '../../../stores'
-import { Header, Loading, Main, Pagination, Searchbar, Tab, Table } from '../../../components'
+import { Header, LineChart, Loading, Main, Pagination, Searchbar, Tab, Table } from '../../../components'
 import { formatDate, formatCurrency, getStatusClass } from '../../../utils'
 import { InventoryItem, SalesReportItem, TableColumn } from '../../../types'
 import { Package, DollarSign, ShoppingCart, AlertTriangle, Calendar, FileText, Users, UserCheck } from 'lucide-react'
@@ -21,6 +21,9 @@ const ReportPage = () => {
         medicalRecordsReportItems,
         medicalRecordsSummary,
         dashboardReport,
+        inventoryChartData,
+        salesChartData,
+        medicalRecordsChartData,
         loading,
         error,
         activeTab,
@@ -549,6 +552,20 @@ const ReportPage = () => {
                         )
                     }
 
+                    {/* INVENTORY LINE CHART */}
+                    {
+                        inventoryChartData && (
+                            <div className={styles.chartSection}>
+                                <LineChart
+                                    labels={inventoryChartData.labels}
+                                    datasets={inventoryChartData.datasets}
+                                    title="Inventory Trends"
+                                    height={350}
+                                />
+                            </div>
+                        )
+                    }
+
                     <div className={styles.filtersSection}>
                         <div className={styles.filterContent}>
                             <div className={styles.periodFilters}>
@@ -740,6 +757,20 @@ const ReportPage = () => {
                         )
                     }
 
+                    {/* SALES LINE CHART */}
+                    {
+                        salesChartData && (
+                            <div className={styles.chartSection}>
+                                <LineChart
+                                    labels={salesChartData.labels}
+                                    datasets={salesChartData.datasets}
+                                    title="Sales & Revenue Trends"
+                                    height={350}
+                                />
+                            </div>
+                        )
+                    }
+
                     <div className={styles.filtersSection}>
                         <div className={styles.filterContent}>
                             <div className={styles.periodFilters}>
@@ -927,6 +958,20 @@ const ReportPage = () => {
                                         {medicalRecordsSummary?.followUps?.overdue || 0}
                                     </div>
                                 </div>
+                            </div>
+                        )
+                    }
+
+                    {/* MEDICAL RECORDS LINE CHART */}
+                    {
+                        medicalRecordsChartData && (
+                            <div className={styles.chartSection}>
+                                <LineChart
+                                    labels={medicalRecordsChartData.labels}
+                                    datasets={medicalRecordsChartData.datasets}
+                                    title="Patient Records Trends"
+                                    height={350}
+                                />
                             </div>
                         )
                     }

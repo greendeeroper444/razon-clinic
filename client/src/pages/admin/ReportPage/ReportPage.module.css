@@ -199,6 +199,10 @@
     margin-top: 4px;
 }
 
+.chartSection {
+    margin-bottom: 24px;
+}
+
 .filtersSection {
     background: white;
     border-radius: var(--border-radius);

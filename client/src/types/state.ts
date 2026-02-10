@@ -531,19 +531,23 @@ export interface ReportState {
     inventoryReportItems: InventoryReportItem[]
     inventorySummary: InventorySummary | null
     inventoryPagination: Pagination
+    inventoryChartData: ChartData | null
     
     salesReportItems: SalesReportItem[]
     salesSummary: SalesSummary | null
     salesPagination: Pagination
+    salesChartData: ChartData | null
     
     medicalRecordsReportItems: MedicalRecordReportItem[]
     medicalRecordsSummary: MedicalRecordsSummary | null
     medicalRecordsPagination: Pagination
+    medicalRecordsChartData: ChartData | null
     
     dashboardReport: DashboardReport | null
     
     loading: boolean
     fetchLoading: boolean
+    chartLoading: boolean
     error: string | null
     
     activeTab: 'inventory' | 'sales' | 'dashboard' | 'medicalRecords'
@@ -558,14 +562,17 @@ export interface ReportState {
     
     fetchInventoryReport: (params?: ReportParams) => Promise<void>
     fetchInventorySummary: () => Promise<void>
+    fetchInventoryLineChart: (params?: ReportParams) => Promise<void>
     exportInventoryReport: () => Promise<void>
     
     fetchSalesReport: (params?: ReportParams) => Promise<void>
     fetchSalesSummary: () => Promise<void>
+    fetchSalesLineChart: (params?: ReportParams) => Promise<void>
     exportSalesReport: () => Promise<void>
     
     fetchMedicalRecordsReport: (params?: ReportParams) => Promise<void>
     fetchMedicalRecordsSummary: () => Promise<void>
+    fetchMedicalRecordsLineChart: (params?: ReportParams) => Promise<void>
     exportMedicalRecordsReport: () => Promise<void>
     
     fetchDashboardReport: () => Promise<void>

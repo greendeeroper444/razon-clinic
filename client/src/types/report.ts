@@ -31,6 +31,23 @@ export interface SalesReportItem {
     updatedAt: string
 }
 
+export interface MedicalRecordReportItem {
+    id: string
+    medicalRecordNumber: string
+    personalDetails: {
+        fullName: string
+        age: number | null
+        gender: string
+        bloodType: string
+    }
+    currentSymptoms: {
+        chiefComplaint: string
+    }
+    diagnosis: string
+    followUpDate: string | null
+    dateRecorded: string
+}
+
 export interface InventorySummary {
     totalItems: number
     totalValue: number
@@ -49,6 +66,35 @@ export interface SalesSummary {
     paidAmount: number
     unpaidAmount: number
     pendingAmount: number
+}
+
+export interface MedicalRecordsSummary {
+    totalRecords: number
+    genderDistribution: {
+        male: number
+        female: number
+        other: number
+    }
+    ageDistribution: {
+        pediatric: number
+        adult: number
+        senior: number
+    }
+    followUps: {
+        upcoming: number
+        overdue: number
+    }
+}
+
+export interface ChartData {
+    labels: string[]
+    datasets: {
+        label: string
+        data: number[]
+        borderColor?: string
+        backgroundColor?: string
+        tension?: number
+    }[]
 }
 
 export interface DashboardReport {
@@ -109,6 +155,32 @@ export interface DashboardReport {
             }
         }
     }
+    medicalRecords: {
+        summary: {
+            total: number
+            today: number
+            week: number
+            month: number
+            year: number
+        }
+        statistics: {
+            totalRecords: number
+            genderDistribution: {
+                male: number
+                female: number
+                other: number
+            }
+            ageDistribution: {
+                pediatric: number
+                adult: number
+                senior: number
+            }
+            followUps: {
+                upcoming: number
+                overdue: number
+            }
+        }
+    }
     generatedAt: string
 }
 
@@ -121,4 +193,5 @@ export interface ReportParams {
     category?: string
     search?: string
     paymentStatus?: string
+    gender?: string
 }

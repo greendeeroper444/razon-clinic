@@ -41,6 +41,22 @@ export const getInventorySummary = async () => {
     }
 }
 
+export const getInventoryLineChart = async (params: ReportParams = {}) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/api/reports/getInventoryLineChart`,
+            { params }
+        )
+        return response.data
+    } catch (error) {
+        console.error('Error fetching inventory line chart:', error)
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message
+        }
+        throw error
+    }
+}
+
 export const getSalesReport = async (params: ReportParams = {}) => {
     try {
         const defaultParams = {
@@ -80,6 +96,22 @@ export const getSalesSummary = async () => {
     }
 }
 
+export const getSalesLineChart = async (params: ReportParams = {}) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/api/reports/getSalesLineChart`,
+            { params }
+        )
+        return response.data
+    } catch (error) {
+        console.error('Error fetching sales line chart:', error)
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message
+        }
+        throw error
+    }
+}
+
 export const getMedicalRecordsReport = async (params: ReportParams = {}) => {
     try {
         const defaultParams = {
@@ -112,6 +144,22 @@ export const getMedicalRecordsSummary = async () => {
         return response.data
     } catch (error) {
         console.error('Error fetching medical records summary:', error)
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message
+        }
+        throw error
+    }
+}
+
+export const getMedicalRecordsLineChart = async (params: ReportParams = {}) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/api/reports/getMedicalRecordsLineChart`,
+            { params }
+        )
+        return response.data
+    } catch (error) {
+        console.error('Error fetching medical records line chart:', error)
         if (axios.isAxiosError(error)) {
             throw error.response?.data || error.message
         }

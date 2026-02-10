@@ -2,11 +2,14 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { 
     getInventoryReport, 
-    getInventorySummary, 
+    getInventorySummary,
+    getInventoryLineChart,
     getSalesReport, 
-    getSalesSummary, 
+    getSalesSummary,
+    getSalesLineChart,
     getMedicalRecordsReport,
     getMedicalRecordsSummary,
+    getMedicalRecordsLineChart,
     getDashboardReport, 
     exportSalesReport, 
     exportInventoryReport,
@@ -26,8 +29,12 @@ export const useReportStore = create<ReportState>()(
             medicalRecordsReportItems: [],
             medicalRecordsSummary: null,
             dashboardReport: null,
+            inventoryChartData: null,
+            salesChartData: null,
+            medicalRecordsChartData: null,
             loading: false,
             fetchLoading: false,
+            chartLoading: false,
             error: null,
             activeTab: 'dashboard',
             period: 'month',
@@ -174,6 +181,29 @@ export const useReportStore = create<ReportState>()(
                 }
             },
 
+            fetchInventoryLineChart: async (params = {}) => {
+                try {
+                    set({ chartLoading: true })
+                    const currentState = get()
+                    
+                    const queryParams: ReportParams = {
+                        period: currentState.period !== 'custom' ? currentState.period : undefined,
+                        fromDate: currentState.period === 'custom' ? currentState.fromDate || undefined : undefined,
+                        toDate: currentState.period === 'custom' ? currentState.toDate || undefined : undefined,
+                        ...params
+                    }
+                    
+                    const response = await getInventoryLineChart(queryParams)
+                    set({ 
+                        inventoryChartData: response.data,
+                        chartLoading: false 
+                    })
+                } catch (error) {
+                    console.error('Error fetching inventory chart:', error)
+                    set({ chartLoading: false })
+                }
+            },
+
             fetchSalesReport: async (params = {}) => {
                 const currentState = get()
                 
@@ -260,6 +290,29 @@ export const useReportStore = create<ReportState>()(
                 }
             },
 
+            fetchSalesLineChart: async (params = {}) => {
+                try {
+                    set({ chartLoading: true })
+                    const currentState = get()
+                    
+                    const queryParams: ReportParams = {
+                        period: currentState.period !== 'custom' ? currentState.period : undefined,
+                        fromDate: currentState.period === 'custom' ? currentState.fromDate || undefined : undefined,
+                        toDate: currentState.period === 'custom' ? currentState.toDate || undefined : undefined,
+                        ...params
+                    }
+                    
+                    const response = await getSalesLineChart(queryParams)
+                    set({ 
+                        salesChartData: response.data,
+                        chartLoading: false 
+                    })
+                } catch (error) {
+                    console.error('Error fetching sales chart:', error)
+                    set({ chartLoading: false })
+                }
+            },
+
             fetchMedicalRecordsReport: async (params = {}) => {
                 const currentState = get()
                 
@@ -341,6 +394,29 @@ export const useReportStore = create<ReportState>()(
                     })
                 } catch (error) {
                     console.error('Error fetching medical records summary:', error)
+                }
+            },
+
+            fetchMedicalRecordsLineChart: async (params = {}) => {
+                try {
+                    set({ chartLoading: true })
+                    const currentState = get()
+                    
+                    const queryParams: ReportParams = {
+                        period: currentState.period !== 'custom' ? currentState.period : undefined,
+                        fromDate: currentState.period === 'custom' ? currentState.fromDate || undefined : undefined,
+                        toDate: currentState.period === 'custom' ? currentState.toDate || undefined : undefined,
+                        ...params
+                    }
+                    
+                    const response = await getMedicalRecordsLineChart(queryParams)
+                    set({ 
+                        medicalRecordsChartData: response.data,
+                        chartLoading: false 
+                    })
+                } catch (error) {
+                    console.error('Error fetching medical records chart:', error)
+                    set({ chartLoading: false })
                 }
             },
 
@@ -522,10 +598,13 @@ export const useReportStore = create<ReportState>()(
                 
                 if (tab === 'inventory') {
                     get().fetchInventoryReport({ page: 1 })
+                    get().fetchInventoryLineChart()
                 } else if (tab === 'sales') {
                     get().fetchSalesReport({ page: 1 })
+                    get().fetchSalesLineChart()
                 } else if (tab === 'medicalRecords') {
                     get().fetchMedicalRecordsReport({ page: 1 })
+                    get().fetchMedicalRecordsLineChart()
                 } else if (tab === 'dashboard') {
                     get().fetchDashboardReport()
                 }
@@ -537,10 +616,13 @@ export const useReportStore = create<ReportState>()(
                 const { activeTab } = get()
                 if (activeTab === 'inventory') {
                     get().fetchInventoryReport({ page: 1 })
+                    get().fetchInventoryLineChart()
                 } else if (activeTab === 'sales') {
                     get().fetchSalesReport({ page: 1 })
+                    get().fetchSalesLineChart()
                 } else if (activeTab === 'medicalRecords') {
                     get().fetchMedicalRecordsReport({ page: 1 })
+                    get().fetchMedicalRecordsLineChart()
                 }
             },
 
@@ -550,10 +632,13 @@ export const useReportStore = create<ReportState>()(
                 const { activeTab } = get()
                 if (activeTab === 'inventory') {
                     get().fetchInventoryReport({ page: 1 })
+                    get().fetchInventoryLineChart()
                 } else if (activeTab === 'sales') {
                     get().fetchSalesReport({ page: 1 })
+                    get().fetchSalesLineChart()
                 } else if (activeTab === 'medicalRecords') {
                     get().fetchMedicalRecordsReport({ page: 1 })
+                    get().fetchMedicalRecordsLineChart()
                 }
             },
 
@@ -590,10 +675,13 @@ export const useReportStore = create<ReportState>()(
                 const { activeTab } = get()
                 if (activeTab === 'inventory') {
                     get().fetchInventoryReport({ page: 1 })
+                    get().fetchInventoryLineChart()
                 } else if (activeTab === 'sales') {
                     get().fetchSalesReport({ page: 1 })
+                    get().fetchSalesLineChart()
                 } else if (activeTab === 'medicalRecords') {
                     get().fetchMedicalRecordsReport({ page: 1 })
+                    get().fetchMedicalRecordsLineChart()
                 }
             }
         }),

@@ -15,6 +15,7 @@ export { default as Table } from './ui/Table/Table';
 export { default as Tormentum } from './ui/Tormentum/Tormentum';
 export { default as Tab } from './ui/Tab/Tab';
 export { DateRangeFilter } from './ui/DateRangeFilter/DateRangeFilter';
+export { default as LineChart } from './ui/LineChart/LineChart';
 
 //layout components
 export { default as Footer } from './layout/Footer/Footer';
