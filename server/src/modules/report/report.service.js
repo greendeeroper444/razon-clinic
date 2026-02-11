@@ -454,6 +454,181 @@ class ReportService extends BaseService {
         };
     }
 
+    // ==================== LINE CHART DATA ====================
+    
+    // Helper: Generate date labels based on period
+    generateDateLabels(period, fromDate, toDate) {
+        const labels = [];
+        const dataPoints = [];
+        
+        if (period === 'week') {
+            // Last 7 days
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                date.setHours(0, 0, 0, 0);
+                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                dataPoints.push({
+                    date: new Date(date),
+                    endDate: new Date(date.setHours(23, 59, 59, 999))
+                });
+            }
+        } else if (period === 'month') {
+            // Last 30 days
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                date.setHours(0, 0, 0, 0);
+                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                dataPoints.push({
+                    date: new Date(date),
+                    endDate: new Date(date.setHours(23, 59, 59, 999))
+                });
+            }
+        } else if (period === 'year') {
+            // Last 12 months
+            for (let i = 11; i >= 0; i--) {
+                const date = new Date();
+                date.setMonth(date.getMonth() - i);
+                const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+                const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
+                labels.push(startOfMonth.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }));
+                dataPoints.push({
+                    date: startOfMonth,
+                    endDate: endOfMonth
+                });
+            }
+        } else if (fromDate && toDate) {
+            // Custom date range - daily breakdown
+            const start = new Date(fromDate);
+            const end = new Date(toDate);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            for (let i = 0; i <= diffDays; i++) {
+                const date = new Date(start);
+                date.setDate(start.getDate() + i);
+                date.setHours(0, 0, 0, 0);
+                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                dataPoints.push({
+                    date: new Date(date),
+                    endDate: new Date(date.setHours(23, 59, 59, 999))
+                });
+            }
+        }
+        
+        return { labels, dataPoints };
+    }
+
+    // Inventory Line Chart Data
+    async getInventoryLineChartData(queryParams) {
+        const { period = 'month', fromDate, toDate } = queryParams;
+        
+        const { labels, dataPoints } = this.generateDateLabels(period, fromDate, toDate);
+        
+        const itemsAdded = [];
+        const stockValue = [];
+        
+        for (const point of dataPoints) {
+            // Items added on this date
+            const addedCount = await InventoryItem.countDocuments({
+                isArchived: false,
+                createdAt: { $gte: point.date, $lte: point.endDate }
+            });
+            itemsAdded.push(addedCount);
+            
+            // Total stock value at end of this period
+            const items = await InventoryItem.find({
+                isArchived: false,
+                createdAt: { $lte: point.endDate }
+            });
+            const totalValue = items.reduce((sum, item) => 
+                sum + (item.quantityInStock * item.price), 0
+            );
+            stockValue.push(parseFloat(totalValue.toFixed(2)));
+        }
+        
+        return {
+            labels,
+            datasets: [
+                {
+                    label: 'Items Added',
+                    data: itemsAdded,
+                    type: 'itemsAdded'
+                },
+                {
+                    label: 'Stock Value (₱)',
+                    data: stockValue,
+                    type: 'stockValue'
+                }
+            ]
+        };
+    }
+
+    // Sales Line Chart Data
+    async getSalesLineChartData(queryParams) {
+        const { period = 'month', fromDate, toDate } = queryParams;
+        
+        const { labels, dataPoints } = this.generateDateLabels(period, fromDate, toDate);
+        
+        const revenue = [];
+        const salesCount = [];
+        
+        for (const point of dataPoints) {
+            const billings = await Billing.find({
+                createdAt: { $gte: point.date, $lte: point.endDate }
+            });
+            
+            const totalRevenue = billings.reduce((sum, b) => sum + b.amount, 0);
+            revenue.push(parseFloat(totalRevenue.toFixed(2)));
+            salesCount.push(billings.length);
+        }
+        
+        return {
+            labels,
+            datasets: [
+                {
+                    label: 'Revenue (₱)',
+                    data: revenue,
+                    type: 'revenue'
+                },
+                {
+                    label: 'Sales Count',
+                    data: salesCount,
+                    type: 'salesCount'
+                }
+            ]
+        };
+    }
+
+    // Medical Records Line Chart Data
+    async getMedicalRecordsLineChartData(queryParams) {
+        const { period = 'month', fromDate, toDate } = queryParams;
+        
+        const { labels, dataPoints } = this.generateDateLabels(period, fromDate, toDate);
+        
+        const recordsCreated = [];
+        
+        for (const point of dataPoints) {
+            const count = await MedicalRecord.countDocuments({
+                deletedAt: null,
+                dateRecorded: { $gte: point.date, $lte: point.endDate }
+            });
+            recordsCreated.push(count);
+        }
+        
+        return {
+            labels,
+            datasets: [
+                {
+                    label: 'Patient Records',
+                    data: recordsCreated,
+                    type: 'recordsCreated'
+                }
+            ]
+        };
+    }
+
     // ==================== COMBINED DASHBOARD REPORT ====================
     async getDashboardReport() {
         const inventorySummary = await this.getInventorySummary();

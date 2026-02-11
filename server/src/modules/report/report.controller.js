@@ -32,6 +32,20 @@ class ReportController {
         }
     }
 
+    async getInventoryLineChart(req, res, next) {
+        try {
+            const chartData = await ReportService.getInventoryLineChartData(req.query);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Inventory line chart data retrieved successfully',
+                data: chartData
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async exportInventoryReport(req, res, next) {
         try {
             const {
@@ -107,6 +121,20 @@ class ReportController {
         }
     }
 
+    async getSalesLineChart(req, res, next) {
+        try {
+            const chartData = await ReportService.getSalesLineChartData(req.query);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Sales line chart data retrieved successfully',
+                data: chartData
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async exportSalesReport(req, res, next) {
         try {
             const {
@@ -176,6 +204,20 @@ class ReportController {
                 success: true,
                 message: 'Medical records summary retrieved successfully',
                 data: summary
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getMedicalRecordsLineChart(req, res, next) {
+        try {
+            const chartData = await ReportService.getMedicalRecordsLineChartData(req.query);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Medical records line chart data retrieved successfully',
+                data: chartData
             });
         } catch (error) {
             next(error);

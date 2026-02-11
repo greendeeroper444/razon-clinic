@@ -17,6 +17,12 @@ router.get(
 );
 
 router.get(
+    '/getInventoryLineChart',
+    authenticate,
+    reportController.getInventoryLineChart
+);
+
+router.get(
     '/exportInventoryReport',
     authenticate,
     reportController.exportInventoryReport
@@ -36,6 +42,12 @@ router.get(
 );
 
 router.get(
+    '/getSalesLineChart',
+    authenticate,
+    reportController.getSalesLineChart
+);
+
+router.get(
     '/exportSalesReport',
     authenticate,
     reportController.exportSalesReport
@@ -52,6 +64,12 @@ router.get(
     '/getMedicalRecordsSummary',
     authenticate,
     reportController.getMedicalRecordsSummary
+);
+
+router.get(
+    '/getMedicalRecordsLineChart',
+    authenticate,
+    reportController.getMedicalRecordsLineChart
 );
 
 router.get(
