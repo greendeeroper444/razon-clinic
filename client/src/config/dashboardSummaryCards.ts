@@ -1,10 +1,77 @@
-import { CalendarDays, UserLock, AlertTriangle, Stethoscope } from 'lucide-react';
-import { AppointmentResponse, InventoryItemFormData } from '../types';
+import { CalendarDays, UserRound, TrendingUp, Stethoscope, AlertTriangle, Package } from 'lucide-react';
 import React from 'react';
+import { DashboardStats } from '../services/dashboardService';
+
+export const getDashboardSummaryCardsFromAPI = (dashboardStats: DashboardStats | null) => {
+    if (!dashboardStats) {
+        return [];
+    }
+
+    const { totalMedicalRecords, totalAppointments, totalSales, totalPatients, lowStockItems } = dashboardStats;
+
+    const criticalItems = lowStockItems.items.filter(
+        item => item.status === 'Critical'
+    ).length;
+
+    const todaysAppointments = totalAppointments.breakdown.pending + totalAppointments.breakdown.confirmed;
+
+    return [
+        {
+            title: 'Total Patients',
+            value: totalPatients.count.toString(),
+            icon: React.createElement(UserRound),
+            iconColor: 'blue',
+            footer: `${totalPatients.activeCount} active, ${totalPatients.archivedCount} archived`,
+            footerType: 'neutral' as const
+        },
+        {
+            title: 'Total Appointments',
+            value: totalAppointments.count.toString(),
+            icon: React.createElement(CalendarDays),
+            iconColor: 'purple',
+            footer: `${totalAppointments.breakdown.pending} pending, ${totalAppointments.breakdown.completed} completed`,
+            footerType: 'neutral' as const
+        },
+        {
+            title: 'Total Revenue',
+            value: `₱${totalSales.totalRevenue.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+            icon: React.createElement(TrendingUp),
+            iconColor: 'green',
+            footer: `${totalSales.totalTransactions} transactions, Avg: ₱${totalSales.averageTransaction.toFixed(2)}`,
+            footerType: 'positive' as const
+        },
+        {
+            title: 'Medical Records',
+            value: totalMedicalRecords.count.toString(),
+            icon: React.createElement(Stethoscope),
+            iconColor: 'teal',
+            footer: 'Total medical records in system',
+            footerType: 'neutral' as const
+        },
+        {
+            title: 'Low Stock Items',
+            value: lowStockItems.count.toString(),
+            icon: React.createElement(AlertTriangle),
+            iconColor: 'red',
+            footer: criticalItems > 0 
+                ? `${criticalItems} critical items (< 10 stock)`
+                : 'No critical items',
+            footerType: criticalItems > 0 ? 'negative' as const : 'neutral' as const
+        },
+        {
+            title: 'Payment Status',
+            value: totalSales.paymentBreakdown.paid.count.toString(),
+            icon: React.createElement(Package),
+            iconColor: 'orange',
+            footer: `${totalSales.paymentBreakdown.unpaid.count} unpaid, ${totalSales.paymentBreakdown.pending.count} pending`,
+            footerType: totalSales.paymentBreakdown.unpaid.count > 0 ? 'negative' as const : 'neutral' as const
+        }
+    ];
+};
 
 export const getDashboardSummaryCards = (
-    appointments: AppointmentResponse[],
-    inventoryItems: InventoryItemFormData[]
+    appointments: any[],
+    inventoryItems: any[]
 ) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -69,7 +136,7 @@ export const getDashboardSummaryCards = (
         {
             title: 'Patients Waiting',
             value: patientsWaiting.toString(),
-            icon: React.createElement(UserLock),
+            icon: React.createElement(UserRound),
             iconColor: 'orange',
             footer: `Average wait time: ${avgWaitTime} min`,
             footerType: 'neutral'
@@ -92,5 +159,5 @@ export const getDashboardSummaryCards = (
             footer: `${specialists} Specialist`,
             footerType: 'neutral'
         }
-    ]
-}
+    ];
+};

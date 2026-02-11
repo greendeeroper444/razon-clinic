@@ -9,3 +9,4 @@ export { useReportStore } from './reportStore';
 export { useBlockedTimeSlotStore } from './blockedTimeSlotStore';
 export { useOTPStore } from './otpStore';
 export { usePersonnelStore } from './personnelStore';
+export { useDashboardStore } from './dashboardStore';

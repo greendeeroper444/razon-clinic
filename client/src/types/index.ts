@@ -23,3 +23,4 @@ export * from './report';
 export * from './blockedSlot';
 export * from './otp';
 export * from './personnel';
+export * from './dashboard';
