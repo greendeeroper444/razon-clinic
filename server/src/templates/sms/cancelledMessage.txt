@@ -8,4 +8,9 @@ Appointment Details:
 - Time: {{preferredTime}}
 - Reason: {{reasonForVisit}}
 
-If you would like to reschedule, please contact us. We apologize for any inconvenience.
+
+If you have any concerns or questions, please contact us at:
+
+Phone Number: (0939) 726 6918
+Fb: Dr. Nice for Kids
+Email: drnice4kids@gmail.com

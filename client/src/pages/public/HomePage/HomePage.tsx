@@ -252,7 +252,7 @@ const HomePage = () => {
                 <div className={styles.aboutOverlay}></div>
                 <div className={`${styles.aboutContent} ${styles.slideInUp}`}>
                     <h2>Your Child's Health Is Our Priority</h2>
-                    <p className={styles.delay1}>Providing compassionate and comprehensive pediatric care since 1995</p>
+                    <p className={styles.delay1}>Providing compassionate and comprehensive pediatric care since 2021</p>
                 </div>
             </div>
 

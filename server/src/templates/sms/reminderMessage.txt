@@ -10,3 +10,8 @@ Appointment #: {{appointmentNumber}}
 Please arrive 10 minutes before your scheduled time. If you need to reschedule, please contact us as soon as possible.
 
 Thank you!
+
+
+Phone Number: (0939) 726 6918
+Fb: Dr. Nice for Kids
+Email: drnice4kids@gmail.com

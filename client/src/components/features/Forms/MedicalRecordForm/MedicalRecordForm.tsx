@@ -596,22 +596,27 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
                     error={getFieldError(validationErrors, 'symptomsDuration')}
                 />
 
-                <Input
+                <Select
                     ref={(el) => { fieldRefs.current['painScale'] = el; }}
-                    type='number'
-                    label='Pain Scale (1-10)'
                     name='painScale'
-                    placeholder="Rate pain 1-10"
+                    label='Pain Scale (1-10)'
+                    leftIcon='activity'
+                    placeholder='Select pain level'
                     value={formData?.painScale || ''}
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        if (value === '' || (Number(value) >= 1 && Number(value) <= 10)) {
-                            onChange(e);
-                        }
-                    }}
-                    min={1}
-                    max={10}
+                    onChange={onChange}
                     disabled={isLoading}
+                    options={[
+                        { value: '1', label: '1 - Minimal (barely noticeable)' },
+                        { value: '2', label: '2 - Mild (minor annoyance)' },
+                        { value: '3', label: '3 - Uncomfortable (tolerable)' },
+                        { value: '4', label: '4 - Moderate (interferes with tasks)' },
+                        { value: '5', label: '5 - Distracting (hard to ignore)' },
+                        { value: '6', label: '6 - Distressing (difficult to focus)' },
+                        { value: '7', label: '7 - Severe (significantly limits activity)' },
+                        { value: '8', label: '8 - Intense (limits most activities)' },
+                        { value: '9', label: '9 - Excruciating (unable to function)' },
+                        { value: '10', label: '10 - Unbearable (worst pain imaginable)' }
+                    ]}
                     error={getFieldError(validationErrors, 'painScale')}
                 />
             </div>

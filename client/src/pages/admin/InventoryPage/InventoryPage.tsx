@@ -260,7 +260,7 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
                         onClick={() => handleDeleteClick(item)}
                         disabled={isProcessing}
                     >
-                        <Trash className={styles.icon} /> Delete
+                        <Trash className={styles.icon} /> Archive
                     </button>
                 </>
             )

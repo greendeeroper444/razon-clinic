@@ -279,7 +279,7 @@ const PatientPage: React.FC<OpenModalProps> = () => {
                     >
                         Update
                     </button>
-                    <button 
+                    {/* <button 
                         type='button'
                         className={`${styles.actionBtn} ${styles.cancel}`}
                         onClick={(e) => {
@@ -288,6 +288,17 @@ const PatientPage: React.FC<OpenModalProps> = () => {
                         }}
                     >
                         Delete
+                    </button> */}
+                     <button 
+                        type='button'
+                        className={`${styles.actionBtn} ${styles.archive}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleArchiveClick(patient);
+                        }}
+                        disabled={isProcessing || patient.isArchived}
+                    >
+                        Archive
                     </button>
                     {
                         user && user.role === 'Doctor' && (

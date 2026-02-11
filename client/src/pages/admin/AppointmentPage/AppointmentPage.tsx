@@ -234,7 +234,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                             openModalDelete(appointment);
                         }}
                     >
-                        Delete
+                        Archive
                     </button>
                 </>
             )
@@ -286,7 +286,6 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                             <option value="Scheduled">Scheduled</option>
                             <option value="Completed">Completed</option>
                             <option value="Pending">Pending</option>
-                            <option value="Rebooked">Rebooked</option>
                             <option value="Cancelled">Cancelled</option>
                         </select>
                     </div>
