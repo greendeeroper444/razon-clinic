@@ -541,6 +541,8 @@ const BillingForm: React.FC<BillingFormProps> = ({
                         error={getFieldError(validationErrors, 'amountPaid')}
                     />
 
+                    <br />
+                    
                     <Input
                         ref={(el) => { fieldRefs.current['change'] = el; }}
                         type='number'

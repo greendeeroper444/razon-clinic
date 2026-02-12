@@ -1,11 +1,12 @@
 .calendarContainer {
     width: 100%;
-    height: 100%;
+    min-height: 450px;
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    padding: 20px;
+    padding: 28px;
     transition: all 0.3s ease;
+    grid-column: span 2;
 }
 
 .calendarContainer:hover {
@@ -14,35 +15,38 @@
 }
 
 .calendarTitle {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #6b7280;
-    font-weight: 500;
-    margin-bottom: 15px;
+    font-weight: 600;
+    margin-bottom: 20px;
     text-align: center;
+    letter-spacing: 0.3px;
 }
 
 .calendarHeader {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    padding: 0 8px;
 }
 
 .navButton {
-    padding: 6px;
+    padding: 8px;
     background: transparent;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
     color: #6b7280;
 }
 
 .navButton:hover {
     background-color: #f3f4f6;
+    color: #374151;
 }
 
 .navButton:disabled {
@@ -51,8 +55,8 @@
 }
 
 .monthTitle {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: #374151;
     margin: 0;
 }
@@ -60,34 +64,35 @@
 .weekdayGrid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
-    margin-bottom: 8px;
+    gap: 4px;
+    margin-bottom: 12px;
 }
 
 .weekdayCell {
     text-align: center;
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 0.875rem;
+    font-weight: 600;
     color: #6b7280;
-    padding: 4px 0;
+    padding: 8px 0;
 }
 
 .calendarGrid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+    gap: 6px;
 }
 
 .dayCell {
     position: relative;
-    height: 32px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
-    border-radius: 4px;
+    font-size: 0.9rem;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
+    font-weight: 500;
 }
 
 .emptyCell {
@@ -96,19 +101,25 @@
 
 .normalDay {
     color: #374151;
+    background-color: #f9fafb;
 }
 
 .normalDay:hover {
-    background-color: #f3f4f6;
+    background-color: #e5e7eb;
+    transform: scale(1.05);
 }
 
 .appointmentDay {
     background-color: #6366f1;
     color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
 }
 
 .appointmentDay:hover {
     background-color: #4f46e5;
+    transform: scale(1.08);
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4);
 }
 
 .dayNumber {
@@ -117,87 +128,105 @@
 
 .appointmentCount {
     position: absolute;
-    top: -2px;
-    right: -2px;
+    top: 2px;
+    right: 2px;
     background-color: #ef4444;
     color: white;
-    font-size: 0.625rem;
+    font-size: 0.7rem;
     border-radius: 50%;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     z-index: 20;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.4);
 }
 
 .loadingState {
     text-align: center;
-    padding: 12px;
+    padding: 16px;
     color: #6b7280;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
 }
 
 .legend {
-    margin-top: 16px;
+    margin-top: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    font-size: 0.75rem;
+    gap: 16px;
+    font-size: 0.85rem;
     color: #6b7280;
 }
 
 .legendItem {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .legendColor {
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
     background-color: #6366f1;
-    border-radius: 2px;
+    border-radius: 4px;
 }
 
 .legendCount {
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
     background-color: #ef4444;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 0.625rem;
+    font-size: 0.7rem;
     font-weight: bold;
 }
 
 .summary {
-    margin-top: 12px;
-    padding: 8px;
+    margin-top: 16px;
+    padding: 12px;
     background-color: #f9fafb;
-    border-radius: 4px;
+    border-radius: 6px;
 }
 
 .summaryTitle {
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: #374151;
-    margin: 0 0 6px 0;
+    margin: 0 0 8px 0;
 }
 
 .summaryContent {
-    font-size: 0.625rem;
+    font-size: 0.75rem;
     color: #6b7280;
 }
 
 .summaryContent p {
-    margin: 0 0 2px 0;
+    margin: 0 0 4px 0;
 }
 
 .summaryContent p:last-child {
     margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .calendarContainer {
+        grid-column: span 1;
+        min-height: 380px;
+        padding: 20px;
+    }
+    
+    .dayCell {
+        height: 40px;
+        font-size: 0.8rem;
+    }
+    
+    .monthTitle {
+        font-size: 1.1rem;
+    }
 }
