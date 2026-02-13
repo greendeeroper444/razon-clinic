@@ -1,6 +1,7 @@
 const Billing = require('./billing.model');
 const MedicalRecord = require('@modules/medical-record/medicalRecord.model');
 const InventoryItem = require('@modules/inventory-item/inventoryItem.model');
+const Appointment = require('@modules/appointment/appointment.model');
 const mongoose = require('mongoose');
 
 class BillingService {
@@ -88,6 +89,11 @@ class BillingService {
 
         if (itemName && itemQuantity) {
             await this.updateInventoryQuantities(itemName, itemQuantity, 'subtract');
+        }
+
+        //if payment status is Paid, update appointment status to Completed
+        if (paymentStatus === 'Paid') {
+            await this.updateAppointmentStatusToCompleted(medicalRecordId);
         }
 
         await savedBilling.populate('medicalRecordId', 'personalDetails.fullName dateRecorded');
@@ -249,6 +255,7 @@ class BillingService {
         }
 
         if (isPaymentStatusUpdate) {
+            const oldPaymentStatus = billing.paymentStatus;
             billing.paymentStatus = updateData.paymentStatus;
             
             //if marking as Paid, allow updating amountPaid and change
@@ -266,6 +273,11 @@ class BillingService {
                     if (Math.abs(calculatedChange - updateData.change) > 0.01) {
                         throw new Error('Change amount does not match: amountPaid - totalAmount');
                     }
+                }
+
+                //update appointment status to Completed when payment is marked as Paid
+                if (oldPaymentStatus !== 'Paid') {
+                    await this.updateAppointmentStatusToCompleted(billing.medicalRecordId);
                 }
             }
             
@@ -297,6 +309,12 @@ class BillingService {
             if (Math.abs(calculatedChange - updateData.change) > 0.01) {
                 throw new Error('Change amount does not match: amountPaid - totalAmount');
             }
+        }
+
+        //check if payment status is being changed to Paid in regular update
+        const oldPaymentStatus = billing.paymentStatus;
+        if (updateData.paymentStatus === 'Paid' && oldPaymentStatus !== 'Paid') {
+            await this.updateAppointmentStatusToCompleted(billing.medicalRecordId);
         }
 
         //processed information to update data
@@ -435,6 +453,30 @@ class BillingService {
         } catch (error) {
             console.error('Error updating inventory quantities:', error);
             throw new Error('Failed to update inventory quantities');
+        }
+    }
+
+    async updateAppointmentStatusToCompleted(medicalRecordId) {
+        try {
+            //find the appointment linked to this medical record
+            const appointment = await Appointment.findOne({ 
+                userId: { $exists: true },
+                $or: [
+                    { status: 'Scheduled' },
+                    { status: 'Pending' },
+                    { status: 'Rebooked' }
+                ]
+            }).sort({ createdAt: -1 });
+
+            if (appointment) {
+                appointment.status = 'Completed';
+                await appointment.save();
+                console.log(`Appointment ${appointment.appointmentNumber} status updated to Completed`);
+            } else {
+                console.log('No matching appointment found to update status');
+            }
+        } catch (error) {
+            console.error('Error updating appointment status to Completed:', error);
         }
     }
 

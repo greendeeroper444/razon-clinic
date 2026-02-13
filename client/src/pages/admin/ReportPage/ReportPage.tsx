@@ -487,23 +487,44 @@ const ReportPage = () => {
                                         <h3 className={styles.statsTitle}>Age Distribution</h3>
                                         <div className={styles.statsGrid}>
                                             <div className={styles.statItem}>
-                                                <div className={styles.statLabel}>Pediatric (&lt;18)</div>
+                                                <div className={styles.statLabel}>Neonate (0-28 days)</div>
                                                 <div className={styles.statValue}>
-                                                    {dashboardReport.medicalRecords?.statistics?.ageDistribution?.pediatric || 0}
+                                                    {dashboardReport.medicalRecords?.statistics?.ageDistribution?.neonate || 0}
                                                 </div>
                                                 <div className={styles.statCount}>patients</div>
                                             </div>
                                             <div className={styles.statItem}>
-                                                <div className={styles.statLabel}>Adult (18-64)</div>
+                                                <div className={styles.statLabel}>Infant (1mo-1yr)</div>
                                                 <div className={styles.statValue}>
-                                                    {dashboardReport.medicalRecords?.statistics?.ageDistribution?.adult || 0}
+                                                    {dashboardReport.medicalRecords?.statistics?.ageDistribution?.infant || 0}
                                                 </div>
                                                 <div className={styles.statCount}>patients</div>
                                             </div>
                                             <div className={styles.statItem}>
-                                                <div className={styles.statLabel}>Senior (65+)</div>
+                                                <div className={styles.statLabel}>Toddler (1-3 yrs)</div>
                                                 <div className={styles.statValue}>
-                                                    {dashboardReport.medicalRecords?.statistics?.ageDistribution?.senior || 0}
+                                                    {dashboardReport.medicalRecords?.statistics?.ageDistribution?.toddler || 0}
+                                                </div>
+                                                <div className={styles.statCount}>patients</div>
+                                            </div>
+                                            <div className={styles.statItem}>
+                                                <div className={styles.statLabel}>Preschool (3-5 yrs)</div>
+                                                <div className={styles.statValue}>
+                                                    {dashboardReport.medicalRecords?.statistics?.ageDistribution?.preschool || 0}
+                                                </div>
+                                                <div className={styles.statCount}>patients</div>
+                                            </div>
+                                            <div className={styles.statItem}>
+                                                <div className={styles.statLabel}>School-age (6-12 yrs)</div>
+                                                <div className={styles.statValue}>
+                                                    {dashboardReport.medicalRecords?.statistics?.ageDistribution?.schoolAge || 0}
+                                                </div>
+                                                <div className={styles.statCount}>patients</div>
+                                            </div>
+                                            <div className={styles.statItem}>
+                                                <div className={styles.statLabel}>Adolescent (13-18 yrs)</div>
+                                                <div className={styles.statValue}>
+                                                    {dashboardReport.medicalRecords?.statistics?.ageDistribution?.adolescent || 0}
                                                 </div>
                                                 <div className={styles.statCount}>patients</div>
                                             </div>
