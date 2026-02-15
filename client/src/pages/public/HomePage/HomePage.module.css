@@ -398,6 +398,175 @@
     line-height: 1.6;
 }
 
+/* office gallery section */
+.gallerySection {
+    padding: 80px 0;
+    background: white;
+}
+
+.gallerySubheading {
+    text-align: center;
+    color: var(--dark-light);
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.galleryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.galleryItem {
+    position: relative;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    background: white;
+    cursor: pointer;
+}
+
+.galleryItem:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.galleryImageWrapper {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+.galleryImageWrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.5s ease;
+}
+
+.galleryItem:hover .galleryImageWrapper img {
+    transform: scale(1.1);
+}
+
+.galleryOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(30, 41, 59, 0.95), transparent);
+    padding: 2rem 1.5rem 1.5rem;
+    transform: translateY(100%);
+    transition: transform 0.4s ease;
+}
+
+.galleryItem:hover .galleryOverlay {
+    transform: translateY(0);
+}
+
+.galleryLabel {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: block;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* lightbox */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.lightboxContent {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.lightboxContent img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: var(--border-radius);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.closeButton {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.closeButton:hover {
+    background: var(--primary);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.lightbox .lightboxLabel {
+    margin-top: 20px;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
 /* services section */
 .servicesSection {
     background: var(--light);
@@ -1123,6 +1292,10 @@
     .gmapFrame {
         height: 300px;
     }
+    
+    .galleryGrid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
 }
 
 @media (max-width: 768px) {
@@ -1164,6 +1337,15 @@
     
     .ctaContent h3 {
         font-size: 2rem;
+    }
+    
+    .galleryGrid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .galleryImageWrapper {
+        height: 300px;
     }
 }
 
@@ -1226,5 +1408,33 @@
         width: 45px;
         height: 45px;
         font-size: 1.1rem;
+    }
+    
+    .galleryImageWrapper {
+        height: 250px;
+    }
+    
+    .galleryLabel {
+        font-size: 1rem;
+    }
+    
+    .closeButton {
+        top: -45px;
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+    }
+    
+    .lightbox .lightboxLabel {
+        font-size: 1.1rem;
+        margin-top: 15px;
+    }
+    
+    .lightboxContent {
+        max-width: 95vw;
+    }
+    
+    .lightboxContent img {
+        max-height: 80vh;
     }
 }

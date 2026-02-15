@@ -4,6 +4,9 @@ import { useNavigate, Link } from 'react-router-dom'
 import { Heart, Stethoscope, Users, Shield, Briefcase, Activity, Brain, Wind, UserCheck, CalendarCheck, Syringe, MessageCircle, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from 'lucide-react'
 import { Footer, SectionFeatures } from '../../../components'
 import razon from '../../../assets/profiles/razon.jpg'
+import razon1 from '../../../assets/backgrounds/razon-1.png'
+import razon2 from '../../../assets/backgrounds/razon-2.png'
+import razon3 from '../../../assets/backgrounds/razon-3.png'
 import secretary from '../../../assets/profiles/secretary.jpg'
 
 const HomePage = () => {
@@ -11,11 +14,14 @@ const HomePage = () => {
     const [activeSection, setActiveSection] = useState('hero');
     const [visibleSections, setVisibleSections] = useState(new Set());
     const [showSectionIndicator, setShowSectionIndicator] = useState(false);
+    const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+    const [lightboxLabel, setLightboxLabel] = useState<string>('');
     
     //refs for each section
     const heroRef = useRef<HTMLElement>(null);
     const featuresRef = useRef<HTMLElement>(null);
     const aboutRef = useRef<HTMLElement>(null);
+    const galleryRef = useRef<HTMLElement>(null);
     const servicesRef = useRef<HTMLElement>(null);
     const contactRef = useRef<HTMLElement>(null);
 
@@ -24,6 +30,7 @@ const HomePage = () => {
         'hero': 'Home Section',
         'features': 'Features Section',
         'about': 'About Section',
+        'gallery': 'Office Gallery',
         'services': 'Services Section',
         'contact': 'Contact Section'
     };
@@ -122,7 +129,7 @@ const HomePage = () => {
         }, visibilityOptions);
 
         //observe all sections
-        const sections = [heroRef, featuresRef, aboutRef, servicesRef, contactRef];
+        const sections = [heroRef, featuresRef, aboutRef, galleryRef, servicesRef, contactRef];
         sections.forEach(ref => {
             if (ref.current) {
                 sectionObserver.observe(ref.current);
@@ -171,6 +178,18 @@ const HomePage = () => {
         }
     };
 
+    const openLightbox = (image: string, label: string) => {
+        setLightboxImage(image);
+        setLightboxLabel(label);
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+    };
+
+    const closeLightbox = () => {
+        setLightboxImage(null);
+        setLightboxLabel('');
+        document.body.style.overflow = 'unset'; // Restore scrolling
+    };
+
   return (
     <div className={styles.homePage}>
         {/* section indicator */}
@@ -199,6 +218,11 @@ const HomePage = () => {
                 className={`${styles.navDot} ${activeSection === 'about' ? styles.active : ''}`}
                 onClick={() => scrollToSection('about')}
                 title="About"
+            />
+            <div 
+                className={`${styles.navDot} ${activeSection === 'gallery' ? styles.active : ''}`}
+                onClick={() => scrollToSection('gallery')}
+                title="Office Gallery"
             />
             <div 
                 className={`${styles.navDot} ${activeSection === 'services' ? styles.active : ''}`}
@@ -318,6 +342,58 @@ const HomePage = () => {
                             <h4>Ms. Jamaica D. Udarve</h4>
                             <p className={styles.memberTitle}>Secretary</p>
                             <p>Specializing in pediatric behavioral health and development.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {/* office gallery section */}
+        <section 
+            id="gallery" 
+            ref={galleryRef}
+            className={`${styles.gallerySection} ${styles.fadeInSection} ${visibleSections.has('gallery') ? styles.visible : ''}`}
+        >
+            <div className={styles.container}>
+                <div className={`${styles.sectionHeading} ${styles.slideInUp}`}>
+                    <h3>Our Office</h3>
+                    <div className={styles.underline}></div>
+                    <p className={`${styles.gallerySubheading} ${styles.delay1}`}>
+                        A welcoming and comfortable environment designed with your child in mind
+                    </p>
+                </div>
+                <div className={styles.galleryGrid}>
+                    <div 
+                        className={`${styles.galleryItem} ${styles.slideInUp} ${styles.delay1}`}
+                        onClick={() => openLightbox(razon1, 'Reception Area')}
+                    >
+                        <div className={styles.galleryImageWrapper}>
+                            <img src={razon1} alt="Razon Pediatric Clinic - Reception Area" />
+                            <div className={styles.galleryOverlay}>
+                                <span className={styles.galleryLabel}>Reception Area</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div 
+                        className={`${styles.galleryItem} ${styles.slideInUp} ${styles.delay2}`}
+                        onClick={() => openLightbox(razon2, 'Waiting Room')}
+                    >
+                        <div className={styles.galleryImageWrapper}>
+                            <img src={razon2} alt="Razon Pediatric Clinic - Waiting Room" />
+                            <div className={styles.galleryOverlay}>
+                                <span className={styles.galleryLabel}>Waiting Room</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div 
+                        className={`${styles.galleryItem} ${styles.slideInUp} ${styles.delay3}`}
+                        onClick={() => openLightbox(razon3, 'Examination Room')}
+                    >
+                        <div className={styles.galleryImageWrapper}>
+                            <img src={razon3} alt="Razon Pediatric Clinic - Examination Room" />
+                            <div className={styles.galleryOverlay}>
+                                <span className={styles.galleryLabel}>Examination Room</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -487,6 +563,21 @@ const HomePage = () => {
                 </div>
             </div>
         </section>
+
+        {/* lightbox */}
+        {
+            lightboxImage && (
+                <div className={styles.lightbox} onClick={closeLightbox}>
+                    <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
+                        {/* <button className={styles.closeButton} onClick={closeLightbox}>
+                            ×
+                        </button> */}
+                        <img src={lightboxImage} alt={lightboxLabel} />
+                        <div className={styles.lightboxLabel}>{lightboxLabel}</div>
+                    </div>
+                </div>
+            )
+        }
 
         <Footer />
     </div>
