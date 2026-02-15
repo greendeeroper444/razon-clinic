@@ -34,6 +34,53 @@ class ReportService extends BaseService {
         }
     }
 
+    // ==================== AGE CALCULATION HELPER ====================
+    calculateAgeInDays(dateOfBirth) {
+        const today = new Date();
+        const birth = new Date(dateOfBirth);
+        const diffTime = Math.abs(today - birth);
+        return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    calculateAgeInYears(dateOfBirth) {
+        const today = new Date();
+        const birthDate = new Date(dateOfBirth);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        
+        return age;
+    }
+
+    categorizeAge(dateOfBirth) {
+        const ageInDays = this.calculateAgeInDays(dateOfBirth);
+        const ageInYears = this.calculateAgeInYears(dateOfBirth);
+        
+        // Neonate / Newborn: 0–28 days
+        if (ageInDays <= 28) return 'neonate';
+        
+        // Infant: 1 month – 1 year (29 days to 365 days)
+        if (ageInDays <= 365) return 'infant';
+        
+        // Toddler: 1 – 3 years
+        if (ageInYears >= 1 && ageInYears < 3) return 'toddler';
+        
+        // Preschool / Early Childhood: 3 – 5 years
+        if (ageInYears >= 3 && ageInYears < 6) return 'preschool';
+        
+        // School-age / Middle Childhood: 6 – 12 years
+        if (ageInYears >= 6 && ageInYears < 13) return 'schoolAge';
+        
+        // Adolescent: 13 – 18 years
+        if (ageInYears >= 13 && ageInYears <= 18) return 'adolescent';
+        
+        // Adult: 18+ years
+        return 'adult';
+    }
+
     // ==================== INVENTORY REPORTS ====================
     async getInventoryReport(queryParams) {
         const {
@@ -367,23 +414,27 @@ class ReportService extends BaseService {
         const femalePatients = records.filter(r => r.personalDetails?.gender === 'Female').length;
         const otherPatients = records.filter(r => r.personalDetails?.gender === 'Other').length;
 
-        //age distribution
-        const pediatric = records.filter(r => {
-            const age = r.personalDetails?.age;
-            return age !== null && age < 18;
-        }).length;
+        // Age distribution based on medical age categories
+        const ageDistribution = {
+            neonate: 0,      // 0–28 days
+            infant: 0,       // 1 month – 1 year
+            toddler: 0,      // 1 – 3 years
+            preschool: 0,    // 3 – 5 years
+            schoolAge: 0,    // 6 – 12 years
+            adolescent: 0,   // 13 – 18 years
+            adult: 0         // 18+ years
+        };
 
-        const adult = records.filter(r => {
-            const age = r.personalDetails?.age;
-            return age !== null && age >= 18 && age < 65;
-        }).length;
+        records.forEach(record => {
+            if (record.personalDetails?.dateOfBirth) {
+                const category = this.categorizeAge(record.personalDetails.dateOfBirth);
+                if (ageDistribution.hasOwnProperty(category)) {
+                    ageDistribution[category]++;
+                }
+            }
+        });
 
-        const senior = records.filter(r => {
-            const age = r.personalDetails?.age;
-            return age !== null && age >= 65;
-        }).length;
-
-        //follow-up tracking
+        // Follow-up tracking
         const thirtyDaysFromNow = new Date();
         thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
         
@@ -405,11 +456,7 @@ class ReportService extends BaseService {
                 female: femalePatients,
                 other: otherPatients
             },
-            ageDistribution: {
-                pediatric,
-                adult,
-                senior
-            },
+            ageDistribution,
             followUps: {
                 upcoming: upcomingFollowUps,
                 overdue: overdueFollowUps
