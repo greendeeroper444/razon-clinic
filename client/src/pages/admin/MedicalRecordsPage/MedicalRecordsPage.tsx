@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styles from './MedicalRecordsPage.module.css';
-import { Plus, Download, Trash, Edit } from 'lucide-react';
+import { Plus, Download, Archive, Edit } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { FormDataType, MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table, DateRangeFilter } from '../../../components';
@@ -324,9 +324,9 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                                 e.stopPropagation();
                                 openModalDelete(record);
                             }}
-                            title='Delete'
+                            title='Archive'
                         >
-                            <Trash size={16} />
+                            <Archive size={16} />
                         </button>
                     </div>
                 );

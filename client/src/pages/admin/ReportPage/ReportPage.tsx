@@ -528,13 +528,13 @@ const ReportPage = () => {
                                                 </div>
                                                 <div className={styles.statCount}>patients</div>
                                             </div>
-                                            <div className={styles.statItem}>
+                                            {/* <div className={styles.statItem}>
                                                 <div className={styles.statLabel}>Adult (18+)</div>
                                                 <div className={styles.statValue}>
                                                     {dashboardReport.medicalRecords?.statistics?.ageDistribution?.adult || 0}
                                                 </div>
                                                 <div className={styles.statCount}>patients</div>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>

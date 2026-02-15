@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import styles from './BillingsPaymentPage.module.css'
-import { Plus, Download, CreditCard, Trash, Edit } from 'lucide-react';
+import { Plus, Download, CreditCard, Archive, Edit } from 'lucide-react';
 import { BillingFormData, FormDataType, TableColumn } from '../../../types'
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components'
 import { OpenModalProps } from '../../../hooks/hook'
@@ -310,14 +310,14 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
                     </button>
                     <button 
                         type='button' 
-                        title='Delete Billing'
+                        title='Archive Billing'
                         className={`${styles.actionBtn} ${styles.delete}`}
                         onClick={(e) => {
                             e.stopPropagation();
                             openModalDelete(billing);
                         }}
                     >
-                        <Trash size={16} />
+                        <Archive size={16} />
                     </button>
 
                     {

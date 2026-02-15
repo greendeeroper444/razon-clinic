@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import styles from './InventoryPage.module.css';
-import { Plus, Edit, Trash } from 'lucide-react';
+import { Plus, Edit, Archive } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
 import { FormDataType, InventoryItemFormData, TableColumn } from '../../../types';
@@ -260,7 +260,7 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
                         onClick={() => handleDeleteClick(item)}
                         disabled={isProcessing}
                     >
-                        <Trash className={styles.icon} /> Archive
+                        <Archive className={styles.icon} /> Archive
                     </button>
                 </>
             )
