@@ -39,7 +39,8 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 nextPage: null,
                 previousPage: null,
                 remainingItems: 0,
-                searchTerm: null
+                searchTerm: null,
+                statusFilter: null
             },
 
             clearValidationErrors: () => set({ validationErrors: {} }),
@@ -131,7 +132,8 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                                 nextPage: pagination.nextPage,
                                 previousPage: pagination.previousPage,
                                 remainingItems: pagination.remainingItems || 0,
-                                searchTerm: pagination.searchTerm || null
+                                searchTerm: pagination.searchTerm || null,
+                                statusFilter: pagination.statusFilter || null
                             },
                             fetchLoading: false,
                             loading: false,
@@ -203,7 +205,8 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                                 nextPage: pagination.nextPage,
                                 previousPage: pagination.previousPage,
                                 remainingItems: pagination.remainingItems || 0,
-                                searchTerm: pagination.searchTerm || null
+                                searchTerm: pagination.searchTerm || null,
+                                statusFilter: pagination.statusFilter || null
                             },
                             fetchLoading: false,
                             loading: false,
@@ -404,8 +407,9 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
             openModalUpdate: (record: MedicalRecord) => {
                 const formData: MedicalRecordFormData & { id?: string } = {
                     id: record.id,
+                    medicalRecordNumber: record.id, // or however you get this
                     
-                    //personal details
+                    //personal details (flattened)
                     fullName: record.personalDetails?.fullName || '',
                     dateOfBirth: record.personalDetails?.dateOfBirth?.split('T')[0] || '',
                     gender: record.personalDetails?.gender || '',
@@ -415,31 +419,65 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                     address: record.personalDetails?.address || '',
                     emergencyContact: record.personalDetails?.emergencyContact || '',
 
-                    //current symptoms
+                    //current symptoms (flattened)
                     chiefComplaint: record.currentSymptoms?.chiefComplaint || '',
                     symptomsDescription: record.currentSymptoms?.symptomsDescription || '',
                     symptomsDuration: record.currentSymptoms?.symptomsDuration || '',
                     painScale: record.currentSymptoms?.painScale || 0,
 
-                    //medical history
+                    //medical history (flattened)
                     allergies: record.medicalHistory?.allergies || '',
                     chronicConditions: record.medicalHistory?.chronicConditions || '',
                     previousSurgeries: record.medicalHistory?.previousSurgeries || '',
                     familyHistory: record.medicalHistory?.familyHistory || '',
 
-                    //growth Milestones
+                    //growth Milestones (flattened)
                     height: record.growthMilestones?.height || 0,
                     weight: record.growthMilestones?.weight || 0,
                     bmi: record.growthMilestones?.bmi || '',
                     growthNotes: record.growthMilestones?.growthNotes || '',
 
-                    //clinical Information
+                    //clinical Information (flattened)
                     diagnosis: record.diagnosis || '',
                     treatmentPlan: record.treatmentPlan || '',
                     prescribedMedications: record.prescribedMedications || '',
                     consultationNotes: record.consultationNotes || '',
                     vaccinationHistory: record.vaccinationHistory || '',
-                    followUpDate: record.followUpDate ? record.followUpDate.split('T')[0] : undefined
+                    followUpDate: record.followUpDate ? record.followUpDate.split('T')[0] : undefined,
+
+                    //nested objects (required by MedicalRecordFormData)
+                    personalDetails: {
+                        fullName: record.personalDetails?.fullName || '',
+                        dateOfBirth: record.personalDetails?.dateOfBirth || '',
+                        gender: record.personalDetails?.gender || 'Other',
+                        bloodType: record.personalDetails?.bloodType,
+                        address: record.personalDetails?.address,
+                        phone: record.personalDetails?.phone || '',
+                        email: record.personalDetails?.email,
+                        emergencyContact: record.personalDetails?.emergencyContact,
+                        age: record.personalDetails?.age
+                    },
+                    medicalHistory: {
+                        allergies: record.medicalHistory?.allergies,
+                        chronicConditions: record.medicalHistory?.chronicConditions,
+                        previousSurgeries: record.medicalHistory?.previousSurgeries,
+                        familyHistory: record.medicalHistory?.familyHistory,
+                        general: record.medicalHistory?.general
+                    },
+                    growthMilestones: {
+                        height: record.growthMilestones?.height,
+                        weight: record.growthMilestones?.weight,
+                        bmi: record.growthMilestones?.bmi,
+                        growthNotes: record.growthMilestones?.growthNotes,
+                        general: record.growthMilestones?.general
+                    },
+                    currentSymptoms: {
+                        chiefComplaint: record.currentSymptoms?.chiefComplaint || '',
+                        symptomsDescription: record.currentSymptoms?.symptomsDescription || '',
+                        symptomsDuration: record.currentSymptoms?.symptomsDuration,
+                        painScale: record.currentSymptoms?.painScale,
+                        general: record.currentSymptoms?.general
+                    }
                 };
                 
                 set({ 

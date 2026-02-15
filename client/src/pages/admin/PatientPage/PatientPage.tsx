@@ -33,7 +33,6 @@ const PatientPage: React.FC<OpenModalProps> = () => {
         fetchPatients,
         openModalCreate,
         openModalUpdate,
-        openModalDelete,
         closeModalCreate,
         closeModalUpdate,
         closeModalDelete,
@@ -125,9 +124,9 @@ const PatientPage: React.FC<OpenModalProps> = () => {
         openModalUpdate(patient);
     }, [openModalUpdate]);
 
-    const handleDeleteClick = useCallback((patient: PatientFormData) => {
-        openModalDelete(patient);
-    }, [openModalDelete]);
+    // const handleDeleteClick = useCallback((patient: PatientFormData) => {
+    //     openModalDelete(patient);
+    // }, [openModalDelete]);
 
     const handleArchiveClick = useCallback(async (patient: PatientFormData) => {
         if (!patient.id) {

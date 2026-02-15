@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { toast } from 'sonner';
-import { sendPasswordResetOTP, verifyOTP as verifyOTPService, resendPasswordResetOTP, resetPasswordWithOTP, verifyPasswordResetOTP } from '../services/otpService';
+import { sendPasswordResetOTP, resendPasswordResetOTP, resetPasswordWithOTP, verifyPasswordResetOTP } from '../services/otpService';
 import { OTPState } from '../types';
 
 export const useOTPStore = create<OTPState>()(
     devtools(
-        (set, get) => ({
+        (set) => ({
             contactNumber: '',
             userId: null,
             otpId: null,

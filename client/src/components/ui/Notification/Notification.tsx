@@ -31,7 +31,7 @@ const Notification: React.FC<ExtendedNotificationProps> = ({
             setLoading(true);
             setError(null);
             
-            const response = await getNotifications(1, 20);
+            const response = await getNotifications({ page: 1, limit: 20 });
             
             if (response.success) {
                 const notificationsData = Array.isArray(response.data.notifications) ? response.data.notifications : [];

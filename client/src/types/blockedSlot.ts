@@ -55,6 +55,8 @@ export interface BlockedTimeSlotDeleteData {
     timeRange: string;
     reason: string;
     itemType: 'Blocked Time Slot';
+    startDate: string;
+    endDate: string;
 }
 
 export interface BlockedTimeSlotSummaryStats {

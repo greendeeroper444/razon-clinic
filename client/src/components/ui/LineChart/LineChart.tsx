@@ -38,6 +38,9 @@ interface LineChartProps {
 const LineChart = ({ labels, datasets, title, height = 300 }: LineChartProps) => {
     const chartRef = useRef<ChartJS<'line'>>(null)
 
+    // Generate dynamic class name for height
+    const heightClass = `height${height}`
+
     const colors = [
         {
             border: 'rgb(75, 192, 192)',
@@ -96,7 +99,7 @@ const LineChart = ({ labels, datasets, title, height = 300 }: LineChartProps) =>
                 text: title,
                 font: {
                     size: 16,
-                    weight: '600' as const,
+                    weight: 600,
                     family: "'Inter', sans-serif"
                 },
                 padding: {
@@ -109,7 +112,7 @@ const LineChart = ({ labels, datasets, title, height = 300 }: LineChartProps) =>
                 padding: 12,
                 titleFont: {
                     size: 13,
-                    weight: '600' as const
+                    weight: 600
                 },
                 bodyFont: {
                     size: 12
@@ -190,7 +193,7 @@ const LineChart = ({ labels, datasets, title, height = 300 }: LineChartProps) =>
     }, [])
 
     return (
-        <div className={styles.chartContainer} style={{ height: `${height}px` }}>
+        <div className={`${styles.chartContainer} ${styles[heightClass] || ''}`}>
             <Line ref={chartRef} data={chartData} options={options} />
         </div>
     )

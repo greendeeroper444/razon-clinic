@@ -32,144 +32,144 @@ const PersonnelForm: React.FC<PersonnelFormProps> = ({
 
     const isEditMode = !!formData?.id;
 
-    return (
-        <>
-            <Input
-                ref={(el) => { fieldRefs.current['firstName'] = el; }}
-                type='text'
-                label='First Name *'
-                name='firstName'
-                placeholder='Enter first name'
-                value={formData?.firstName || ''}
-                onChange={onChange}
-                error={getFieldError(validationErrors, 'firstName')}
-            />
+  return (
+    <>
+        <Input
+            ref={(el) => { fieldRefs.current['firstName'] = el; }}
+            type='text'
+            label='First Name *'
+            name='firstName'
+            placeholder='Enter first name'
+            value={formData?.firstName || ''}
+            onChange={onChange}
+            error={getFieldError(validationErrors, 'firstName')}
+        />
 
-            <br />
+        <br />
 
-            <Input
-                ref={(el) => { fieldRefs.current['lastName'] = el; }}
-                type='text'
-                label='Last Name *'
-                name='lastName'
-                placeholder='Enter last name'
-                value={formData?.lastName || ''}
-                onChange={onChange}
-                error={getFieldError(validationErrors, 'lastName')}
-            />
+        <Input
+            ref={(el) => { fieldRefs.current['lastName'] = el; }}
+            type='text'
+            label='Last Name *'
+            name='lastName'
+            placeholder='Enter last name'
+            value={formData?.lastName || ''}
+            onChange={onChange}
+            error={getFieldError(validationErrors, 'lastName')}
+        />
 
-            <br />
+        <br />
 
-            <Input
-                ref={(el) => { fieldRefs.current['middleName'] = el; }}
-                type='text'
-                label='Middle Name'
-                name='middleName'
-                placeholder='Enter middle name (optional)'
-                value={formData?.middleName || ''}
-                onChange={onChange}
-                error={getFieldError(validationErrors, 'middleName')}
-            />
+        <Input
+            ref={(el) => { fieldRefs.current['middleName'] = el; }}
+            type='text'
+            label='Middle Name'
+            name='middleName'
+            placeholder='Enter middle name (optional)'
+            value={formData?.middleName || ''}
+            onChange={onChange}
+            error={getFieldError(validationErrors, 'middleName')}
+        />
 
-            <br />
+        <br />
 
-            <Input
-                ref={(el) => { fieldRefs.current['contactNumber'] = el; }}
-                type='text'
-                label='Contact Number *'
-                name='contactNumber'
-                placeholder='Contact number'
-                value={formData?.contactNumber || ''}
-                onChange={onChange}
-                leftIcon='phone'
-                error={getFieldError(validationErrors, 'contactNumber')}
-            />
+        <Input
+            ref={(el) => { fieldRefs.current['contactNumber'] = el; }}
+            type='text'
+            label='Contact Number *'
+            name='contactNumber'
+            placeholder='Contact number'
+            value={formData?.contactNumber || ''}
+            onChange={onChange}
+            leftIcon='phone'
+            error={getFieldError(validationErrors, 'contactNumber')}
+        />
 
-            <br />
+        <br />
 
-            {
-                !isEditMode && (
-                    <>
-                        <Input
-                            ref={(el) => { fieldRefs.current['password'] = el; }}
-                            type='password'
-                            label='Password *'
-                            name='password'
-                            placeholder='Enter password'
-                            value={formData?.password || ''}
-                            onChange={onChange}
-                            leftIcon='lock'
-                            error={getFieldError(validationErrors, 'password')}
-                        />
+        {
+            !isEditMode && (
+                <>
+                    <Input
+                        ref={(el) => { fieldRefs.current['password'] = el; }}
+                        type='password'
+                        label='Password *'
+                        name='password'
+                        placeholder='Enter password'
+                        value={formData?.password || ''}
+                        onChange={onChange}
+                        leftIcon='lock'
+                        error={getFieldError(validationErrors, 'password')}
+                    />
 
-                        <br />
-                    </>
-                )
-            }
+                    <br />
+                </>
+            )
+        }
 
-            <Input
-                ref={(el) => { fieldRefs.current['birthdate'] = el; }}
-                type='date'
-                label='Birthdate *'
-                name='birthdate'
-                value={formData?.birthdate || ''}
-                onChange={onChange}
-                leftIcon='calendar'
-                error={getFieldError(validationErrors, 'birthdate')}
-            />
+        <Input
+            ref={(el) => { fieldRefs.current['birthdate'] = el; }}
+            type='date'
+            label='Birthdate *'
+            name='birthdate'
+            value={formData?.birthdate || ''}
+            onChange={onChange}
+            leftIcon='calendar'
+            error={getFieldError(validationErrors, 'birthdate')}
+        />
 
-            <br />
+        <br />
 
-            <Select
-                ref={(el) => { fieldRefs.current['sex'] = el; }}
-                name='sex'
-                label='Sex *'
-                title='Select Sex'
-                leftIcon='user'
-                placeholder='Select Sex'
-                value={formData?.sex || ''}
-                onChange={onChange}
-                options={[
-                    { value: 'Male', label: 'Male' },
-                    { value: 'Female', label: 'Female' },
-                    { value: 'Other', label: 'Other' }
-                ]}
-                error={getFieldError(validationErrors, 'sex')}
-            />
+        <Select
+            ref={(el) => { fieldRefs.current['sex'] = el; }}
+            name='sex'
+            label='Sex *'
+            title='Select Sex'
+            leftIcon='user'
+            placeholder='Select Sex'
+            value={formData?.sex || ''}
+            onChange={onChange}
+            options={[
+                { value: 'Male', label: 'Male' },
+                { value: 'Female', label: 'Female' },
+                { value: 'Other', label: 'Other' }
+            ]}
+            error={getFieldError(validationErrors, 'sex')}
+        />
 
-            <br />
+        <br />
 
-            <Input
-                ref={(el) => { fieldRefs.current['address'] = el; }}
-                type='text'
-                label='Address *'
-                name='address'
-                placeholder='Enter complete address'
-                value={formData?.address || ''}
-                onChange={onChange}
-                leftIcon='home'
-                error={getFieldError(validationErrors, 'address')}
-            />
+        <Input
+            ref={(el) => { fieldRefs.current['address'] = el; }}
+            type='text'
+            label='Address *'
+            name='address'
+            placeholder='Enter complete address'
+            value={formData?.address || ''}
+            onChange={onChange}
+            leftIcon='home'
+            error={getFieldError(validationErrors, 'address')}
+        />
 
-            <br />
+        <br />
 
-            <Select
-                ref={(el) => { fieldRefs.current['role'] = el; }}
-                name='role'
-                label='Role *'
-                title='Select Role'
-                leftIcon='briefcase'
-                placeholder='Select Role'
-                value={formData?.role || ''}
-                onChange={onChange}
-                options={[
-                    { value: 'Doctor', label: 'Doctor' },
-                    { value: 'Staff', label: 'Staff' }
-                ]}
-                error={getFieldError(validationErrors, 'role')}
-            />
-        </>
-    )
+        <Select
+            ref={(el) => { fieldRefs.current['role'] = el; }}
+            name='role'
+            label='Role *'
+            title='Select Role'
+            leftIcon='briefcase'
+            placeholder='Select Role'
+            value={formData?.role || ''}
+            onChange={onChange}
+            options={[
+                { value: 'Doctor', label: 'Doctor' },
+                { value: 'Staff', label: 'Staff' }
+            ]}
+            error={getFieldError(validationErrors, 'role')}
+        />
+    </>
+  )
 }
 
 export default PersonnelForm

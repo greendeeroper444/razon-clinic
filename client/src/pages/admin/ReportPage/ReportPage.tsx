@@ -5,7 +5,7 @@ import { useReportStore } from '../../../stores'
 import { Header, LineChart, Loading, Main, Pagination, Searchbar, Tab, Table } from '../../../components'
 import { formatDate, formatCurrency, getStatusClass } from '../../../utils'
 import { InventoryItem, SalesReportItem, TableColumn } from '../../../types'
-import { Package, DollarSign, ShoppingCart, AlertTriangle, Calendar, FileText, Users, UserCheck } from 'lucide-react'
+import { Package, DollarSign, ShoppingCart, AlertTriangle, Calendar, FileText, UserCheck } from 'lucide-react'
 
 const ReportPage = () => {
     const [searchParams] = useSearchParams()
@@ -295,9 +295,9 @@ const ReportPage = () => {
         }
     ]
 
-    const currentPagination = activeTab === 'inventory' ? inventoryPagination : 
-                             activeTab === 'sales' ? salesPagination : 
-                             medicalRecordsPagination
+    // const currentPagination = activeTab === 'inventory' ? inventoryPagination : 
+    //                          activeTab === 'sales' ? salesPagination : 
+    //                          medicalRecordsPagination
 
   return (
     <Main error={error}>
@@ -320,7 +320,9 @@ const ReportPage = () => {
                             <>
                                 <div className={styles.overviewCards}>
                                     <div className={styles.card}>
-                                        <div className={styles.cardIcon} style={{ backgroundColor: '#e3f2fd' }}>
+                                        <div className={styles.cardIcon} 
+                                        // style={{ backgroundColor: '#e3f2fd' }}
+                                        >
                                             <Package size={24} color="#1976d2" />
                                         </div>
                                         <div className={styles.cardContent}>

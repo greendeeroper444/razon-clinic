@@ -40,7 +40,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({
         className
     ].filter(Boolean).join(' ')
 
-    const getIcon = (icon: IconType): JSX.Element | null => {
+    const getIcon = (icon: IconType): React.JSX.Element | null => {
         switch (icon) {
             case 'user':
                 return <User className={styles.icon} />

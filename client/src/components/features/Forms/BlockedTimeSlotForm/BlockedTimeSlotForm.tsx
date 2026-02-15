@@ -29,45 +29,45 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
 
     const today = new Date().toISOString().split('T')[0];
 
-    const formatTimeToInterval = (timeString: string): string => {
-        if (!timeString) return '';
+    // const formatTimeToInterval = (timeString: string): string => {
+    //     if (!timeString) return '';
         
-        const [hours, minutes] = timeString.split(':').map(Number);
+    //     const [hours, minutes] = timeString.split(':').map(Number);
         
-        if (isNaN(hours) || isNaN(minutes)) return '';
+    //     if (isNaN(hours) || isNaN(minutes)) return '';
         
-        const roundedMinutes = Math.round(minutes / 15) * 15;
+    //     const roundedMinutes = Math.round(minutes / 15) * 15;
         
-        let finalHours = hours;
-        let finalMinutes = roundedMinutes;
+    //     let finalHours = hours;
+    //     let finalMinutes = roundedMinutes;
         
-        if (finalMinutes === 60) {
-            finalHours = (hours + 1) % 24;
-            finalMinutes = 0;
-        }
+    //     if (finalMinutes === 60) {
+    //         finalHours = (hours + 1) % 24;
+    //         finalMinutes = 0;
+    //     }
         
-        const formattedHours = String(finalHours).padStart(2, '0');
-        const formattedMinutes = String(finalMinutes).padStart(2, '0');
+    //     const formattedHours = String(finalHours).padStart(2, '0');
+    //     const formattedMinutes = String(finalMinutes).padStart(2, '0');
         
-        return `${formattedHours}:${formattedMinutes}`;
-    };
+    //     return `${formattedHours}:${formattedMinutes}`;
+    // };
 
-    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+    // const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const { name, value } = e.target;
         
-        const formattedTime = formatTimeToInterval(value);
+    //     const formattedTime = formatTimeToInterval(value);
         
-        const formattedEvent = {
-            ...e,
-            target: {
-                ...e.target,
-                name,
-                value: formattedTime
-            }
-        } as React.ChangeEvent<HTMLInputElement>;
+    //     const formattedEvent = {
+    //         ...e,
+    //         target: {
+    //             ...e.target,
+    //             name,
+    //             value: formattedTime
+    //         }
+    //     } as React.ChangeEvent<HTMLInputElement>;
         
-        onChange(formattedEvent);
-    };
+    //     onChange(formattedEvent);
+    // };
 
   return (
     <>
@@ -157,7 +157,6 @@ const BlockedTimeSlotForm: React.FC<BlockedTimeSlotFormProps> = ({
             placeholder='Enter additional details or explanation...'
             value={formData?.customReason || ''}
             onChange={onChange}
-            rows={3}
             error={getFieldError(validationErrors, 'customReason')}
         />
     </>

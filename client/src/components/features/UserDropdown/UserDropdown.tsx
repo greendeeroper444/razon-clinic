@@ -1,4 +1,4 @@
-import { User, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import styles from './UserDropdown.module.css'
 
 export interface UserDropdownProps {
@@ -10,10 +10,10 @@ export interface UserDropdownProps {
 const UserDropdown: React.FC<UserDropdownProps> = ({ isVisible, onClose, onLogout }) => {
     if (!isVisible) return null;
 
-    const handleProfileClick = () => {
-        console.log('Navigate to profile');
-        onClose();
-    };
+    // const handleProfileClick = () => {
+    //     console.log('Navigate to profile');
+    //     onClose();
+    // };
 
     const handleLogoutClick = () => {
         onLogout();

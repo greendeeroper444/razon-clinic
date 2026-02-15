@@ -7,7 +7,7 @@ import { Appointment, AppointmentCounts } from '../../../types'
 
 const Calendar: React.FC = () => {
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
-    const [appointments, setAppointments] = useState<Appointment[]>([]);
+    const [, setAppointments] = useState<Appointment[]>([]);
     const [appointmentCounts, setAppointmentCounts] = useState<AppointmentCounts>({});
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
@@ -180,6 +180,7 @@ const Calendar: React.FC = () => {
                         
                         return (
                             <div
+                                
                                 key={index}
                                 className={`${styles.dayCell} ${
                                     !day 
@@ -187,17 +188,18 @@ const Calendar: React.FC = () => {
                                         : hasAppointment
                                             ? styles.appointmentDay
                                             : styles.normalDay
-                                } ${day ? styles.clickableDay : ''}`}
+                                } ${day ? styles.clickableDay : styles.nonClickableDay}`}
                                 onClick={() => handleDateClick(day)}
-                                style={{ cursor: day ? 'pointer' : 'default' }}
-                                role={day ? 'button' : undefined}
-                                tabIndex={day ? 0 : undefined}
-                                onKeyDown={(e) => {
-                                    if (day && (e.key === 'Enter' || e.key === ' ')) {
-                                        e.preventDefault();
-                                        handleDateClick(day);
+                                {...(day && {
+                                    role: 'button',
+                                    tabIndex: 0,
+                                    onKeyDown: (e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            handleDateClick(day);
+                                        }
                                     }
-                                }}
+                                })}
                             >
                                 {
                                     day && (

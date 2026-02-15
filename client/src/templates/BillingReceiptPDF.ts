@@ -87,7 +87,7 @@ export class BillingReceiptPDF extends BasePDFTemplate {
         const summaryX = 120;
         const valueX = 185;
 
-        const summaryItems = [
+        const summaryItems: Array<{ label: string; value: string; color?: [number, number, number]; bold?: boolean }> = [
             { label: 'Items Subtotal:', value: this.formatCurrency(itemsSubtotal) },
         ];
 

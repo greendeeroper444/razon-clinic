@@ -27,6 +27,28 @@ export const getNotifications = async (params = {}) => {
     }
 };
 
+export const getUnreadNotificationCount = async (recipientType: string, recipientId: string) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/api/notifications/unread-count`,
+            { 
+                params: { 
+                    recipientType, 
+                    recipientId 
+                } 
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching unread notification count:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+
+        throw error;
+    }
+};
 
 export const markAsRead = async (notificationId: string) => {
     try {
@@ -64,7 +86,6 @@ export const markAllAsRead = async () => {
     }
 };
 
-
 export const deleteNotification = async (notificationId: string) => {
     try {
         const response = await axios.delete(
@@ -81,7 +102,6 @@ export const deleteNotification = async (notificationId: string) => {
         throw error;
     }
 };
-
 
 export const deleteAllRead = async () => {
     try {

@@ -1,7 +1,7 @@
 import { AppointmentFormData, AppointmentResponse } from "./appointment"
 import { LoginFormData, SignupFormData, ValidationErrors } from "./auth";
 import { BillingFormData, BillingResponse } from "./billing";
-import { BlockedTimeSlotFetchParams, BlockedTimeSlotFormData, BlockedTimeSlotOperationType, BlockedTimeSlotPagination, BlockedTimeSlotSummaryStats, CheckBlockedResponse } from "./blockedSlot";
+import { BlockedTimeSlotDeleteData, BlockedTimeSlotFetchParams, BlockedTimeSlotFormData, BlockedTimeSlotOperationType, BlockedTimeSlotPagination, BlockedTimeSlotSummaryStats, CheckBlockedResponse } from "./blockedSlot";
 import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
 import { DeletedMedicalRecord, MedicalRecord, MedicalRecordFormData, MedicalRecordReportItem, MedicalRecordResponse, MedicalRecordsSummary } from "./medical";
@@ -396,10 +396,17 @@ export interface AuthenticationState {
     signupStep: number
     completedSteps: Set<number>
     
+    //OTP state
+    otpSent: boolean
+    otpVerified: boolean
+    registrationContactNumber: string
+    otpId: string | null
+    otpExpiresAt: string | null
+    
     //ui state
     showPassword: boolean
     showConfirmPassword: boolean
-    // validationErrors: ValidationErrors
+    validationErrors: Record<string, string[]> | ValidationErrors | any;
     
     //actions
     login: (credentials: Omit<LoginFormData, 'rememberMe'>) => Promise<void>
@@ -407,12 +414,16 @@ export interface AuthenticationState {
     register: (userData: Omit<SignupFormData, 'confirmPassword' | 'agreeToTerms'>) => Promise<void>
     fetchUserProfile: () => Promise<void>
 
+    //OTP actions
+    sendRegistrationOTP: (userData: Omit<SignupFormData, 'confirmPassword' | 'agreeToTerms'>) => Promise<boolean>
+    verifyRegistrationOTP: (contactNumber: string, otp: string) => Promise<boolean>
+    resendRegistrationOTP: (contactNumber: string) => Promise<boolean>
+
     //form actions
     updateLoginForm: (field: keyof LoginFormData, value: string | boolean) => void
     updateSignupForm: (field: keyof SignupFormData, value: string | boolean) => void
     clearLoginForm: () => void
     clearSignupForm: () => void
-    validationErrors: Record<string, string[]> | ValidationErrors | any;
     clearValidationErrors: () => void;
     
     //step navigation
@@ -598,10 +609,11 @@ export interface BlockedTimeSlotState {
     isModalCreateOpen: boolean;
     isModalUpdateOpen: boolean;
     isModalDeleteOpen: boolean;
-    deleteBlockedTimeSlotData: { id: string, itemName: string, itemType: string } | null;
+    deleteBlockedTimeSlotData: BlockedTimeSlotDeleteData | null;
     summaryStats: BlockedTimeSlotSummaryStats;
     currentOperation: BlockedTimeSlotOperationType;
     pagination: BlockedTimeSlotPagination;
+    validationErrors: Record<string, string[]>;
     
     addBlockedTimeSlot: (data: BlockedTimeSlotFormData) => Promise<void>;
     fetchBlockedTimeSlots: (params: BlockedTimeSlotFetchParams) => Promise<void>;
@@ -609,7 +621,6 @@ export interface BlockedTimeSlotState {
     updateBlockedTimeSlotData: (id: string, data: BlockedTimeSlotFormData) => Promise<void>;
     deleteBlockedTimeSlot: (id: string) => Promise<void>;
     checkIfTimeBlocked: (preferredDate: string, preferredTime: string) => Promise<CheckBlockedResponse>;
-    validationErrors: Record<string, string[]>;
     clearValidationErrors: () => void;
 
     openModalCreate: () => void;

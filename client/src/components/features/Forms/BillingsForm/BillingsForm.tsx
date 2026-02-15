@@ -579,7 +579,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                     formData.discount > 0 && (
                         <div className={styles.subtotalRow}>
                             <span className={styles.subtotalLabel}>Discount:</span>
-                            <span className={styles.subtotalAmount} style={{ color: '#22c55e' }}>
+                            <span className={styles.subtotalAmountGreen}>
                                 -₱{(formData.discount || 0).toFixed(2)}
                             </span>
                         </div>
@@ -603,7 +603,7 @@ const BillingForm: React.FC<BillingFormProps> = ({
                             </div>
                             <div className={styles.subtotalRow}>
                                 <span className={styles.subtotalLabel}>Change:</span>
-                                <span className={styles.subtotalAmount} style={{ color: '#3b82f6' }}>
+                                <span className={styles.subtotalAmountBlue}>
                                     ₱{(formData.change || 0).toFixed(2)}
                                 </span>
                             </div>

@@ -47,7 +47,7 @@ export interface MedicalRecord {
     prescribedMedications?: string;
     consultationNotes?: string;
     followUpDate?: string;
-     dateRecorded?: string;
+    dateRecorded?: string | any;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -305,6 +305,7 @@ export interface MedicalRecordsSummary {
         pediatric: number  // < 18
         adult: number      // 18-64
         senior: number     // 65+
+        neonate?: number     // 0-28 days
     }
     followUps: {
         upcoming: number

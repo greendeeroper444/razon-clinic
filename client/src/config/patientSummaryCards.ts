@@ -1,4 +1,4 @@
-import { Activity, HeartPulse, Archive, UserPlus } from 'lucide-react';
+import { Activity, HeartPulse, UserPlus } from 'lucide-react';
 
 export const getPatientSummaryCards = (summaryStats: {
     total: number;

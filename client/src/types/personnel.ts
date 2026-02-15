@@ -4,15 +4,17 @@ export interface PersonnelFormData {
     lastName: string;
     middleName?: string;
     contactNumber: string;
+    email?: string;
     password?: string;
     birthdate: string;
-    sex: 'Male' | 'Female' | 'Other';
+    sex: 'Male' | 'Female' | 'Other' | '';
     address: string;
-    role: 'Doctor' | 'Staff';
+    role: 'Doctor' | 'Staff' | '';
     dateRegistered?: string;
     createdAt?: string;
     updatedAt?: string;
 }
+
 
 export interface PersonnelState {
     //state

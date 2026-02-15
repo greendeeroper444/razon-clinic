@@ -1,10 +1,10 @@
-import { useState, InputHTMLAttributes, ReactNode, forwardRef } from 'react'
+import React, { useState, InputHTMLAttributes, ReactNode, forwardRef } from 'react'
 import styles from './Input.module.css'
-import { User, EyeOff, Eye, Lock, Mail, Calendar, Church, Phone } from 'lucide-react'
+import { User, EyeOff, Eye, Lock, Mail, Calendar, Church, Phone, Home, DollarSign } from 'lucide-react'
 
-type IconType = 'user' | 'email' | 'lock' | 'eye' | 'eye-slash' | 'calendar' | 'church' | 'phone'
+type IconType = 'user' | 'email' | 'lock' | 'eye' | 'eye-slash' | 'calendar' | 'church' | 'phone' | 'home' | 'dollar'
 
-interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onFocus'> {
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onFocus' | 'className'> {
     label?: string | ReactNode;
     error?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -12,6 +12,7 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChan
     leftIcon?: IconType;
     rightIcon?: IconType;
     onRightIconClick?: () => void;
+    className?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(({ 
@@ -39,7 +40,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
         className
     ].filter(Boolean).join(' ')
 
-    const getIcon = (icon: IconType): JSX.Element | null => {
+    const getIcon = (icon: IconType): React.JSX.Element | null => {
         switch (icon) {
             case 'user': 
                 return <User className={styles.icon} />
@@ -57,6 +58,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
                 return <Calendar className={styles.icon} />
             case 'church': 
                 return <Church className={styles.icon} />
+            case 'home': 
+                return <Home className={styles.icon} />
+            case 'dollar': 
+                return <DollarSign className={styles.icon} />
             default: 
                 return null
         }

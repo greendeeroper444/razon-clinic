@@ -66,7 +66,12 @@ const AppointmentDetailsPage = () => {
     }
     
 
-    const handleSubmitStatusUpdate = async (data: { status: any }): Promise<void> => {
+    const handleSubmitStatusUpdate = async (data: string | FormDataType | { status: any }): Promise<void> => {
+        if (typeof data === 'string' || !('status' in data)) {
+            console.error('Invalid status data')
+            return
+        }
+
         if (!appointmentId) {
             console.error('Missing appointment ID')
             return

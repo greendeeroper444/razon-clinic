@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css'
 import { useParams } from 'react-router-dom'
 import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, Ruler, Weight, Users, Hand } from 'lucide-react';
-import { calculateAge, formatBirthdate, formatDate, formatTime, getStatusClass, getLoadingText, getMiddleNameInitial, formatDateTime } from '../../../utils'
+import { calculateAge, formatBirthdate, formatDate, formatTime, getStatusClass, getLoadingText, formatDateTime } from '../../../utils'
 import { AppointmentFormData, FormDataType } from '../../../types'
 import { Header, Main, Modal, SubmitLoading } from '../../../components'
 import { useAppointmentStore } from '../../../stores'

@@ -12,5 +12,5 @@ export interface Pagination {
     previousPage: number | null;
     remainingItems: number;
     searchTerm: string | null;
-    statusFilter: string | null;
+    // statusFilter: string | null;
 }

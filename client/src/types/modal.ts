@@ -1,7 +1,7 @@
 import { DeleteData, FormDataType } from "./crud";
 import { Patient } from "./patient";
 
-export type ModalType = 'appointment' | 'patient' | 'item' | 'medical' | 'delete' | 'status' | 'billing' | 'billing-details' | 'user' | 'blockedTimeSlot';
+export type ModalType = 'appointment' | 'patient' | 'item' | 'medical' | 'delete' | 'status' | 'billing' | 'billing-details' | 'user' | 'blockedTimeSlot' | 'personnel' | 'restock' | 'addQuantity';
 
 export interface ModalProps {
     isOpen: boolean;
@@ -9,7 +9,7 @@ export interface ModalProps {
     modalType: ModalType;
     onSubmit: (data: FormDataType | string) => void | Promise<void>;
     patients?: Array<Patient>;
-    editData?: FormDataType | null;
+    editData?: FormDataType | null | any;
     deleteData?: DeleteData | null;
     isProcessing?: boolean;
     isRestockMode?: boolean;

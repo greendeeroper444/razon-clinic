@@ -48,14 +48,14 @@ const TrashPage = () => {
     }, [isInitialLoad, fetchData])
 
     useEffect(() => {
-        const tab = searchParams.get('tab') || 'medical-records'
-        if (tab === 'medical-records' && tab !== activeTab) {
-            setActiveTab(tab as 'medical-records')
+        const tab = searchParams.get('tab') || 'medicalRecords'
+        if (tab === 'medicalRecords' && tab !== activeTab) {
+            setActiveTab(tab as 'medicalRecords')
         }
     }, [searchParams, activeTab, setActiveTab])
 
     const handleTabChange = (tab: string) => {
-        if (tab === 'medical-records') {
+        if (tab === 'medicalRecords') {
             navigate('/admin/trash')
         } else {
             navigate(`/admin/trash?tab=${tab}`)
@@ -81,7 +81,7 @@ const TrashPage = () => {
 
     const tabs = [
         { 
-            key: 'medical-records', 
+            key: 'medicalRecords', 
             label: 'Medical Records', 
             count: pagination.totalItems 
         }

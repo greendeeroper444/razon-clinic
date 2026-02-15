@@ -13,7 +13,7 @@ export const getDashboardSummaryCardsFromAPI = (dashboardStats: DashboardStats |
         item => item.status === 'Critical'
     ).length;
 
-    const todaysAppointments = totalAppointments.breakdown.pending + totalAppointments.breakdown.confirmed;
+    // const todaysAppointments = totalAppointments.breakdown.pending + totalAppointments.breakdown.confirmed;
 
     return [
         {

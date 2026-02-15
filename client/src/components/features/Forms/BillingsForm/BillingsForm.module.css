@@ -232,6 +232,16 @@
   font-weight: 600;
 }
 
+.subtotalAmountGreen {
+  composes: subtotalAmount;
+  color: #22c55e;
+}
+
+.subtotalAmountBlue {
+  composes: subtotalAmount;
+  color: #3b82f6;
+}
+
 .totalDivider {
   height: 1px;
   background: #ddd;

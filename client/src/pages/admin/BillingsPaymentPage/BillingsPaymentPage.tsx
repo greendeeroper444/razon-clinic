@@ -290,7 +290,7 @@ const BillingsPaymentPage: React.FC<OpenModalProps> = () => {
                         className={`${styles.actionBtn} ${styles.update}`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            openModalUpdate(billing);
+                            openModalUpdate(billing as any);
                         }}
                         title='Update Billing'
                     >

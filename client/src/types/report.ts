@@ -172,7 +172,13 @@ export interface DashboardReport {
             }
             ageDistribution: {
                 pediatric: number
-                adult: number
+                neonate: number,
+                infant: number,
+                toddler: number,
+                preschool: number,
+                schoolAge: number,
+                adolescent: number,
+                adult: number,
                 senior: number
             }
             followUps: {

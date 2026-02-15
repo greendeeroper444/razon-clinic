@@ -1,8 +1,8 @@
-import { useState, SelectHTMLAttributes, forwardRef } from 'react'
+import React, { useState, SelectHTMLAttributes, forwardRef } from 'react'
 import styles from './Select.module.css'
-import { User, Mail, Lock, Calendar, Users, ChevronDown, Clock, Pill, BadgeCheck } from 'lucide-react'
+import { User, Mail, Lock, Calendar, Users, ChevronDown, Clock, Pill, BadgeCheck, Briefcase, Activity, Info } from 'lucide-react'
 
-type IconType = 'user' | 'email' | 'lock' | 'calendar' | 'users' | 'clock' | 'pill' | 'status';
+type IconType = 'user' | 'email' | 'lock' | 'calendar' | 'users' | 'clock' | 'pill' | 'status' | 'briefcase' | 'activity' | 'info';
 
 export interface SelectOption {
     value: string
@@ -42,7 +42,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
         className
     ].filter(Boolean).join(' ')
 
-    const getIcon = (icon: IconType): JSX.Element | null => {
+    const getIcon = (icon: IconType): React.JSX.Element | null => {
         switch (icon) {
             case 'user':
                 return <User className={styles.icon} />
@@ -60,6 +60,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
                 return <Pill className={styles.icon} />
             case 'status':
                 return <BadgeCheck  className={styles.icon} />
+            case 'briefcase':
+                return <Briefcase className={styles.icon} />
+            case 'activity':
+                return <Activity className={styles.icon} />
+            case 'info':
+                return <Info className={styles.icon} />
             default:
                 return null
         }

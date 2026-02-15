@@ -234,6 +234,8 @@ export const useBlockedTimeSlotStore = create<BlockedTimeSlotState>()(
                 set({
                     deleteBlockedTimeSlotData: {
                         id: item.id,
+                        startDate: item.startDate,
+                        endDate: item.endDate,
                         dateRange: dateRange,
                         timeRange: timeRange,
                         reason: item.reason,

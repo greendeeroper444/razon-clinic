@@ -5,7 +5,18 @@
     background: white;
     border-radius: var(--border-radius);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: 300px;
 }
+
+.height200 { height: 200px; }
+.height250 { height: 250px; }
+.height300 { height: 300px; }
+.height350 { height: 350px; }
+.height400 { height: 400px; }
+.height450 { height: 450px; }
+.height500 { height: 500px; }
+.height550 { height: 550px; }
+.height600 { height: 600px; }
 
 .chartContainer canvas {
     max-height: 100%;

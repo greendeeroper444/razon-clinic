@@ -21,7 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
 
     const fetchUnreadCount = async () => {
         try {
-            const response = await getNotifications(1, 1);
+            const response = await getNotifications({ page: 1, limit: 1 });
             if (response.data.success) {
                 setUnreadCount(response.data.unreadCount || 0);
             }

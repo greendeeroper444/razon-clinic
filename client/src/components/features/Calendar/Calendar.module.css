@@ -90,7 +90,6 @@
     justify-content: center;
     font-size: 0.9rem;
     border-radius: 6px;
-    cursor: pointer;
     transition: all 0.2s;
     font-weight: 500;
 }
@@ -120,6 +119,14 @@
     background-color: #4f46e5;
     transform: scale(1.08);
     box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4);
+}
+
+.clickableDay {
+    cursor: pointer;
+}
+
+.nonClickableDay {
+    cursor: default;
 }
 
 .dayNumber {

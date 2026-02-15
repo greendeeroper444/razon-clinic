@@ -29,7 +29,6 @@ const SignupPage = () => {
         validationErrors,
         user,
         otpSent,
-        otpVerified,
         registrationContactNumber,
         updateSignupForm,
         setSignupStep,
@@ -117,7 +116,7 @@ const SignupPage = () => {
         } else {
             Object.values(validationErrors).forEach(error => {
                 if (error) {
-                    toast.error(error)
+                    toast.error(error as any)
                 }
             })
         }

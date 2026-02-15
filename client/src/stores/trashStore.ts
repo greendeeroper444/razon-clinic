@@ -25,7 +25,7 @@ export const useTrashStore = create<TrashState>()(
                 startIndex: 1,
                 endIndex: 0
             },
-            activeTab: 'medical-records',
+            activeTab: 'medicalRecords',
 
             fetchDeletedRecords: async (page = 1, limit = 10) => {
                 const currentState = get()
@@ -189,7 +189,7 @@ export const useTrashStore = create<TrashState>()(
                 })
             },
 
-            setActiveTab: (tab: 'medical-records') => {
+            setActiveTab: (tab: 'medicalRecords') => {
                 set({ activeTab: tab, selectedRecordIds: [] })
             },
 

@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { getNotifications } from '../services'
-import { Notification, NotificationFilters } from '../types'
+import { getNotifications, getUnreadNotificationCount } from '../services'
+import { NotificationFormData, NotificationFilters } from '../types'
 
 interface UseNotificationsResult {
-    notifications: Notification[];
+    notifications: NotificationFormData[];
     unreadCount: number;
     loading: boolean;
     error: string | null;
@@ -15,7 +15,7 @@ export const useNotifications = (
     initialFilters: NotificationFilters,
     autoFetch: boolean = true
 ): UseNotificationsResult => {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [notifications, setNotifications] = useState<NotificationFormData[]>([]);
     const [unreadCount, setUnreadCount] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);

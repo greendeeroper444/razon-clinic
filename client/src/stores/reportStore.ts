@@ -366,12 +366,9 @@ export const useReportStore = create<ReportState>()(
                             genderDistribution: statistics.genderDistribution || { male: 0, female: 0, other: 0 },
                             ageDistribution: statistics.ageDistribution || { 
                                 neonate: 0, 
-                                infant: 0, 
-                                toddler: 0, 
-                                preschool: 0, 
-                                schoolAge: 0, 
-                                adolescent: 0, 
-                                adult: 0 
+                                pediatric: 0, 
+                                adult: 0, 
+                                senior: 0 
                             },
                             followUps: statistics.followUps || { upcoming: 0, overdue: 0 }
                         }
@@ -398,12 +395,9 @@ export const useReportStore = create<ReportState>()(
                             genderDistribution: { male: 0, female: 0, other: 0 },
                             ageDistribution: { 
                                 neonate: 0, 
-                                infant: 0, 
-                                toddler: 0, 
-                                preschool: 0, 
-                                schoolAge: 0, 
-                                adolescent: 0, 
-                                adult: 0 
+                                pediatric: 0, 
+                                adult: 0, 
+                                senior: 0 
                             },
                             followUps: { upcoming: 0, overdue: 0 }
                         }
@@ -494,12 +488,9 @@ export const useReportStore = create<ReportState>()(
                                 genderDistribution: { male: 0, female: 0, other: 0 },
                                 ageDistribution: { 
                                     neonate: 0, 
-                                    infant: 0, 
-                                    toddler: 0, 
-                                    preschool: 0, 
-                                    schoolAge: 0, 
-                                    adolescent: 0, 
-                                    adult: 0 
+                                    pediatric: 0, 
+                                    adult: 0, 
+                                    senior: 0 
                                 },
                                 followUps: { upcoming: 0, overdue: 0 }
                             }

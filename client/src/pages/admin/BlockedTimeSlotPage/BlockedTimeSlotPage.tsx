@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import styles from './BlockedTimeSlotPage.module.css';
-import { Plus, Edit, Trash, Calendar, Clock } from 'lucide-react';
+import { Plus, Edit, Trash, Calendar } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
 import { FormDataType, BlockedTimeSlotFormData, TableColumn } from '../../../types';
@@ -18,7 +18,6 @@ const BlockedTimeSlotPage: React.FC<OpenModalProps> = () => {
         fetchLoading,
         error,
         isProcessing,
-        summaryStats,
         selectedBlockedTimeSlot,
         isModalCreateOpen,
         isModalUpdateOpen,
@@ -282,22 +281,22 @@ const BlockedTimeSlotPage: React.FC<OpenModalProps> = () => {
         }
     ];
 
-    const summaryCards = [
-        {
-            title: 'Total Active Blocks',
-            value: summaryStats?.totalActiveBlocks || 0,
-            icon: Calendar,
-            iconColor: 'blue',
-            footer: 'Currently blocking appointments'
-        },
-        {
-            title: 'Upcoming Blocks',
-            value: summaryStats?.upcomingBlocksCount || 0,
-            icon: Clock,
-            iconColor: 'green',
-            footer: 'Scheduled for future'
-        }
-    ];
+    // const summaryCards = [
+    //     {
+    //         title: 'Total Active Blocks',
+    //         value: summaryStats?.totalActiveBlocks || 0,
+    //         icon: Calendar,
+    //         iconColor: 'blue',
+    //         footer: 'Currently blocking appointments'
+    //     },
+    //     {
+    //         title: 'Upcoming Blocks',
+    //         value: summaryStats?.upcomingBlocksCount || 0,
+    //         icon: Clock,
+    //         iconColor: 'green',
+    //         footer: 'Scheduled for future'
+    //     }
+    // ];
     
   return (
     <Main error={error}>
@@ -421,7 +420,10 @@ const BlockedTimeSlotPage: React.FC<OpenModalProps> = () => {
                     onClose={closeModalDelete}
                     modalType='delete'
                     onSubmit={handleConfirmDelete}
-                    deleteData={deleteBlockedTimeSlotData}
+                    deleteData={{
+                        ...deleteBlockedTimeSlotData,
+                        itemName: `${formatDateRange(deleteBlockedTimeSlotData.startDate, deleteBlockedTimeSlotData.endDate)} - ${deleteBlockedTimeSlotData.reason}`
+                    }}
                     isProcessing={submitLoading}
                 />
             )

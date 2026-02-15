@@ -6,7 +6,10 @@ export interface BillingFormData {
     itemQuantity?: number[];
     itemPrices?: number[];
     doctorFee?: number;
+    discount: number;
     amount?: number;
+    amountPaid: number;
+    change?: number;
     paymentStatus: 'Paid' | 'Unpaid' | 'Pending';
     medicalRecordDate?: string;
     createdAt: string

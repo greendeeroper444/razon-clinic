@@ -20,8 +20,8 @@ const Modal: React.FC<ModalProps> = ({
     isAddQuantityMode,
     billingId 
 }) => {
-    const [formData, setFormData] = useState<FormDataType>({});
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [formData, setFormData] = useState<FormDataType>({} as FormDataType);
+    const [isLoading, _setIsLoading] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
 
 
@@ -37,7 +37,7 @@ const Modal: React.FC<ModalProps> = ({
             //for personnel modal, ensure contactNumber is populated from either email or contactNumber field
             if (modalType === 'personnel') {
                 const personnelData = processedEditData as any;
-                if (!personnelData.contactNumber && personnelData.email) {
+                if (!personnelData.contactNumber && personnelData.email && 'contactNumber' in processedEditData) {
                     processedEditData.contactNumber = personnelData.email;
                 }
             }
@@ -122,13 +122,14 @@ const Modal: React.FC<ModalProps> = ({
                     firstName: '',
                     lastName: '',
                     middleName: '',
-                    emailOrContactNumber: '',
+                    email: '',
+                    contactNumber: '',
                     password: '',
                     birthdate: '',
                     sex: '',
                     address: '',
                     role: ''
-                } as PersonnelFormData);
+                } as FormDataType);
             } else if (modalType === 'item') {
                 setFormData({
                     itemName: '',
@@ -148,7 +149,7 @@ const Modal: React.FC<ModalProps> = ({
                     endDate: '',
                     startTime: '',
                     endTime: '',
-                    reason: '',
+                    reason: 'Other',
                     customReason: ''
                 } as BlockedTimeSlotFormData);
             } else if (modalType === 'medical') {
@@ -192,19 +193,23 @@ const Modal: React.FC<ModalProps> = ({
                 } as MedicalRecordFormData);
             } else if (modalType === 'billing') {
                 setFormData({
+                    id: '',
                     medicalRecordId: '',
                     patientName: '',
                     itemName: [],
                     itemQuantity: [],
                     itemPrices: [],
                     amount: 0,
+                    discount: 0,
+                    amountPaid: 0,
                     paymentStatus: 'Unpaid',
-                    medicalRecordDate: new Date().toISOString()
+                    medicalRecordDate: new Date().toISOString(),
+                    createdAt: new Date().toISOString()
                 } as BillingFormData);
             } else if (modalType === 'status') {
                 setSelectedStatus('Pending');
             } else {
-                setFormData({});
+                setFormData({} as FormDataType);
             }
         }
     }, [modalType, editData]);
@@ -270,7 +275,7 @@ const Modal: React.FC<ModalProps> = ({
         e.preventDefault();
         
         //remove the id to create a new record instead of updating
-        const { id, ...dataWithoutId } = formData as any;
+        const { id: _, ...dataWithoutId } = formData as any;
         onSubmit(dataWithoutId);
     };
 
@@ -330,6 +335,7 @@ const Modal: React.FC<ModalProps> = ({
                         formData={formData as AppointmentFormData}
                         onChange={handleChange}
                         isLoading={isLoading}
+                        patients={[]}
                     />
                 );
             case 'patient':
@@ -476,7 +482,7 @@ const Modal: React.FC<ModalProps> = ({
                     {
                         modalType === 'medical' && editData && (
                             <Button
-                                variant='outline'
+                                variant='primary'
                                 type='button'
                                 onClick={handleSaveAsNew}
                                 isLoading={isProcessing}

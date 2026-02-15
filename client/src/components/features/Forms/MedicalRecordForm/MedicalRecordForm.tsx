@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import styles from './MedicalRecordForm.module.css'
 import { searchPatientsByName, getPatientForAutofill } from '../../../../services';
 import { MedicalRecordFormProps, PatientData } from '../../../../types';
-import { convertTo12HourFormat, formatDate, getFieldError } from '../../../../utils';
+import { getFieldError } from '../../../../utils';
 import Input from '../../../ui/Input/Input';
 import Select from '../../../ui/Select/Select';
 import TextArea from '../../../ui/TextArea/TextArea';

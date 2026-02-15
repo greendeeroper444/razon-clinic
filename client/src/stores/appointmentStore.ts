@@ -38,8 +38,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 nextPage: null,
                 previousPage: null,
                 remainingItems: 0,
-                searchTerm: null,
-                statusFilter: null
+                searchTerm: null
             },
 
             clearValidationErrors: () => set({ validationErrors: {} }),
@@ -120,8 +119,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                                 nextPage: pagination.nextPage,
                                 previousPage: pagination.previousPage,
                                 remainingItems: pagination.remainingItems || 0,
-                                searchTerm: pagination.searchTerm || params.search || null,
-                                statusFilter: params.status || null
+                                searchTerm: pagination.searchTerm || params.search || null
                             },
                             fetchLoading: false,
                             loading: false 
@@ -175,8 +173,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                                 nextPage: pagination.nextPage,
                                 previousPage: pagination.previousPage,
                                 remainingItems: pagination.remainingItems || 0,
-                                searchTerm: pagination.searchTerm || null,
-                                statusFilter: params.status || null
+                                searchTerm: pagination.searchTerm || null
                             },
                             fetchLoading: false,
                             loading: false 

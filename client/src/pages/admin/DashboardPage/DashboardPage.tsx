@@ -222,7 +222,7 @@ const DashboardPage = () => {
     >
         <Header
             title='Clinic Overview'
-            action={
+            actions={
                 <button 
                     type='button'
                     className={styles.refreshBtn}

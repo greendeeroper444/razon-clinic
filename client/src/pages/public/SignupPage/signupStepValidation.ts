@@ -190,5 +190,5 @@ export const validateField = (
         errors = validateReviewStep(tempFormData);
     }
     
-    return errors[fieldName];
+    return errors[fieldName as keyof ValidationErrors];
 };

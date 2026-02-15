@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './StatusForm.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarCheck, faCheckCircle, faTimes, faRedo, faClock } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarCheck, faCheckCircle, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { AppointmentStatus, StatusFormProps } from '../../../../types'
 import { getStatusColor } from '../../../../utils'
 
