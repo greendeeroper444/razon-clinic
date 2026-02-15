@@ -20,6 +20,7 @@ const MedicalRecordDetailsPage = () => {
         isModalUpdateOpen,
         fetchMedicalRecordById,
         updateMedicalRecordData,
+        addMedicalRecord,
         openModalUpdate,
         closeModalUpdate,
         clearCurrentMedicalRecord,
@@ -46,15 +47,22 @@ const MedicalRecordDetailsPage = () => {
     };
 
     const handleSubmitUpdate = async (data: FormDataType | string): Promise<void> => {
-        if (typeof data === 'string' || !selectedMedicalRecord?.id) {
-            console.error('Invalid data or missing medical record ID')
+        if (typeof data === 'string') {
+            console.error('Invalid data for medical record')
             return
         }
 
         //assertion since we know it's MedicalRecordFormData in this context
         const medicalRecordData = data as MedicalRecordFormData
 
-        await updateMedicalRecordData(selectedMedicalRecord.id, medicalRecordData)
+        // Check if this is a "Save as New" operation (no id in the data)
+        if (!medicalRecordData.id) {
+            // Create new record
+            await addMedicalRecord(medicalRecordData)
+        } else if (selectedMedicalRecord?.id) {
+            // Update existing record
+            await updateMedicalRecordData(selectedMedicalRecord.id, medicalRecordData)
+        }
     }
     
 

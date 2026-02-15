@@ -23,14 +23,10 @@ const Modal: React.FC<ModalProps> = ({
     const [formData, setFormData] = useState<FormDataType>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
-    const [saveAsNew, setSaveAsNew] = useState<boolean>(false);
 
 
     //initialize form with edit data if provided or reset when modal type changes
     useEffect(() => {
-        //reset saveAsNew flag when modal opens/closes or editData changes
-        setSaveAsNew(false);
-        
         if (editData) {
             //format birthdate for input field if it exists
             const processedEditData = { ...editData };
@@ -215,7 +211,6 @@ const Modal: React.FC<ModalProps> = ({
 
     //create a custom event when modal closes
     const handleClose = () => {
-        setSaveAsNew(false);
         onClose();
         //dispatch a custom event that the modal has been closed
         window.dispatchEvent(new CustomEvent('modal-closed'));
@@ -256,10 +251,6 @@ const Modal: React.FC<ModalProps> = ({
             onSubmit(deleteData.id);
         } else if (modalType === 'status') {
             onSubmit({ ...editData, status: selectedStatus } as any);
-        } else if (modalType === 'medical' && saveAsNew) {
-            // Remove the id to create a new record instead of updating
-            const { id, ...dataWithoutId } = formData as any;
-            onSubmit(dataWithoutId);
         } else {
             onSubmit(formData);
             
@@ -277,10 +268,10 @@ const Modal: React.FC<ModalProps> = ({
     //handler for "Save as New" button
     const handleSaveAsNew = (e: FormEvent) => {
         e.preventDefault();
-        setSaveAsNew(true);
-        //trigger form submission
-        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
-        e.currentTarget.closest('form')?.dispatchEvent(submitEvent);
+        
+        //remove the id to create a new record instead of updating
+        const { id, ...dataWithoutId } = formData as any;
+        onSubmit(dataWithoutId);
     };
 
     
@@ -488,7 +479,7 @@ const Modal: React.FC<ModalProps> = ({
                                 variant='outline'
                                 type='button'
                                 onClick={handleSaveAsNew}
-                                isLoading={isProcessing && saveAsNew}
+                                isLoading={isProcessing}
                                 loadingText='Creating New...'
                                 title='Save as a new record instead of updating the existing one'
                             >
@@ -500,7 +491,7 @@ const Modal: React.FC<ModalProps> = ({
                     <Button
                         variant='primary'
                         type='submit'
-                        isLoading={isProcessing && !saveAsNew}
+                        isLoading={isProcessing}
                         loadingText={editData ? 'Updating...' : 'Saving...'}
                     >
                         {editData ? 'Update' : 'Save'}
