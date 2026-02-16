@@ -7,12 +7,15 @@ export interface BillingFormData {
     itemPrices?: number[];
     doctorFee?: number;
     discount: number;
-    amount?: number;
+    amount: number;
     amountPaid: number;
     change?: number;
     paymentStatus: 'Paid' | 'Unpaid' | 'Pending';
+    processedName?: string;
+    processedRole?: string;
     medicalRecordDate?: string;
     createdAt: string
+    updatedAt: string;
 }
 
 export interface BillingFormProps {

@@ -131,6 +131,7 @@ export interface PatientApiResponse {
 export interface Patient {
     id: string;
     patientNumber?: string;
+    fullName: string;
     firstName: string;
     lastName: string;
     middleName: string | null;
@@ -210,13 +211,13 @@ export interface PatientData {
 export interface PatientDetailed extends Patient {
     email?: string;
     contactNumber?: string;
-    birthdate: Date;
+    birthdate: string;
     sex: 'Male' | 'Female' | 'Other';
     address: string;
-    dateRegistered: Date;
+    dateRegistered: string;
     role: 'Patient' | 'Doctor' | 'Staff';
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface PatientsResponse {

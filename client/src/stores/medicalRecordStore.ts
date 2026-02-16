@@ -40,7 +40,6 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                 previousPage: null,
                 remainingItems: 0,
                 searchTerm: null,
-                statusFilter: null
             },
 
             clearValidationErrors: () => set({ validationErrors: {} }),
@@ -133,7 +132,6 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                                 previousPage: pagination.previousPage,
                                 remainingItems: pagination.remainingItems || 0,
                                 searchTerm: pagination.searchTerm || null,
-                                statusFilter: pagination.statusFilter || null
                             },
                             fetchLoading: false,
                             loading: false,
@@ -206,7 +204,6 @@ export const useMedicalRecordStore = create<ExtendedMedicalRecordState>()(
                                 previousPage: pagination.previousPage,
                                 remainingItems: pagination.remainingItems || 0,
                                 searchTerm: pagination.searchTerm || null,
-                                statusFilter: pagination.statusFilter || null
                             },
                             fetchLoading: false,
                             loading: false,

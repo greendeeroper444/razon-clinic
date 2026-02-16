@@ -199,12 +199,15 @@ const Modal: React.FC<ModalProps> = ({
                     itemName: [],
                     itemQuantity: [],
                     itemPrices: [],
+                    doctorFee: 0,
                     amount: 0,
                     discount: 0,
                     amountPaid: 0,
+                    change: 0,
                     paymentStatus: 'Unpaid',
                     medicalRecordDate: new Date().toISOString(),
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
                 } as BillingFormData);
             } else if (modalType === 'status') {
                 setSelectedStatus('Pending');

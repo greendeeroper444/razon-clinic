@@ -29,7 +29,7 @@ interface LineChartProps {
     datasets: {
         label: string
         data: number[]
-        type: string
+        type?: string
     }[]
     title?: string
     height?: number
@@ -38,7 +38,7 @@ interface LineChartProps {
 const LineChart = ({ labels, datasets, title, height = 300 }: LineChartProps) => {
     const chartRef = useRef<ChartJS<'line'>>(null)
 
-    // Generate dynamic class name for height
+    // gnerate dynamic class name for height
     const heightClass = `height${height}`
 
     const colors = [

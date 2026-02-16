@@ -1,3 +1,7 @@
+import { OperationType } from "./crud";
+import { Pagination } from "./pagination";
+import { FetchParams } from "./state";
+
 export interface PersonnelFormData {
     id?: string;
     firstName: string;

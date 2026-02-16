@@ -76,70 +76,100 @@ export class BillingReceiptPDF extends BasePDFTemplate {
         );
     }
 
-    private drawSummarySection(): void {
-        const itemsSubtotal = this.calculateItemsSubtotal();
-        const doctorFee = this.billing.doctorFee || 0;
-        const discount = this.billing.discount || 0;
-        const total = this.billing.amount;
-        const amountPaid = this.billing.amountPaid || 0;
-        const change = this.billing.change || 0;
+    // private drawSummarySection(): void {
+    //     const itemsSubtotal = this.calculateItemsSubtotal();
+    //     const doctorFee = this.billing.doctorFee || 0;
+    //     const discount = this.billing.discount || 0;
+    //     const total = this.billing.amount;
+    //     const amountPaid = this.billing.amountPaid || 0;
+    //     const change = this.billing.change || 0;
 
+    //     const summaryX = 120;
+    //     const valueX = 185;
+
+    //     const summaryItems = [
+    //         { label: 'Items Subtotal:', value: this.formatCurrency(itemsSubtotal) },
+    //     ];
+
+    //     if (doctorFee > 0) {
+    //         summaryItems.push({
+    //             label: 'Doctor Fee:',
+    //             value: this.formatCurrency(doctorFee)
+    //         });
+    //     }
+
+    //     // if (discount > 0) {
+    //     //     summaryItems.push({
+    //     //         label: 'Discount:',
+    //     //         value: `-${this.formatCurrency(discount)}`,
+    //     //         color: Colors.success as [number, number, number]
+    //     //     });
+    //     // }
+    //     if (discount > 0) {
+    //         summaryItems.push({
+    //             label: 'Discount:',
+    //             value: `-${this.formatCurrency(discount)}`
+    //         });
+    //     }
+
+    //     this.doc.setDrawColor(...Colors.lightGray);
+    //     this.doc.line(summaryX, this.currentY, valueX + 5, this.currentY);
+    //     this.currentY += 4;
+
+    //     summaryItems.push({
+    //         label: 'Total Amount:',
+    //         value: this.formatCurrency(total),
+    //         bold: true
+    //     });
+
+    //     this.drawSummaryBox(summaryItems);
+
+    //     //add payment information if paid
+    //     if (this.billing.paymentStatus === 'Paid' && amountPaid > 0) {
+    //         this.currentY += 5;
+            
+    //         const paymentItems = [
+    //             { label: 'Amount Paid:', value: this.formatCurrency(amountPaid) },
+    //         ];
+
+    //         if (change > 0) {
+    //             paymentItems.push({
+    //                 label: 'Change:',
+    //                 value: this.formatCurrency(change),
+    //                 color: Colors.info as [number, number, number]
+    //             });
+    //         }
+
+    //         this.drawSummaryBox(paymentItems);
+    //     }
+
+    //     this.doc.setDrawColor(...Colors.primary);
+    //     this.doc.line(summaryX, this.currentY, valueX + 5, this.currentY);
+    //     this.currentY += 15;
+    // }
+    protected drawSummaryBox(
+        items: { label: string; value: string; bold?: boolean }[]
+    ): void {
         const summaryX = 120;
         const valueX = 185;
-
-        const summaryItems: Array<{ label: string; value: string; color?: [number, number, number]; bold?: boolean }> = [
-            { label: 'Items Subtotal:', value: this.formatCurrency(itemsSubtotal) },
-        ];
-
-        if (doctorFee > 0) {
-            summaryItems.push({
-                label: 'Doctor Fee:',
-                value: this.formatCurrency(doctorFee)
-            });
-        }
-
-        if (discount > 0) {
-            summaryItems.push({
-                label: 'Discount:',
-                value: `-${this.formatCurrency(discount)}`,
-                color: Colors.success as [number, number, number]
-            });
-        }
-
+        
         this.doc.setDrawColor(...Colors.lightGray);
         this.doc.line(summaryX, this.currentY, valueX + 5, this.currentY);
-        this.currentY += 4;
+        this.currentY += 8;
 
-        summaryItems.push({
-            label: 'Total Amount:',
-            value: this.formatCurrency(total),
-            bold: true
-        });
-
-        this.drawSummaryBox(summaryItems);
-
-        //add payment information if paid
-        if (this.billing.paymentStatus === 'Paid' && amountPaid > 0) {
-            this.currentY += 5;
-            
-            const paymentItems = [
-                { label: 'Amount Paid:', value: this.formatCurrency(amountPaid) },
-            ];
-
-            if (change > 0) {
-                paymentItems.push({
-                    label: 'Change:',
-                    value: this.formatCurrency(change),
-                    color: Colors.info as [number, number, number]
-                });
+        items.forEach(item => {
+            if (item.bold) {
+                this.doc.setFont('helvetica', 'bold');
+                this.doc.setFontSize(12);
+            } else {
+                this.doc.setFont('helvetica', 'normal');
+                this.doc.setFontSize(10);
             }
-
-            this.drawSummaryBox(paymentItems);
-        }
-
-        this.doc.setDrawColor(...Colors.primary);
-        this.doc.line(summaryX, this.currentY, valueX + 5, this.currentY);
-        this.currentY += 15;
+            
+            this.doc.text(item.label, summaryX, this.currentY);
+            this.doc.text(item.value, valueX, this.currentY, { align: 'right' });
+            this.currentY += item.bold ? 8 : 6;
+        });
     }
 
     private drawPaymentStatus(): void {

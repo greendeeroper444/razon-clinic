@@ -8,4 +8,4 @@ export {
     MedicalRecordPDF,
     generateMedicalRecordPDF,
     getMedicalRecordBlob
-} from './MedicalRecordPDF';
+} from './MedicalRecordPdf';

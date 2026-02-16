@@ -267,48 +267,48 @@ export interface ExportMedicalRecordsParams {
 }
 
 
-export interface MedicalRecordReportItem {
-    id: string
-    medicalRecordNumber: string
-    personalDetails: {
-        fullName: string
-        dateOfBirth: string
-        age: number
-        gender: 'Male' | 'Female' | 'Other'
-        bloodType?: string
-        phone: string
-        email?: string
-        address?: string
-    }
-    currentSymptoms?: {
-        chiefComplaint: string
-        symptomsDescription: string
-        symptomsDuration?: string
-    }
-    diagnosis?: string
-    treatmentPlan?: string
-    prescribedMedications?: string
-    followUpDate?: string
-    dateRecorded: string
-    createdAt: string
-    updatedAt: string
-}
+// export interface MedicalRecordReportItem {
+//     id: string
+//     medicalRecordNumber: string
+//     personalDetails: {
+//         fullName: string
+//         dateOfBirth: string
+//         age: number
+//         gender: 'Male' | 'Female' | 'Other'
+//         bloodType?: string
+//         phone: string
+//         email?: string
+//         address?: string
+//     }
+//     currentSymptoms?: {
+//         chiefComplaint: string
+//         symptomsDescription: string
+//         symptomsDuration?: string
+//     }
+//     diagnosis?: string
+//     treatmentPlan?: string
+//     prescribedMedications?: string
+//     followUpDate?: string
+//     dateRecorded: string
+//     createdAt: string
+//     updatedAt: string
+// }
 
-export interface MedicalRecordsSummary {
-    totalRecords: number
-    genderDistribution: {
-        male: number
-        female: number
-        other: number
-    }
-    ageDistribution: {
-        pediatric: number  // < 18
-        adult: number      // 18-64
-        senior: number     // 65+
-        neonate?: number     // 0-28 days
-    }
-    followUps: {
-        upcoming: number
-        overdue: number
-    }
-}
+// export interface MedicalRecordsSummary {
+//     totalRecords: number
+//     genderDistribution: {
+//         male: number
+//         female: number
+//         other: number
+//     }
+//     ageDistribution: {
+//         pediatric: number  // < 18
+//         adult: number      // 18-64
+//         senior: number     // 65+
+//         neonate?: number     // 0-28 days
+//     }
+//     followUps: {
+//         upcoming: number
+//         overdue: number
+//     }
+// }

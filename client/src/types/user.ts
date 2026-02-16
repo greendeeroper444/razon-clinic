@@ -8,7 +8,7 @@ export interface User {
     middleName: string;
     email?: string;
     contactNumber?: string;
-    birthdate: Date;
+    birthdate: Date | string;
     sex: string;
     address: string;
     motherInfo?: ParentInfo;
@@ -16,15 +16,15 @@ export interface User {
     religion?: string;
     role: string;
     userType: string;
-    lastActiveAt: string
-    createdAt: string
-    isArchived: boolean
-    archivedAt?: string
+    lastActiveAt: string;
+    createdAt: string | Date;
+    isArchived: boolean;
+    archivedAt?: string;
     archivedBy?: {
-        id: string
-        firstName: string
-        lastName: string
-    }
+        id: string;
+        firstName: string;
+        lastName: string;
+    };
 }
 
 export interface UserFormData {
@@ -46,11 +46,8 @@ export interface UserFormData {
 }
 
 export interface UserDetailed extends User {
-    email?: string;
-    contactNumber?: string;
     birthdate: Date;
     sex: 'Male' | 'Female' | 'Other';
-    address: string;
     dateRegistered: Date;
     role: 'User' | 'Doctor' | 'Staff';
     createdAt: Date;

@@ -79,6 +79,12 @@ export interface MedicalRecordsSummary {
         pediatric: number
         adult: number
         senior: number
+        neonate: number
+        infant: number
+        toddler: number
+        preschool: number
+        schoolAge: number
+        adolescent: number
     }
     followUps: {
         upcoming: number

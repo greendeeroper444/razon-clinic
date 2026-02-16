@@ -4,10 +4,10 @@ import { BillingFormData, BillingResponse } from "./billing";
 import { BlockedTimeSlotDeleteData, BlockedTimeSlotFetchParams, BlockedTimeSlotFormData, BlockedTimeSlotOperationType, BlockedTimeSlotPagination, BlockedTimeSlotSummaryStats, CheckBlockedResponse } from "./blockedSlot";
 import { OperationType } from "./crud";
 import { InventoryItemFormData } from "./invetory";
-import { DeletedMedicalRecord, MedicalRecord, MedicalRecordFormData, MedicalRecordReportItem, MedicalRecordResponse, MedicalRecordsSummary } from "./medical";
+import { DeletedMedicalRecord, MedicalRecord, MedicalRecordFormData, MedicalRecordResponse } from "./medical";
 import { Pagination } from "./pagination";
 import { Patient, PatientFormData, PatientResponse } from "./patient"
-import { DashboardReport, InventoryReportItem, InventorySummary, ReportParams, SalesReportItem, SalesSummary } from "./report";
+import { ChartData, DashboardReport, InventoryReportItem, InventorySummary, MedicalRecordReportItem, MedicalRecordsSummary, ReportParams, SalesReportItem, SalesSummary } from "./report";
 import { User, UserResponse } from "./user";
 
 export interface FetchParams {
