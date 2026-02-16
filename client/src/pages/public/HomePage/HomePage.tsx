@@ -16,6 +16,8 @@ const HomePage = () => {
     const [showSectionIndicator, setShowSectionIndicator] = useState(false);
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
     const [lightboxLabel, setLightboxLabel] = useState<string>('');
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const backgroundImages = [razon1, razon2, razon3];
     
     //refs for each section
     const heroRef = useRef<HTMLElement>(null);
@@ -93,6 +95,17 @@ const HomePage = () => {
             color: "#6b7280"
         }
     ];
+
+    // Background image rotation
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prevIndex) => 
+                (prevIndex + 1) % backgroundImages.length
+            );
+        }, 5000); // Change image every 5 seconds
+
+        return () => clearInterval(interval);
+    }, []);
 
     //intersection Observer for scroll-based animations and section highlighting
     useEffect(() => {
@@ -242,9 +255,22 @@ const HomePage = () => {
             ref={heroRef}
             className={`${styles.hero} ${styles.fadeInSection} ${visibleSections.has('hero') ? styles.visible : ''}`}
         >
+            <div className={styles.heroBackground}>
+                {backgroundImages.map((image, index) => (
+                    <div
+                        key={index}
+                        className={`${styles.heroBackgroundImage} ${
+                            index === currentImageIndex ? styles.active : ''
+                        }`}
+                        style={{ backgroundImage: `url(${image})` }}
+                    />
+                ))}
+                <div className={styles.heroBackgroundOverlay} />
+            </div>
+            
             <div className={styles.heroContent}>
                 <h1 className={styles.slideInUp}>Book Your Appointment Online</h1>
-                <p className={`${styles.slideInUp} ${styles.delay1}`}>Accessible. Reliable. Fast healthcare booking at your fingertips.</p>
+                <p className={`${styles.slideInUp} ${styles.delay1}`}>Discover a sanctuary where modern convenience embraces timeless care. With effortless online scheduling and a heart devoted to your family's wellbeing, we transform healthcare into a seamless, nurturing experience that honors every precious moment of your child's growth.</p>
                 <button 
                     type='submit'
                     className={`${styles.btnPrimary} ${styles.slideInUp} ${styles.delay2}`} 
@@ -569,9 +595,6 @@ const HomePage = () => {
             lightboxImage && (
                 <div className={styles.lightbox} onClick={closeLightbox}>
                     <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-                        {/* <button className={styles.closeButton} onClick={closeLightbox}>
-                            ×
-                        </button> */}
                         <img src={lightboxImage} alt={lightboxLabel} />
                         <div className={styles.lightboxLabel}>{lightboxLabel}</div>
                     </div>
