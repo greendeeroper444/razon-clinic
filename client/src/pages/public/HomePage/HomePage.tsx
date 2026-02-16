@@ -149,7 +149,7 @@ const HomePage = () => {
 
     //handle scroll to show/hide section indicator
     useEffect(() => {
-        let timeoutId: NodeJS.Timeout;
+        let timeoutId: ReturnType<typeof setTimeout>;
 
         const handleScroll = () => {
             setShowSectionIndicator(true);

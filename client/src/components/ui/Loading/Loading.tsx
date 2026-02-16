@@ -30,8 +30,8 @@ const Loading: React.FC<LoadingProps> = ({
     const startTimeRef = useRef<number | null>(null);
 
     useEffect(() => {
-        let delayTimer: NodeJS.Timeout;
-        let minDurationTimer: NodeJS.Timeout;
+        let delayTimer: ReturnType<typeof setTimeout>;
+        let minDurationTimer: ReturnType<typeof setTimeout>;
 
         if (show) {
             //if there's a delay, wait before showing
