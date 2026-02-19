@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import styles from './Sidebar.module.css';
 import { Link, useLocation } from 'react-router-dom';
-import { Hospital, LayoutDashboard, CalendarCheck, Bed, Pill, Menu, ChevronLeft, FileText, CreditCard, User, ScrollText, Trash, BlocksIcon, User2 } from 'lucide-react';
+import { Hospital, LayoutDashboard, CalendarCheck, Pill, Menu, ChevronLeft, FileText, CreditCard, User, ScrollText, Trash, BlocksIcon, User2 } from 'lucide-react';
 import { SidebarProps } from '../../../types';
 import { useAuthenticationStore } from '../../../stores/authenticationStore';
 

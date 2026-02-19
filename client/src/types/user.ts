@@ -8,7 +8,7 @@ export interface User {
     middleName: string;
     email?: string;
     contactNumber?: string;
-    birthdate: Date | string;
+    birthdate: Date | string | any;
     sex: string;
     address: string;
     motherInfo?: ParentInfo;
