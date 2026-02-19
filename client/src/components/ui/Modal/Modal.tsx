@@ -8,7 +8,7 @@ import { AppointmentFormData, AppointmentStatus, BillingFormData, BlockedTimeSlo
 import Button from '../Button/Button'
 
 
-const Modal: React.FC<ModalProps> = ({
+const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
     isOpen,
     onClose,
     modalType,
@@ -18,14 +18,17 @@ const Modal: React.FC<ModalProps> = ({
     isProcessing = false,
     isRestockMode,
     isAddQuantityMode,
-    billingId 
+    billingId,
+    //when true, the modal behaves as a "create" form even though editData
+    // is provided (used to pre-seed the form with user profile defaults).
+    isNewRecord = false
 }) => {
     const [formData, setFormData] = useState<FormDataType>({} as FormDataType);
     const [isLoading, _setIsLoading] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
 
 
-    //initialize form with edit data if provided or reset when modal type changes
+    // initialize form with edit data if provided or reset when modal type changes
     useEffect(() => {
         if (editData) {
             //format birthdate for input field if it exists
@@ -44,32 +47,27 @@ const Modal: React.FC<ModalProps> = ({
             
             setFormData(processedEditData);
 
-            //set initial status for status modal
+            // set initial status for status modal
             if (modalType === 'status' && 'status' in editData && editData.status) {
                 setSelectedStatus(editData.status as string);
             }
         } else {
-            //set default values based on modal type
+            // set default values based on modal type
             if (modalType === 'appointment') {
                 setFormData({
                     firstName: '',
                     lastName: '',
                     middleName: '',
-                    //initialize all patient information fields
                     birthdate: '',
                     sex: '',
                     height: '',
                     weight: '',
-                    
-                    //flattened parent information fields
                     motherName: '',
                     motherAge: '',
                     motherOccupation: '',
                     fatherName: '',
                     fatherAge: '',
                     fatherOccupation: '',
-                    
-                    //nested parent information objects
                     motherInfo: {
                         name: '',
                         age: '',
@@ -155,7 +153,6 @@ const Modal: React.FC<ModalProps> = ({
             } else if (modalType === 'medical') {
                 setFormData({
                     appointmentId: '',
-                    //personal details
                     fullName: '',
                     dateOfBirth: '',
                     gender: '',
@@ -164,26 +161,18 @@ const Modal: React.FC<ModalProps> = ({
                     phone: '',
                     email: '',
                     emergencyContact: '',
-
-                    //medical History
                     allergies: '',
                     chronicConditions: '',
                     previousSurgeries: '',
                     familyHistory: '',
-
-                    //growth Milestones
                     height: '',
                     weight: '',
                     bmi: '',
                     growthNotes: '',
-
-                    //current Symptoms
                     chiefComplaint: '',
                     symptomsDescription: '',
                     symptomsDuration: '',
                     painScale: '',
-
-                    //additional fields (existing)
                     diagnosis: '',
                     treatmentPlan: '',
                     prescribedMedications: '',
@@ -220,15 +209,12 @@ const Modal: React.FC<ModalProps> = ({
     //create a custom event when modal closes
     const handleClose = () => {
         onClose();
-        //dispatch a custom event that the modal has been closed
         window.dispatchEvent(new CustomEvent('modal-closed'));
     };
-
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         
-        //handle nested object properties (e.g., motherInfo.name, fatherInfo.age)
         if (name.includes('.')) {
             const [parentKey, childKey] = name.split('.');
             setFormData(prevData => ({
@@ -239,7 +225,6 @@ const Modal: React.FC<ModalProps> = ({
                 }
             }));
         } else {
-            //handle flat properties
             setFormData(prevData => ({
                 ...prevData,
                 [name]: value
@@ -247,12 +232,10 @@ const Modal: React.FC<ModalProps> = ({
         }
     };
 
-
     const handleStatusChange = (status: string) => {
         setSelectedStatus(status as AppointmentStatus);
     };
     
-    //we can clear field after submit
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (modalType === 'delete' && deleteData) {
@@ -262,7 +245,6 @@ const Modal: React.FC<ModalProps> = ({
         } else {
             onSubmit(formData);
             
-            //clear fields for appoitment
             if (modalType === 'appointment') {
                 setFormData(prev => ({
                     ...prev,
@@ -270,48 +252,43 @@ const Modal: React.FC<ModalProps> = ({
                 }));
             }
         }
-        // handleClose();
     };
 
-    //handler for "Save as New" button
     const handleSaveAsNew = (e: FormEvent) => {
         e.preventDefault();
-        
-        //remove the id to create a new record instead of updating
         const { id: _, ...dataWithoutId } = formData as any;
         onSubmit(dataWithoutId);
     };
 
-    
     const handleConfirmDelete = () => {
         if (deleteData) {
             onSubmit(deleteData.id);
         }
     };
 
-    //don't render if modal is not open
     if (!isOpen) return null;
 
-    //determine title based on modal type and edit status
+    const isEditing = editData && !isNewRecord;
+
     let title = '';
     switch (modalType) {
         case 'appointment':
-            title = editData ? 'Edit Appointment' : 'New Appointment';
+            title = isEditing ? 'Edit Appointment' : 'New Appointment';
             break;
         case 'patient':
-            title = editData ? 'Edit Patient' : 'New Patient';
+            title = isEditing ? 'Edit Patient' : 'New Patient';
             break;
         case 'personnel':
-            title = editData ? 'Edit Personnel' : 'New Personnel';
+            title = isEditing ? 'Edit Personnel' : 'New Personnel';
             break;
         case 'item':
-            title = editData ? 'Edit Inventory Item' : 'New Inventory Item';
+            title = isEditing ? 'Edit Inventory Item' : 'New Inventory Item';
             break;
         case 'blockedTimeSlot':
-            title = editData ? 'Edit Blocked Time Slot' : 'Block New Time Slot';
+            title = isEditing ? 'Edit Blocked Time Slot' : 'Block New Time Slot';
             break;
         case 'medical':
-            title = editData ? 'Edit Medical Record' : 'New Medical Record';
+            title = isEditing ? 'Edit Medical Record' : 'New Medical Record';
             break;
         case 'delete':
             title = 'Confirm Delete';
@@ -320,7 +297,7 @@ const Modal: React.FC<ModalProps> = ({
             title = 'Update Status';
             break;
         case 'billing':
-            title = editData ? 'Edit Billing' : 'New Billing';
+            title = isEditing ? 'Edit Billing' : 'New Billing';
             break;
         case 'billing-details':
             title = 'Billing Details';
@@ -329,7 +306,6 @@ const Modal: React.FC<ModalProps> = ({
             title = 'Form';
     }
 
-    //render content based on modal type
     const renderFormContent = () => {
         switch (modalType) {
             case 'appointment':
@@ -344,9 +320,8 @@ const Modal: React.FC<ModalProps> = ({
             case 'patient':
                 return (
                     <>
-                        {/* display birthdate if editing and birthdate exists */}
                         {
-                            editData && (editData as PatientFormData).birthdate && (
+                            isEditing && (editData as PatientFormData).birthdate && (
                                 <div className={styles.birthdateDisplay}>
                                     <p><strong>Current Birthdate:</strong> {formatDateForDisplay((editData as PatientFormData).birthdate as string)}</p>
                                 </div>
@@ -427,7 +402,6 @@ const Modal: React.FC<ModalProps> = ({
         }
     };
 
-    //no need the form submit or footer buttons
     if (modalType === 'delete' || modalType === 'billing-details') {
         return (
             <div className={styles.modalOverlay}>
@@ -481,9 +455,9 @@ const Modal: React.FC<ModalProps> = ({
                     >
                         Cancel
                     </Button>
-                    
+
                     {
-                        modalType === 'medical' && editData && (
+                        modalType === 'medical' && isEditing && (
                             <Button
                                 variant='primary'
                                 type='button'
@@ -496,14 +470,14 @@ const Modal: React.FC<ModalProps> = ({
                             </Button>
                         )
                     }
-                    
+
                     <Button
                         variant='primary'
                         type='submit'
                         isLoading={isProcessing}
-                        loadingText={editData ? 'Updating...' : 'Saving...'}
+                        loadingText={isEditing ? 'Updating...' : 'Saving...'}
                     >
-                        {editData ? 'Update' : 'Save'}
+                        {isEditing ? 'Update' : 'Save'}
                     </Button>
                 </div>
             </form>

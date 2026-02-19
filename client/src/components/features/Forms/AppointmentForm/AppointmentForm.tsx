@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styles from './AppointmentForm.module.css'
 import { getAppointments } from '../../../../services'
 import { convertTo12HourFormat, generateTimeSlots, getFieldError } from '../../../../utils'
@@ -6,7 +6,7 @@ import { AppointmentFormData, AppointmentFormProps } from '../../../../types'
 import Input from '../../../ui/Input/Input'
 import Select, { SelectOption } from '../../../ui/Select/Select'
 import TextArea from '../../../ui/TextArea/TextArea'
-import { useAppointmentStore, useBlockedTimeSlotStore } from '../../../../stores'
+import { useAppointmentStore, useAuthenticationStore, useBlockedTimeSlotStore } from '../../../../stores'
 import { useScrollToError } from '../../../../hooks/useScrollToError'
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({
@@ -17,9 +17,15 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     const [bookedSlots, setBookedSlots] = useState<{date: string, time: string, time12Hour?: string}[]>([]);
     const [availableTimes, setAvailableTimes] = useState<string[]>([]);
 
+    //ref to ensure auto-fill only runs once per form mount, not on every re-render
+    const hasAutoFilled = useRef(false);
+
     const validationErrors = useAppointmentStore((state) => state.validationErrors);
     const blockedTimeSlots = useBlockedTimeSlotStore((state) => state.blockedTimeSlots);
     const fetchBlockedTimeSlots = useBlockedTimeSlotStore((state) => state.fetchBlockedTimeSlots);
+
+    //get the logged-in user from auth store
+    const user = useAuthenticationStore((state) => state.user);
 
     const { fieldRefs } = useScrollToError({
         validationErrors,
@@ -49,6 +55,42 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         scrollBlock: 'center',
         focusDelay: 300
     });
+
+    //auto-fill form with user profile data.
+    //conditions:
+    //   - user must be loaded
+    //   - must be a NEW appointment (no formData.id)
+    //   - must not have already run (hasAutoFilled ref)
+    useEffect(() => {
+        if (user && !formData?.id && !hasAutoFilled.current) {
+            hasAutoFilled.current = true;
+
+            const fieldsToAutoFill = [
+                { name: 'firstName',     value: user.firstName     || '' },
+                { name: 'lastName',      value: user.lastName      || '' },
+                { name: 'middleName',    value: user.middleName    || '' },
+                { name: 'contactNumber', value: user.contactNumber || '' },
+                { name: 'sex',           value: user.sex           || '' },
+                { name: 'address',       value: user.address       || '' },
+                { name: 'religion',      value: user.religion      || '' },
+                {
+                    name: 'birthdate',
+                    value: user.birthdate ? user.birthdate.split('T')[0] : ''
+                },
+            ];
+
+            fieldsToAutoFill.forEach(({ name, value }) => {
+                if (value) {
+                    onChange({
+                        target: { name, value }
+                    } as React.ChangeEvent<HTMLInputElement>);
+                }
+            });
+        }
+    //we intentionally only re-run when `user` becomes available.
+    //the ref prevents duplicate fills if this effect re-runs.
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
 
     useEffect(() => {
         fetchBlockedTimeSlots({ page: 1, limit: 1000 });

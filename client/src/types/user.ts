@@ -25,6 +25,7 @@ export interface User {
         firstName: string;
         lastName: string;
     };
+    suffix?: string | null;
 }
 
 export interface UserFormData {

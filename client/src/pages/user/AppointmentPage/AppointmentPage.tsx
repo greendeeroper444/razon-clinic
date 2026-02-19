@@ -6,7 +6,7 @@ import { formatDate, formatTime, getStatusClass, getLoadingText, generateInitial
 import { AppointmentFormData, AppointmentResponse, FormDataType, TableColumn } from '../../../types'
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components'
 import { useNavigate } from 'react-router-dom'
-import { useAppointmentStore } from '../../../stores'
+import { useAppointmentStore, useAuthenticationStore } from '../../../stores'
 import { toast } from 'sonner'
 
 const AppointmentPage: React.FC<OpenModalProps> = () => {
@@ -14,6 +14,60 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+    //get the logged-in user to pre-fill the create form
+    const user = useAuthenticationStore((state) => state.user);
+
+    //build the user's full name from their profile
+    const userFullName = [
+        user?.firstName,
+        user?.middleName,
+        user?.lastName,
+        user?.suffix
+    ].filter(Boolean).join(' ');
+
+    const userDefaultFormData: Partial<AppointmentFormData> = {
+        //patient Information — left blank (child's info, filled by user)
+        firstName:    '',
+        lastName:     '',
+        middleName:   '',
+        birthdate:    '',
+        sex:          '',
+        height:       '',
+        weight:       '',
+
+        //mother's Information — always pre-filled with logged-in user's full name
+        motherName:       userFullName,
+        motherAge:        '',
+        motherOccupation: '',
+        motherInfo: {
+            name:       userFullName,
+            age:        '',
+            occupation: ''
+        },
+
+        //father's Information — always pre-filled with logged-in user's full name
+        fatherName:       userFullName,
+        fatherAge:        '',
+        fatherOccupation: '',
+        fatherInfo: {
+            name:       userFullName,
+            age:        '',
+            occupation: ''
+        },
+
+        //contact details from user profile
+        contactNumber: user?.contactNumber || '',
+        address:       user?.address       || '',
+        religion:      user?.religion      || '',
+
+        //appointment fields — left blank for the user to fill
+        preferredDate:  '',
+        preferredTime:  '',
+        reasonForVisit: '',
+        status:         'Pending',
+    };
+
     //zustand store selectors
     const {
         appointments,
@@ -73,7 +127,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         fetchData(1, itemsPerPage, searchTerm);
     }, [fetchData, searchTerm]);
 
-   const handleCreateClick = useCallback(() => {
+    const handleCreateClick = useCallback(() => {
         openModalCreate();
     }, [openModalCreate]);
 
@@ -87,15 +141,15 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             return
         }
 
-        const appointmentData = data as AppointmentFormData;
+        const { id: _, ...appointmentData } = data as AppointmentFormData & { id?: string };
 
         try {
-            await addAppointment(appointmentData)
+            await addAppointment(appointmentData as AppointmentFormData)
 
             setTimeout(() => {
                 fetchData(
-                    storePagination?.currentPage || 1, 
-                    storePagination?.itemsPerPage || 10, 
+                    storePagination?.currentPage || 1,
+                    storePagination?.itemsPerPage || 10,
                     searchTerm
                 );
                 closeModalCreate();
@@ -104,7 +158,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             console.error('Error adding appointment:', error);
         }
     }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
-    
+
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !selectedAppointment?.id) {
             console.error('Invalid data or missing appointment ID')
@@ -118,8 +172,8 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
 
             setTimeout(() => {
                 fetchData(
-                    storePagination?.currentPage || 1, 
-                    storePagination?.itemsPerPage || 10, 
+                    storePagination?.currentPage || 1,
+                    storePagination?.itemsPerPage || 10,
                     searchTerm
                 );
             }, 600);
@@ -129,7 +183,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
     }, [selectedAppointment, updateAppointmentData, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm])
 
     const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
-         if (typeof data !== 'string') {
+        if (typeof data !== 'string') {
             console.error('Invalid appointment ID');
             return;
         }
@@ -139,8 +193,8 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
 
             setTimeout(() => {
                 fetchData(
-                    storePagination?.currentPage || 1, 
-                    storePagination?.itemsPerPage || 10, 
+                    storePagination?.currentPage || 1,
+                    storePagination?.itemsPerPage || 10,
                     searchTerm
                 );
             }, 600);
@@ -160,10 +214,8 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     <div className={styles.patientAvatar}>
                         {generateInitials(appointment.firstName)}
                     </div>
-
                     <div className={styles.patientText}>
                         <div className={styles.patientName}>
-                            {/* {generate20Only(appointment.firstName)} */}
                             {appointment.firstName} {appointment.lastName} {appointment.suffix}
                         </div>
                         <div className={styles.appointmentId}>
@@ -205,8 +257,8 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             header: 'ACTIONS',
             render: (appointment) => (
                 <>
-                    <button 
-                        type='button' 
+                    <button
+                        type='button'
                         className={`${styles.actionBtn} ${styles.view}`}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -215,28 +267,26 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     >
                         View
                     </button>
-                    <button 
-                        type='button' 
+                    <button
+                        type='button'
                         className={`${styles.actionBtn} ${styles.update} ${
-                            ['Scheduled', 'Cancelled', 'Completed'].includes(appointment.status) 
-                                ? styles.disabled 
+                            ['Scheduled', 'Cancelled', 'Completed'].includes(appointment.status)
+                                ? styles.disabled
                                 : ''
                         }`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            
                             if (['Scheduled', 'Cancelled', 'Completed'].includes(appointment.status)) {
                                 toast.info(`Cannot update appointments with "${appointment.status}" status`);
                                 return;
                             }
-                            
                             openModalUpdate(appointment);
                         }}
                     >
                         Update
                     </button>
-                    <button 
-                        type='button' 
+                    <button
+                        type='button'
                         className={`${styles.actionBtn} ${styles.delete}`}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -269,8 +319,8 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
 
         <div className={styles.section}>
             <div className={styles.sectionHeader}>
-                <div className={styles.sectionTitle}> 
-                    Appointments ({loading ? '...' : appointments.length}) 
+                <div className={styles.sectionTitle}>
+                    Appointments ({loading ? '...' : appointments.length})
                 </div>
 
                 <div className={styles.controls}>
@@ -280,8 +330,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                         disabled={loading}
                         className={styles.searchbar}
                     />
-                    
-                    {/* select status */}
+
                     <div className={styles.selectControl}>
                         <label htmlFor="statusFilter">Status:</label>
                         <select
@@ -338,7 +387,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                             searchTerm={searchTerm}
                             getRowKey={(appointment) => appointment.id}
                         />
-                        
+
                         {
                             storePagination && storePagination.totalPages > 1 && (
                                 <Pagination
@@ -355,7 +404,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                 )
             }
         </div>
-        
+
         {
             isModalCreateOpen && (
                 <Modal
@@ -364,6 +413,8 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     modalType="appointment"
                     onSubmit={handleSubmitAdd}
                     isProcessing={submitLoading}
+                    editData={userDefaultFormData as AppointmentFormData}
+                    isNewRecord={true}
                 />
             )
         }
