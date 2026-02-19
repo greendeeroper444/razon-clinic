@@ -19,8 +19,6 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
     isRestockMode,
     isAddQuantityMode,
     billingId,
-    //when true, the modal behaves as a "create" form even though editData
-    // is provided (used to pre-seed the form with user profile defaults).
     isNewRecord = false
 }) => {
     const [formData, setFormData] = useState<FormDataType>({} as FormDataType);
@@ -268,7 +266,7 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
 
     if (!isOpen) return null;
 
-    const isEditing = editData && !isNewRecord;
+    const isEditing = !!editData && !isNewRecord;
 
     let title = '';
     switch (modalType) {
@@ -288,7 +286,8 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
             title = isEditing ? 'Edit Blocked Time Slot' : 'Block New Time Slot';
             break;
         case 'medical':
-            title = isEditing ? 'Edit Medical Record' : 'New Medical Record';
+            // when isNewRecord, show a distinct title to make it clear
+            title = isEditing ? 'Edit Medical Record' : isNewRecord ? 'Create as New Record' : 'New Medical Record';
             break;
         case 'delete':
             title = 'Confirm Delete';
@@ -457,7 +456,7 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
                     </Button>
 
                     {
-                        modalType === 'medical' && isEditing && (
+                        modalType === 'medical' && (isEditing || isNewRecord) && (
                             <Button
                                 variant='primary'
                                 type='button'
@@ -471,14 +470,18 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
                         )
                     }
 
-                    <Button
-                        variant='primary'
-                        type='submit'
-                        isLoading={isProcessing}
-                        loadingText={isEditing ? 'Updating...' : 'Saving...'}
-                    >
-                        {isEditing ? 'Update' : 'Save'}
-                    </Button>
+                    {
+                        !isNewRecord && (
+                            <Button
+                                variant='primary'
+                                type='submit'
+                                isLoading={isProcessing}
+                                loadingText={isEditing ? 'Updating...' : 'Saving...'}
+                            >
+                                {isEditing ? 'Update' : 'Save'}
+                            </Button>
+                        )
+                    }
                 </div>
             </form>
         </div>

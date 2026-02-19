@@ -16,6 +16,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+    const [isCreateAsNewMode, setIsCreateAsNewMode] = useState(false);
 
     //custom date range hook
     const {
@@ -166,6 +167,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                     storePagination?.itemsPerPage || 10, 
                     searchTerm
                 );
+                setIsCreateAsNewMode(false);
                 closeModalUpdate();
             }, 600);
         } catch (error) {
@@ -297,9 +299,22 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                         </button>
                         <button
                             type='button'
+                            className={`${styles.actionBtn} ${styles.createAsNew}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsCreateAsNewMode(true);
+                                openModalUpdate(record);
+                            }}
+                            title='Create as new'
+                        >
+                            <Plus size={16} />
+                        </button>
+                        <button
+                            type='button'
                             className={`${styles.actionBtn} ${styles.update}`}
                             onClick={(e) => {
                                 e.stopPropagation();
+                                setIsCreateAsNewMode(false);
                                 openModalUpdate(record);
                             }}
                             title='Update'
@@ -454,11 +469,15 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
             isModalUpdateOpen && (
                 <Modal
                     isOpen={isModalUpdateOpen}
-                    onClose={closeModalUpdate}
+                    onClose={() => {
+                        setIsCreateAsNewMode(false);
+                        closeModalUpdate();
+                    }}
                     modalType='medical'
                     onSubmit={handleSubmitUpdate}
                     editData={selectedMedicalRecord}
                     isProcessing={submitLoading}
+                    isNewRecord={isCreateAsNewMode}
                 />
             )
         }
