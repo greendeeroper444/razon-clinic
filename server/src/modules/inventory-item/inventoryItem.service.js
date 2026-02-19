@@ -183,9 +183,10 @@ class InventoryItemService {
         }
     }
 
-    async getLowStockItems(threshold = 10) {
+    async getLowStockItems(threshold = 50) {
         try {
             const lowStockItems = await InventoryItem.find({
+                isArchived: false,
                 quantityInStock: { $lt: parseInt(threshold) }
             }).sort({ quantityInStock: 1 });
 
@@ -211,16 +212,12 @@ class InventoryItemService {
 
     async getExpiringItems(days = 30) {
         try {
-            const currentDate = new Date();
-            const futureDate = new Date();
-            futureDate.setDate(currentDate.getDate() + parseInt(days));
+            const thirtyDaysFromNow = new Date();
+            thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + parseInt(days));
 
-            const expiringItems = await InventoryItem.find({
-                expiryDate: { 
-                    $gte: currentDate, 
-                    $lte: futureDate 
-                }
-            }).sort({ expiryDate: 1 });
+            const items = await InventoryItem.find({ isArchived: false });
+
+            const expiringItems = items.filter(item => item.expiryDate <= thirtyDaysFromNow);
 
             return expiringItems;
         } catch (error) {

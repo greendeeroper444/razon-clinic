@@ -85,7 +85,7 @@ export interface ExtendedAppointmentState extends AppointmentState {
 export interface InventoryState {
     //state
     inventoryItems: InventoryItemFormData[];
-    pagination: Pagination | null;
+    pagination: Pagination | any;
     loading: boolean;
     error: string | null;
     isProcessing: boolean;

@@ -141,24 +141,23 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
             fetchSummaryStats: async () => {
                 try {
                     const [lowStockResponse, expiringResponse] = await Promise.all([
-                        getLowStockItems(10),
+                        getLowStockItems(50),
                         getExpiringItems(30)
                     ]);
 
-                    const { inventoryItems } = get();
+                    const { pagination } = get();
+
                     const thirtyDaysAgo = new Date();
                     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-                    
-                    const recentlyAdded = inventoryItems.filter(item => 
-                        new Date(String(item.createdAt)) > thirtyDaysAgo
-                    ).length;
 
                     set({
                         summaryStats: {
-                            total: inventoryItems.length,
-                            lowStock: lowStockResponse.data.lowStockItems?.length || 0,
-                            expiring: expiringResponse.data.expiringItems?.length || 0,
-                            recentlyAdded: recentlyAdded
+                            total: pagination.totalItems,
+                            lowStock: lowStockResponse.data?.length || 0,
+                            expiring: expiringResponse.data?.length || 0,
+                            recentlyAdded: get().inventoryItems.filter(item =>
+                                new Date(String(item.createdAt)) > thirtyDaysAgo
+                            ).length
                         }
                     });
                 } catch (error) {
