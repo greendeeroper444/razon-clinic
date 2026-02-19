@@ -233,13 +233,13 @@ class DashboardService {
                     isExpiringSoon,
                     status: isExpired ? 'Expired' : 
                             isExpiringSoon ? 'Expiring Soon' : 
-                            quantityRemaining < 10 ? 'Critical' :
-                            quantityRemaining < 25 ? 'Very Low' : 'Low'
+                            quantityRemaining < 20 ? 'Critical' :
+                            quantityRemaining < 35 ? 'Very Low' : 'Low'
                 };
             });
 
-            //get critical items (below 10)
-            const criticalItems = itemsWithDetails.filter(item => item.quantityRemaining < 10);
+            //get critical items (below 20)
+            const criticalItems = itemsWithDetails.filter(item => item.quantityRemaining < 20);
 
             return {
                 count: lowStockItems.length,

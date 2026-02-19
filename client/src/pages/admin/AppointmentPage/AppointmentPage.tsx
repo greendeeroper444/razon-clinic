@@ -234,7 +234,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                             openModalDelete(appointment);
                         }}
                     >
-                        Archive
+                        Delete
                     </button>
                 </>
             )

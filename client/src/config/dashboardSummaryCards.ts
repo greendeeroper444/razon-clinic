@@ -54,7 +54,7 @@ export const getDashboardSummaryCardsFromAPI = (dashboardStats: DashboardStats |
             icon: React.createElement(AlertTriangle),
             iconColor: 'red',
             footer: criticalItems > 0 
-                ? `${criticalItems} critical items (< 10 stock)`
+                ? `${criticalItems} critical items (< 20 stock)`
                 : 'No critical items',
             footerType: criticalItems > 0 ? 'negative' as const : 'neutral' as const
         },

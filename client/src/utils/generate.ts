@@ -21,7 +21,7 @@
 // };
 export const generateTimeSlots = (): string[] => {
     const slots: string[] = [];
-    let hour = 8;
+    let hour = 9;
     let minute = 0;
 
     while (hour < 14 || (hour === 14 && minute <= 30)) {

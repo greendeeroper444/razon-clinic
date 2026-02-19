@@ -148,10 +148,9 @@ class ReportService extends BaseService {
         const vaccines = items.filter(item => item.category === 'Vaccine').length;
         const medicalSupplies = items.filter(item => item.category === 'Medical Supply').length;
 
-        //low stock items (less than 10)
-        const lowStockItems = items.filter(item => (item.quantityInStock - item.quantityUsed) < 10).length;
+        const lowStockItems = items.filter(item => item.quantityInStock < 50).length;
 
-        //expiring soon (within 30 days)
+        // expiring soon (within 30 days)
         const thirtyDaysFromNow = new Date();
         thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
         const expiringSoon = items.filter(item => item.expiryDate <= thirtyDaysFromNow).length;

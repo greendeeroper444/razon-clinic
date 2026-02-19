@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import styles from './HomePage.module.css'
 import { useNavigate, Link } from 'react-router-dom'
-import { Heart, Stethoscope, Users, Shield, Briefcase, Activity, Brain, Wind, UserCheck, CalendarCheck, Syringe, MessageCircle, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from 'lucide-react'
+import { Heart, Stethoscope, Users, Shield, Briefcase, Activity, Brain, Wind, UserCheck, CalendarCheck, Syringe, MessageCircle, Phone, Mail, MapPin, Facebook, Instagram, Twitter, CheckCircle } from 'lucide-react'
 import { Footer, SectionFeatures } from '../../../components'
 import razon from '../../../assets/profiles/razon.jpg'
 import razon1 from '../../../assets/backgrounds/razon-1.png'
@@ -102,7 +102,7 @@ const HomePage = () => {
             setCurrentImageIndex((prevIndex) => 
                 (prevIndex + 1) % backgroundImages.length
             );
-        }, 5000); // Change image every 5 seconds
+        }, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -121,7 +121,6 @@ const HomePage = () => {
             threshold: 0.1
         };
 
-        //observer for active section highlighting
         const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
@@ -131,7 +130,6 @@ const HomePage = () => {
             });
         }, observerOptions);
 
-        //observer for fade-in animations
         const visibilityObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 const sectionId = entry.target.getAttribute('id') || '';
@@ -141,7 +139,6 @@ const HomePage = () => {
             });
         }, visibilityOptions);
 
-        //observe all sections
         const sections = [heroRef, featuresRef, aboutRef, galleryRef, servicesRef, contactRef];
         sections.forEach(ref => {
             if (ref.current) {
@@ -160,17 +157,12 @@ const HomePage = () => {
         };
     }, []);
 
-    //handle scroll to show/hide section indicator
     useEffect(() => {
         let timeoutId: ReturnType<typeof setTimeout>;
 
         const handleScroll = () => {
             setShowSectionIndicator(true);
-            
-            //clear existing timeout
             clearTimeout(timeoutId);
-            
-            //hide indicator after 2 seconds of no scrolling
             timeoutId = setTimeout(() => {
                 setShowSectionIndicator(false);
             }, 2000);
@@ -194,13 +186,13 @@ const HomePage = () => {
     const openLightbox = (image: string, label: string) => {
         setLightboxImage(image);
         setLightboxLabel(label);
-        document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+        document.body.style.overflow = 'hidden';
     };
 
     const closeLightbox = () => {
         setLightboxImage(null);
         setLightboxLabel('');
-        document.body.style.overflow = 'unset'; // Restore scrolling
+        document.body.style.overflow = 'unset';
     };
 
   return (
@@ -249,37 +241,64 @@ const HomePage = () => {
             />
         </div>
 
-        {/* hero section */}
+        {/* ===================== HERO SECTION (UPDATED) ===================== */}
         <section 
             id="hero" 
             ref={heroRef}
             className={`${styles.hero} ${styles.fadeInSection} ${visibleSections.has('hero') ? styles.visible : ''}`}
         >
             <div className={styles.heroBackground}>
-                {backgroundImages.map((image, index) => (
-                    <div
-                        key={index}
-                        className={`${styles.heroBackgroundImage} ${
-                            index === currentImageIndex ? styles.active : ''
-                        }`}
-                        style={{ backgroundImage: `url(${image})` }}
-                    />
-                ))}
+                {
+                    backgroundImages.map((image, index) => (
+                        <div
+                            key={index}
+                            className={`${styles.heroBackgroundImage} ${
+                                index === currentImageIndex ? styles.active : ''
+                            }`}
+                            style={{ backgroundImage: `url(${image})` }}
+                        />
+                    ))
+                }
                 <div className={styles.heroBackgroundOverlay} />
             </div>
             
             <div className={styles.heroContent}>
-                <h1 className={styles.slideInUp}>Book Your Appointment Online</h1>
-                <p className={`${styles.slideInUp} ${styles.delay1}`}>Discover a sanctuary where modern convenience embraces timeless care. With effortless online scheduling and a heart devoted to your family's wellbeing, we transform healthcare into a seamless, nurturing experience that honors every precious moment of your child's growth.</p>
+                {/* title matching screenshot: dark text + blue accent */}
+                <h1 className={styles.slideInUp}>
+                    Book Your <span className={styles.heroAccent}>Appointment Online</span> 
+                </h1>
+
+                {/* subtitle with bold emphasis like screenshot */}
+                <p className={`${styles.heroSubtitle} ${styles.slideInUp} ${styles.delay1}`}>
+                    Skip the lines and schedule your visit <strong>in just a few clicks!</strong>
+                </p>
+
+                {/* checkmark bullet points matching screenshot */}
+                <ul className={`${styles.heroBullets} ${styles.slideInUp} ${styles.delay2}`}>
+                    <li>
+                        <CheckCircle className={styles.bulletIcon} size={20} strokeWidth={2.5} />
+                        <span>Our secure and easy-to-use online booking system lets you choose your preferred date, time, and service.</span>
+                    </li>
+                    <li>
+                        <CheckCircle className={styles.bulletIcon} size={20} strokeWidth={2.5} />
+                        <span>Get reminders, stay organized, and enjoy a smooth, hassle-free healthcare experience from the comfort of your home.</span>
+                    </li>
+                    <li>
+                        <CheckCircle className={styles.bulletIcon} size={20} strokeWidth={2.5} />
+                        <span>Your well-being is just a click away!</span>
+                    </li>
+                </ul>
+
                 <button 
                     type='submit'
-                    className={`${styles.btnPrimary} ${styles.slideInUp} ${styles.delay2}`} 
+                    className={`${styles.btnPrimary} ${styles.slideInUp} ${styles.delay3}`} 
                     onClick={() => navigate('/user/appointments')}
                 >
                     Book Now
                 </button>
             </div>
         </section>
+        {/* ================================================================= */}
 
         {/* features section */}
         <section 
