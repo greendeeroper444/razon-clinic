@@ -70,11 +70,11 @@ const BillingDetailsForm: React.FC<BillingDetailsFormProps> = ({ billingId }) =>
         <div className={style.section}>
             <div className={style.sectionHeader}>
                 <User size={18} />
-                <h3>Patient Information</h3>
+                <h3>Child Information</h3>
             </div>
             <div className={style.detailsGrid}>
                 <div className={style.detailItem}>
-                    <span className={style.label}>Patient Name:</span>
+                    <span className={style.label}>Child Name:</span>
                     <span className={style.value}>{currentBilling.patientName || 'N/A'}</span>
                 </div>
                 <div className={style.detailItem}>

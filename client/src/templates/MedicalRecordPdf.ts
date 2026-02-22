@@ -28,7 +28,7 @@ export class MedicalRecordPDF extends BasePDFTemplate {
     private drawPatientInformation(): void {
         this.doc.setFont('helvetica', 'bold');
         this.doc.setFontSize(11);
-        this.doc.text('Patient Information', 20, this.currentY);
+        this.doc.text('Child Information', 20, this.currentY);
         this.currentY += 8;
 
         this.doc.setFont('helvetica', 'normal');

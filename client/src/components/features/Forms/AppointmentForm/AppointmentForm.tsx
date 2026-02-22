@@ -377,7 +377,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
   return (
     <div className={styles.sectionDivider}>
-        <h4>Patient Information</h4>
+        <h4>Child Information</h4>
         
         <Input
             ref={(el) => { fieldRefs.current['firstName'] = el; }}

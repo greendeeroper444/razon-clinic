@@ -100,7 +100,7 @@ const PatientDetailsPage = () => {
                     {/* patient details information */}
                     <div className={styles.tableSection}>
                         <h3 className={styles.sectionTitle}>
-                            <User /> Patient Information
+                            <User /> Child Information
                         </h3>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
