@@ -27,7 +27,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
     ].filter(Boolean).join(' ');
 
     const userDefaultFormData: Partial<AppointmentFormData> = {
-        //patient Information — left blank (child's info, filled by user)
+        //patient unformation — left blank (child's info, filled by user)
         firstName:    '',
         lastName:     '',
         middleName:   '',
@@ -36,22 +36,22 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         height:       '',
         weight:       '',
 
-        //mother's Information — always pre-filled with logged-in user's full name
-        motherName:       userFullName,
+        //mother's Information — pre-filled only if logged-in user is Female
+        motherName:       user?.sex === 'Female' ? userFullName : '',
         motherAge:        '',
         motherOccupation: '',
         motherInfo: {
-            name:       userFullName,
+            name:       user?.sex === 'Female' ? userFullName : '',
             age:        '',
             occupation: ''
         },
 
-        //father's Information — always pre-filled with logged-in user's full name
-        fatherName:       userFullName,
+        //father's Information — pre-filled only if logged-in user is Male
+        fatherName:       user?.sex === 'Male' ? userFullName : '',
         fatherAge:        '',
         fatherOccupation: '',
         fatherInfo: {
-            name:       userFullName,
+            name:       user?.sex === 'Male' ? userFullName : '',
             age:        '',
             occupation: ''
         },
