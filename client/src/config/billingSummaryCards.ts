@@ -10,21 +10,21 @@ export const getBillingSummaryCards = (summaryStats: {
         title: "Total Revenue",
         icon: CreditCard,
         iconColor: "blue",
-        value: `₱${summaryStats.totalRevenue.toFixed(2)}`,
+        value: `₱${summaryStats.totalRevenue.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         footer: "All time revenue"
     },
     {
         title: "Paid Amount",
         icon: Check,
         iconColor: "green",
-        value: `₱${summaryStats.paidAmount.toFixed(2)}`,
+        value: `₱${summaryStats.paidAmount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         footer: "Successfully collected"
     },
     {
         title: "Outstanding",
         icon: AlertTriangle,
         iconColor: "orange",
-        value: `₱${summaryStats.unpaidAmount.toFixed(2)}`,
+        value: `₱${summaryStats.unpaidAmount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         footer: "Pending payments"
     },
     {

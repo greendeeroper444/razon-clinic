@@ -1,8 +1,8 @@
 import React, { useState, InputHTMLAttributes, ReactNode, forwardRef } from 'react'
 import styles from './Input.module.css'
-import { User, EyeOff, Eye, Lock, Mail, Calendar, Church, Phone, Home, DollarSign } from 'lucide-react'
+import { User, EyeOff, Eye, Lock, Mail, Calendar, Church, Phone, Home } from 'lucide-react'
 
-type IconType = 'user' | 'email' | 'lock' | 'eye' | 'eye-slash' | 'calendar' | 'church' | 'phone' | 'home' | 'dollar'
+type IconType = 'user' | 'email' | 'lock' | 'eye' | 'eye-slash' | 'calendar' | 'church' | 'phone' | 'home' | 'peso'
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onFocus' | 'className'> {
     label?: string | ReactNode;
@@ -60,8 +60,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
                 return <Church className={styles.icon} />
             case 'home': 
                 return <Home className={styles.icon} />
-            case 'dollar': 
-                return <DollarSign className={styles.icon} />
+            case 'peso': 
+                return <span className={styles.pesoIcon}>₱</span>
             default: 
                 return null
         }

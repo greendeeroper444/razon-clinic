@@ -85,6 +85,16 @@
     transition: color 0.2s ease;
 }
 
+.pesoIcon {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #8896bd;
+    line-height: 1;
+    transition: color 0.2s ease;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 .clickable {
     cursor: pointer;
     padding: 0.25rem;
