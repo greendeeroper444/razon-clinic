@@ -470,8 +470,20 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
                         )
                     }
 
-                    {
+                    {/* {
                         !isNewRecord && (
+                            <Button
+                                variant='primary'
+                                type='submit'
+                                isLoading={isProcessing}
+                                loadingText={isEditing ? 'Updating...' : 'Saving...'}
+                            >
+                                {isEditing ? 'Update' : 'Save'}
+                            </Button>
+                        )
+                    } */}
+                    {
+                        !(isNewRecord && modalType === 'medical') && (
                             <Button
                                 variant='primary'
                                 type='submit'
