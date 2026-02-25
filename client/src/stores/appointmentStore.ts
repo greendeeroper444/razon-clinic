@@ -387,6 +387,8 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     sex: appointment.sex,
                     height: appointment.height,
                     weight: appointment.weight,
+                    temperature: appointment.temperature,
+                    bloodPressure: appointment.bloodPressure || { systolic: '', diastolic: '' },
                     religion: appointment.religion,
                     motherName: appointment.motherInfo?.name || '',
                     motherAge: appointment.motherInfo?.age || '',

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand } from 'lucide-react';
+import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand, Thermometer, HeartPulse } from 'lucide-react';
 import { calculateAge, formatBirthdate, formatDate, formatTime, getStatusClass, getLoadingText, formatDateTime } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { AppointmentFormData, FormDataType } from '../../../types';
@@ -229,6 +229,13 @@ const AppointmentDetailsPage = () => {
                             </span>
                             <span className={styles.tableValue}>{currentAppointment.address}</span>
                         </div>
+
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <Hand /> Religion:
+                            </span>
+                            {currentAppointment?.religion || 'N/A'}
+                        </div>
                     </div>
 
                     {/* medical informations sec*/}
@@ -241,20 +248,34 @@ const AppointmentDetailsPage = () => {
                                 <Ruler /> Height:
                             </span>
                             <span className={styles.tableValue}>
-                                {currentAppointment?.height || 'N/A'}
+                                {currentAppointment?.height ? `${currentAppointment.height} cm` : 'N/A'}
                             </span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <Weight /> Weight:
                             </span>
-                            {currentAppointment?.weight || 'N/A'}
+                            <span className={styles.tableValue}>
+                                {currentAppointment?.weight ? `${currentAppointment.weight} kg` : 'N/A'}
+                            </span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
-                                <Hand /> Religion:
+                                <Thermometer /> Temperature:
                             </span>
-                            {currentAppointment?.religion || 'N/A'}
+                            <span className={styles.tableValue}>
+                                {currentAppointment?.temperature ? `${currentAppointment.temperature} °C` : 'N/A'}
+                            </span>
+                        </div>
+                        <div className={styles.tableRow}>
+                            <span className={styles.tableLabel}>
+                                <HeartPulse /> Blood Pressure:
+                            </span>
+                            <span className={styles.tableValue}>
+                                {currentAppointment?.bloodPressure?.systolic && currentAppointment?.bloodPressure?.diastolic
+                                    ? `${currentAppointment.bloodPressure.systolic}/${currentAppointment.bloodPressure.diastolic} mmHg`
+                                    : 'N/A'}
+                            </span>
                         </div>
                     </div>
 

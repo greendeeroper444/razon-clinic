@@ -59,7 +59,19 @@ const validateAppointment = [
     body('weight')
         .optional()
         .isFloat({ min: 1, max: 500 }).withMessage('Weight must be between 1 and 500 kg'),
-    
+
+    body('temperature')
+        .optional()
+        .isFloat({ min: 30, max: 45 }).withMessage('Temperature must be between 30 and 45 °C'),
+        
+    body('bloodPressure.systolic')
+        .optional()
+        .isInt({ min: 50, max: 300 }).withMessage('Systolic pressure must be between 50 and 300 mmHg'),
+
+    body('bloodPressure.diastolic')
+        .optional()
+        .isInt({ min: 30, max: 200 }).withMessage('Diastolic pressure must be between 30 and 200 mmHg'),
+        
     body('religion')
         .optional()
         .trim()

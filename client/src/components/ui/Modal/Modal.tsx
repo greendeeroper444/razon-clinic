@@ -60,6 +60,11 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
                     sex: '',
                     height: '',
                     weight: '',
+                    temperature: '',
+                    bloodPressure: {
+                        systolic: '',
+                        diastolic: ''
+                    },
                     motherName: '',
                     motherAge: '',
                     motherOccupation: '',

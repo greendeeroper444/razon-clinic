@@ -16,7 +16,14 @@ export const addAppointment = async (appointmentData: AppointmentFormData) => {
             fatherName: appointmentData.fatherName?.trim(),
             fatherOccupation: appointmentData.fatherOccupation?.trim(),
             height: appointmentData.height ? Number(appointmentData.height) : undefined,
-            weight: appointmentData.weight ? Number(appointmentData.weight) : undefined
+            weight: appointmentData.weight ? Number(appointmentData.weight) : undefined,
+            temperature: appointmentData.temperature ? Number(appointmentData.temperature) : undefined,
+            bloodPressure: (appointmentData.bloodPressure?.systolic || appointmentData.bloodPressure?.diastolic)
+                ? {
+                    systolic: appointmentData.bloodPressure?.systolic ? Number(appointmentData.bloodPressure.systolic) : undefined,
+                    diastolic: appointmentData.bloodPressure?.diastolic ? Number(appointmentData.bloodPressure.diastolic) : undefined
+                }
+                : undefined,
         });
         
         const response = await axios.post(

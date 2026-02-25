@@ -49,6 +49,26 @@ const appointmentSchema = new mongoose.Schema(
             min: 1,
             max: 500
         },
+        temperature: {
+            type: Number,
+            required: false,
+            min: 30,
+            max: 45
+        },
+        bloodPressure: {
+            systolic: {
+                type: Number,
+                required: false,
+                min: 50,
+                max: 300
+            },
+            diastolic: {
+                type: Number,
+                required: false,
+                min: 30,
+                max: 200
+            }
+        },
         contactNumber: {
             type: Number,
             required: true

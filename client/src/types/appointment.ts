@@ -18,6 +18,11 @@ export interface AppointmentFormData {
     sex?: string;
     height?: number | string;
     weight?: number | string;
+    temperature?: number | string;
+    bloodPressure?: {
+        systolic?: number | string;
+        diastolic?: number | string;
+    };
     birthdate?: number | string;
     
     //flattened mother information

@@ -46,6 +46,13 @@ class AppointmentService {
             sex: appointmentData.sex,
             height: appointmentData.height ? Number(appointmentData.height) : undefined,
             weight: appointmentData.weight ? Number(appointmentData.weight) : undefined,
+            temperature: appointmentData.temperature ? Number(appointmentData.temperature) : undefined,
+            bloodPressure: (appointmentData.bloodPressure?.systolic || appointmentData.bloodPressure?.diastolic)
+                ? {
+                    systolic: appointmentData.bloodPressure?.systolic ? Number(appointmentData.bloodPressure.systolic) : undefined,
+                    diastolic: appointmentData.bloodPressure?.diastolic ? Number(appointmentData.bloodPressure.diastolic) : undefined
+                }
+                : undefined,
             religion: appointmentData.religion?.trim(),
             motherInfo: {
                 name: appointmentData.motherName?.trim(),
@@ -373,6 +380,13 @@ class AppointmentService {
             if (updateData.sex) appointment.sex = updateData.sex;
             if (updateData.height !== undefined) appointment.height = updateData.height ? Number(updateData.height) : undefined;
             if (updateData.weight !== undefined) appointment.weight = updateData.weight ? Number(updateData.weight) : undefined;
+            if (updateData.temperature !== undefined) appointment.temperature = updateData.temperature ? Number(updateData.temperature) : undefined;
+            if (updateData.bloodPressure !== undefined) {
+                if (!appointment.bloodPressure) appointment.bloodPressure = {};
+                if (updateData.bloodPressure?.systolic !== undefined) appointment.bloodPressure.systolic = updateData.bloodPressure.systolic ? Number(updateData.bloodPressure.systolic) : undefined;
+                if (updateData.bloodPressure?.diastolic !== undefined) appointment.bloodPressure.diastolic = updateData.bloodPressure.diastolic ? Number(updateData.bloodPressure.diastolic) : undefined;
+                appointment.markModified('bloodPressure');
+            }
             if (updateData.religion !== undefined) appointment.religion = updateData.religion?.trim();
 
             const motherName = updateData.motherInfo?.name || updateData.motherName;
