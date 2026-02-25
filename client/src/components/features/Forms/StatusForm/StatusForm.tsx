@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './StatusForm.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarCheck, faCheckCircle, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarCheck, faCheckCircle, faShareFromSquare, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { AppointmentStatus, StatusFormProps } from '../../../../types'
 import { getStatusColor } from '../../../../utils'
 
@@ -21,6 +21,13 @@ const StatusForm: React.FC<StatusFormProps> = ({currentStatus, onStatusChange}) 
             icon: faCalendarCheck,
             color: '#3B82F6',
             description: 'Appointment has been approved'
+        },
+        {
+            value: 'Referred',
+            label: 'Referred',
+            icon: faShareFromSquare,
+            color: '#3B82F6',
+            description: 'Appointment has been referred'
         },
         {
             value: 'Completed',

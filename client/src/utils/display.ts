@@ -41,6 +41,8 @@ export const getStatusClass = (status: string, styles: any) => {
             return styles.statusPending;
         case 'Scheduled':
             return styles.statusScheduled;
+        case 'Referred':
+            return styles.statusReferred;
         case 'Completed':
             return styles.statusCompleted;
         case 'Cancelled':

@@ -138,6 +138,11 @@
     color: var(--primary);
 }
 
+.statusBadge.statusReferred {
+    background-color: #fff7ed;
+    color: #f59e0b;
+}
+
 .statusBadge.statusCompleted {
     background-color: #ecfdf5;
     color: var(--success);

@@ -168,8 +168,8 @@ const validateStatusUpdate = [
     
     body('status')
         .notEmpty().withMessage('Status is required')
-        .isIn(['Pending', 'Scheduled', 'Completed', 'Cancelled', 'Rebooked'])
-        .withMessage('Status must be one of: Pending, Scheduled, Completed, Cancelled, Rebooked'),
+        .isIn(['Pending', 'Scheduled', 'Referred', 'Completed', 'Cancelled', 'Rebooked'])
+        .withMessage('Status must be one of: Pending, Scheduled, Referred, Completed, Cancelled, Rebooked'),
     
     handleValidationErrors
 ];
@@ -212,7 +212,7 @@ const validateQueryParams = [
     
     query('status')
         .optional()
-        .isIn([ '', 'Pending', 'Scheduled', 'Completed', 'Cancelled', 'Rebooked'])
+        .isIn([ '', 'Pending', 'Scheduled', 'Referred', 'Completed', 'Cancelled', 'Rebooked'])
         .withMessage('Invalid status value'),
     
     query('fromDate')

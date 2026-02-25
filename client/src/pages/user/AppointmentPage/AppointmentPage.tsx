@@ -342,6 +342,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                         >
                             <option value="">All Status</option>
                             <option value="Scheduled">Scheduled</option>
+                            <option value="Referred">Referred</option>
                             <option value="Completed">Completed</option>
                             <option value="Pending">Pending</option>
                             <option value="Rebooked">Rebooked</option>
