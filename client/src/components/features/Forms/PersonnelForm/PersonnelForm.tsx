@@ -18,6 +18,7 @@ const PersonnelForm: React.FC<PersonnelFormProps> = ({
             'firstName',
             'lastName',
             'middleName',
+            'suffix',
             'contactNumber',
             'password',
             'birthdate',
@@ -69,6 +70,27 @@ const PersonnelForm: React.FC<PersonnelFormProps> = ({
             value={formData?.middleName || ''}
             onChange={onChange}
             error={getFieldError(validationErrors, 'middleName')}
+        />
+
+        <br />
+
+        <Select
+            ref={(el) => { fieldRefs.current['suffix'] = el; }}
+            name='suffix'
+            leftIcon='user'
+            placeholder='Suffix (Optional)'
+            value={formData?.suffix || ''}
+            onChange={onChange}
+            error={getFieldError(validationErrors,'suffix')}
+            options={[
+                { value: '', label: 'None' },
+                { value: 'Jr.', label: 'Jr.' },
+                { value: 'Sr.', label: 'Sr.' },
+                { value: 'II', label: 'II' },
+                { value: 'III', label: 'III' },
+                { value: 'IV', label: 'IV' },
+                { value: 'V', label: 'V' }
+            ]}
         />
 
         <br />

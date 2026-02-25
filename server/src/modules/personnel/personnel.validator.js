@@ -18,6 +18,12 @@ const validatePersonnel = [
         .trim()
         .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
     
+    body('suffix')
+        .optional()
+        .trim()
+        .isIn(['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']).withMessage('Suffix must be one of: Jr., Sr., II, III, IV, V')
+        .isLength({ max: 10 }).withMessage('Suffix must not exceed 10 characters'),
+
     body('contactNumber')
         .notEmpty().withMessage('Email or contact number is required')
         .trim()
@@ -85,6 +91,12 @@ const validatePersonnelUpdate = [
         .optional()
         .trim()
         .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
+
+    body('suffix')
+        .optional()
+        .trim()
+        .isIn(['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']).withMessage('Suffix must be one of: Jr., Sr., II, III, IV, V')
+        .isLength({ max: 10 }).withMessage('Suffix must not exceed 10 characters'),
     
     body('contactNumber')
         .optional()

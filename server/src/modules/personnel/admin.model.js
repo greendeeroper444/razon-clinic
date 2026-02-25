@@ -20,6 +20,12 @@ const AdminSchema = new mongoose.Schema(
             minlength: 3,
             maxlength: 50
         },
+        suffix: {
+            type: String,
+            maxlength: 10,
+            trim: true,
+            enum: ['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']
+        },
         //separate email and contactNumber fields for better validation
         email: {
             type: String,

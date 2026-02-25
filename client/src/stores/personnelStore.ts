@@ -233,6 +233,7 @@ export const usePersonnelStore = create<ExtendedPersonnelState>()(
                     firstName: item.firstName,
                     lastName: item.lastName,
                     middleName: item.middleName,
+                    suffix: item.suffix,
                     contactNumber: item.contactNumber,
                     birthdate: item.birthdate.split('T')[0],
                     sex: item.sex,

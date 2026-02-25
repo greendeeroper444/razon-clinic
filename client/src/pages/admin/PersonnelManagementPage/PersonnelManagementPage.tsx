@@ -168,7 +168,7 @@ const PersonnelPage: React.FC<OpenModalProps> = () => {
                     </div>
                     <div>
                         <div className={styles.personnelName}>
-                            {item.firstName} {item.middleName ? `${item.middleName} ` : ''}{item.lastName}
+                            {item.firstName} {item.middleName ? `${item.middleName} ` : ''}{item.lastName} {item.suffix ? `${item.suffix}` : ''}
                         </div>
                         <div className={styles.personnelRole}>{item.role}</div>
                     </div>

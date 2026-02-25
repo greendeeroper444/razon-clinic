@@ -7,6 +7,7 @@ export interface PersonnelFormData {
     firstName: string;
     lastName: string;
     middleName?: string;
+    suffix?: string;
     contactNumber: string;
     email?: string;
     password?: string;
@@ -79,6 +80,7 @@ export interface PersonnelFormProps {
         firstName?: string;
         lastName?: string;
         middleName?: string;
+        suffix?: string;
         contactNumber?: string;
         password?: string;
         birthdate?: string;
