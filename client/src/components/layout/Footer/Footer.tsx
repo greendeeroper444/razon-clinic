@@ -17,12 +17,12 @@ const Footer = () => {
                 </div>
                 <div className={styles.footerCol}>
                     <h3>Contact</h3>
-                    <p>Phone: 0939-726-6918<br/>Email: drnice4kids@gmail.com</p>
+                    <p>Phone: 0939-726-6918<br/>FB: https://www.facebook.com/docnicerazon</p>
                 </div>
                 <div className={styles.footerCol}>
                     <h3>Follow Us</h3>
                     <div className={styles.socialIcons}>
-                        <a href="#" aria-label="Facebook"><FontAwesomeIcon icon={faFacebookF} /></a>
+                        <a href="https://www.facebook.com/docnicerazon" aria-label="Facebook"><FontAwesomeIcon icon={faFacebookF} /></a>
                         <a href="#" aria-label="Instagram"><FontAwesomeIcon icon={faInstagram} /></a>
                         <a href="#" aria-label="Twitter"><FontAwesomeIcon icon={faTwitter} /></a>
                     </div>
