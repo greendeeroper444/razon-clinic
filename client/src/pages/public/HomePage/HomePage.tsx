@@ -3,11 +3,11 @@ import styles from './HomePage.module.css'
 import { useNavigate, Link } from 'react-router-dom'
 import { Heart, Stethoscope, Users, Shield, Briefcase, Activity, Brain, Wind, UserCheck, CalendarCheck, Syringe, MessageCircle, Phone, Mail, MapPin, Facebook, Instagram, Twitter, CheckCircle } from 'lucide-react'
 import { Footer, SectionFeatures } from '../../../components'
-import razon from '../../../assets/profiles/razon.jpg'
+import razon from '../../../assets/profiles/razon.png'
+import secretary from '../../../assets/profiles/secretary.png'
 import razon1 from '../../../assets/backgrounds/razon-1.png'
 import razon2 from '../../../assets/backgrounds/razon-2.png'
 import razon3 from '../../../assets/backgrounds/razon-3.png'
-import secretary from '../../../assets/profiles/secretary.jpg'
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -378,7 +378,9 @@ const HomePage = () => {
                             </div>
                             <h4>Dr. Shenice Roianne D. Razon Magnon</h4>
                             <p className={styles.memberTitle}>DPPS Pediatrician</p>
-                            <p>Board Certified with over 20 years of experience in pediatric care.</p>
+                            {/* <p>Board Certified with over 20 years of experience in pediatric care.</p> */}
+                            <p>A licensed Filipino pediatrician and Diplomate of the Philippine Pediatric
+                            Society, specializing in child health and wellness.</p>
                         </div>
                         <div className={`${styles.teamMember} ${styles.slideInUp} ${styles.delay2}`}>
                             <div className={styles.memberImage}>
@@ -386,7 +388,9 @@ const HomePage = () => {
                             </div>
                             <h4>Ms. Jamaica D. Udarve</h4>
                             <p className={styles.memberTitle}>Secretary</p>
-                            <p>Specializing in pediatric behavioral health and development.</p>
+                            {/* <p>Specializing in pediatric behavioral health and development.</p> */}
+                            <p> She plays a crucial role in seamlessly coordinating daily operations while
+                            maintaining high standards of patient care.</p>
                         </div>
                     </div>
                 </div>

@@ -6,7 +6,7 @@ import styles from './SectionFeatures.module.css';
 const SectionFeatures: FC = () => {
   return (
     <section className={styles.features}>
-        <h2>Why Choose MediCare?</h2>
+        <h2>Why Choose Razon Pediatrinic Clinic?</h2>
         <div className={styles.featureGrid}>
             <div className={styles.featureCard}>
                 <FontAwesomeIcon icon={faCalendarCheck} className={styles.featureIcon} />

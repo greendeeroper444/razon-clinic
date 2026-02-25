@@ -96,7 +96,7 @@ const ForgotPasswordPage = () => {
         </section>
 
         <section className={styles.features}>
-            <h2>Why Choose MediCare?</h2>
+            <h2>Why Choose Razon Pediatrinic Clinic?</h2>
             <div className={styles.featureGrid}>
                 <div className={styles.featureCard}>
                     <CalendarCheck className={styles.featureIcon} size={32} />
