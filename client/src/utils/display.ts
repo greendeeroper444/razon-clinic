@@ -9,7 +9,7 @@ export const getItemIcon = (category: string) => {
             return Pill;
         case 'capsules':
             return Pill;
-        case 'medical supply':
+        case 'consumable supply':
             return FlaskConical;
         default:
             return Pill;

@@ -107,7 +107,7 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
                         onChange={onChange}
                         options={[
                             { value: 'Vaccine', label: 'Vaccine' },
-                            { value: 'Medical Supply', label: 'Medical Supply' }
+                            { value: 'Consumable Supply', label: 'Consumable Supply' }
                         ]}
                         error={getFieldError(validationErrors, 'category')}
                     />

@@ -10,7 +10,7 @@ const validateInventoryItem = [
     
     body('category')
         .notEmpty().withMessage('Category is required')
-        .isIn(['Vaccine', 'Medical Supply']).withMessage('Category must be either Vaccine or Medical Supply'),
+        .isIn(['Vaccine', 'Consumable Supply']).withMessage('Category must be either Vaccine or Consumable Supply'),
     
     body('price')
         .notEmpty().withMessage('Price is required')
@@ -89,7 +89,7 @@ const validateQueryParams = [
     
     query('category')
         .optional()
-        .isIn(['Vaccine', 'Medical Supply']).withMessage('Category must be either Vaccine or Medical Supply'),
+        .isIn(['Vaccine', 'Consumable Supply']).withMessage('Category must be either Vaccine or Consumable Supply'),
     
     query('itemName')
         .optional()

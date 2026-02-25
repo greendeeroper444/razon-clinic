@@ -81,7 +81,7 @@ Represents medical supplies and vaccines in inventory.
 | Field | Type | Description | Constraints |
 |-------|------|-------------|------------|
 | itemName | String | Name of inventory item | Required, trim |
-| category | String | Item category | Required, enum: 'Vaccine', 'Medical Supply' |
+| category | String | Item category | Required, enum: 'Vaccine', 'Consumable Supply' |
 | quantityInStock | Number | Current available quantity | Required, minimum 0 |
 | quantityUsed | Number | Total quantity used | Required, minimum 0 |
 | expiryDate | Date | Item expiration date | Required |

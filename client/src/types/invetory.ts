@@ -17,7 +17,7 @@ export interface InventoryItemFormProps {
 export interface InventoryItem {
     id: string;
     itemName: string;
-    category: 'Vaccine' | 'Medical Supply';
+    category: 'Vaccine' | 'Consumable Supply';
     price: number;
     quantityInStock: number;
     quantityUsed: number;
@@ -30,7 +30,7 @@ export interface InventoryItem {
 export interface InventoryItemFormData {
     id?: string;
     itemName?: string;
-    category: 'Vaccine' | 'Medical Supply' | string;
+    category: 'Vaccine' | 'Consumable Supply' | string;
     price: number;
     quantityInStock: number;
     quantityUsed?: number;
@@ -69,7 +69,7 @@ export interface InventoryItemsResponse {
 export interface InventoryItemQueryParams {
     page?: number;
     limit?: number;
-    category?: 'Vaccine' | 'Medical Supply';
+    category?: 'Vaccine' | 'Consumable Supply';
     itemName?: string;
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';

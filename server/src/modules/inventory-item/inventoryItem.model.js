@@ -10,7 +10,7 @@ const inventoryItemSchema = new mongoose.Schema(
         category: {
             type: String,
             required: true,
-            enum: ['Vaccine', 'Medical Supply']
+            enum: ['Vaccine', 'Consumable Supply']
         },
         price: {
             type: Number,

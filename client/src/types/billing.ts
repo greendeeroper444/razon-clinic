@@ -64,7 +64,7 @@ export interface InventoryItemOption {
     name: string;
     price: number;
     availableQuantity: number;
-    category: 'Vaccine' | 'Medical Supply';
+    category: 'Vaccine' | 'Consumable Supply';
 }
 
 export interface BillingListItem {

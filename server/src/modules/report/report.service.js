@@ -146,7 +146,7 @@ class ReportService extends BaseService {
         const totalValue = items.reduce((sum, item) => sum + (item.quantityInStock * item.price), 0);
 
         const vaccines = items.filter(item => item.category === 'Vaccine').length;
-        const medicalSupplies = items.filter(item => item.category === 'Medical Supply').length;
+        const medicalSupplies = items.filter(item => item.category === 'Consumable Supply').length;
 
         const lowStockItems = items.filter(item => item.quantityInStock < 50).length;
 
