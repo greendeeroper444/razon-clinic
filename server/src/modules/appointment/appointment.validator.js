@@ -65,11 +65,11 @@ const validateAppointment = [
         .isFloat({ min: 30, max: 45 }).withMessage('Temperature must be between 30 and 45 °C'),
         
     body('bloodPressure.systolic')
-        .optional()
+        .optional({ nullable: true, checkFalsy: true })
         .isInt({ min: 50, max: 300 }).withMessage('Systolic pressure must be between 50 and 300 mmHg'),
 
     body('bloodPressure.diastolic')
-        .optional()
+        .optional({ nullable: true, checkFalsy: true })
         .isInt({ min: 30, max: 200 }).withMessage('Diastolic pressure must be between 30 and 200 mmHg'),
         
     body('religion')

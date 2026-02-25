@@ -79,7 +79,7 @@ const AppointmentDetailsPage = () => {
 
         await updateAppointmentStatus(appointmentId, data.status);
 
-        if (data.status === 'Scheduled' && currentAppointment) {
+        if (data.status === 'Referred' && currentAppointment) {
             // setTimeout(() => {
             //     navigate('/admin/patients');
             // }, 1000);

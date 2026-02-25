@@ -427,7 +427,7 @@ class AppointmentService {
             smsResult = await this.sendStatusUpdateSMS(appointment);
 
             //auto-create patient when appointment is approved (Scheduled)
-            if (oldStatus === 'Pending' && appointment.status === 'Scheduled') {
+            if (oldStatus === 'Scheduled' && appointment.status === 'Referred') {
                 try {
                     patientCreated = await this.createPatientFromAppointment(appointment);
                 } catch (error) {
