@@ -179,16 +179,16 @@ const PatientForm: React.FC<PatientFormProps> = ({
             <Select
                 ref={(el) => { fieldRefs.current['sex'] = el; }}
                 name='sex'
-                label='Gender *'
-                title='Select Gender'
+                label='Sex *'
+                title='Select Sex'
                 leftIcon='users'
-                placeholder='Select Gender'
+                placeholder='Select Sex'
                 value={formData.sex || ''}
                 onChange={onChange}
                 options={[
                     { value: 'Male', label: 'Male' },
                     { value: 'Female', label: 'Female' },
-                    { value: 'Other', label: 'Other' }
+                    // { value: 'Other', label: 'Other' }
                 ]}
                 error={getFieldError(validationErrors, 'sex')}
             />

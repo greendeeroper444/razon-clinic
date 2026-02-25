@@ -347,15 +347,15 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({formData, onChange
            <Select
                 ref={(el) => { fieldRefs.current['gender'] = el; }}
                 name='gender'
-                label='Gender *'
+                label='Sex *'
                 leftIcon='users'
-                placeholder='Select Gender'
+                placeholder='Select Sex'
                 value={formData.gender || ''}
                 onChange={onChange}
                 options={[
                     { value: 'Male', label: 'Male' },
                     { value: 'Female', label: 'Female' },
-                    { value: 'Other', label: 'Other' }
+                    // { value: 'Other', label: 'Other' }
                 ]}
                 error={getFieldError(validationErrors, 'gender')}
             />

@@ -461,17 +461,17 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
             <Select
                 ref={(el) => { fieldRefs.current['sex'] = el; }}
-                label='Gender *'
+                label='Sex *'
                 name='sex'
-                title='Select Gender'
+                title='Select Sex'
                 leftIcon='users'
-                placeholder='Select Gender'
+                placeholder='Select Sex'
                 value={formData?.sex || ''}
                 onChange={onChange}
                 options={[
                     { value: 'Male', label: 'Male' },
                     { value: 'Female', label: 'Female' },
-                    { value: 'Other', label: 'Other' }
+                    // { value: 'Other', label: 'Other' }
                 ]}
                 error={getFieldError(validationErrors,'sex')}
             />

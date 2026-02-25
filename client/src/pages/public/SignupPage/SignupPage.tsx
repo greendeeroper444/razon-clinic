@@ -345,9 +345,9 @@ const SignupPage = () => {
 
                         <Select
                             name='sex'
-                            title='Select Gender'
+                            title='Select Sex'
                             leftIcon='users'
-                            placeholder='Select Gender *'
+                            placeholder='Select Sex *'
                             value={signupForm.sex}
                             onChange={handleChange}
                             error={validationErrors.sex}
