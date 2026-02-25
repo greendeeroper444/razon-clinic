@@ -121,6 +121,25 @@ class MedicalRecordController {
         }
     }
 
+    async getMedicalRecordsByName(req, res, next) {
+        try {
+            const { searchTerm } = req.query;
+
+            const results = await MedicalRecordService.getMedicalRecordsByName(searchTerm);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Medical records retrieved successfully',
+                data: {
+                    medicalRecords: results,
+                    count: results.length
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getDeletedMedicalRecords(req, res, next) {
         try {
             const result = await MedicalRecordService.getDeletedMedicalRecords(req.query);

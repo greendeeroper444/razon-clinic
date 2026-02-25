@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('@middlewares/auth.middleware');
-const { validateMedicalRecord, validateMedicalRecordUpdate, validateMedicalRecordId, validateAppointmentId, validateSearchQuery, validateQueryParams } = require('./medicalRecord.validator');
+const { validateMedicalRecord, validateMedicalRecordUpdate, validateMedicalRecordId, validateAppointmentId, validateSearchQuery, validateQueryParams, validateMedicalRecordSearchQuery } = require('./medicalRecord.validator');
 const medicalRecordController = require('./medicalRecord.controller');
 const { validatePatientId } = require('../patient/patient.validator');
 
@@ -47,6 +47,13 @@ router.get(
     authenticate,
     validateSearchQuery,
     medicalRecordController.searchPatientsByName
+);
+
+router.get(
+    '/getMedicalRecordsByName',
+    authenticate,
+    validateMedicalRecordSearchQuery,
+    medicalRecordController.getMedicalRecordsByName
 );
 
 router.get(

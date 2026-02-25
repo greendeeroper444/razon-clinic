@@ -307,6 +307,28 @@ class MedicalRecordService extends BaseService {
         return medicalRecord;
     }
 
+
+    async getMedicalRecordsByName(searchTerm) {
+        const searchRegex = new RegExp(searchTerm.trim(), 'i');
+
+        const medicalRecords = await MedicalRecord.find({
+            deletedAt: null,
+            'personalDetails.fullName': { $regex: searchRegex }
+        })
+        .populate('appointmentId', 'appointmentNumber firstName lastName middleName suffix preferredDate preferredTime status')
+        .sort({ createdAt: -1 });
+
+        const seen = new Map();
+        for (const record of medicalRecords) {
+            const key = record.personalDetails.fullName.toLowerCase().trim();
+            if (!seen.has(key)) {
+                seen.set(key, record);
+            }
+        }
+
+        return Array.from(seen.values());
+    }
+
     async getDeletedMedicalRecords(queryParams) {
         const {
             search, page, limit, fullName, phone, email, gender, bloodType,

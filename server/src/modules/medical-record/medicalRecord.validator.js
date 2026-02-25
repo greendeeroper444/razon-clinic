@@ -288,6 +288,16 @@ const validateSearchQuery = [
     handleValidationErrors
 ];
 
+
+const validateMedicalRecordSearchQuery = [
+    query('searchTerm')
+        .optional({ values: 'falsy' })
+        .trim()
+        .isLength({ min: 1 }).withMessage('Search term must be at least 1 character'),
+    
+    handleValidationErrors
+];
+
 const validateQueryParams = [
     query('page')
         .optional()
@@ -350,5 +360,6 @@ module.exports = {
     validateMedicalRecordId,
     validateAppointmentId,
     validateSearchQuery,
-    validateQueryParams
+    validateQueryParams,
+    validateMedicalRecordSearchQuery  
 };
