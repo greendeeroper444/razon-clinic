@@ -146,6 +146,27 @@ const ReportPage = () => {
         { key: 'medicalRecords', label: 'Medical Records Report', count: medicalRecordsPagination.totalItems }
     ]
 
+    // ─── QUANTITY STATUS — matches XLSX: based on quantityRemaining (stock - used) ──
+    // < 20  → Not Applicable | 20–49 → Low Stock | 50+ → Sufficient
+    const getQuantityStatus = (item: InventoryItem): { label: string; styleKey: string } => {
+        const remaining = (item.quantityInStock ?? 0) - (item.quantityUsed ?? 0);
+        if (remaining < 20) return { label: 'Not Applicable', styleKey: 'qtyNotApplicable' };
+        if (remaining < 50) return { label: 'Low Stock',      styleKey: 'qtyLowStock'      };
+        return                     { label: 'Sufficient',     styleKey: 'qtySufficient'    };
+    };
+
+    // ─── EXPIRY STATUS — matches XLSX: based on expiryDate ───────────────────────
+    // past → Expired | within 30d → Expiring Soon | else → OK
+    const getExpiryStatus = (expiryDate: string): { label: string; styleKey: string } => {
+        const now = new Date();
+        const thirtyDaysAhead = new Date();
+        thirtyDaysAhead.setDate(now.getDate() + 30);
+        const expiry = new Date(expiryDate);
+        if (expiry < now)              return { label: 'Expired',       styleKey: 'expiryExpired'      };
+        if (expiry <= thirtyDaysAhead) return { label: 'Expiring Soon', styleKey: 'expiryExpiringSoon' };
+        return                                { label: 'OK',            styleKey: 'expiryOk'           };
+    };
+
     const inventoryColumns: TableColumn<InventoryItem>[] = [
         {
             key: 'itemName',
@@ -161,7 +182,7 @@ const ReportPage = () => {
             key: 'quantityInStock',
             header: 'IN STOCK',
             render: (item) => (
-                <span className={item.quantityInStock < 10 ? styles.lowStock : ''}>
+                <span className={(item.quantityInStock - item.quantityUsed) < 20 ? styles.lowStock : ''}>
                     {item.quantityInStock}
                 </span>
             )
@@ -172,6 +193,18 @@ const ReportPage = () => {
             render: (item) => item.quantityUsed
         },
         {
+            key: 'quantityStatus',
+            header: 'QUANTITY STATUS',
+            render: (item) => {
+                const { label, styleKey } = getQuantityStatus(item);
+                return (
+                    <span className={`${styles.statusBadge} ${styles[styleKey]}`}>
+                        {label}
+                    </span>
+                );
+            }
+        },
+        {
             key: 'price',
             header: 'PRICE',
             render: (item) => formatCurrency(item.price)
@@ -180,6 +213,18 @@ const ReportPage = () => {
             key: 'totalValue',
             header: 'TOTAL VALUE',
             render: (item) => formatCurrency(item.quantityInStock * item.price)
+        },
+        {
+            key: 'status',
+            header: 'STATUS',
+            render: (item) => {
+                const { label, styleKey } = getExpiryStatus(item.expiryDate);
+                return (
+                    <span className={`${styles.statusBadge} ${styles[styleKey]}`}>
+                        {label}
+                    </span>
+                );
+            }
         },
         {
             key: 'expiryDate',
@@ -294,10 +339,6 @@ const ReportPage = () => {
             render: (record) => formatDate(record.dateRecorded)
         }
     ]
-
-    // const currentPagination = activeTab === 'inventory' ? inventoryPagination : 
-    //                          activeTab === 'sales' ? salesPagination : 
-    //                          medicalRecordsPagination
 
   return (
     <Main error={error}>
@@ -475,13 +516,6 @@ const ReportPage = () => {
                                                 </div>
                                                 <div className={styles.statCount}>records</div>
                                             </div>
-                                            {/* <div className={styles.statItem}>
-                                                <div className={styles.statLabel}>Other</div>
-                                                <div className={styles.statValue}>
-                                                    {dashboardReport.medicalRecords?.statistics?.genderDistribution?.other || 0}
-                                                </div>
-                                                <div className={styles.statCount}>records</div>
-                                            </div> */}
                                         </div>
                                     </div>
 
@@ -530,13 +564,6 @@ const ReportPage = () => {
                                                 </div>
                                                 <div className={styles.statCount}>patients</div>
                                             </div>
-                                            {/* <div className={styles.statItem}>
-                                                <div className={styles.statLabel}>Adult (18+)</div>
-                                                <div className={styles.statValue}>
-                                                    {dashboardReport.medicalRecords?.statistics?.ageDistribution?.adult || 0}
-                                                </div>
-                                                <div className={styles.statCount}>patients</div>
-                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
@@ -582,173 +609,75 @@ const ReportPage = () => {
                         )
                     }
 
-                    {/* INVENTORY LINE CHART */}
-                    {
-                        inventoryChartData && (
-                            <div className={styles.chartSection}>
-                                <LineChart
-                                    labels={inventoryChartData.labels}
-                                    datasets={inventoryChartData.datasets}
-                                    title="Inventory Trends"
-                                    height={350}
-                                />
-                            </div>
-                        )
-                    }
+                    {inventoryChartData && (
+                        <div className={styles.chartSection}>
+                            <LineChart
+                                labels={inventoryChartData.labels}
+                                datasets={inventoryChartData.datasets}
+                                title="Inventory Trends"
+                                height={350}
+                            />
+                        </div>
+                    )}
 
                     <div className={styles.filtersSection}>
                         <div className={styles.filterContent}>
                             <div className={styles.periodFilters}>
-                                <button 
-                                    type='button'
-                                    className={`${styles.periodBtn} ${period === 'today' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('today')}
-                                >
-                                    Today
-                                </button>
-                                <button 
-                                    type='button'
-                                    className={`${styles.periodBtn} ${period === 'week' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('week')}
-                                >
-                                    This Week
-                                </button>
-                                <button 
-                                    type='button'
-                                    className={`${styles.periodBtn} ${period === 'month' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('month')}
-                                >
-                                    This Month
-                                </button>
-                                <button 
-                                    type='button'
-                                    className={`${styles.periodBtn} ${period === 'year' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('year')}
-                                >
-                                    This Year
-                                </button>
-                                <button 
-                                    type='button'
-                                    className={`${styles.periodBtn} ${period === 'custom' ? styles.active : ''}`}
-                                    onClick={() => setShowDatePicker(!showDatePicker)}
-                                >
-                                    <Calendar size={16} /> Custom
-                                </button>
+                                <button type='button' className={`${styles.periodBtn} ${period === 'today' ? styles.active : ''}`} onClick={() => setPeriod('today')}>Today</button>
+                                <button type='button' className={`${styles.periodBtn} ${period === 'week' ? styles.active : ''}`} onClick={() => setPeriod('week')}>This Week</button>
+                                <button type='button' className={`${styles.periodBtn} ${period === 'month' ? styles.active : ''}`} onClick={() => setPeriod('month')}>This Month</button>
+                                <button type='button' className={`${styles.periodBtn} ${period === 'year' ? styles.active : ''}`} onClick={() => setPeriod('year')}>This Year</button>
+                                <button type='button' className={`${styles.periodBtn} ${period === 'custom' ? styles.active : ''}`} onClick={() => setShowDatePicker(!showDatePicker)}><Calendar size={16} /> Custom</button>
                             </div>
-                            
                             <div className={styles.exportBtnContainer}>
-                                <button
-                                    type='button'
-                                    className={styles.exportBtn}
-                                    onClick={() => handleExport('inventory')}
-                                >
-                                    Export Inventory Report
-                                </button>
+                                <button type='button' className={styles.exportBtn} onClick={() => handleExport('inventory')}>Export Inventory Report</button>
                             </div>
                         </div>
 
                         <div className={styles.actionFilters}>
-                            <select
-                                title='Categories'
-                                value={category || ''}
-                                onChange={(e) => setCategory(e.target.value || null)}
-                                className={styles.filterSelect}
-                            >
+                            <select title='Categories' value={category || ''} onChange={(e) => setCategory(e.target.value || null)} className={styles.filterSelect}>
                                 <option value="">All Categories</option>
                                 <option value="Medicine">Medicine</option>
                                 <option value="Vaccine">Vaccine</option>
                                 <option value="Vitamin">Vitamin</option>
                                 <option value="Supplement">Supplement</option>
                             </select>
-
-                            <Searchbar
-                                onSearch={handleSearch}
-                                placeholder="Search items..."
-                                disabled={loading}
-                                className={styles.searchbar}
-                            />
-
-                            <button type='submit' className={styles.resetBtn} onClick={resetFilters}>
-                                Reset
-                            </button>
+                            <Searchbar onSearch={handleSearch} placeholder="Search items..." disabled={loading} className={styles.searchbar} />
+                            <button type='submit' className={styles.resetBtn} onClick={resetFilters}>Reset</button>
                         </div>
                     </div>
 
-                    {
-                        showDatePicker && (
-                            <div className={styles.datePickerCard}>
-                                <div className={styles.dateInputs}>
-                                    <input
-                                        title='Date'
-                                        type="date"
-                                        value={fromDate || ''}
-                                        onChange={(e) => setDateRange(e.target.value, toDate || '')}
-                                        className={styles.dateInput}
-                                    />
-                                    <span>to</span>
-                                    <input
-                                        title='Date'
-                                        type="date"
-                                        value={toDate || ''}
-                                        onChange={(e) => setDateRange(fromDate || '', e.target.value)}
-                                        className={styles.dateInput}
-                                    />
-                                </div>
-                                <button type='submit' className={styles.applyBtn} onClick={handleDateRangeSubmit}>
-                                    Apply
-                                </button>
+                    {showDatePicker && (
+                        <div className={styles.datePickerCard}>
+                            <div className={styles.dateInputs}>
+                                <input title='Date' type="date" value={fromDate || ''} onChange={(e) => setDateRange(e.target.value, toDate || '')} className={styles.dateInput} />
+                                <span>to</span>
+                                <input title='Date' type="date" value={toDate || ''} onChange={(e) => setDateRange(fromDate || '', e.target.value)} className={styles.dateInput} />
                             </div>
-                        )
-                    }
+                            <button type='submit' className={styles.applyBtn} onClick={handleDateRangeSubmit}>Apply</button>
+                        </div>
+                    )}
 
                     <div className={styles.tableContainer}>
                         <div className={styles.tableHeader}>
-                            <span className={styles.recordCount}>
-                                {inventoryPagination.startIndex}-{inventoryPagination.endIndex} of{' '}
-                                {inventoryPagination.totalItems}
-                            </span>
-                            <select
-                                title='Item Per Page'
-                                value={inventoryPagination.itemsPerPage}
-                                onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                                className={styles.itemsPerPageSelect}
-                                disabled={loading}
-                            >
+                            <span className={styles.recordCount}>{inventoryPagination.startIndex}-{inventoryPagination.endIndex} of {inventoryPagination.totalItems}</span>
+                            <select title='Item Per Page' value={inventoryPagination.itemsPerPage} onChange={(e) => handleItemsPerPageChange(Number(e.target.value))} className={styles.itemsPerPageSelect} disabled={loading}>
                                 <option value={10}>10 per page</option>
                                 <option value={20}>20 per page</option>
                                 <option value={50}>50 per page</option>
                             </select>
                         </div>
 
-                        {
-                            loading ? (
-                                <Loading type='skeleton' rows={7} message='Loading report...' />
-                            ) : (
-                                <>
-                                    <Table
-                                        columns={inventoryColumns}
-                                        data={inventoryReportItems}
-                                        emptyMessage='No inventory data found.'
-                                        searchTerm={searchTerm}
-                                        getRowKey={(item) => item.id}
-                                    />
-
-                                    {
-                                        inventoryPagination.totalPages > 1 && (
-                                            <Pagination
-                                                currentPage={inventoryPagination.currentPage}
-                                                totalPages={inventoryPagination.totalPages}
-                                                totalItems={inventoryPagination.totalItems}
-                                                itemsPerPage={inventoryPagination.itemsPerPage}
-                                                onPageChange={handlePageChange}
-                                                disabled={loading}
-                                                className={styles.pagination}
-                                            />
-                                        )
-                                    }
-                                </>
-                            )
-                        }
+                        {loading ? (
+                            <Loading type='skeleton' rows={7} message='Loading report...' />
+                        ) : (
+                            <>
+                                <Table columns={inventoryColumns} data={inventoryReportItems} emptyMessage='No inventory data found.' searchTerm={searchTerm} getRowKey={(item) => item.id} />
+                                {inventoryPagination.totalPages > 1 && (
+                                    <Pagination currentPage={inventoryPagination.currentPage} totalPages={inventoryPagination.totalPages} totalItems={inventoryPagination.totalItems} itemsPerPage={inventoryPagination.itemsPerPage} onPageChange={handlePageChange} disabled={loading} className={styles.pagination} />
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
             )
@@ -758,200 +687,72 @@ const ReportPage = () => {
         {
             activeTab === 'sales' && (
                 <div className={styles.reportSection}>
-                    {
-                        salesSummary && (
-                            <div className={styles.summaryCards}>
-                                <div className={styles.summaryCard}>
-                                    <div className={styles.summaryLabel}>Total Sales</div>
-                                    <div className={styles.summaryValue}>
-                                        {formatCurrency(salesSummary?.totalSales || 0)}
-                                    </div>
-                                </div>
-                                <div className={styles.summaryCard}>
-                                    <div className={styles.summaryLabel}>Transactions</div>
-                                    <div className={styles.summaryValue}>{salesSummary?.totalTransactions || 0}</div>
-                                </div>
-                                <div className={styles.summaryCard}>
-                                    <div className={styles.summaryLabel}>Paid</div>
-                                    <div className={`${styles.summaryValue} ${styles.success}`}>
-                                        {formatCurrency(salesSummary?.paidAmount || 0)}
-                                    </div>
-                                </div>
-                                <div className={styles.summaryCard}>
-                                    <div className={styles.summaryLabel}>Unpaid</div>
-                                    <div className={`${styles.summaryValue} ${styles.danger}`}>
-                                        {formatCurrency(salesSummary?.unpaidAmount || 0)}
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    }
+                    {salesSummary && (
+                        <div className={styles.summaryCards}>
+                            <div className={styles.summaryCard}><div className={styles.summaryLabel}>Total Sales</div><div className={styles.summaryValue}>{formatCurrency(salesSummary?.totalSales || 0)}</div></div>
+                            <div className={styles.summaryCard}><div className={styles.summaryLabel}>Transactions</div><div className={styles.summaryValue}>{salesSummary?.totalTransactions || 0}</div></div>
+                            <div className={styles.summaryCard}><div className={styles.summaryLabel}>Paid</div><div className={`${styles.summaryValue} ${styles.success}`}>{formatCurrency(salesSummary?.paidAmount || 0)}</div></div>
+                            <div className={styles.summaryCard}><div className={styles.summaryLabel}>Unpaid</div><div className={`${styles.summaryValue} ${styles.danger}`}>{formatCurrency(salesSummary?.unpaidAmount || 0)}</div></div>
+                        </div>
+                    )}
 
-                    {/* SALES LINE CHART */}
-                    {
-                        salesChartData && (
-                            <div className={styles.chartSection}>
-                                <LineChart
-                                    labels={salesChartData.labels}
-                                    datasets={salesChartData.datasets}
-                                    title="Sales & Revenue Trends"
-                                    height={350}
-                                />
-                            </div>
-                        )
-                    }
+                    {salesChartData && (
+                        <div className={styles.chartSection}>
+                            <LineChart labels={salesChartData.labels} datasets={salesChartData.datasets} title="Sales & Revenue Trends" height={350} />
+                        </div>
+                    )}
 
                     <div className={styles.filtersSection}>
                         <div className={styles.filterContent}>
                             <div className={styles.periodFilters}>
-                                <button
-                                    type='submit'
-                                    className={`${styles.periodBtn} ${period === 'today' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('today')}
-                                >
-                                    Today
-                                </button>
-                                <button
-                                    type='submit'
-                                    className={`${styles.periodBtn} ${period === 'week' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('week')}
-                                >
-                                    This Week
-                                </button>
-                                <button
-                                    type='submit'
-                                    className={`${styles.periodBtn} ${period === 'month' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('month')}
-                                >
-                                    This Month
-                                </button>
-                                <button
-                                    type='submit'
-                                    className={`${styles.periodBtn} ${period === 'year' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('year')}
-                                >
-                                    This Year
-                                </button>
-                                <button
-                                    type='submit'
-                                    className={`${styles.periodBtn} ${period === 'custom' ? styles.active : ''}`}
-                                    onClick={() => setShowDatePicker(!showDatePicker)}
-                                >
-                                    <Calendar size={16} /> Custom
-                                </button>
+                                <button type='submit' className={`${styles.periodBtn} ${period === 'today' ? styles.active : ''}`} onClick={() => setPeriod('today')}>Today</button>
+                                <button type='submit' className={`${styles.periodBtn} ${period === 'week' ? styles.active : ''}`} onClick={() => setPeriod('week')}>This Week</button>
+                                <button type='submit' className={`${styles.periodBtn} ${period === 'month' ? styles.active : ''}`} onClick={() => setPeriod('month')}>This Month</button>
+                                <button type='submit' className={`${styles.periodBtn} ${period === 'year' ? styles.active : ''}`} onClick={() => setPeriod('year')}>This Year</button>
+                                <button type='submit' className={`${styles.periodBtn} ${period === 'custom' ? styles.active : ''}`} onClick={() => setShowDatePicker(!showDatePicker)}><Calendar size={16} /> Custom</button>
                             </div>
-                            <div>
-                                <button
-                                    type='button'
-                                    className={styles.exportBtn}
-                                    onClick={() => handleExport('sales')}
-                                >
-                                    Export Sales Report
-                                </button>
-                            </div>
+                            <div><button type='button' className={styles.exportBtn} onClick={() => handleExport('sales')}>Export Sales Report</button></div>
                         </div>
-
                         <div className={styles.actionFilters}>
-                            <select
-                                title='Status'
-                                value={paymentStatus || ''}
-                                onChange={(e) => setPaymentStatus(e.target.value || null)}
-                                className={styles.filterSelect}
-                            >
+                            <select title='Status' value={paymentStatus || ''} onChange={(e) => setPaymentStatus(e.target.value || null)} className={styles.filterSelect}>
                                 <option value="">All Status</option>
                                 <option value="Paid">Paid</option>
                                 <option value="Unpaid">Unpaid</option>
                                 <option value="Partially Paid">Partially Paid</option>
                             </select>
-
-                            <Searchbar
-                                onSearch={handleSearch}
-                                placeholder="Search sales..."
-                                disabled={loading}
-                                className={styles.searchbar}
-                            />
-
-                            <button type='submit' className={styles.resetBtn} onClick={resetFilters}>
-                                Reset
-                            </button>
+                            <Searchbar onSearch={handleSearch} placeholder="Search sales..." disabled={loading} className={styles.searchbar} />
+                            <button type='submit' className={styles.resetBtn} onClick={resetFilters}>Reset</button>
                         </div>
                     </div>
 
-                    {
-                        showDatePicker && (
-                            <div className={styles.datePickerCard}>
-                                <div className={styles.dateInputs}>
-                                    <input
-                                        title='Date'
-                                        type="date"
-                                        value={fromDate || ''}
-                                        onChange={(e) => setDateRange(e.target.value, toDate || '')}
-                                        className={styles.dateInput}
-                                    />
-                                    <span>to</span>
-                                    <input
-                                        title='Date'
-                                        type="date"
-                                        value={toDate || ''}
-                                        onChange={(e) => setDateRange(fromDate || '', e.target.value)}
-                                        className={styles.dateInput}
-                                    />
-                                </div>
-                                <button type='submit' className={styles.applyBtn} onClick={handleDateRangeSubmit}>
-                                    Apply
-                                </button>
+                    {showDatePicker && (
+                        <div className={styles.datePickerCard}>
+                            <div className={styles.dateInputs}>
+                                <input title='Date' type="date" value={fromDate || ''} onChange={(e) => setDateRange(e.target.value, toDate || '')} className={styles.dateInput} />
+                                <span>to</span>
+                                <input title='Date' type="date" value={toDate || ''} onChange={(e) => setDateRange(fromDate || '', e.target.value)} className={styles.dateInput} />
                             </div>
-                        )
-                    }
+                            <button type='submit' className={styles.applyBtn} onClick={handleDateRangeSubmit}>Apply</button>
+                        </div>
+                    )}
 
                     <div className={styles.tableContainer}>
                         <div className={styles.tableHeader}>
-                            <span className={styles.recordCount}>
-                                {salesPagination.startIndex}-{salesPagination.endIndex} of{' '}
-                                {salesPagination.totalItems}
-                            </span>
-                            <select
-                                title='Item Per Page'
-                                value={salesPagination.itemsPerPage}
-                                onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                                className={styles.itemsPerPageSelect}
-                                disabled={loading}
-                            >
+                            <span className={styles.recordCount}>{salesPagination.startIndex}-{salesPagination.endIndex} of {salesPagination.totalItems}</span>
+                            <select title='Item Per Page' value={salesPagination.itemsPerPage} onChange={(e) => handleItemsPerPageChange(Number(e.target.value))} className={styles.itemsPerPageSelect} disabled={loading}>
                                 <option value={10}>10 per page</option>
                                 <option value={20}>20 per page</option>
                                 <option value={50}>50 per page</option>
                             </select>
                         </div>
-
-                        {
-                            loading ? (
-                                <Loading type='skeleton' rows={7} message='Loading report...' />
-                            ) : (
-                                <>
-                                    <Table
-                                        columns={salesColumns}
-                                        data={salesReportItems}
-                                        emptyMessage='No sales data found.'
-                                        searchTerm={searchTerm}
-                                        getRowKey={(sale) => sale.id}
-                                    />
-
-                                    {
-                                        salesPagination.totalPages > 1 && (
-                                            <Pagination
-                                                currentPage={salesPagination.currentPage}
-                                                totalPages={salesPagination.totalPages}
-                                                totalItems={salesPagination.totalItems}
-                                                itemsPerPage={salesPagination.itemsPerPage}
-                                                onPageChange={handlePageChange}
-                                                disabled={loading}
-                                                className={styles.pagination}
-                                            />
-                                        )
-                                    }
-                                </>
-                            )
-                        }
+                        {loading ? <Loading type='skeleton' rows={7} message='Loading report...' /> : (
+                            <>
+                                <Table columns={salesColumns} data={salesReportItems} emptyMessage='No sales data found.' searchTerm={searchTerm} getRowKey={(sale) => sale.id} />
+                                {salesPagination.totalPages > 1 && (
+                                    <Pagination currentPage={salesPagination.currentPage} totalPages={salesPagination.totalPages} totalItems={salesPagination.totalItems} itemsPerPage={salesPagination.itemsPerPage} onPageChange={handlePageChange} disabled={loading} className={styles.pagination} />
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
             )
@@ -961,203 +762,74 @@ const ReportPage = () => {
         {
             activeTab === 'medicalRecords' && (
                 <div className={styles.reportSection}>
-                    {
-                        medicalRecordsSummary && (
-                            <div className={styles.summaryCards}>
-                                <div className={styles.summaryCard}>
-                                    <div className={styles.summaryLabel}>Total Records</div>
-                                    <div className={styles.summaryValue}>
-                                        {medicalRecordsSummary?.totalRecords || 0}
-                                    </div>
-                                </div>
-                                <div className={styles.summaryCard}>
-                                    <div className={styles.summaryLabel}>Neonate (0-28d)</div>
-                                    <div className={styles.summaryValue}>
-                                        {medicalRecordsSummary?.ageDistribution?.neonate || 0}
-                                    </div>
-                                </div>
-                                <div className={styles.summaryCard}>
-                                    <div className={styles.summaryLabel}>Upcoming Follow-ups</div>
-                                    <div className={`${styles.summaryValue} ${styles.success}`}>
-                                        {medicalRecordsSummary?.followUps?.upcoming || 0}
-                                    </div>
-                                </div>
-                                <div className={styles.summaryCard}>
-                                    <div className={styles.summaryLabel}>Overdue Follow-ups</div>
-                                    <div className={`${styles.summaryValue} ${styles.danger}`}>
-                                        {medicalRecordsSummary?.followUps?.overdue || 0}
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    }
+                    {medicalRecordsSummary && (
+                        <div className={styles.summaryCards}>
+                            <div className={styles.summaryCard}><div className={styles.summaryLabel}>Total Records</div><div className={styles.summaryValue}>{medicalRecordsSummary?.totalRecords || 0}</div></div>
+                            <div className={styles.summaryCard}><div className={styles.summaryLabel}>Neonate (0-28d)</div><div className={styles.summaryValue}>{medicalRecordsSummary?.ageDistribution?.neonate || 0}</div></div>
+                            <div className={styles.summaryCard}><div className={styles.summaryLabel}>Upcoming Follow-ups</div><div className={`${styles.summaryValue} ${styles.success}`}>{medicalRecordsSummary?.followUps?.upcoming || 0}</div></div>
+                            <div className={styles.summaryCard}><div className={styles.summaryLabel}>Overdue Follow-ups</div><div className={`${styles.summaryValue} ${styles.danger}`}>{medicalRecordsSummary?.followUps?.overdue || 0}</div></div>
+                        </div>
+                    )}
 
-                    {/* MEDICAL RECORDS LINE CHART */}
-                    {
-                        medicalRecordsChartData && (
-                            <div className={styles.chartSection}>
-                                <LineChart
-                                    labels={medicalRecordsChartData.labels}
-                                    datasets={medicalRecordsChartData.datasets}
-                                    title="Patient Records Trends"
-                                    height={350}
-                                />
-                            </div>
-                        )
-                    }
+                    {medicalRecordsChartData && (
+                        <div className={styles.chartSection}>
+                            <LineChart labels={medicalRecordsChartData.labels} datasets={medicalRecordsChartData.datasets} title="Patient Records Trends" height={350} />
+                        </div>
+                    )}
 
                     <div className={styles.filtersSection}>
                         <div className={styles.filterContent}>
                             <div className={styles.periodFilters}>
-                                <button
-                                    type='button'
-                                    className={`${styles.periodBtn} ${period === 'today' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('today')}
-                                >
-                                    Today
-                                </button>
-                                <button
-                                    type='button'
-                                    className={`${styles.periodBtn} ${period === 'week' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('week')}
-                                >
-                                    This Week
-                                </button>
-                                <button
-                                    type='button'
-                                    className={`${styles.periodBtn} ${period === 'month' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('month')}
-                                >
-                                    This Month
-                                </button>
-                                <button
-                                    type='button'
-                                    className={`${styles.periodBtn} ${period === 'year' ? styles.active : ''}`}
-                                    onClick={() => setPeriod('year')}
-                                >
-                                    This Year
-                                </button>
-                                <button
-                                    type='button'
-                                    className={`${styles.periodBtn} ${period === 'custom' ? styles.active : ''}`}
-                                    onClick={() => setShowDatePicker(!showDatePicker)}
-                                >
-                                    <Calendar size={16} /> Custom
-                                </button>
+                                <button type='button' className={`${styles.periodBtn} ${period === 'today' ? styles.active : ''}`} onClick={() => setPeriod('today')}>Today</button>
+                                <button type='button' className={`${styles.periodBtn} ${period === 'week' ? styles.active : ''}`} onClick={() => setPeriod('week')}>This Week</button>
+                                <button type='button' className={`${styles.periodBtn} ${period === 'month' ? styles.active : ''}`} onClick={() => setPeriod('month')}>This Month</button>
+                                <button type='button' className={`${styles.periodBtn} ${period === 'year' ? styles.active : ''}`} onClick={() => setPeriod('year')}>This Year</button>
+                                <button type='button' className={`${styles.periodBtn} ${period === 'custom' ? styles.active : ''}`} onClick={() => setShowDatePicker(!showDatePicker)}><Calendar size={16} /> Custom</button>
                             </div>
-                            
                             <div className={styles.exportBtnContainer}>
-                                <button
-                                    type='button'
-                                    className={styles.exportBtn}
-                                    onClick={() => handleExport('medicalRecords')}
-                                >
-                                    Export Medical Records Report
-                                </button>
+                                <button type='button' className={styles.exportBtn} onClick={() => handleExport('medicalRecords')}>Export Medical Records Report</button>
                             </div>
                         </div>
-
                         <div className={styles.actionFilters}>
-                            <select
-                                title='Gender'
-                                value={gender || ''}
-                                onChange={(e) => setGender(e.target.value || null)}
-                                className={styles.filterSelect}
-                            >
+                            <select title='Gender' value={gender || ''} onChange={(e) => setGender(e.target.value || null)} className={styles.filterSelect}>
                                 <option value="">All Genders</option>
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                                 <option value="Other">Other</option>
                             </select>
-
-                            <Searchbar
-                                onSearch={handleSearch}
-                                placeholder="Search patients, diagnosis..."
-                                disabled={loading}
-                                className={styles.searchbar}
-                            />
-
-                            <button type='submit' className={styles.resetBtn} onClick={resetFilters}>
-                                Reset
-                            </button>
+                            <Searchbar onSearch={handleSearch} placeholder="Search patients, diagnosis..." disabled={loading} className={styles.searchbar} />
+                            <button type='submit' className={styles.resetBtn} onClick={resetFilters}>Reset</button>
                         </div>
                     </div>
 
-                    {
-                        showDatePicker && (
-                            <div className={styles.datePickerCard}>
-                                <div className={styles.dateInputs}>
-                                    <input
-                                        title='Date'
-                                        type="date"
-                                        value={fromDate || ''}
-                                        onChange={(e) => setDateRange(e.target.value, toDate || '')}
-                                        className={styles.dateInput}
-                                    />
-                                    <span>to</span>
-                                    <input
-                                        title='Date'
-                                        type="date"
-                                        value={toDate || ''}
-                                        onChange={(e) => setDateRange(fromDate || '', e.target.value)}
-                                        className={styles.dateInput}
-                                    />
-                                </div>
-                                <button type='submit' className={styles.applyBtn} onClick={handleDateRangeSubmit}>
-                                    Apply
-                                </button>
+                    {showDatePicker && (
+                        <div className={styles.datePickerCard}>
+                            <div className={styles.dateInputs}>
+                                <input title='Date' type="date" value={fromDate || ''} onChange={(e) => setDateRange(e.target.value, toDate || '')} className={styles.dateInput} />
+                                <span>to</span>
+                                <input title='Date' type="date" value={toDate || ''} onChange={(e) => setDateRange(fromDate || '', e.target.value)} className={styles.dateInput} />
                             </div>
-                        )
-                    }
+                            <button type='submit' className={styles.applyBtn} onClick={handleDateRangeSubmit}>Apply</button>
+                        </div>
+                    )}
 
                     <div className={styles.tableContainer}>
                         <div className={styles.tableHeader}>
-                            <span className={styles.recordCount}>
-                                {medicalRecordsPagination.startIndex}-{medicalRecordsPagination.endIndex} of{' '}
-                                {medicalRecordsPagination.totalItems}
-                            </span>
-                            <select
-                                title='Item Per Page'
-                                value={medicalRecordsPagination.itemsPerPage}
-                                onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                                className={styles.itemsPerPageSelect}
-                                disabled={loading}
-                            >
+                            <span className={styles.recordCount}>{medicalRecordsPagination.startIndex}-{medicalRecordsPagination.endIndex} of {medicalRecordsPagination.totalItems}</span>
+                            <select title='Item Per Page' value={medicalRecordsPagination.itemsPerPage} onChange={(e) => handleItemsPerPageChange(Number(e.target.value))} className={styles.itemsPerPageSelect} disabled={loading}>
                                 <option value={10}>10 per page</option>
                                 <option value={20}>20 per page</option>
                                 <option value={50}>50 per page</option>
                             </select>
                         </div>
-
-                        {
-                            loading ? (
-                                <Loading type='skeleton' rows={7} message='Loading report...' />
-                            ) : (
-                                <>
-                                    <Table
-                                        columns={medicalRecordsColumns}
-                                        data={medicalRecordsReportItems}
-                                        emptyMessage='No medical records found.'
-                                        searchTerm={searchTerm}
-                                        getRowKey={(record) => record.id}
-                                    />
-
-                                    {
-                                        medicalRecordsPagination.totalPages > 1 && (
-                                            <Pagination
-                                                currentPage={medicalRecordsPagination.currentPage}
-                                                totalPages={medicalRecordsPagination.totalPages}
-                                                totalItems={medicalRecordsPagination.totalItems}
-                                                itemsPerPage={medicalRecordsPagination.itemsPerPage}
-                                                onPageChange={handlePageChange}
-                                                disabled={loading}
-                                                className={styles.pagination}
-                                            />
-                                        )
-                                    }
-                                </>
-                            )
-                        }
+                        {loading ? <Loading type='skeleton' rows={7} message='Loading report...' /> : (
+                            <>
+                                <Table columns={medicalRecordsColumns} data={medicalRecordsReportItems} emptyMessage='No medical records found.' searchTerm={searchTerm} getRowKey={(record) => record.id} />
+                                {medicalRecordsPagination.totalPages > 1 && (
+                                    <Pagination currentPage={medicalRecordsPagination.currentPage} totalPages={medicalRecordsPagination.totalPages} totalItems={medicalRecordsPagination.totalItems} itemsPerPage={medicalRecordsPagination.itemsPerPage} onPageChange={handlePageChange} disabled={loading} className={styles.pagination} />
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
             )

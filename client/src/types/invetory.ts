@@ -39,7 +39,7 @@ export interface InventoryItemFormData {
     minLevel?: number;
     expirationDate?: string;
     location?: string;
-    createdAt?: string;
+    createdAt: string;
 }
 
 

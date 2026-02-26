@@ -479,6 +479,13 @@
     font-size: 1rem;
 }
 
+.qtyNotApplicable  { background-color: #ffcdd2; color: #c62828; }
+.qtyLowStock       { background-color: #fff9c4; color: #f57f17; }
+.qtySufficient     { background-color: #c8e6c9; color: #2e7d32; }
+.expiryExpired      { background-color: #ffcdd2; color: #c62828; }
+.expiryExpiringSoon { background-color: #ffe0b2; color: #e65100; }
+.expiryOk           { background-color: #c8e6c9; color: #2e7d32; }
+
 @media (max-width: 768px) {
     .dashboardContainer,
     .reportSection {

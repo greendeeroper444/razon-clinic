@@ -8,6 +8,19 @@ import Select, { SelectOption } from '../../../ui/Select/Select'
 import TextArea from '../../../ui/TextArea/TextArea'
 import { useAppointmentStore, useAuthenticationStore, useBlockedTimeSlotStore } from '../../../../stores'
 import { useScrollToError } from '../../../../hooks/useScrollToError'
+import { Info } from 'lucide-react'
+
+const getDateOffset = (days: number): string => {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date.toISOString().split('T')[0];
+};
+
+const toDateOnly = (dateString: string): Date => {
+    const d = new Date(dateString);
+    d.setHours(0, 0, 0, 0);
+    return d;
+};
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({
     formData,
@@ -149,20 +162,27 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         return timeDate <= today;
     };
 
+    // ─── NEW: check if a date violates the 1-day-before rule ─────────────────────
+    // Rule: preferred date must be at least 2 days from today.
+    // i.e., the patient must book BEFORE the day prior to their appointment.
+    // Today → cannot book today or tomorrow. Earliest allowed = day after tomorrow.
+    const isTooSoon = (dateString: string): boolean => {
+        if (!dateString) return false;
+        const minAllowed = toDateOnly(getDateOffset(2)); // today + 2 days
+        const selected   = toDateOnly(dateString);
+        return selected < minAllowed;
+    };
+
     const isDateBlocked = (dateString: string): boolean => {
         if (!blockedTimeSlots || blockedTimeSlots.length === 0) return false;
 
-        const checkDate = new Date(dateString);
-        checkDate.setHours(0, 0, 0, 0);
+        const checkDate = toDateOnly(dateString);
 
         return blockedTimeSlots.some(slot => {
             if (!slot.isActive) return false;
 
-            const startDate = new Date(slot.startDate);
-            startDate.setHours(0, 0, 0, 0);
-
-            const endDate = new Date(slot.endDate);
-            endDate.setHours(0, 0, 0, 0);
+            const startDate = toDateOnly(slot.startDate);
+            const endDate   = toDateOnly(slot.endDate);
 
             return checkDate >= startDate && checkDate <= endDate;
         });
@@ -171,17 +191,13 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     const getBlockedDateReason = (dateString: string): string | null => {
         if (!blockedTimeSlots || blockedTimeSlots.length === 0) return null;
 
-        const checkDate = new Date(dateString);
-        checkDate.setHours(0, 0, 0, 0);
+        const checkDate = toDateOnly(dateString);
 
         const blockedSlot = blockedTimeSlots.find(slot => {
             if (!slot.isActive) return false;
 
-            const startDate = new Date(slot.startDate);
-            startDate.setHours(0, 0, 0, 0);
-
-            const endDate = new Date(slot.endDate);
-            endDate.setHours(0, 0, 0, 0);
+            const startDate = toDateOnly(slot.startDate);
+            const endDate   = toDateOnly(slot.endDate);
 
             return checkDate >= startDate && checkDate <= endDate;
         });
@@ -283,8 +299,13 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         return undefined;
     };
 
-    //check if date has available times (excluding passed times)
+    // ─── UPDATED: isDateAvailable now also rejects dates that are too soon ────────
     const isDateAvailable = (dateString: string) => {
+        // Reject dates that don't satisfy the 1-day-before booking rule
+        if (isTooSoon(dateString)) {
+            return false;
+        }
+
         if (isDateBlocked(dateString)) {
             return false;
         }
@@ -299,6 +320,30 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             !bookedTimesForDate.includes(time) && 
             !isTimePassed(time, dateString)
         );
+    };
+
+    // ─── UPDATED: getDateError now shows a clear message for too-soon dates ───────
+    const getDateError = () => {
+        const apiError = getFieldError(validationErrors,'preferredDate');
+        if (apiError) return apiError;
+
+        if (formData?.preferredDate) {
+            // Check the 1-day-before rule first
+            if (isTooSoon(formData.preferredDate)) {
+                return 'Appointments must be booked at least 1 day before your preferred schedule. Please select a date at least 2 days from today.';
+            }
+
+            if (isDateBlocked(formData.preferredDate)) {
+                const reason = getBlockedDateReason(formData.preferredDate);
+                return `This date is blocked: ${reason}`;
+            }
+
+            if (!isDateAvailable(formData.preferredDate)) {
+                return 'This date is fully booked. Please select another date.';
+            }
+        }
+
+        return undefined;
     };
 
     const handleReligionChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -358,24 +403,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         }
         
         onChange(e);
-    };
-
-    const getDateError = () => {
-        const apiError = getFieldError(validationErrors,'preferredDate');
-        if (apiError) return apiError;
-
-        if (formData?.preferredDate) {
-            if (isDateBlocked(formData.preferredDate)) {
-                const reason = getBlockedDateReason(formData.preferredDate);
-                return `This date is blocked: ${reason}`;
-            }
-
-            if (!isDateAvailable(formData.preferredDate)) {
-                return 'This date is fully booked. Please select another date.';
-            }
-        }
-
-        return undefined;
     };
 
   return (
@@ -694,6 +721,15 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <br />
 
         <h4>Appointment Details</h4>
+
+        <div className={styles.modalNote}>
+            <Info className={styles.modalNoteIcon} size={16} />
+            <span>
+                Appointments must be booked <strong>at least 1 day before</strong> your preferred schedule.
+                The earliest available date is <strong>{getDateOffset(2)}</strong> (day after tomorrow).
+            </span>
+        </div>
+
         <div className={styles.formRow}>
             <Input
                 ref={(el) => { fieldRefs.current['preferredDate'] = el; }}
@@ -704,7 +740,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 leftIcon="calendar"
                 value={formData?.preferredDate || ''}
                 onChange={handleDateChange}
-                min={new Date().toISOString().split('T')[0]}
+                // ─── CHANGED: was today (offset 0), now today + 2 ───────────────
+                min={getDateOffset(2)}
                 disabled={isLoading}
                 error={getDateError()}
             />

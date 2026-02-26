@@ -234,6 +234,15 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
             )
         },
         {
+            key: 'createdAt',
+            header: 'CREATED',
+            render: (item) => (
+                <span>
+                    {formatDate(item.createdAt)}
+                </span>
+            )
+        },
+        {
             key: 'actions',
             header: 'ACTIONS',
             render: (item) => (

@@ -52,6 +52,7 @@ class GenerateReportFile {
             { header: 'QUANTITY IN STOCK', key: 'quantityInStock', width: 18 },
             { header: 'QUANTITY USED', key: 'quantityUsed', width: 15 },
             { header: 'QUANTITY REMAINING', key: 'quantityRemaining', width: 20 },
+            { header: 'QUANTITY STATUS', key: 'quantityStatus', width: 18 },
             { header: 'TOTAL VALUE', key: 'totalValue', width: 15 },
             { header: 'EXPIRY DATE', key: 'expiryDate', width: 15 },
             { header: 'STATUS', key: 'status', width: 15 },
@@ -70,20 +71,26 @@ class GenerateReportFile {
         records.forEach(record => {
             const quantityRemaining = record.quantityInStock - record.quantityUsed;
             const totalValue = record.quantityInStock * record.price;
-            
-            let status = 'OK';
-            if (quantityRemaining < 10) {
-                status = 'Low Stock';
+
+            //quantity Status: based on quantityRemaining
+            //not Applicable = below 20, Low Stock = 20–49, Sufficient = 50+
+            let quantityStatus;
+            if (quantityRemaining < 20) {
+                quantityStatus = 'Not Applicable';
+            } else if (quantityRemaining < 50) {
+                quantityStatus = 'Low Stock';
+            } else {
+                quantityStatus = 'Sufficient';
             }
-            
+
+            //expiry Status (STATUS column — unchanged logic)
+            let status = 'OK';
             const thirtyDaysFromNow = new Date();
             thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
-            if (new Date(record.expiryDate) <= thirtyDaysFromNow) {
-                status = 'Expiring Soon';
-            }
-            
             if (new Date(record.expiryDate) < new Date()) {
                 status = 'Expired';
+            } else if (new Date(record.expiryDate) <= thirtyDaysFromNow) {
+                status = 'Expiring Soon';
             }
 
             worksheet.addRow({
@@ -93,6 +100,7 @@ class GenerateReportFile {
                 quantityInStock: record.quantityInStock,
                 quantityUsed: record.quantityUsed,
                 quantityRemaining: quantityRemaining,
+                quantityStatus: quantityStatus,
                 totalValue: `₱${totalValue.toFixed(2)}`,
                 expiryDate: this.safeFormatDate(record.expiryDate),
                 status: status,
@@ -105,7 +113,8 @@ class GenerateReportFile {
             row.eachCell((cell, colNumber) => {
                 cell.alignment = { 
                     vertical: 'top', 
-                    horizontal: [3, 4, 5, 6, 7].includes(colNumber) ? 'right' : 'left',
+                    // cols: price(3), qtyInStock(4), qtyUsed(5), qtyRemaining(6), totalValue(8)
+                    horizontal: [3, 4, 5, 6, 8].includes(colNumber) ? 'right' : 'left',
                     wrapText: true 
                 };
                 cell.border = {
@@ -115,32 +124,50 @@ class GenerateReportFile {
                     right: { style: 'thin' }
                 };
 
-                //highlight status column
-                if (rowNumber > 1 && colNumber === 9) {
+                //highlight QUANTITY STATUS column (col 7)
+                if (rowNumber > 1 && colNumber === 7) {
+                    const qtyStatus = cell.value;
+                    if (qtyStatus === 'Sufficient') {
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: 'FFC8E6C9' } // green
+                        };
+                    } else if (qtyStatus === 'Low Stock') {
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: 'FFFFF9C4' } // yellow
+                        };
+                    } else if (qtyStatus === 'Not Applicable') {
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: 'FFFFCDD2' } // red
+                        };
+                    }
+                }
+
+                // Highlight STATUS column (col 10) — expiry only
+                if (rowNumber > 1 && colNumber === 10) {
                     const status = cell.value;
                     if (status === 'OK') {
                         cell.fill = {
                             type: 'pattern',
                             pattern: 'solid',
-                            fgColor: { argb: 'FFC8E6C9' } //green
-                        };
-                    } else if (status === 'Low Stock') {
-                        cell.fill = {
-                            type: 'pattern',
-                            pattern: 'solid',
-                            fgColor: { argb: 'FFFFF9C4' } //yellow
+                            fgColor: { argb: 'FFC8E6C9' } // green
                         };
                     } else if (status === 'Expiring Soon') {
                         cell.fill = {
                             type: 'pattern',
                             pattern: 'solid',
-                            fgColor: { argb: 'FFFFE0B2' } //orange
+                            fgColor: { argb: 'FFFFE0B2' } // orange
                         };
                     } else if (status === 'Expired') {
                         cell.fill = {
                             type: 'pattern',
                             pattern: 'solid',
-                            fgColor: { argb: 'FFFFCDD2' } //red
+                            fgColor: { argb: 'FFFFCDD2' } // red
                         };
                     }
                 }
