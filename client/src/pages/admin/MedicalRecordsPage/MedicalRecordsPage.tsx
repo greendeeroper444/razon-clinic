@@ -512,7 +512,7 @@ import styles from './MedicalRecordsPage.module.css';
 import { Plus, Download, Archive, Edit } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { FormDataType, MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
-import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table, DateRangeFilter } from '../../../components';
+import { Header, Loading, Main, Modal, Pagination, SubmitLoading, Table, DateRangeFilter } from '../../../components';
 import { toast } from 'sonner';
 import { calculateAge2, formatDate, generate20Only, generateInitials, getLoadingText } from '../../../utils';
 import { useMedicalRecordStore } from '../../../stores';
@@ -610,18 +610,18 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.search]);
 
-   const handleSearch = useCallback((term: string) => {
-    setSearchTerm(term);
+//    const handleSearch = useCallback((term: string) => {
+//     setSearchTerm(term);
 
-    // 👇 Only clear the URL fullName param when user actually types something
-    if (term && getFullNameFromURL()) {
-        skipNextLocationEffect.current = true;
-        navigate('/admin/medical-records', { replace: true });
-    }
+//     // 👇 Only clear the URL fullName param when user actually types something
+//     if (term && getFullNameFromURL()) {
+//         skipNextLocationEffect.current = true;
+//         navigate('/admin/medical-records', { replace: true });
+//     }
 
-    fetchData(1, storePagination?.itemsPerPage || 10, term, term ? undefined : getFullNameFromURL());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [fetchData, navigate, storePagination?.itemsPerPage, location.search]);
+//     fetchData(1, storePagination?.itemsPerPage || 10, term, term ? undefined : getFullNameFromURL());
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+// }, [fetchData, navigate, storePagination?.itemsPerPage, location.search]);
 
     const handlePageChange = useCallback((page: number) => {
         fetchData(page, storePagination?.itemsPerPage || 10, searchTerm, getFullNameFromURL());
