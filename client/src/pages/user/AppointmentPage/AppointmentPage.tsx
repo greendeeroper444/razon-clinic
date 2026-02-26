@@ -26,6 +26,16 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         user?.suffix
     ].filter(Boolean).join(' ');
 
+    const userAge = React.useMemo(() => {
+        if (!user?.birthdate) return '';
+        const birth = new Date(user.birthdate);
+        const today = new Date();
+        let age = today.getFullYear() - birth.getFullYear();
+        const m = today.getMonth() - birth.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+        return String(age);
+    }, [user?.birthdate]);
+
     const userDefaultFormData: Partial<AppointmentFormData> = {
         //patient unformation — left blank (child's info, filled by user)
         firstName:    '',
@@ -38,21 +48,21 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
 
         //mother's Information — pre-filled only if logged-in user is Female
         motherName:       user?.sex === 'Female' ? userFullName : '',
-        motherAge:        '',
+        motherAge:        user?.sex === 'Female' ? userAge : '', 
         motherOccupation: '',
         motherInfo: {
             name:       user?.sex === 'Female' ? userFullName : '',
-            age:        '',
+            age:        user?.sex === 'Female' ? userAge : '',  
             occupation: ''
         },
 
         //father's Information — pre-filled only if logged-in user is Male
         fatherName:       user?.sex === 'Male' ? userFullName : '',
-        fatherAge:        '',
+        fatherAge:        user?.sex === 'Male' ? userAge : '', 
         fatherOccupation: '',
         fatherInfo: {
             name:       user?.sex === 'Male' ? userFullName : '',
-            age:        '',
+            age:        user?.sex === 'Male' ? userAge : '',
             occupation: ''
         },
 
