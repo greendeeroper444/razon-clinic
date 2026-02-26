@@ -274,6 +274,60 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 }
             },
 
+            // updateAppointmentStatus: async (id: string, status: string) => {
+            //     try {
+            //         set({ submitLoading: true, isProcessing: true, currentOperation: 'status' });
+                    
+            //         const response = await updateAppointmentStatusService(id, status);
+                    
+            //         if (response.success) {
+            //             const currentState = get()
+            //             if (currentState.currentAppointment && currentState.currentAppointment.id === id) {
+            //                 set({
+            //                     currentAppointment: {
+            //                         ...currentState.currentAppointment,
+            //                         status: status as AppointmentStatus,
+            //                         updatedAt: new Date().toISOString()
+            //                     }
+            //                 })
+            //             }
+
+            //             const updatedAppointments = currentState.appointments.map(appointment => 
+            //                 appointment.id === id 
+            //                     ? { ...appointment, status: status as AppointmentStatus, updatedAt: new Date().toISOString() }
+            //                     : appointment
+            //             )
+                        
+            //             toast.success('Status updated successfully!');
+            //             set({ 
+            //                 appointments: updatedAppointments,
+            //                 isModalStatusOpen: false,
+            //                 selectedAppointment: null,
+            //             })
+
+            //             setTimeout(() => {
+            //                 set({ 
+            //                     submitLoading: false,
+            //                     isProcessing: false,
+            //                     currentOperation: null
+            //                 })
+            //             }, 500)
+            //         } else {
+            //             throw new Error(response.data.message || 'Failed to update status')
+            //         }
+            //     } catch (error) {
+            //         console.error('Error updating appointment status:', error)
+            //         toast.error('Failed to update appointment status');
+            //         set({ 
+            //             submitLoading: false, 
+            //             isProcessing: false,
+            //             isModalStatusOpen: false,
+            //             selectedAppointment: null,
+            //             currentOperation: null
+            //         })
+            //     }
+            // },
+
             updateAppointmentStatus: async (id: string, status: string) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'status' });
@@ -281,7 +335,8 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     const response = await updateAppointmentStatusService(id, status);
                     
                     if (response.success) {
-                        const currentState = get()
+                        const currentState = get();
+
                         if (currentState.currentAppointment && currentState.currentAppointment.id === id) {
                             set({
                                 currentAppointment: {
@@ -289,34 +344,33 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                                     status: status as AppointmentStatus,
                                     updatedAt: new Date().toISOString()
                                 }
-                            })
+                            });
                         }
 
-                        const updatedAppointments = currentState.appointments.map(appointment => 
-                            appointment.id === id 
-                                ? { ...appointment, status: status as AppointmentStatus, updatedAt: new Date().toISOString() }
-                                : appointment
-                        )
-                        
+                        if (currentState.viewMode === 'admin') {
+                            await get().fetchAppointments({});
+                        } else {
+                            await get().fetchMyAppointments({});
+                        }
+
                         toast.success('Status updated successfully!');
                         set({ 
-                            appointments: updatedAppointments,
                             isModalStatusOpen: false,
                             selectedAppointment: null,
-                        })
+                        });
 
                         setTimeout(() => {
                             set({ 
                                 submitLoading: false,
                                 isProcessing: false,
                                 currentOperation: null
-                            })
-                        }, 500)
+                            });
+                        }, 500);
                     } else {
-                        throw new Error(response.data.message || 'Failed to update status')
+                        throw new Error(response.data.message || 'Failed to update status');
                     }
                 } catch (error) {
-                    console.error('Error updating appointment status:', error)
+                    console.error('Error updating appointment status:', error);
                     toast.error('Failed to update appointment status');
                     set({ 
                         submitLoading: false, 
@@ -324,7 +378,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         isModalStatusOpen: false,
                         selectedAppointment: null,
                         currentOperation: null
-                    })
+                    });
                 }
             },
 

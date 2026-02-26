@@ -128,6 +128,7 @@ class ReportService extends BaseService {
             searchTerm
         });
 
+        
         const statistics = await this.getInventoryStatistics(filter);
 
         return {

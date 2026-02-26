@@ -8,6 +8,7 @@ import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Tab
 import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore, useAuthenticationStore } from '../../../stores'
 import { toast } from 'sonner'
+import { updateAppointmentStatus } from '../../../services'
 
 const AppointmentPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
@@ -279,6 +280,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     </button>
                     <button
                         type='button'
+                        disabled={['Scheduled', 'Cancelled', 'Completed'].includes(appointment.status)}
                         className={`${styles.actionBtn} ${styles.update} ${
                             ['Scheduled', 'Cancelled', 'Completed'].includes(appointment.status)
                                 ? styles.disabled
@@ -286,21 +288,25 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                         }`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (['Scheduled', 'Cancelled', 'Completed'].includes(appointment.status)) {
-                                toast.info(`Cannot update appointments with "${appointment.status}" status`);
-                                return;
-                            }
                             openModalUpdate(appointment);
                         }}
                     >
                         Update
                     </button>
-                    <button
+                   <button
                         type='button'
+                        disabled={appointment.status === 'Cancelled'}
                         className={`${styles.actionBtn} ${styles.delete}`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            openModalDelete(appointment);
+                            updateAppointmentStatus(appointment.id, 'Cancelled').then(() => {
+                                fetchData(
+                                    storePagination?.currentPage || 1,
+                                    storePagination?.itemsPerPage || 10,
+                                    searchTerm,
+                                    statusFilter
+                                );
+                            });
                         }}
                     >
                         Cancel
