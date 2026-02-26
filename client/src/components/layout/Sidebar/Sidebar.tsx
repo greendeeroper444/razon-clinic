@@ -109,8 +109,8 @@ const Sidebar: React.FC<SidebarProps> = ({sidebarCollapsed, toggleSidebar}) => {
                     user && (user.role === 'Doctor') ? (
                         <>
                             <Link
-                                to='/admin/medical-records'
-                                className={`${styles.menuItem} ${isActive('/admin/medical-records') ? styles.active : ''}`}
+                                to='/admin/records'
+                                className={`${styles.menuItem} ${isActive('/admin/records') ? styles.active : ''}`}
                                 title='Medical Records'
                             >
                                 <FileText color='#94a3b8' size={20} />

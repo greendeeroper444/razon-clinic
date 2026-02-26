@@ -1,4 +1,513 @@
-import React, { useCallback, useEffect, useState } from 'react'
+// import React, { useCallback, useEffect, useState } from 'react'
+// import styles from './MedicalRecordsPage.module.css';
+// import { Plus, Download, Archive, Edit } from 'lucide-react';
+// import { OpenModalProps } from '../../../hooks/hook';
+// import { FormDataType, MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
+// import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table, DateRangeFilter } from '../../../components';
+// import { toast } from 'sonner';
+// import { calculateAge2, formatDate, generate20Only, generateInitials, getLoadingText } from '../../../utils';
+// import { useMedicalRecordStore } from '../../../stores';
+// import { useNavigate } from 'react-router-dom';
+// import { generateMedicalRecordPDF } from '../../../templates';
+// import { useDateRange } from '../../../hooks/useDateRange';
+
+// const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
+//     const navigate = useNavigate();
+//     const [searchTerm, setSearchTerm] = useState('');
+//     const [isInitialLoad, setIsInitialLoad] = useState(true);
+//     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+//     const [isCreateAsNewMode, setIsCreateAsNewMode] = useState(false);
+
+//     //custom date range hook
+//     const {
+//         dateRange,
+//         customFromDate,
+//         customToDate,
+//         setDateRange,
+//         setCustomFromDate,
+//         setCustomToDate,
+//         getDateParams
+//     } = useDateRange('all');
+
+//     //zustand store selectors
+//     const {
+//         medicalRecords,
+//         submitLoading,
+//         loading,
+//         error,
+//         isProcessing,
+//         isModalCreateOpen,
+//         isModalUpdateOpen,
+//         isModalDeleteOpen,
+//         selectedMedicalRecord,
+//         softDeleteMedicalRecordData,
+//         pagination: storePagination,
+//         fetchMedicalRecords,
+//         openModalCreate,
+//         openModalUpdate,
+//         openModalDelete,
+//         closeModalCreate,
+//         closeModalUpdate,
+//         closeModalDelete,
+//         updateMedicalRecordData,
+//         addMedicalRecord,
+//         softDeleteMedicalRecord,
+//         getStatusFromRecord,
+//         currentOperation,
+//         exportMedicalRecords
+//     } = useMedicalRecordStore();
+
+//     const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
+//         try {
+//             const dateParams = getDateParams();
+//             await fetchMedicalRecords({ 
+//                 page, 
+//                 limit, 
+//                 search,
+//                 ...dateParams
+//             });
+//         } catch (error) {
+//             console.error('Error fetching medical records:', error);
+//         }
+//     }, [fetchMedicalRecords, getDateParams]);
+
+//     useEffect(() => {
+//         if (isInitialLoad) {
+//             fetchData(1, 10, '');
+//             setIsInitialLoad(false);
+//         }
+//     }, [isInitialLoad, fetchData]);
+
+//     const handleSearch = useCallback((term: string) => {
+//         setSearchTerm(term);
+//         fetchData(1, storePagination?.itemsPerPage || 10, term);
+//     }, [fetchData, storePagination?.itemsPerPage]);
+
+//     const handlePageChange = useCallback((page: number) => {
+//         fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
+//     }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
+
+//     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
+//         fetchData(1, itemsPerPage, searchTerm);
+//     }, [fetchData, searchTerm]);
+
+//     const handleDateRangeChange = useCallback((range: string) => {
+//         setDateRange(range as any);
+//         if (range !== 'custom') {
+//             fetchData(1, storePagination?.itemsPerPage || 10, searchTerm);
+//         }
+//     }, [setDateRange, fetchData, storePagination?.itemsPerPage, searchTerm]);
+
+//     const handleApplyCustomRange = useCallback(() => {
+//         fetchData(1, storePagination?.itemsPerPage || 10, searchTerm);
+//     }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
+
+//     const handleCreateClick = useCallback(() => {
+//         openModalCreate();
+//     }, [openModalCreate]);
+
+//     const handleExport = () => {
+//         try {
+//             exportMedicalRecords();
+//         } catch (error) {
+//             console.log('Export error:', error)
+//         }
+//     };
+
+//     const handleViewClick = (record: MedicalRecordResponse) => {
+//         navigate(`/admin/medical-records/details/${record.id}`)
+//     }
+
+//     const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
+//         if (typeof data === 'string') {
+//             console.error('Invalid data for adding medical record')
+//             return
+//         }
+
+//         const medicalData = data as MedicalRecordFormData;
+
+//         try {
+//             await addMedicalRecord(medicalData)
+
+//             setTimeout(() => {
+//                 fetchData(
+//                     storePagination?.currentPage || 1, 
+//                     storePagination?.itemsPerPage || 10, 
+//                     searchTerm
+//                 );
+//                 closeModalCreate();
+//             }, 600);
+//         } catch (error) {
+//             console.error('Error adding medical records:', error);
+//         }
+//     }, [addMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
+
+//     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
+//         if (typeof data === 'string') {
+//             console.error('Invalid data or missing medical ID');
+//             return;
+//         }
+
+//         const medicalData = data as MedicalRecordFormData;
+
+//         try {
+//             if (!medicalData.id && selectedMedicalRecord?.id) {
+//                 await addMedicalRecord(medicalData);
+//                 toast.success('New medical record created successfully');
+//             } else if (selectedMedicalRecord?.id) {
+//                 await updateMedicalRecordData(selectedMedicalRecord.id, medicalData);
+//             } else {
+//                 //fallback to create if no ID exists
+//                 await addMedicalRecord(medicalData);
+//             }
+
+//             setTimeout(() => {
+//                 fetchData(
+//                     storePagination?.currentPage || 1, 
+//                     storePagination?.itemsPerPage || 10, 
+//                     searchTerm
+//                 );
+//                 setIsCreateAsNewMode(false);
+//                 closeModalUpdate();
+//             }, 600);
+//         } catch (error) {
+//             console.error('Error processing medical record:', error);
+//         }
+//     }, [selectedMedicalRecord, updateMedicalRecordData, addMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalUpdate]);
+
+//     const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
+//         if (typeof data !== 'string') {
+//             console.error('Invalid patient ID');
+//             return;
+//         }
+
+//         try {
+//             await softDeleteMedicalRecord(data);
+
+//              setTimeout(() => {
+//                 fetchData(
+//                     storePagination?.currentPage || 1, 
+//                     storePagination?.itemsPerPage || 10, 
+//                     searchTerm
+//                 );
+//             }, 600);
+//         } catch (error) {
+//             console.error('Error deleting medical record:', error);
+//         }
+//     }, [softDeleteMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+
+//     const handleDownloadReceipt = useCallback((record: MedicalRecordFormData) => {
+//         if (!record) {
+//             toast.error('No record data available');
+//             return;
+//         }
+
+//         if (isGeneratingPDF) {
+//             toast.warning('Please wait, generating receipt...');
+//             return;
+//         }
+
+//         setIsGeneratingPDF(true);
+//         const loadingToast = toast.loading('Generating receipt PDF...');
+
+//         try {
+//             generateMedicalRecordPDF(record);
+            
+//             toast.dismiss(loadingToast);
+//             toast.success('Receipt downloaded successfully!', {
+//                 description: `Receipt for ${record.personalDetails.fullName}`
+//             });
+//         } catch (error) {
+//             console.error('Error generating receipt:', error);
+            
+//             toast.dismiss(loadingToast);
+//             toast.error('Failed to generate receipt', {
+//                 description: error instanceof Error ? error.message : 'An unexpected error occurred'
+//             });
+//         } finally {
+//             setIsGeneratingPDF(false);
+//         }
+//     }, [isGeneratingPDF]);
+
+
+//     const medicalRecordsColumns: TableColumn<MedicalRecordResponse>[] = [
+//         {
+//             key: 'patientName',
+//             header: 'PATIENT NAME',
+//             render: (record) => (
+//                 <div className={styles.patientInfo}>
+//                     <div className={styles.patientAvatar}>
+//                         {generateInitials(record.personalDetails.fullName)}
+//                     </div>
+
+//                     <div className={styles.patientText}>
+//                         <div className={styles.patientName}>
+//                             {generate20Only(record.personalDetails.fullName)}
+//                         </div>
+//                         <div className={styles.recordId}>
+//                             MDR-ID: {record.medicalRecordNumber}
+//                         </div>
+//                     </div>
+//                 </div>
+//             )
+//         },
+//         {
+//             key: 'dateOfBirth',
+//             header: 'DATE OF BIRTH',
+//             render: (record) => 
+//                 (formatDate(record.personalDetails.dateOfBirth))
+//         },
+//         {
+//             key: 'age',
+//             header: 'AGE',
+//             render: (record) => calculateAge2(record.personalDetails.dateOfBirth)
+//         },
+//         {
+//             key: 'gender',
+//             header: 'GENDER',
+//             render: (record) => record.personalDetails.gender
+//         },
+//         {
+//             key: 'phone',
+//             header: 'PHONE',
+//             render: (record) => record.personalDetails.phone
+//         },
+//         {
+//             key: 'dateRecorded',
+//             header: 'DATE RECORDED',
+//             render: (record) => 
+//                 (formatDate(record.dateRecorded))
+//         },
+//         {
+//             key: 'actions',
+//             header: 'ACTIONS',
+//             render: (record) => {
+//                 getStatusFromRecord(record);
+                
+//                 return (
+//                     <div className={styles.actions}>
+//                         <button
+//                             type='button'
+//                             className={`${styles.actionBtn} ${styles.view}`}
+//                             onClick={(e) => {
+//                                 e.stopPropagation();
+//                                 handleViewClick(record);
+//                             }}
+//                             title='View Details'
+//                         >
+//                             View
+//                         </button>
+//                         <button
+//                             type='button'
+//                             className={`${styles.actionBtn} ${styles.createAsNew}`}
+//                             onClick={(e) => {
+//                                 e.stopPropagation();
+//                                 setIsCreateAsNewMode(true);
+//                                 openModalUpdate(record);
+//                             }}
+//                             title='Create as new'
+//                         >
+//                             <Plus size={16} />
+//                         </button>
+//                         <button
+//                             type='button'
+//                             className={`${styles.actionBtn} ${styles.update}`}
+//                             onClick={(e) => {
+//                                 e.stopPropagation();
+//                                 setIsCreateAsNewMode(false);
+//                                 openModalUpdate(record);
+//                             }}
+//                             title='Update'
+//                         >
+//                             <Edit size={16} />
+//                         </button>
+//                         <button
+//                             type='button'
+//                             onClick={(e) => {
+//                                 e.stopPropagation();
+//                                 handleDownloadReceipt(record);
+//                             }}
+//                             className={`${styles.actionBtn} ${styles.download}`}
+//                             title="Download Receipt"
+//                         >
+//                             <Download size={16} />
+//                         </button>
+//                         <button
+//                             type='button'
+//                             className={`${styles.actionBtn} ${styles.delete}`}
+//                             onClick={(e) => {
+//                                 e.stopPropagation();
+//                                 openModalDelete(record);
+//                             }}
+//                             title='Archive'
+//                         >
+//                             <Archive size={16} />
+//                         </button>
+//                     </div>
+//                 );
+//             }
+//         }
+//     ];
+
+//     const headerActions = [
+//         {
+//             id: 'newMedicalRecordBtn',
+//             label: 'New Record',
+//             icon: <Plus />,
+//             onClick: handleCreateClick,
+//             type: 'primary' as const
+//         },
+//         {
+//             label: 'Export',
+//             icon: <Download />,
+//             onClick: handleExport,
+//             type: 'outline' as const
+//         }
+//     ];
+
+//   return (
+//     <Main error={error}>
+//         <Header
+//             title='Medical Records'
+//             actions={headerActions}
+//         />
+
+//         <div className={styles.section}>
+//             <div className={styles.sectionHeader}>
+//                 <div className={styles.sectionTitle}>Medical Records</div>
+
+//                 <div className={styles.controls}>
+//                     <Searchbar
+//                         onSearch={handleSearch}
+//                         placeholder="Search records..."
+//                         disabled={loading}
+//                         className={styles.searchbar}
+//                     />
+
+//                     <DateRangeFilter
+//                         dateRange={dateRange}
+//                         customFromDate={customFromDate}
+//                         customToDate={customToDate}
+//                         onDateRangeChange={handleDateRangeChange}
+//                         onCustomFromDateChange={setCustomFromDate}
+//                         onCustomToDateChange={setCustomToDate}
+//                         onApplyCustomRange={handleApplyCustomRange}
+//                         disabled={loading}
+//                     />
+                    
+//                     <div className={styles.itemsPerPageControl}>
+//                         <label htmlFor="itemsPerPage">Items per page:</label>
+//                         <select
+//                             id="itemsPerPage"
+//                             value={storePagination?.itemsPerPage || 10}
+//                             onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+//                             disabled={loading}
+//                             className={styles.itemsPerPageSelect}
+//                         >
+//                             <option value={5}>5</option>
+//                             <option value={10}>10</option>
+//                             <option value={20}>20</option>
+//                             <option value={50}>50</option>
+//                         </select>
+//                     </div>
+//                 </div>
+//             </div>
+
+//             {
+//                 loading ? (
+//                     <div className={styles.tableResponsive}>
+//                         <Loading
+//                             type='skeleton'
+//                             rows={7}
+//                             message='Loading medical records data...'
+//                             delay={0}
+//                             minDuration={1000}
+//                         />
+//                     </div>
+//                 ) : (
+//                     <>
+//                         <Table
+//                             columns={medicalRecordsColumns}
+//                             data={medicalRecords}
+//                             emptyMessage='No medical records found. Click "New Record" to get started.'
+//                             searchTerm={searchTerm}
+//                             getRowKey={(record) => record.id || ''}
+//                         />
+
+//                         {
+//                             storePagination && storePagination.totalPages > 1 && (
+//                                 <Pagination
+//                                     currentPage={storePagination.currentPage}
+//                                     totalPages={storePagination.totalPages}
+//                                     totalItems={storePagination.totalItems}
+//                                     itemsPerPage={storePagination.itemsPerPage}
+//                                     onPageChange={handlePageChange}
+//                                     disabled={loading || isProcessing}
+//                                 />
+//                             )
+//                         }
+
+//                     </>
+//                 )
+//             }
+//         </div>
+
+//         {
+//             isModalCreateOpen && (
+//                 <Modal
+//                     isOpen={isModalCreateOpen}
+//                     onClose={closeModalCreate}
+//                     modalType='medical'
+//                     onSubmit={handleSubmitCreate}
+//                     editData={selectedMedicalRecord}
+//                     isProcessing={submitLoading}
+//                 />
+//             )
+//         }
+
+//         {
+//             isModalUpdateOpen && (
+//                 <Modal
+//                     isOpen={isModalUpdateOpen}
+//                     onClose={() => {
+//                         setIsCreateAsNewMode(false);
+//                         closeModalUpdate();
+//                     }}
+//                     modalType='medical'
+//                     onSubmit={handleSubmitUpdate}
+//                     editData={selectedMedicalRecord}
+//                     isProcessing={submitLoading}
+//                     isNewRecord={isCreateAsNewMode}
+//                 />
+//             )
+//         }
+
+//         {
+//             isModalDeleteOpen && softDeleteMedicalRecordData && (
+//                 <Modal
+//                     isOpen={isModalDeleteOpen}
+//                     onClose={closeModalDelete}
+//                     modalType='delete'
+//                     onSubmit={handleConfirmDelete}
+//                     deleteData={softDeleteMedicalRecordData}
+//                     isProcessing={submitLoading}
+//                 />
+//             )
+//         }
+
+//         <SubmitLoading
+//             isLoading={submitLoading}
+//             loadingText={getLoadingText(currentOperation, 'medical')}
+//             size='medium'
+//             variant='overlay'
+//         />
+//     </Main>
+//   )
+// }
+
+// export default MedicalRecordsPage
+
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './MedicalRecordsPage.module.css';
 import { Plus, Download, Archive, Edit } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
@@ -7,18 +516,25 @@ import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Tab
 import { toast } from 'sonner';
 import { calculateAge2, formatDate, generate20Only, generateInitials, getLoadingText } from '../../../utils';
 import { useMedicalRecordStore } from '../../../stores';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { generateMedicalRecordPDF } from '../../../templates';
 import { useDateRange } from '../../../hooks/useDateRange';
 
 const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Read fullName from URL on every render (stable ref)
+    const getFullNameFromURL = () =>
+        new URLSearchParams(location.search).get('fullName') || undefined;
+
     const [searchTerm, setSearchTerm] = useState('');
-    const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
     const [isCreateAsNewMode, setIsCreateAsNewMode] = useState(false);
 
-    //custom date range hook
+    // Ref to skip the useEffect fetch when handleSearch manually navigates
+    const skipNextLocationEffect = useRef(false);
+
     const {
         dateRange,
         customFromDate,
@@ -29,7 +545,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         getDateParams
     } = useDateRange('all');
 
-    //zustand store selectors
     const {
         medicalRecords,
         submitLoading,
@@ -57,13 +572,19 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         exportMedicalRecords
     } = useMedicalRecordStore();
 
-    const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
+    const fetchData = useCallback(async (
+        page: number = 1,
+        limit: number = 10,
+        search: string = '',
+        fullName?: string
+    ) => {
         try {
             const dateParams = getDateParams();
-            await fetchMedicalRecords({ 
-                page, 
-                limit, 
+            await fetchMedicalRecords({
+                page,
+                limit,
                 search,
+                fullName,
                 ...dateParams
             });
         } catch (error) {
@@ -71,36 +592,59 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         }
     }, [fetchMedicalRecords, getDateParams]);
 
+    // Fires on mount + when URL changes (e.g. navigating from RecordPage or refreshing)
     useEffect(() => {
-        if (isInitialLoad) {
-            fetchData(1, 10, '');
-            setIsInitialLoad(false);
+        // If handleSearch triggered navigate(), skip this effect to avoid double fetch
+        if (skipNextLocationEffect.current) {
+            skipNextLocationEffect.current = false;
+            return;
         }
-    }, [isInitialLoad, fetchData]);
 
-    const handleSearch = useCallback((term: string) => {
-        setSearchTerm(term);
-        fetchData(1, storePagination?.itemsPerPage || 10, term);
-    }, [fetchData, storePagination?.itemsPerPage]);
+        const fullNameParam = getFullNameFromURL();
+
+        if (fullNameParam) {
+            setSearchTerm(fullNameParam);
+        }
+
+        fetchData(1, storePagination?.itemsPerPage || 10, fullNameParam ? '' : searchTerm, fullNameParam);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.search]);
+
+   const handleSearch = useCallback((term: string) => {
+    setSearchTerm(term);
+
+    // 👇 Only clear the URL fullName param when user actually types something
+    if (term && getFullNameFromURL()) {
+        skipNextLocationEffect.current = true;
+        navigate('/admin/medical-records', { replace: true });
+    }
+
+    fetchData(1, storePagination?.itemsPerPage || 10, term, term ? undefined : getFullNameFromURL());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [fetchData, navigate, storePagination?.itemsPerPage, location.search]);
 
     const handlePageChange = useCallback((page: number) => {
-        fetchData(page, storePagination?.itemsPerPage || 10, searchTerm);
-    }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
+        fetchData(page, storePagination?.itemsPerPage || 10, searchTerm, getFullNameFromURL());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm, location.search]);
 
     const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
-        fetchData(1, itemsPerPage, searchTerm);
-    }, [fetchData, searchTerm]);
+        fetchData(1, itemsPerPage, searchTerm, getFullNameFromURL());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [fetchData, searchTerm, location.search]);
 
     const handleDateRangeChange = useCallback((range: string) => {
         setDateRange(range as any);
         if (range !== 'custom') {
-            fetchData(1, storePagination?.itemsPerPage || 10, searchTerm);
+            fetchData(1, storePagination?.itemsPerPage || 10, searchTerm, getFullNameFromURL());
         }
-    }, [setDateRange, fetchData, storePagination?.itemsPerPage, searchTerm]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [setDateRange, fetchData, storePagination?.itemsPerPage, searchTerm, location.search]);
 
     const handleApplyCustomRange = useCallback(() => {
-        fetchData(1, storePagination?.itemsPerPage || 10, searchTerm);
-    }, [fetchData, storePagination?.itemsPerPage, searchTerm]);
+        fetchData(1, storePagination?.itemsPerPage || 10, searchTerm, getFullNameFromURL());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [fetchData, storePagination?.itemsPerPage, searchTerm, location.search]);
 
     const handleCreateClick = useCallback(() => {
         openModalCreate();
@@ -110,46 +654,38 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         try {
             exportMedicalRecords();
         } catch (error) {
-            console.log('Export error:', error)
+            console.log('Export error:', error);
         }
     };
 
     const handleViewClick = (record: MedicalRecordResponse) => {
-        navigate(`/admin/medical-records/details/${record.id}`)
-    }
+        navigate(`/admin/medical-records/details/${record.id}`);
+    };
 
     const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
-            console.error('Invalid data for adding medical record')
-            return
+            console.error('Invalid data for adding medical record');
+            return;
         }
-
         const medicalData = data as MedicalRecordFormData;
-
         try {
-            await addMedicalRecord(medicalData)
-
+            await addMedicalRecord(medicalData);
             setTimeout(() => {
-                fetchData(
-                    storePagination?.currentPage || 1, 
-                    storePagination?.itemsPerPage || 10, 
-                    searchTerm
-                );
+                fetchData(storePagination?.currentPage || 1, storePagination?.itemsPerPage || 10, searchTerm, getFullNameFromURL());
                 closeModalCreate();
             }, 600);
         } catch (error) {
             console.error('Error adding medical records:', error);
         }
-    }, [addMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [addMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate, location.search]);
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
             console.error('Invalid data or missing medical ID');
             return;
         }
-
         const medicalData = data as MedicalRecordFormData;
-
         try {
             if (!medicalData.id && selectedMedicalRecord?.id) {
                 await addMedicalRecord(medicalData);
@@ -157,69 +693,54 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
             } else if (selectedMedicalRecord?.id) {
                 await updateMedicalRecordData(selectedMedicalRecord.id, medicalData);
             } else {
-                //fallback to create if no ID exists
                 await addMedicalRecord(medicalData);
             }
-
             setTimeout(() => {
-                fetchData(
-                    storePagination?.currentPage || 1, 
-                    storePagination?.itemsPerPage || 10, 
-                    searchTerm
-                );
+                fetchData(storePagination?.currentPage || 1, storePagination?.itemsPerPage || 10, searchTerm, getFullNameFromURL());
                 setIsCreateAsNewMode(false);
                 closeModalUpdate();
             }, 600);
         } catch (error) {
             console.error('Error processing medical record:', error);
         }
-    }, [selectedMedicalRecord, updateMedicalRecordData, addMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalUpdate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedMedicalRecord, updateMedicalRecordData, addMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalUpdate, location.search]);
 
     const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {
             console.error('Invalid patient ID');
             return;
         }
-
         try {
             await softDeleteMedicalRecord(data);
-
-             setTimeout(() => {
-                fetchData(
-                    storePagination?.currentPage || 1, 
-                    storePagination?.itemsPerPage || 10, 
-                    searchTerm
-                );
+            setTimeout(() => {
+                fetchData(storePagination?.currentPage || 1, storePagination?.itemsPerPage || 10, searchTerm, getFullNameFromURL());
             }, 600);
         } catch (error) {
             console.error('Error deleting medical record:', error);
         }
-    }, [softDeleteMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [softDeleteMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, location.search]);
 
     const handleDownloadReceipt = useCallback((record: MedicalRecordFormData) => {
         if (!record) {
             toast.error('No record data available');
             return;
         }
-
         if (isGeneratingPDF) {
             toast.warning('Please wait, generating receipt...');
             return;
         }
-
         setIsGeneratingPDF(true);
         const loadingToast = toast.loading('Generating receipt PDF...');
-
         try {
             generateMedicalRecordPDF(record);
-            
             toast.dismiss(loadingToast);
             toast.success('Receipt downloaded successfully!', {
                 description: `Receipt for ${record.personalDetails.fullName}`
             });
         } catch (error) {
             console.error('Error generating receipt:', error);
-            
             toast.dismiss(loadingToast);
             toast.error('Failed to generate receipt', {
                 description: error instanceof Error ? error.message : 'An unexpected error occurred'
@@ -228,7 +749,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
             setIsGeneratingPDF(false);
         }
     }, [isGeneratingPDF]);
-
 
     const medicalRecordsColumns: TableColumn<MedicalRecordResponse>[] = [
         {
@@ -239,7 +759,6 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                     <div className={styles.patientAvatar}>
                         {generateInitials(record.personalDetails.fullName)}
                     </div>
-
                     <div className={styles.patientText}>
                         <div className={styles.patientName}>
                             {generate20Only(record.personalDetails.fullName)}
@@ -254,8 +773,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         {
             key: 'dateOfBirth',
             header: 'DATE OF BIRTH',
-            render: (record) => 
-                (formatDate(record.personalDetails.dateOfBirth))
+            render: (record) => formatDate(record.personalDetails.dateOfBirth)
         },
         {
             key: 'age',
@@ -275,24 +793,19 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         {
             key: 'dateRecorded',
             header: 'DATE RECORDED',
-            render: (record) => 
-                (formatDate(record.dateRecorded))
+            render: (record) => formatDate(record.dateRecorded)
         },
         {
             key: 'actions',
             header: 'ACTIONS',
             render: (record) => {
                 getStatusFromRecord(record);
-                
                 return (
                     <div className={styles.actions}>
                         <button
                             type='button'
                             className={`${styles.actionBtn} ${styles.view}`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleViewClick(record);
-                            }}
+                            onClick={(e) => { e.stopPropagation(); handleViewClick(record); }}
                             title='View Details'
                         >
                             View
@@ -300,11 +813,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                         <button
                             type='button'
                             className={`${styles.actionBtn} ${styles.createAsNew}`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setIsCreateAsNewMode(true);
-                                openModalUpdate(record);
-                            }}
+                            onClick={(e) => { e.stopPropagation(); setIsCreateAsNewMode(true); openModalUpdate(record); }}
                             title='Create as new'
                         >
                             <Plus size={16} />
@@ -312,21 +821,14 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                         <button
                             type='button'
                             className={`${styles.actionBtn} ${styles.update}`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setIsCreateAsNewMode(false);
-                                openModalUpdate(record);
-                            }}
+                            onClick={(e) => { e.stopPropagation(); setIsCreateAsNewMode(false); openModalUpdate(record); }}
                             title='Update'
                         >
                             <Edit size={16} />
                         </button>
                         <button
                             type='button'
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleDownloadReceipt(record);
-                            }}
+                            onClick={(e) => { e.stopPropagation(); handleDownloadReceipt(record); }}
                             className={`${styles.actionBtn} ${styles.download}`}
                             title="Download Receipt"
                         >
@@ -335,10 +837,7 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                         <button
                             type='button'
                             className={`${styles.actionBtn} ${styles.delete}`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                openModalDelete(record);
-                            }}
+                            onClick={(e) => { e.stopPropagation(); openModalDelete(record); }}
                             title='Archive'
                         >
                             <Archive size={16} />
@@ -365,56 +864,55 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
         }
     ];
 
-  return (
-    <Main error={error}>
-        <Header
-            title='Medical Records'
-            actions={headerActions}
-        />
+    return (
+        <Main error={error}>
+            <Header
+                title='Medical Records'
+                actions={headerActions}
+            />
 
-        <div className={styles.section}>
-            <div className={styles.sectionHeader}>
-                <div className={styles.sectionTitle}>Medical Records</div>
+            <div className={styles.section}>
+                <div className={styles.sectionHeader}>
+                    <div className={styles.sectionTitle}>Medical Records</div>
 
-                <div className={styles.controls}>
-                    <Searchbar
-                        onSearch={handleSearch}
-                        placeholder="Search records..."
-                        disabled={loading}
-                        className={styles.searchbar}
-                    />
-
-                    <DateRangeFilter
-                        dateRange={dateRange}
-                        customFromDate={customFromDate}
-                        customToDate={customToDate}
-                        onDateRangeChange={handleDateRangeChange}
-                        onCustomFromDateChange={setCustomFromDate}
-                        onCustomToDateChange={setCustomToDate}
-                        onApplyCustomRange={handleApplyCustomRange}
-                        disabled={loading}
-                    />
-                    
-                    <div className={styles.itemsPerPageControl}>
-                        <label htmlFor="itemsPerPage">Items per page:</label>
-                        <select
-                            id="itemsPerPage"
-                            value={storePagination?.itemsPerPage || 10}
-                            onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                    <div className={styles.controls}>
+                        {/* <Searchbar
+                            onSearch={handleSearch}
+                            placeholder="Search records..."
                             disabled={loading}
-                            className={styles.itemsPerPageSelect}
-                        >
-                            <option value={5}>5</option>
-                            <option value={10}>10</option>
-                            <option value={20}>20</option>
-                            <option value={50}>50</option>
-                        </select>
+                            className={styles.searchbar}
+                        /> */}
+
+                        <DateRangeFilter
+                            dateRange={dateRange}
+                            customFromDate={customFromDate}
+                            customToDate={customToDate}
+                            onDateRangeChange={handleDateRangeChange}
+                            onCustomFromDateChange={setCustomFromDate}
+                            onCustomToDateChange={setCustomToDate}
+                            onApplyCustomRange={handleApplyCustomRange}
+                            disabled={loading}
+                        />
+
+                        <div className={styles.itemsPerPageControl}>
+                            <label htmlFor="itemsPerPage">Items per page:</label>
+                            <select
+                                id="itemsPerPage"
+                                value={storePagination?.itemsPerPage || 10}
+                                onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                                disabled={loading}
+                                className={styles.itemsPerPageSelect}
+                            >
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {
-                loading ? (
+                {loading ? (
                     <div className={styles.tableResponsive}>
                         <Loading
                             type='skeleton'
@@ -434,26 +932,21 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                             getRowKey={(record) => record.id || ''}
                         />
 
-                        {
-                            storePagination && storePagination.totalPages > 1 && (
-                                <Pagination
-                                    currentPage={storePagination.currentPage}
-                                    totalPages={storePagination.totalPages}
-                                    totalItems={storePagination.totalItems}
-                                    itemsPerPage={storePagination.itemsPerPage}
-                                    onPageChange={handlePageChange}
-                                    disabled={loading || isProcessing}
-                                />
-                            )
-                        }
-
+                        {storePagination && storePagination.totalPages > 1 && (
+                            <Pagination
+                                currentPage={storePagination.currentPage}
+                                totalPages={storePagination.totalPages}
+                                totalItems={storePagination.totalItems}
+                                itemsPerPage={storePagination.itemsPerPage}
+                                onPageChange={handlePageChange}
+                                disabled={loading || isProcessing}
+                            />
+                        )}
                     </>
-                )
-            }
-        </div>
+                )}
+            </div>
 
-        {
-            isModalCreateOpen && (
+            {isModalCreateOpen && (
                 <Modal
                     isOpen={isModalCreateOpen}
                     onClose={closeModalCreate}
@@ -462,28 +955,21 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                     editData={selectedMedicalRecord}
                     isProcessing={submitLoading}
                 />
-            )
-        }
+            )}
 
-        {
-            isModalUpdateOpen && (
+            {isModalUpdateOpen && (
                 <Modal
                     isOpen={isModalUpdateOpen}
-                    onClose={() => {
-                        setIsCreateAsNewMode(false);
-                        closeModalUpdate();
-                    }}
+                    onClose={() => { setIsCreateAsNewMode(false); closeModalUpdate(); }}
                     modalType='medical'
                     onSubmit={handleSubmitUpdate}
                     editData={selectedMedicalRecord}
                     isProcessing={submitLoading}
                     isNewRecord={isCreateAsNewMode}
                 />
-            )
-        }
+            )}
 
-        {
-            isModalDeleteOpen && softDeleteMedicalRecordData && (
+            {isModalDeleteOpen && softDeleteMedicalRecordData && (
                 <Modal
                     isOpen={isModalDeleteOpen}
                     onClose={closeModalDelete}
@@ -492,17 +978,16 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
                     deleteData={softDeleteMedicalRecordData}
                     isProcessing={submitLoading}
                 />
-            )
-        }
+            )}
 
-        <SubmitLoading
-            isLoading={submitLoading}
-            loadingText={getLoadingText(currentOperation, 'medical')}
-            size='medium'
-            variant='overlay'
-        />
-    </Main>
-  )
+            <SubmitLoading
+                isLoading={submitLoading}
+                loadingText={getLoadingText(currentOperation, 'medical')}
+                size='medium'
+                variant='overlay'
+            />
+        </Main>
+    );
 }
 
 export default MedicalRecordsPage

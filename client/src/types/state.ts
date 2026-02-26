@@ -16,6 +16,7 @@ export interface FetchParams {
     search?: string;
     isArchived?: boolean;
     status?: string;
+    fullName?: string;
 }
 
 

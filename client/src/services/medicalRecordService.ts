@@ -95,6 +95,29 @@ export const getMedicalRecordById = async (medicalRecordId: string) => {
     }
 };
 
+export const getMedicalRecordsByName = async (searchTerm?: string) => {
+    try {
+        const params: Record<string, string> = {};
+        if (searchTerm && searchTerm.trim()) {
+            params.searchTerm = searchTerm.trim();
+        }
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/medicalRecords/getMedicalRecordsByName`,
+            { params }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching medical records by name:', error);
+        if (axios.isAxiosError(error)) {
+            throw error.response?.data || error.message;
+        }
+
+        throw error;
+    }
+};
+
 export const updateMedicalRecord = async (medicalRecordId: string, medicalRecordData: Partial<MedicalRecordFormData>) => {
     try {
         //transform form data to nested structure if needed

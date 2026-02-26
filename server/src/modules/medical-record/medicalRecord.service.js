@@ -309,14 +309,15 @@ class MedicalRecordService extends BaseService {
 
 
     async getMedicalRecordsByName(searchTerm) {
-        const searchRegex = new RegExp(searchTerm.trim(), 'i');
+        const filter = { deletedAt: null };
 
-        const medicalRecords = await MedicalRecord.find({
-            deletedAt: null,
-            'personalDetails.fullName': { $regex: searchRegex }
-        })
-        .populate('appointmentId', 'appointmentNumber firstName lastName middleName suffix preferredDate preferredTime status')
-        .sort({ createdAt: -1 });
+        if (searchTerm && searchTerm.trim()) {
+            filter['personalDetails.fullName'] = { $regex: new RegExp(searchTerm.trim(), 'i') };
+        }
+
+        const medicalRecords = await MedicalRecord.find(filter)
+            .populate('appointmentId', 'appointmentNumber firstName lastName middleName suffix preferredDate preferredTime status')
+            .sort({ createdAt: -1 });
 
         const seen = new Map();
         for (const record of medicalRecords) {
