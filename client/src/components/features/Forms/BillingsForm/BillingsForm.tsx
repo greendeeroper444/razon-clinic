@@ -344,10 +344,15 @@ const BillingForm: React.FC<BillingFormProps> = ({
             onChange={handleMedicalRecordChange}
             placeholder='Choose a medical record...'
             leftIcon='user'
-            options={medicalRecords.map(record => ({
-                value: record.id,
-                label: `${record.patientName} - ${record.date} (${record.diagnosis})`
-            }))}
+            options={medicalRecords.map(record => {
+                const diagnosis = record.diagnosis?.length > 40
+                    ? `${record.diagnosis.substring(0, 40)}...`
+                    : record.diagnosis;
+                return {
+                    value: record.id,
+                    label: `${record.patientName} - ${record.date} (${diagnosis})`
+                };
+            })}
             error={getFieldError(validationErrors, 'medicalRecordId')}
         />
 
