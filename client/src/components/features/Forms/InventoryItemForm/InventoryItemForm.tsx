@@ -149,19 +149,23 @@ const InventoryItemForm: React.FC<InventoryItemFormProps> = ({
 
         <br />
 
-        <Input
-            ref={(el) => { fieldRefs.current['quantityUsed'] = el; }}
-            type='number'
-            label='Quantity Used'
-            name='quantityUsed'
-            placeholder='Enter quantity used'
-            value={formData?.quantityUsed || 0}
-            onChange={onChange}
-            min='0'
-            readOnly={isRestockMode}
-            disabled={isRestockMode}
-            error={getFieldError(validationErrors, 'quantityUsed')}
-        />
+        {
+            (isRestockMode || isAddQuantityMode) && (
+                <Input
+                    ref={(el) => { fieldRefs.current['quantityUsed'] = el; }}
+                    type='number'
+                    label='Quantity Used'
+                    name='quantityUsed'
+                    placeholder='Enter quantity used'
+                    value={formData?.quantityUsed || 0}
+                    onChange={onChange}
+                    min='0'
+                    readOnly={isRestockMode}
+                    disabled={isRestockMode}
+                    error={getFieldError(validationErrors, 'quantityUsed')}
+                />
+            )
+        }
 
         <br />
 
