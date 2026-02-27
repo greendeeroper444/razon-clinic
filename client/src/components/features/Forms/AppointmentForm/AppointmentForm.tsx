@@ -40,6 +40,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     //get the logged-in user from auth store
     const user = useAuthenticationStore((state) => state.user);
 
+    // staff and doctor roles can book appointments for today without the 2-day restriction.
+    // case-insensitive check to handle any casing from the backend (e.g. 'Staff', 'STAFF', 'staff')
+    const isPrivilegedUser =
+        user?.role?.toLowerCase() === 'staff' ||
+        user?.role?.toLowerCase() === 'doctor';
+
     const { fieldRefs } = useScrollToError({
         validationErrors,
         fieldOrder: [
@@ -162,12 +168,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         return timeDate <= today;
     };
 
-    // ─── NEW: check if a date violates the 1-day-before rule ─────────────────────
-    // Rule: preferred date must be at least 2 days from today.
-    // i.e., the patient must book BEFORE the day prior to their appointment.
-    // Today → cannot book today or tomorrow. Earliest allowed = day after tomorrow.
+    //rule: preferred date must be at least 2 days from today for regular users.
+    //staff and doctor roles bypass this restriction and can select today's date.
     const isTooSoon = (dateString: string): boolean => {
         if (!dateString) return false;
+        if (isPrivilegedUser) return false; // staff/doctor can book any date including today
         const minAllowed = toDateOnly(getDateOffset(2)); // today + 2 days
         const selected   = toDateOnly(dateString);
         return selected < minAllowed;
@@ -299,9 +304,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         return undefined;
     };
 
-    // ─── UPDATED: isDateAvailable now also rejects dates that are too soon ────────
     const isDateAvailable = (dateString: string) => {
-        // Reject dates that don't satisfy the 1-day-before booking rule
+        // Reject dates that don't satisfy the booking rule (bypassed for staff/doctor)
         if (isTooSoon(dateString)) {
             return false;
         }
@@ -322,13 +326,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         );
     };
 
-    // ─── UPDATED: getDateError now shows a clear message for too-soon dates ───────
     const getDateError = () => {
         const apiError = getFieldError(validationErrors,'preferredDate');
         if (apiError) return apiError;
 
         if (formData?.preferredDate) {
-            // Check the 1-day-before rule first
+            //check the booking rule (only applies to non-privileged users)
             if (isTooSoon(formData.preferredDate)) {
                 return 'Appointments must be booked at least 1 day before your preferred schedule. Please select a date at least 2 days from today.';
             }
@@ -408,7 +411,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
   return (
     <div className={styles.sectionDivider}>
         <h4>Child Information</h4>
-        
+
         <Input
             ref={(el) => { fieldRefs.current['firstName'] = el; }}
             type='text'
@@ -421,7 +424,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         />
 
         <br />
-        
+
         <Input
             ref={(el) => { fieldRefs.current['lastName'] = el; }}
             type='text'
@@ -567,7 +570,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         <div className={styles.sectionDivider}>
             <h4>Mother's Information</h4>
-            
+
             <div className={styles.formRow}>
                 <Input
                     ref={(el) => { fieldRefs.current['motherName'] = el; }}
@@ -608,7 +611,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
         <div className={styles.sectionDivider}>
             <h4>Father's Information</h4>
-            
+
             <div className={styles.formRow}>
                 <Input
                     ref={(el) => { fieldRefs.current['fatherName'] = el; }}
@@ -671,7 +674,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             resize='vertical'
             error={getFieldError(validationErrors,'address')}
         />
-        
+
         <br />
 
         <Select
@@ -680,8 +683,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             name='religion'
             leftIcon='users'
             placeholder='Select Religion'
-            value={formData?.religion && predefinedReligions.includes(formData.religion) 
-                ? formData.religion 
+            value={formData?.religion && predefinedReligions.includes(formData.religion)
+                ? formData.religion
                 : formData?.religion && !predefinedReligions.includes(formData.religion)
                 ? 'Others'
                 : ''}
@@ -701,34 +704,35 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             error={getFieldError(validationErrors,'religion')}
         />
 
-        {
-            (formData?.religion === 'Others' || 
-            (formData?.religion && 
-            !['Roman Catholic', 'Islam', 'Iglesia ni Cristo', 'Evangelical / Born Again', 
+        {(formData?.religion === 'Others' ||
+            (formData?.religion &&
+            !['Roman Catholic', 'Islam', 'Iglesia ni Cristo', 'Evangelical / Born Again',
                 'Seventh-day Adventist', 'Protestant', 'Baptist', 'Buddhism', 'Non-religious'].includes(formData.religion))) && (
-                <Input
-                    type='text'
-                    name='religionOther'
-                    placeholder='Please specify your religion'
-                    leftIcon='church'
-                    value={formData?.religionOther || (formData?.religion !== 'Others' ? formData?.religion : '')}
-                    onChange={handleReligionChange}
-                    error={getFieldError(validationErrors,'religion')}
-                />
-            )
-        }
+            <Input
+                type='text'
+                name='religionOther'
+                placeholder='Please specify your religion'
+                leftIcon='church'
+                value={formData?.religionOther || (formData?.religion !== 'Others' ? formData?.religion : '')}
+                onChange={handleReligionChange}
+                error={getFieldError(validationErrors,'religion')}
+            />
+        )}
 
         <br />
 
         <h4>Appointment Details</h4>
 
-        <div className={styles.modalNote}>
-            <Info className={styles.modalNoteIcon} size={16} />
-            <span>
-                Appointments must be booked <strong>at least 1 day before</strong> your preferred schedule.
-                The earliest available date is <strong>{getDateOffset(2)}</strong> (day after tomorrow).
-            </span>
-        </div>
+        {/* only show the booking restriction notice to regular (non-privileged) users */}
+        {!isPrivilegedUser && (
+            <div className={styles.modalNote}>
+                <Info className={styles.modalNoteIcon} size={16} />
+                <span>
+                    Appointments must be booked <strong>at least 1 day before</strong> your preferred schedule.
+                    The earliest available date is <strong>{getDateOffset(2)}</strong> (day after tomorrow).
+                </span>
+            </div>
+        )}
 
         <div className={styles.formRow}>
             <Input
@@ -740,8 +744,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 leftIcon="calendar"
                 value={formData?.preferredDate || ''}
                 onChange={handleDateChange}
-                // ─── CHANGED: was today (offset 0), now today + 2 ───────────────
-                min={getDateOffset(2)}
+                //staff and doctor can select today; regular users must book at least 2 days ahead
+                min={isPrivilegedUser ? getDateOffset(0) : getDateOffset(2)}
                 disabled={isLoading}
                 error={getDateError()}
             />
@@ -779,7 +783,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             resize="vertical"
         />
     </div>
-  ) 
+  )
 }
 
 export default AppointmentForm
