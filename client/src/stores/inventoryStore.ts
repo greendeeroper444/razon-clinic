@@ -259,6 +259,7 @@ export const useInventoryStore = create<ExtendedInventoryState>()(
                     quantityInStock: item.quantityInStock,
                     quantityUsed: item.quantityUsed,
                     expiryDate: item.expiryDate.split('T')[0],
+                    createdAt: new Date().toISOString(),
                 };
 
                 set({ 

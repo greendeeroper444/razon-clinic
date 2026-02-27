@@ -7,7 +7,7 @@ import { AppointmentFormData, AppointmentResponse, FormDataType, TableColumn } f
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components'
 import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore, useAuthenticationStore } from '../../../stores'
-import { toast } from 'sonner'
+// import { toast } from 'sonner'
 import { updateAppointmentStatus } from '../../../services'
 
 const AppointmentPage: React.FC<OpenModalProps> = () => {
@@ -98,7 +98,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         pagination: storePagination,
         openModalCreate,
         openModalUpdate,
-        openModalDelete,
+        // openModalDelete,
         closeModalCreate,
         closeModalUpdate,
         closeModalDelete,
