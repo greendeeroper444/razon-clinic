@@ -8,3 +8,4 @@ export * from './userService';
 export * from './patientService';
 export * from './blockedTimeSlotService';
 export * from './personnelService';
+export * from './inventoryTransactionService';

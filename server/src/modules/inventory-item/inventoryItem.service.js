@@ -1,4 +1,5 @@
 const InventoryItem = require("./inventoryItem.model");
+const InventoryTransactionService = require("@modules/inventory-transaction/inventoryTransaction.service");
 const mongoose = require('mongoose');
 
 class InventoryItemService {
@@ -6,7 +7,24 @@ class InventoryItemService {
     async createInventoryItem(inventoryItemData) {
         try {
             const inventoryItem = new InventoryItem(inventoryItemData);
-            return await inventoryItem.save();
+            const saved = await inventoryItem.save();
+
+            //log initial stock as an IN transaction
+            if (saved.quantityInStock > 0) {
+                await InventoryTransactionService.logTransaction({
+                    inventoryItemId: saved._id,
+                    itemName: saved.itemName,
+                    category: saved.category,
+                    transactionType: 'IN',
+                    quantity: saved.quantityInStock,
+                    previousStock: 0,
+                    newStock: saved.quantityInStock,
+                    reason: 'initial',
+                    notes: 'Initial stock on item creation'
+                });
+            }
+
+            return saved;
         } catch (error) {
             throw error;
         }
@@ -24,7 +42,6 @@ class InventoryItemService {
                 sortOrder = 'desc' 
             } = queryParams;
 
-            //build filter object
             const filter = {};
             if (search) {
                 filter.$or = [
@@ -39,21 +56,16 @@ class InventoryItemService {
                 filter.itemName = { $regex: itemName, $options: 'i' };
             }
 
-            //build sort object
             const sort = {};
             sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
-            //get total count first
             const totalItems = await InventoryItem.countDocuments(filter);
-
             const searchTerm = search || itemName || null;
 
             let inventoryItems;
             let pagination;
 
-            //check if limit is provided (pagination requested)
             if (limit && parseInt(limit) > 0) {
-                //paginated query
                 const currentPage = parseInt(page);
                 const itemsPerPage = parseInt(limit);
                 const skip = (currentPage - 1) * itemsPerPage;
@@ -68,28 +80,27 @@ class InventoryItemService {
                 const endIndex = Math.min(skip + itemsPerPage, totalItems);
 
                 pagination = {
-                    currentPage: currentPage,
-                    totalPages: totalPages,
-                    totalItems: totalItems,
-                    itemsPerPage: itemsPerPage,
+                    currentPage,
+                    totalPages,
+                    totalItems,
+                    itemsPerPage,
                     hasNextPage: currentPage < totalPages,
                     hasPreviousPage: currentPage > 1,
-                    startIndex: startIndex,
-                    endIndex: endIndex,
+                    startIndex,
+                    endIndex,
                     isUnlimited: false,
                     nextPage: currentPage < totalPages ? currentPage + 1 : null,
                     previousPage: currentPage > 1 ? currentPage - 1 : null,
                     remainingItems: Math.max(0, totalItems - endIndex),
-                    searchTerm: searchTerm
+                    searchTerm
                 };
             } else {
-                //unlimited query (no pagination)
                 inventoryItems = await InventoryItem.find(filter).sort(sort);
 
                 pagination = {
                     currentPage: 1,
                     totalPages: 1,
-                    totalItems: totalItems,
+                    totalItems,
                     itemsPerPage: totalItems,
                     hasNextPage: false,
                     hasPreviousPage: false,
@@ -99,14 +110,11 @@ class InventoryItemService {
                     nextPage: null,
                     previousPage: null,
                     remainingItems: 0,
-                    searchTerm: searchTerm
+                    searchTerm
                 };
             }
 
-            return {
-                inventoryItems,
-                pagination
-            };
+            return { inventoryItems, pagination };
         } catch (error) {
             throw error;
         }
@@ -136,7 +144,10 @@ class InventoryItemService {
                 throw new Error('Invalid inventory item ID format');
             }
 
-            //remove protected fields
+            //capture previous stock before updating
+            const previousItem = await InventoryItem.findById(inventoryItemId);
+            if (!previousItem) throw new Error('Inventory item not found');
+
             delete updateData._id;
             delete updateData.__v;
             delete updateData.createdAt;
@@ -145,14 +156,30 @@ class InventoryItemService {
             const inventoryItem = await InventoryItem.findByIdAndUpdate(
                 inventoryItemId,
                 updateData,
-                { 
-                    new: true, 
-                    runValidators: true 
-                }
+                { new: true, runValidators: true }
             );
 
             if (!inventoryItem) {
                 throw new Error('Inventory item not found');
+            }
+
+            // Log stock change if quantityInStock changed via direct edit
+            const prevStock = previousItem.quantityInStock;
+            const newStock = inventoryItem.quantityInStock;
+
+            if (prevStock !== newStock) {
+                const diff = newStock - prevStock;
+                await InventoryTransactionService.logTransaction({
+                    inventoryItemId: inventoryItem._id,
+                    itemName: inventoryItem.itemName,
+                    category: inventoryItem.category,
+                    transactionType: diff > 0 ? 'IN' : 'OUT',
+                    quantity: Math.abs(diff),
+                    previousStock: prevStock,
+                    newStock,
+                    reason: 'adjustment',
+                    notes: 'Stock adjusted via item edit'
+                });
             }
 
             return inventoryItem;
@@ -216,7 +243,6 @@ class InventoryItemService {
             thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + parseInt(days));
 
             const items = await InventoryItem.find({ isArchived: false });
-
             const expiringItems = items.filter(item => item.expiryDate <= thirtyDaysFromNow);
 
             return expiringItems;
@@ -225,7 +251,7 @@ class InventoryItemService {
         }
     }
 
-    async updateStock(inventoryItemId, quantityUsed, operation = 'use') {
+    async updateStock(inventoryItemId, quantityUsed, operation = 'use', notes = '') {
         try {
             if (!mongoose.Types.ObjectId.isValid(inventoryItemId)) {
                 throw new Error('Invalid inventory item ID format');
@@ -236,6 +262,8 @@ class InventoryItemService {
             if (!inventoryItem) {
                 throw new Error('Inventory item not found');
             }
+
+            const previousStock = inventoryItem.quantityInStock;
 
             if (operation === 'use') {
                 if (inventoryItem.quantityInStock < quantityUsed) {
@@ -250,7 +278,22 @@ class InventoryItemService {
                 throw new Error('Invalid operation. Use "use" or "restock"');
             }
 
-            return await inventoryItem.save();
+            const saved = await inventoryItem.save();
+
+            //log the transaction
+            await InventoryTransactionService.logTransaction({
+                inventoryItemId: saved._id,
+                itemName: saved.itemName,
+                category: saved.category,
+                transactionType: operation === 'restock' ? 'IN' : 'OUT',
+                quantity: parseInt(quantityUsed),
+                previousStock,
+                newStock: saved.quantityInStock,
+                reason: operation === 'restock' ? 'restock' : 'consumption',
+                notes: notes || (operation === 'restock' ? 'Stock restocked' : 'Stock consumed')
+            });
+
+            return saved;
         } catch (error) {
             throw error;
         }

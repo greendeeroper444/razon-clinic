@@ -1,4 +1,4 @@
-import { DashboardPage, AppointmentPage, AppointmentDetailsPage, PatientPage, InventoryPage, UserManagementPage, MedicalRecordsPage, MedicalRecordDetailsPage, BillingsPaymentPage, CalendarDateDetailsPage, GrowthMilestonePage, PatientDetailsPage, ReportPage, TrashPage, PatientManagementPage, BlockedTimeSlotPage, PersonnelManagementPage, RecordPage } from '../pages';
+import { DashboardPage, AppointmentPage, AppointmentDetailsPage, PatientPage, InventoryPage, UserManagementPage, MedicalRecordsPage, MedicalRecordDetailsPage, BillingsPaymentPage, CalendarDateDetailsPage, GrowthMilestonePage, PatientDetailsPage, ReportPage, TrashPage, PatientManagementPage, BlockedTimeSlotPage, PersonnelManagementPage, RecordPage, InventoryTransactionPage } from '../pages';
 import { RouteType } from '../types';
 
 export const adminRoutes: RouteType[] = [
@@ -8,6 +8,7 @@ export const adminRoutes: RouteType[] = [
     { path: '/admin/patients', component: PatientPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
     { path: '/admin/patients/details/:patientId', component: PatientDetailsPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
     { path: '/admin/inventory', component: InventoryPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
+    { path: '/admin/inventory/transactions', component: InventoryTransactionPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
     { path: '/admin/users', component: UserManagementPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
     { path: '/admin/patient-management', component: PatientManagementPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },
     { path: '/admin/records', component: RecordPage, layout: 'admin', requireAuth: true, allowedUserTypes: ['admin'] },

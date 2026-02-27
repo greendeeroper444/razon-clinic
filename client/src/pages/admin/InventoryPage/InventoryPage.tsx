@@ -1,19 +1,20 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import styles from './InventoryPage.module.css';
-import { Plus, Edit, Archive } from 'lucide-react';
+import { Plus, Edit, Archive, History } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
 import { Header, Loading, Main, Modal, Pagination, Searchbar, SubmitLoading, Table } from '../../../components';
 import { FormDataType, InventoryItemFormData, TableColumn } from '../../../types';
 import { formatDate, getExpiryStatus, getItemIcon, getLoadingText, getStockStatus } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
 import { useInventoryStore } from '../../../stores';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const InventoryPage: React.FC<OpenModalProps> = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
-    //zustand store selectors
+
     const {
         inventoryItems,
         submitLoading,
@@ -42,7 +43,6 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         currentOperation
     } = useInventoryStore();
 
-    //memoized fetch function to prevent recreation on every render
     const fetchData = useCallback(async (page: number = 1, limit: number = 10, search: string = '') => {
         try {
             await fetchInventoryItems({ page, limit, search });
@@ -51,7 +51,6 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         }
     }, [fetchInventoryItems]);
 
-    //initial load only
     useEffect(() => {
         if (isInitialLoad) {
             fetchData(1, 10, '');
@@ -59,7 +58,6 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         }
     }, [isInitialLoad, fetchData]);
 
-    //open modal when the inventory dashboard click restock
     useEffect(() => {
         const state = location.state as { restockItem?: InventoryItemFormData; openRestock?: boolean };
         
@@ -103,16 +101,20 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         openModalDelete(item);
     }, [openModalDelete]);
 
-     const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
+    const handleViewTransactions = useCallback(() => {
+        navigate('/admin/inventory/transactions');
+    }, [navigate]);
+
+    const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
-            console.error('Invalid data for adding invnetory item')
-            return
+            console.error('Invalid data for adding inventory item');
+            return;
         }
 
         const inventoryData = data as InventoryItemFormData;
 
         try {
-            await addInventoryItem(inventoryData)
+            await addInventoryItem(inventoryData);
 
             setTimeout(() => {
                 fetchData(
@@ -123,9 +125,9 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
                 closeModalCreate();
             }, 600);
         } catch (error) {
-            console.error('Error adding invnetory item:', error);
+            console.error('Error adding inventory item:', error);
         }
-    }, [addInventoryItem, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
+    }, [addInventoryItem, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate]);
     
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
@@ -142,7 +144,6 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
                 await addInventoryItem(inventoryData);
             }
             
-            //refresh after operation completes
             setTimeout(() => {
                 fetchData(
                     storePagination?.currentPage || 1, 
@@ -164,7 +165,6 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         try {
             await deleteInventoryItem(data);
             
-            //refresh after operation completes
             setTimeout(() => {
                 fetchData(
                     storePagination?.currentPage || 1, 
@@ -276,20 +276,25 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         }
     ];
 
-
     const headerActions = [
+        {
+            id: 'transactionHistoryBtn',
+            label: 'Transaction History',
+            icon: <History className={styles.icon} />,
+            onClick: handleViewTransactions,
+            type: 'secondary' as const
+        },
         {
             id: 'newItemBtn',
             label: 'New Item',
-            icon: <Plus className={styles.icon} /> ,
+            icon: <Plus className={styles.icon} />,
             onClick: handleCreateClick,
             type: 'primary' as const
         }
     ];
     
-    
   return (
-    <Main error={error} >
+    <Main error={error}>
         <Header
             title='Inventory'
             actions={headerActions}
@@ -432,4 +437,4 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
   )
 }
 
-export default InventoryPage
+export default InventoryPage;

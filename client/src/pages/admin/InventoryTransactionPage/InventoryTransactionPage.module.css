@@ -1,0 +1,194 @@
+/* ── Layout ─────────────────────────────────────────── */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Summary Cards ───────────────────────────────────── */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+    border-left: 4px solid transparent;
+}
+.card__in  { border-left-color: #22c55e; }
+.card__out { border-left-color: #ef4444; }
+.card__recent { border-left-color: #6366f1; }
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.cardTitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #6b7280;
+    letter-spacing: 0.05em;
+}
+.cardIcon {
+    width: 20px;
+    height: 20px;
+}
+.cardIcon__in     { color: #22c55e; }
+.cardIcon__out    { color: #ef4444; }
+.cardIcon__recent { color: #6366f1; }
+
+.cardValue {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1;
+}
+.cardSub {
+    font-size: 0.78rem;
+    color: #9ca3af;
+    margin-top: 0.3rem;
+}
+
+/* ── Section ─────────────────────────────────────────── */
+.section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+}
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+.sectionTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* ── Controls ────────────────────────────────────────── */
+.controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.searchbar {
+    min-width: 200px;
+}
+.filterSelect,
+.itemsPerPageSelect {
+    padding: 0.4rem 0.65rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #374151;
+    background: #f9fafb;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.filterSelect:focus,
+.itemsPerPageSelect:focus {
+    border-color: #6366f1;
+}
+.filterSelect:disabled,
+.itemsPerPageSelect:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.dateRange {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+.dateInput {
+    padding: 0.4rem 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: #374151;
+    background: #f9fafb;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.dateInput:focus { border-color: #6366f1; }
+.dateSep { color: #9ca3af; font-size: 0.85rem; }
+
+.itemsPerPageControl {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    color: #6b7280;
+}
+
+.clearBtn {
+    padding: 0.4rem 0.85rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: #6b7280;
+    background: #f9fafb;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.clearBtn:hover { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+.clearBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.tableResponsive { overflow-x: auto; }
+
+/* ── Table cells ─────────────────────────────────────── */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+.badge.in  { background: #dcfce7; color: #15803d; }
+.badge.out { background: #fee2e2; color: #b91c1c; }
+.badgeIcon { width: 13px; height: 13px; }
+
+.itemCell { display: flex; flex-direction: column; gap: 0.15rem; }
+.itemName { font-weight: 600; color: #111827; font-size: 0.88rem; }
+.itemCategory { font-size: 0.75rem; color: #9ca3af; }
+
+.reason {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+.reason.restock    { background: #dbeafe; color: #1d4ed8; }
+.reason.consumption { background: #fef3c7; color: #92400e; }
+.reason.adjustment { background: #ede9fe; color: #5b21b6; }
+.reason.initial    { background: #f0fdf4; color: #166534; }
+
+.qty {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+.qty.in  { color: #15803d; }
+.qty.out { color: #b91c1c; }
+
+.notes {
+    font-size: 0.82rem;
+    color: #6b7280;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}

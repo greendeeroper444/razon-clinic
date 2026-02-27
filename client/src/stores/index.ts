@@ -10,3 +10,5 @@ export { useBlockedTimeSlotStore } from './blockedTimeSlotStore';
 export { useOTPStore } from './otpStore';
 export { usePersonnelStore } from './personnelStore';
 export { useDashboardStore } from './dashboardStore';
+export { useTransactionStore } from './inventoryTransactionStore';
+export type { Transaction, TransactionStats } from './inventoryTransactionStore';

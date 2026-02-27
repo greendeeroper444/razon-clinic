@@ -17,6 +17,7 @@ export { default as AppointmentPage } from './admin/AppointmentPage/AppointmentP
 export { default as PatientPage } from './admin/PatientPage/PatientPage';
 export { default as PatientDetailsPage } from './admin/PatientDetailsPage/PatientDetailsPage';
 export { default as InventoryPage } from './admin/InventoryPage/InventoryPage';
+export { default as InventoryTransactionPage } from './admin/InventoryTransactionPage/InventoryTransactionPage';
 export { default as UserManagementPage } from './admin/UserManagementPage/UserManagementPage';
 export { default as PatientManagementPage } from './admin/PatientManagementPage/PatientManagementPage';
 export { default as AppointmentDetailsPage } from './admin/AppointmentDetailsPage/AppointmentDetailsPage';
