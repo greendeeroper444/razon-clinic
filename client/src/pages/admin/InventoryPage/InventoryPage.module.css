@@ -248,7 +248,7 @@
     color: var(--primary);
 }
 
-.actionBtn.primary:hover {
+.actionBtn.primary:hover:not(:disabled) {
     background-color: #bfdbfe;
 }
 
@@ -257,8 +257,18 @@
     color: var(--warning);
 }
 
-.actionBtn.update:hover {
+.actionBtn.update:hover:not(:disabled) {
     background-color: #fee6ca;
+}
+
+/* ── History button ── */
+.actionBtn.history {
+    background-color: #f0fdf4;
+    color: #15803d;
+}
+
+.actionBtn.history:hover:not(:disabled) {
+    background-color: #dcfce7;
 }
 
 .cancel {
@@ -266,7 +276,7 @@
     color: var(--danger);
 }
 
-.cancel:hover {
+.cancel:hover:not(:disabled) {
     background-color: #fecaca;
 }
 

@@ -40,6 +40,7 @@ export interface InventoryItemFormData {
     expirationDate?: string;
     location?: string;
     createdAt: string;
+    operation?: 'use' | 'restock';
 }
 
 

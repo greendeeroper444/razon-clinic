@@ -7,6 +7,8 @@ import { FormDataType, InventoryItemFormData, TableColumn } from '../../../types
 import { formatDate, getExpiryStatus, getItemIcon, getLoadingText, getStockStatus } from '../../../utils';
 import { getInventorySummaryCards } from '../../../config/inventorySummaryCards';
 import { useInventoryStore } from '../../../stores';
+import { updateStock } from '../../../services';
+import { toast } from 'sonner';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const InventoryPage: React.FC<OpenModalProps> = () => {
@@ -101,8 +103,11 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         openModalDelete(item);
     }, [openModalDelete]);
 
-    const handleViewTransactions = useCallback(() => {
-        navigate('/admin/inventory/transactions');
+    //navigate to item-specific transaction history
+    const handleViewHistory = useCallback((item: InventoryItemFormData) => {
+        navigate(`/admin/inventory/transactions/${item.id}`, {
+            state: { itemName: item.itemName }
+        });
     }, [navigate]);
 
     const handleSubmitCreate = useCallback(async (data: FormDataType | string): Promise<void> => {
@@ -138,10 +143,26 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
         const inventoryData = data as InventoryItemFormData;
 
         try {
-            if (selectedInventoryItem && selectedInventoryItem.id) {
-                await updateInventoryItemData(selectedInventoryItem.id, inventoryData);
-            } else {
+            if (!selectedInventoryItem?.id) {
                 await addInventoryItem(inventoryData);
+
+            } else if (isRestockMode || isAddQuantityMode) {
+                //call the service directly — avoids validateInventoryItem on the backend
+                //which requires category and other fields not present in restock mode
+                const quantityToSend = isAddQuantityMode
+                    ? Number(inventoryData.quantityInStock) - Number(selectedInventoryItem.quantityInStock)
+                    : Number(inventoryData.quantityInStock);
+
+                await updateStock(selectedInventoryItem.id, {
+                    quantityUsed: quantityToSend,
+                    operation: 'restock'
+                });
+
+                toast.success('Item restocked successfully!');
+                closeModalUpdate();
+
+            } else {
+                await updateInventoryItemData(selectedInventoryItem.id, inventoryData);
             }
             
             setTimeout(() => {
@@ -153,8 +174,20 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
             }, 600);
         } catch (error) {
             console.error('Error saving inventory item:', error);
+            toast.error('Failed to update stock. Please try again.');
         }
-    }, [selectedInventoryItem, updateInventoryItemData, addInventoryItem, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+    }, [
+        selectedInventoryItem,
+        isRestockMode,
+        isAddQuantityMode,
+        addInventoryItem,
+        updateInventoryItemData,
+        closeModalUpdate,
+        fetchData,
+        storePagination?.currentPage,
+        storePagination?.itemsPerPage,
+        searchTerm
+    ]);
 
     const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {
@@ -263,6 +296,14 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
                     >
                         <Edit className={styles.icon} /> Edit
                     </button>
+                    <button
+                        type='button'
+                        className={`${styles.actionBtn} ${styles.history}`}
+                        onClick={() => handleViewHistory(item)}
+                        disabled={isProcessing}
+                    >
+                        <History className={styles.icon} /> History
+                    </button>
                     <button 
                         type='button'
                         className={`${styles.actionBtn} ${styles.cancel}`}
@@ -277,13 +318,6 @@ const InventoryPage: React.FC<OpenModalProps> = () => {
     ];
 
     const headerActions = [
-        {
-            id: 'transactionHistoryBtn',
-            label: 'Transaction History',
-            icon: <History className={styles.icon} />,
-            onClick: handleViewTransactions,
-            type: 'secondary' as const
-        },
         {
             id: 'newItemBtn',
             label: 'New Item',

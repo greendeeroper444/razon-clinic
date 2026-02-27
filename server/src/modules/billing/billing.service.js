@@ -2,6 +2,7 @@ const Billing = require('./billing.model');
 const MedicalRecord = require('@modules/medical-record/medicalRecord.model');
 const InventoryItem = require('@modules/inventory-item/inventoryItem.model');
 const Appointment = require('@modules/appointment/appointment.model');
+const InventoryTransactionService = require('@modules/inventory-transaction/inventoryTransaction.service');
 const mongoose = require('mongoose');
 
 class BillingService {
@@ -34,12 +35,10 @@ class BillingService {
             throw new Error('Valid amount is required');
         }
 
-        //validate discount
         if (discount && discount < 0) {
             throw new Error('Discount cannot be negative');
         }
 
-        //validate amountPaid and change relationship
         if (amountPaid !== undefined && amountPaid < 0) {
             throw new Error('Amount paid cannot be negative');
         }
@@ -48,10 +47,9 @@ class BillingService {
             throw new Error('Change cannot be negative');
         }
 
-        //validate that change = amountPaid - amount (if both provided)
         if (amountPaid !== undefined && change !== undefined) {
             const calculatedChange = amountPaid - amount;
-            if (Math.abs(calculatedChange - change) > 0.01) { //allow for floating point precision
+            if (Math.abs(calculatedChange - change) > 0.01) {
                 throw new Error('Change amount does not match: amountPaid - totalAmount');
             }
         }
@@ -88,10 +86,15 @@ class BillingService {
         const savedBilling = await newBilling.save();
 
         if (itemName && itemQuantity) {
-            await this.updateInventoryQuantities(itemName, itemQuantity, 'subtract');
+            await this.updateInventoryQuantities(
+                itemName,
+                itemQuantity,
+                'subtract',
+                user,
+                `Billed to patient: ${patientName || medicalRecord.personalDetails?.fullName}`
+            );
         }
 
-        //if payment status is Paid, update appointment status to Completed
         if (paymentStatus === 'Paid') {
             await this.updateAppointmentStatusToCompleted(medicalRecordId);
         }
@@ -136,7 +139,6 @@ class BillingService {
                 if (toDate) filter.createdAt.$lte = new Date(toDate);
             }
 
-            //search functionality - search across multiple fields
             if (search) {
                 filter.$or = [
                     { patientName: { $regex: search, $options: 'i' } },
@@ -158,7 +160,6 @@ class BillingService {
             sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
             const totalItems = await Billing.countDocuments(filter);
-
             const searchTerm = search || patientName || itemName || null;
 
             let billings;
@@ -181,19 +182,19 @@ class BillingService {
                 const endIndex = Math.min(skip + itemsPerPage, totalItems);
 
                 pagination = {
-                    currentPage: currentPage,
-                    totalPages: totalPages,
-                    totalItems: totalItems,
-                    itemsPerPage: itemsPerPage,
+                    currentPage,
+                    totalPages,
+                    totalItems,
+                    itemsPerPage,
                     hasNextPage: currentPage < totalPages,
                     hasPreviousPage: currentPage > 1,
-                    startIndex: startIndex,
-                    endIndex: endIndex,
+                    startIndex,
+                    endIndex,
                     isUnlimited: false,
                     nextPage: currentPage < totalPages ? currentPage + 1 : null,
                     previousPage: currentPage > 1 ? currentPage - 1 : null,
                     remainingItems: Math.max(0, totalItems - endIndex),
-                    searchTerm: searchTerm
+                    searchTerm
                 };
             } else {
                 billings = await Billing.find(filter)
@@ -204,7 +205,7 @@ class BillingService {
                 pagination = {
                     currentPage: 1,
                     totalPages: 1,
-                    totalItems: totalItems,
+                    totalItems,
                     itemsPerPage: totalItems,
                     hasNextPage: false,
                     hasPreviousPage: false,
@@ -214,15 +215,11 @@ class BillingService {
                     nextPage: null,
                     previousPage: null,
                     remainingItems: 0,
-                    searchTerm: searchTerm
+                    searchTerm
                 };
             }
 
-            return {
-                billings,
-                pagination,
-                count: billings.length
-            };
+            return { billings, pagination, count: billings.length };
         } catch (error) {
             throw error;
         }
@@ -258,16 +255,10 @@ class BillingService {
             const oldPaymentStatus = billing.paymentStatus;
             billing.paymentStatus = updateData.paymentStatus;
             
-            //if marking as Paid, allow updating amountPaid and change
             if (updateData.paymentStatus === 'Paid') {
-                if (updateData.amountPaid !== undefined) {
-                    billing.amountPaid = updateData.amountPaid;
-                }
-                if (updateData.change !== undefined) {
-                    billing.change = updateData.change;
-                }
+                if (updateData.amountPaid !== undefined) billing.amountPaid = updateData.amountPaid;
+                if (updateData.change !== undefined) billing.change = updateData.change;
                 
-                //validate change calculation if both provided
                 if (updateData.amountPaid !== undefined && updateData.change !== undefined) {
                     const calculatedChange = updateData.amountPaid - billing.amount;
                     if (Math.abs(calculatedChange - updateData.change) > 0.01) {
@@ -275,7 +266,6 @@ class BillingService {
                     }
                 }
 
-                //update appointment status to Completed when payment is marked as Paid
                 if (oldPaymentStatus !== 'Paid') {
                     await this.updateAppointmentStatusToCompleted(billing.medicalRecordId);
                 }
@@ -288,12 +278,10 @@ class BillingService {
             return await billing.populate('medicalRecordId', 'personalDetails.fullName dateRecorded');
         }
 
-        //validate discount if being updated
         if (updateData.discount !== undefined && updateData.discount < 0) {
             throw new Error('Discount cannot be negative');
         }
 
-        //validate amountPaid and change if being updated
         if (updateData.amountPaid !== undefined && updateData.amountPaid < 0) {
             throw new Error('Amount paid cannot be negative');
         }
@@ -302,7 +290,6 @@ class BillingService {
             throw new Error('Change cannot be negative');
         }
 
-        //validate change calculation if both provided
         if (updateData.amountPaid !== undefined && updateData.change !== undefined) {
             const totalAmount = updateData.amount !== undefined ? updateData.amount : billing.amount;
             const calculatedChange = updateData.amountPaid - totalAmount;
@@ -311,13 +298,11 @@ class BillingService {
             }
         }
 
-        //check if payment status is being changed to Paid in regular update
         const oldPaymentStatus = billing.paymentStatus;
         if (updateData.paymentStatus === 'Paid' && oldPaymentStatus !== 'Paid') {
             await this.updateAppointmentStatusToCompleted(billing.medicalRecordId);
         }
 
-        //processed information to update data
         updateData.processedBy = user.userId;
         updateData.processedName = `${user.firstName} ${user.lastName}`;
         updateData.processedRole = user.role;
@@ -344,11 +329,11 @@ class BillingService {
         }
 
         if (billing.itemName && billing.itemQuantity) {
+            //reverse the OUT transactions by restocking
             await this.updateInventoryQuantities(billing.itemName, billing.itemQuantity, 'add');
         }
 
         await Billing.findByIdAndDelete(billingId);
-
         return billing;
     }
 
@@ -358,14 +343,12 @@ class BillingService {
             .sort({ dateRecorded: -1 })
             .limit(50);
 
-        const formattedRecords = medicalRecords.map(record => ({
+        return medicalRecords.map(record => ({
             id: record._id,
             patientName: record.personalDetails?.fullName || 'Unknown',
             date: record.dateRecorded?.toISOString().split('T')[0] || 'Unknown',
             diagnosis: record.diagnosis || 'No diagnosis'
         }));
-
-        return formattedRecords;
     }
 
     async getInventoryItemsForBilling() {
@@ -376,47 +359,27 @@ class BillingService {
                 .select('itemName price quantityInStock quantityUsed category expiryDate')
                 .sort({ itemName: 1 });
             
-            //apply filters - flexible filtering approach
             let inventoryItems = await InventoryItem.find({
                 $and: [
-                    {
-                        $or: [
-                            { quantityInStock: { $gt: 0 } },
-                            { quantityInStock: { $exists: true, $ne: null, $gte: 1 } }
-                        ]
-                    },
-                    {
-                        $or: [
-                            { expiryDate: { $gt: currentDate } },
-                            { expiryDate: { $exists: false } },
-                            { expiryDate: null }
-                        ]
-                    }
+                    { $or: [{ quantityInStock: { $gt: 0 } }, { quantityInStock: { $exists: true, $ne: null, $gte: 1 } }] },
+                    { $or: [{ expiryDate: { $gt: currentDate } }, { expiryDate: { $exists: false } }, { expiryDate: null }] }
                 ]
             })
             .select('itemName price quantityInStock quantityUsed category expiryDate')
             .sort({ itemName: 1 });
 
-            //if no items found with strict filters, try more lenient approach
             if (inventoryItems.length === 0) {
-                console.log('No items found with strict filters, trying lenient approach...');
-                
-                inventoryItems = await InventoryItem.find({
-                    quantityInStock: { $gt: 0 }
-                })
-                .select('itemName price quantityInStock quantityUsed category expiryDate')
-                .sort({ itemName: 1 });
+                inventoryItems = await InventoryItem.find({ quantityInStock: { $gt: 0 } })
+                    .select('itemName price quantityInStock quantityUsed category expiryDate')
+                    .sort({ itemName: 1 });
             }
 
-            //if still no items, return all items (for development/debugging)
             if (inventoryItems.length === 0) {
-                console.log('Still no items, returning all items for debugging...');
                 inventoryItems = allItems;
             }
 
-            const formattedItems = inventoryItems.map(item => {
+            return inventoryItems.map(item => {
                 const availableQty = Math.max(0, (item.quantityInStock || 0) - (item.quantityUsed || 0));
-                
                 return {
                     name: item.itemName,
                     price: item.price || 0,
@@ -426,29 +389,46 @@ class BillingService {
                     isExpired: item.expiryDate ? item.expiryDate <= currentDate : false
                 };
             });
-
-            return formattedItems;
-
         } catch (error) {
             console.error('Error in getInventoryItemsForBilling service:', error);
             throw error;
         }
     }
 
-    async updateInventoryQuantities(itemNames, itemQuantities, operation) {
+   
+    async updateInventoryQuantities(itemNames, itemQuantities, operation, user = null, notes = '') {
         try {
             for (let i = 0; i < itemNames.length; i++) {
                 const item = await InventoryItem.findOne({ itemName: itemNames[i] });
-                if (item) {
-                    if (operation === 'subtract') {
-                        item.quantityUsed += itemQuantities[i];
-                        item.quantityInStock -= itemQuantities[i];
-                    } else if (operation === 'add') {
-                        item.quantityUsed -= itemQuantities[i];
-                        item.quantityInStock += itemQuantities[i];
-                    }
-                    await item.save();
+                if (!item) continue;
+
+                const previousStock = item.quantityInStock;
+
+                if (operation === 'subtract') {
+                    item.quantityUsed    += itemQuantities[i];
+                    item.quantityInStock -= itemQuantities[i];
+                } else if (operation === 'add') {
+                    item.quantityUsed    -= itemQuantities[i];
+                    item.quantityInStock += itemQuantities[i];
                 }
+
+                await item.save();
+
+                const newStock = item.quantityInStock;
+
+                //Log OUT on consumption, IN on reversal
+                await InventoryTransactionService.logTransaction({
+                    inventoryItemId: item._id,
+                    itemName:        item.itemName,
+                    category:        item.category,
+                    transactionType: operation === 'subtract' ? 'OUT' : 'IN',
+                    quantity:        itemQuantities[i],
+                    previousStock,
+                    newStock,
+                    reason:          operation === 'subtract' ? 'consumption' : 'adjustment',
+                    notes:           notes || (operation === 'subtract' ? 'Consumed via billing' : 'Reversed via billing deletion'),
+                    performedBy:     user?.userId || null
+                });
             }
         } catch (error) {
             console.error('Error updating inventory quantities:', error);
@@ -458,7 +438,6 @@ class BillingService {
 
     async updateAppointmentStatusToCompleted(medicalRecordId) {
         try {
-            //find the appointment linked to this medical record
             const appointment = await Appointment.findOne({ 
                 userId: { $exists: true },
                 $or: [
@@ -481,10 +460,7 @@ class BillingService {
     }
 
     async checkBillingExists(billingId) {
-        if (!mongoose.Types.ObjectId.isValid(billingId)) {
-            return false;
-        }
-        
+        if (!mongoose.Types.ObjectId.isValid(billingId)) return false;
         const billing = await Billing.findById(billingId);
         return !!billing;
     }
@@ -517,9 +493,7 @@ class BillingService {
     }
 
     async getTotalRevenue(startDate, endDate) {
-        const filter = {
-            paymentStatus: 'Paid'
-        };
+        const filter = { paymentStatus: 'Paid' };
 
         if (startDate || endDate) {
             filter.createdAt = {};
