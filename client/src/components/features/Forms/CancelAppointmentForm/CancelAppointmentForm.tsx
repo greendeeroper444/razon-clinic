@@ -1,4 +1,6 @@
 import React, { ChangeEvent } from 'react'
+import styles from './CancelAppointmentForm.module.css'
+import TextArea from '../../../ui/TextArea/TextArea'
 
 interface CancelAppointmentFormProps {
     reason: string
@@ -6,48 +8,26 @@ interface CancelAppointmentFormProps {
 }
 
 const CancelAppointmentForm: React.FC<CancelAppointmentFormProps> = ({ reason, onChange }) => {
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <p style={{ margin: 0, color: '#555', fontSize: '14px' }}>
-                Please provide a reason for cancelling this appointment.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label
-                    htmlFor="cancellationReason"
-                    style={{ fontWeight: 600, fontSize: '14px', color: '#333' }}
-                >
-                    Reason for Cancellation <span style={{ color: 'var(--danger)' }}>*</span>
-                </label>
-                <textarea
-                    id="cancellationReason"
-                    name="cancellationReason"
-                    value={reason}
-                    onChange={onChange}
-                    placeholder="Enter reason for cancellation..."
-                    maxLength={500}
-                    rows={4}
-                    style={{
-                        padding: '10px 12px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '6px',
-                        fontSize: '14px',
-                        fontFamily: 'inherit',
-                        resize: 'vertical',
-                        outline: 'none',
-                        transition: 'border-color 0.2s',
-                        width: '100%',
-                        boxSizing: 'border-box'
-                    }}
-                    onFocus={(e) => (e.target.style.borderColor = 'var(--primary)')}
-                    onBlur={(e) => (e.target.style.borderColor = '#e2e8f0')}
-                    autoFocus
-                />
-                <span style={{ fontSize: '12px', color: '#94a3b8', alignSelf: 'flex-end' }}>
-                    {reason.length}/500
-                </span>
-            </div>
-        </div>
-    )
+  return (
+    <div className={styles.container}>
+        <p className={styles.description}>
+            Please provide a reason for cancelling this appointment.
+        </p>
+        <TextArea
+            label="Reason for Cancellation *"
+            id="cancellationReason"
+            name="cancellationReason"
+            value={reason}
+            onChange={onChange}
+            placeholder="Enter reason for cancellation..."
+            maxLength={500}
+            rows={4}
+            resize="vertical"
+            showCharCount={true}
+            autoFocus
+        />
+    </div>
+  )
 }
 
 export default CancelAppointmentForm
