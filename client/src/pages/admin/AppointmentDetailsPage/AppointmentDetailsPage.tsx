@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand, Thermometer, HeartPulse } from 'lucide-react';
+import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand, Thermometer, HeartPulse, XCircle } from 'lucide-react';
 import { calculateAge, formatBirthdate, formatDate, formatTime, getStatusClass, getLoadingText, formatDateTime } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { AppointmentFormData, FormDataType } from '../../../types';
@@ -101,6 +101,7 @@ const AppointmentDetailsPage = () => {
     if (!currentAppointment) {
         return null
     }
+    const isCancelled = currentAppointment.status === 'Cancelled';
 
     const headerActions = [
         {
@@ -138,6 +139,23 @@ const AppointmentDetailsPage = () => {
                 {currentAppointment.status}
             </div>
         </div>
+
+        {/* cancellation reason highlight banner */}
+        {
+            isCancelled && currentAppointment.cancellationReason && (
+                <div className={styles.cancellationBanner}>
+                    <div className={styles.cancellationBannerIcon}>
+                        <XCircle size={20} />
+                    </div>
+                    <div className={styles.cancellationBannerContent}>
+                        <span className={styles.cancellationBannerLabel}>Reason for Cancellation</span>
+                        <span className={styles.cancellationBannerReason}>
+                            {currentAppointment.cancellationReason}
+                        </span>
+                    </div>
+                </div>
+            )
+        }
 
         <div className={styles.detailsCard}>
             <div className={styles.cardHeader}>
@@ -181,6 +199,19 @@ const AppointmentDetailsPage = () => {
                                     <span className={styles.tableLabel}>Last Updated:</span>
                                     <span className={styles.tableValue}>
                                         {formatDateTime(String(currentAppointment.updatedAt))}
+                                    </span>
+                                </div>
+                            )
+                        }
+                        {/* inline cancellation reason inside the details table as well */}
+                        {
+                            isCancelled && currentAppointment.cancellationReason && (
+                                <div className={`${styles.tableRow} ${styles.cancellationRow}`}>
+                                    <span className={`${styles.tableLabel} ${styles.cancellationLabel}`}>
+                                        <XCircle size={14} /> Cancellation Reason:
+                                    </span>
+                                    <span className={`${styles.tableValue} ${styles.cancellationValue}`}>
+                                        {currentAppointment.cancellationReason}
                                     </span>
                                 </div>
                             )

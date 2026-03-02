@@ -159,6 +159,69 @@
     letter-spacing: 0.5px;
 }
 
+
+/* cancellation banner */
+.cancellationBanner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background-color: #fff1f2;
+    border: 1px solid #fecdd3;
+    border-left: 4px solid var(--danger, #ef4444);
+    border-radius: var(--border-radius, 6px);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+}
+
+.cancellationBannerIcon {
+    color: var(--danger, #ef4444);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.cancellationBannerContent {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cancellationBannerLabel {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--danger, #ef4444);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.cancellationBannerReason {
+    font-size: 14px;
+    color: #7f1d1d;
+    line-height: 1.5;
+}
+
+/* inline cancellation row inside the details table */
+.cancellationRow {
+    background-color: #fff1f2;
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-top: 4px;
+}
+
+.cancellationLabel {
+    color: var(--danger, #ef4444) !important;
+    font-weight: 600 !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cancellationValue {
+    color: #7f1d1d !important;
+    font-style: italic;
+}
+
+
+
 @media (max-width: 768px) {
     .appStatusBanner {
         flex-direction: column;

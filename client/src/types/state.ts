@@ -22,53 +22,62 @@ export interface FetchParams {
 
 //appointment state
 export interface AppointmentState {
-    //state
+    // state
     appointments: AppointmentResponse[];
     pagination: Pagination | null;
     loading: boolean;
+    fetchLoading: boolean;
+    submitLoading: boolean;
+    statusLoading: boolean;
     error: string | null;
     isProcessing: boolean;
     currentOperation: OperationType;
-    
-    //modal state
+
+    // modal state
     selectedAppointment: (AppointmentFormData & { id?: string }) | null;
     isModalCreateOpen: boolean;
     isModalUpdateOpen: boolean;
     isModalStatusOpen: boolean;
     isModalDeleteOpen: boolean;
-    deleteAppointmentData: { id: string, itemName: string, itemType: string } | null;
+    isModalCancelOpen: boolean;
+    deleteAppointmentData: { id: string; itemName: string; itemType: string } | null;
+    cancelAppointmentData: (AppointmentFormData & { id?: string }) | null;
 
-    //state for appointment details
+    // state for appointment details
     currentAppointment: AppointmentResponse | null;
 
-    //actions
+    // view mode
+    viewMode: 'admin' | 'user';
+
+    // validation
+    validationErrors: Record<string, string[]>;
+
+    // actions
     addAppointment: (data: AppointmentFormData) => Promise<void>;
     fetchAppointments: (params?: FetchParams) => Promise<void>;
     fetchMyAppointments: (params?: FetchParams) => Promise<void>;
-    //actions for appointment details
     fetchAppointmentById: (appointmentId: string) => Promise<void>;
-    // updateCurrentAppointment: (id: string, data: AppointmentFormData) => Promise<void>;
     clearCurrentAppointment: () => void;
     updateAppointmentData: (id: string, data: AppointmentFormData) => Promise<void>;
-    updateAppointmentStatus: (id: string, data: AppointmentFormData) => Promise<void>;
+    updateAppointmentStatus: (id: string, status: string, cancellationReason?: string) => Promise<void>;
     deleteAppointment: (id: string) => Promise<void>;
-    validationErrors: Record<string, string[]>;
     clearValidationErrors: () => void;
-    
-    //modal actions
+
+    // modal actions
     openModalCreate: () => void;
-    openModalUpdate: (appointment: AppointmentResponse) => void;
-    openModalStatus: (appointment: AppointmentResponse) => void;
-    openModalDelete: (appointment: AppointmentResponse) => void;
+    openModalUpdate: (appointment: AppointmentFormData) => void;
+    openModalStatus: (appointment: AppointmentFormData) => void;
+    openModalCancel: (appointment: AppointmentFormData) => void;
+    openModalDelete: (appointment: AppointmentFormData) => void;
     closeModalCreate: () => void;
     closeModalUpdate: () => void;
     closeModalStatus: () => void;
+    closeModalCancel: () => void;
     closeModalDelete: () => void;
-    
-    //utility actions
+
+    // utility actions
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
-
 }
 
 export interface ExtendedAppointmentState extends AppointmentState {

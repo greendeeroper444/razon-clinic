@@ -234,11 +234,18 @@ export const updateAppointment = async (appointmentId: string, appointmentData: 
     }
 };
 
-export const updateAppointmentStatus = async (appointmentId: string, status: string) => {
+export const updateAppointmentStatus = async (
+    appointmentId: string,
+    status: string,
+    cancellationReason?: string
+) => {
     try {
         const response = await axios.patch(
             `${API_BASE_URL}/api/appointments/updateAppointment/${appointmentId}/status`,
-            { status }
+            {
+                status,
+                ...(cancellationReason && { cancellationReason })
+            }
         );
 
         return response.data;

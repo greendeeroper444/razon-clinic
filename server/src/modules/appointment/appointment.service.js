@@ -116,6 +116,39 @@ class AppointmentService {
         }
     }
 
+
+    async createCancellationNotification(appointment) {
+        try {
+            const existingNotification = await Notification.findOne({
+                entityId: appointment._id,
+                type: 'AppointmentCancelled',
+                entityType: 'Appointment',
+            });
+
+            if (!existingNotification) {
+                const patientName = `${appointment.firstName} ${appointment.lastName}`;
+                const reason = appointment.cancellationReason
+                    ? ` Reason: ${appointment.cancellationReason}`
+                    : '';
+                const message = `Appointment #${appointment.appointmentNumber} for ${patientName} has been cancelled.${reason}`;
+
+                const notification = new Notification({
+                    sourceId: appointment.userId || null,
+                    sourceType: appointment.userId ? 'User' : 'System',
+                    type: 'AppointmentCancelled',
+                    entityId: appointment._id,
+                    entityType: 'Appointment',
+                    message,
+                    isRead: false
+                });
+
+                await notification.save();
+            }
+        } catch (error) {
+            console.error('Failed to create cancellation notification:', error);
+        }
+    }
+
     async getAppointments(queryParams) {
         try {
             const {
@@ -365,6 +398,9 @@ class AppointmentService {
         
         if (isStatusUpdate) {
             appointment.status = updateData.status;
+            if (updateData.cancellationReason !== undefined) {
+                appointment.cancellationReason = updateData.cancellationReason?.trim();
+            }
         } else {
             if (updateData.userId) appointment.userId = updateData.userId;
             if (updateData.firstName) appointment.firstName = updateData.firstName;
@@ -425,6 +461,11 @@ class AppointmentService {
         //check if status changed from Pending to Scheduled (Approved)
         if (oldStatus !== appointment.status) {
             smsResult = await this.sendStatusUpdateSMS(appointment);
+
+            //send cancellation notification with reason
+            if (appointment.status === 'Cancelled') {
+                await this.createCancellationNotification(appointment);
+            }
 
             //auto-create patient when appointment is approved (Scheduled)
             if (oldStatus === 'Scheduled' && appointment.status === 'Referred') {

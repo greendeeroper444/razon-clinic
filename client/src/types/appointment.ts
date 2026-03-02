@@ -64,6 +64,7 @@ export interface AppointmentFormData {
     createdAt?: string;
     updatedAt?: string;
     religionOther?: string;
+    cancellationReason?: string;
 }
 
 export interface UserId {

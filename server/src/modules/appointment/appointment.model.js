@@ -144,6 +144,12 @@ const appointmentSchema = new mongoose.Schema(
             enum: ['Pending', 'Scheduled', 'Referred', 'Completed', 'Cancelled', 'Rebooked'],
             default: 'Pending'
         },
+        cancellationReason: {
+            type: String,
+            trim: true,
+            required: false,
+            maxlength: 500
+        },
     },
     {
         timestamps: true,

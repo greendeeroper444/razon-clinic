@@ -7,8 +7,6 @@ import { AppointmentFormData, AppointmentResponse, FormDataType, TableColumn } f
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components'
 import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore, useAuthenticationStore } from '../../../stores'
-// import { toast } from 'sonner'
-import { updateAppointmentStatus } from '../../../services'
 
 const AppointmentPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
@@ -16,10 +14,8 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
     const [statusFilter, setStatusFilter] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-    //get the logged-in user to pre-fill the create form
     const user = useAuthenticationStore((state) => state.user);
 
-    //build the user's full name from their profile
     const userFullName = [
         user?.firstName,
         user?.middleName,
@@ -38,7 +34,6 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
     }, [user?.birthdate]);
 
     const userDefaultFormData: Partial<AppointmentFormData> = {
-        //patient unformation — left blank (child's info, filled by user)
         firstName:    '',
         lastName:     '',
         middleName:   '',
@@ -47,7 +42,6 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         height:       '',
         weight:       '',
 
-        //mother's Information — pre-filled only if logged-in user is Female
         motherName:       user?.sex === 'Female' ? userFullName : '',
         motherAge:        user?.sex === 'Female' ? userAge : '', 
         motherOccupation: '',
@@ -57,7 +51,6 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             occupation: ''
         },
 
-        //father's Information — pre-filled only if logged-in user is Male
         fatherName:       user?.sex === 'Male' ? userFullName : '',
         fatherAge:        user?.sex === 'Male' ? userAge : '', 
         fatherOccupation: '',
@@ -67,19 +60,16 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             occupation: ''
         },
 
-        //contact details from user profile
         contactNumber: user?.contactNumber || '',
         address:       user?.address       || '',
         religion:      user?.religion      || '',
 
-        //appointment fields — left blank for the user to fill
         preferredDate:  '',
         preferredTime:  '',
         reasonForVisit: '',
         status:         'Pending',
     };
 
-    //zustand store selectors
     const {
         appointments,
         submitLoading,
@@ -90,17 +80,21 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         isModalCreateOpen,
         isModalUpdateOpen,
         isModalDeleteOpen,
+        isModalCancelOpen,
+        cancelAppointmentData,
         deleteAppointmentData,
         fetchMyAppointments,
         addAppointment,
         updateAppointmentData,
+        updateAppointmentStatus,
         deleteAppointment,
         pagination: storePagination,
         openModalCreate,
         openModalUpdate,
-        // openModalDelete,
+        openModalCancel,
         closeModalCreate,
         closeModalUpdate,
+        closeModalCancel,
         closeModalDelete,
         currentOperation
     } = useAppointmentStore();
@@ -193,6 +187,30 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         }
     }, [selectedAppointment, updateAppointmentData, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm])
 
+    const handleConfirmCancel = useCallback(async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string' || !cancelAppointmentData?.id) {
+            console.error('Invalid data or missing appointment ID');
+            return;
+        }
+
+        const { cancellationReason } = data as { cancellationReason: string };
+
+        try {
+            await updateAppointmentStatus(cancelAppointmentData.id, 'Cancelled', cancellationReason);
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1,
+                    storePagination?.itemsPerPage || 10,
+                    searchTerm,
+                    statusFilter
+                );
+            }, 600);
+        } catch (error) {
+            console.error('Error cancelling appointment:', error);
+        }
+    }, [cancelAppointmentData, updateAppointmentStatus, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, statusFilter])
+
     const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {
             console.error('Invalid appointment ID');
@@ -215,7 +233,6 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         }
     }, [deleteAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
-    //table columns
     const appointmentColumns: TableColumn<AppointmentResponse>[] = [
         {
             key: 'patient',
@@ -293,20 +310,15 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     >
                         Update
                     </button>
-                   <button
+                    <button
                         type='button'
                         disabled={appointment.status === 'Cancelled'}
-                        className={`${styles.actionBtn} ${styles.delete}`}
+                        className={`${styles.actionBtn} ${styles.delete} ${
+                            appointment.status === 'Cancelled' ? styles.disabled : ''
+                        }`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            updateAppointmentStatus(appointment.id, 'Cancelled').then(() => {
-                                fetchData(
-                                    storePagination?.currentPage || 1,
-                                    storePagination?.itemsPerPage || 10,
-                                    searchTerm,
-                                    statusFilter
-                                );
-                            });
+                            openModalCancel(appointment);
                         }}
                     >
                         Cancel
@@ -457,6 +469,18 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     modalType="delete"
                     onSubmit={handleConfirmDelete}
                     deleteData={deleteAppointmentData}
+                    isProcessing={submitLoading}
+                />
+            )
+        }
+
+        {
+            isModalCancelOpen && cancelAppointmentData && (
+                <Modal
+                    isOpen={isModalCancelOpen}
+                    onClose={closeModalCancel}
+                    modalType="cancel"
+                    onSubmit={handleConfirmCancel}
                     isProcessing={submitLoading}
                 />
             )

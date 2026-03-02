@@ -20,6 +20,8 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
             isModalUpdateOpen: false,
             isModalStatusOpen: false,
             isModalDeleteOpen: false,
+            isModalCancelOpen: false,
+            cancelAppointmentData: null,
             deleteAppointmentData: null,
             currentAppointment: null,
             viewMode: 'user' as 'admin' | 'user',
@@ -195,7 +197,6 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 }
             },
 
-
             fetchAppointmentById: async (appointmentId: string) => {
                 try {
                     set({ fetchLoading: true, loading: true, error: null });
@@ -216,7 +217,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         })
                     }
                 } catch (error) {
-                   console.error('Error fetching appointment:', error)
+                    console.error('Error fetching appointment:', error)
                     set({ 
                         fetchLoading: false,
                         error: 'An error occurred while fetching appointment', 
@@ -274,65 +275,11 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 }
             },
 
-            // updateAppointmentStatus: async (id: string, status: string) => {
-            //     try {
-            //         set({ submitLoading: true, isProcessing: true, currentOperation: 'status' });
-                    
-            //         const response = await updateAppointmentStatusService(id, status);
-                    
-            //         if (response.success) {
-            //             const currentState = get()
-            //             if (currentState.currentAppointment && currentState.currentAppointment.id === id) {
-            //                 set({
-            //                     currentAppointment: {
-            //                         ...currentState.currentAppointment,
-            //                         status: status as AppointmentStatus,
-            //                         updatedAt: new Date().toISOString()
-            //                     }
-            //                 })
-            //             }
-
-            //             const updatedAppointments = currentState.appointments.map(appointment => 
-            //                 appointment.id === id 
-            //                     ? { ...appointment, status: status as AppointmentStatus, updatedAt: new Date().toISOString() }
-            //                     : appointment
-            //             )
-                        
-            //             toast.success('Status updated successfully!');
-            //             set({ 
-            //                 appointments: updatedAppointments,
-            //                 isModalStatusOpen: false,
-            //                 selectedAppointment: null,
-            //             })
-
-            //             setTimeout(() => {
-            //                 set({ 
-            //                     submitLoading: false,
-            //                     isProcessing: false,
-            //                     currentOperation: null
-            //                 })
-            //             }, 500)
-            //         } else {
-            //             throw new Error(response.data.message || 'Failed to update status')
-            //         }
-            //     } catch (error) {
-            //         console.error('Error updating appointment status:', error)
-            //         toast.error('Failed to update appointment status');
-            //         set({ 
-            //             submitLoading: false, 
-            //             isProcessing: false,
-            //             isModalStatusOpen: false,
-            //             selectedAppointment: null,
-            //             currentOperation: null
-            //         })
-            //     }
-            // },
-
-            updateAppointmentStatus: async (id: string, status: string) => {
+            updateAppointmentStatus: async (id: string, status: string, cancellationReason?: string) => {
                 try {
                     set({ submitLoading: true, isProcessing: true, currentOperation: 'status' });
                     
-                    const response = await updateAppointmentStatusService(id, status);
+                    const response = await updateAppointmentStatusService(id, status, cancellationReason);
                     
                     if (response.success) {
                         const currentState = get();
@@ -342,6 +289,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                                 currentAppointment: {
                                     ...currentState.currentAppointment,
                                     status: status as AppointmentStatus,
+                                    ...(cancellationReason && { cancellationReason }),
                                     updatedAt: new Date().toISOString()
                                 }
                             });
@@ -353,10 +301,17 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                             await get().fetchMyAppointments({});
                         }
 
-                        toast.success('Status updated successfully!');
+                        toast.success(
+                            status === 'Cancelled'
+                                ? 'Appointment cancelled successfully!'
+                                : 'Status updated successfully!'
+                        );
+
                         set({ 
                             isModalStatusOpen: false,
+                            isModalCancelOpen: false,
                             selectedAppointment: null,
+                            cancelAppointmentData: null
                         });
 
                         setTimeout(() => {
@@ -367,16 +322,22 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                             });
                         }, 500);
                     } else {
-                        throw new Error(response.data.message || 'Failed to update status');
+                        throw new Error(response.data?.message || 'Failed to update status');
                     }
                 } catch (error) {
                     console.error('Error updating appointment status:', error);
-                    toast.error('Failed to update appointment status');
+                    toast.error(
+                        status === 'Cancelled'
+                            ? 'Failed to cancel appointment'
+                            : 'Failed to update appointment status'
+                    );
                     set({ 
                         submitLoading: false, 
                         isProcessing: false,
                         isModalStatusOpen: false,
+                        isModalCancelOpen: false,
                         selectedAppointment: null,
+                        cancelAppointmentData: null,
                         currentOperation: null
                     });
                 }
@@ -396,7 +357,7 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     }
                     
                     toast.success('Appointment deleted successfully!')
-                    set({  isModalDeleteOpen: false, deleteAppointmentData: null })
+                    set({ isModalDeleteOpen: false, deleteAppointmentData: null })
 
                     setTimeout(() => {
                         set({ 
@@ -418,7 +379,6 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     })
                 }
             },
-
 
             openModalCreate: () => {
                 set({ 
@@ -470,6 +430,13 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 })
             },
 
+            openModalCancel: (appointment: AppointmentFormData) => {
+                set({
+                    cancelAppointmentData: appointment,
+                    isModalCancelOpen: true
+                })
+            },
+
             openModalDelete: (appointment: AppointmentFormData) => {
                 const userName = appointment.firstName || 'Unknown User'
                 const appointmentDate = appointment.preferredDate
@@ -504,6 +471,13 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                 set({ 
                     isModalStatusOpen: false, 
                     selectedAppointment: null,
+                })
+            },
+
+            closeModalCancel: () => {
+                set({
+                    isModalCancelOpen: false,
+                    cancelAppointmentData: null
                 })
             },
 

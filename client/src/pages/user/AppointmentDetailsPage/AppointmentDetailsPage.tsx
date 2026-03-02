@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css'
 import { useParams } from 'react-router-dom'
-import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, Ruler, Weight, Users, Hand } from 'lucide-react';
+import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, Ruler, Weight, Users, Hand, XCircle } from 'lucide-react';
 import { calculateAge, formatBirthdate, formatDate, formatTime, getStatusClass, getLoadingText, formatDateTime } from '../../../utils'
 import { AppointmentFormData, FormDataType } from '../../../types'
 import { Header, Main, Modal, SubmitLoading } from '../../../components'
@@ -9,7 +9,7 @@ import { useAppointmentStore } from '../../../stores'
 
 const AppointmentDetailsPage = () => {
     const { appointmentId } = useParams();
-    //zustand store selectors
+
     const {
         currentAppointment,
         submitLoading,
@@ -17,11 +17,16 @@ const AppointmentDetailsPage = () => {
         error,
         selectedAppointment,
         isModalUpdateOpen,
+        isModalCancelOpen,
+        cancelAppointmentData,
         fetchAppointmentById,
         fetchMyAppointments,
         updateAppointmentData,
+        updateAppointmentStatus,
         openModalUpdate,
+        openModalCancel,
         closeModalUpdate,
+        closeModalCancel,
         clearCurrentAppointment,
         currentOperation
     } = useAppointmentStore();
@@ -29,19 +34,19 @@ const AppointmentDetailsPage = () => {
     useEffect(() => {
         if (appointmentId) {
             fetchAppointmentById(appointmentId);
-            fetchMyAppointments();
+            fetchMyAppointments({});
         }
-
-        //cleanup when component unmounts
-        // return () => {
-        //     clearCurrentAppointment()
-        // }
     }, [appointmentId, fetchAppointmentById, fetchMyAppointments, clearCurrentAppointment])
-
 
     const handleUpdateClick = () => {
         if (currentAppointment) {
             openModalUpdate(currentAppointment)
+        }
+    }
+
+    const handleCancelClick = () => {
+        if (currentAppointment) {
+            openModalCancel(currentAppointment)
         }
     }
 
@@ -50,25 +55,44 @@ const AppointmentDetailsPage = () => {
             console.error('Invalid data or missing appointment ID')
             return
         }
-
-        //assertion since we know it's AppointmentFormData in this context
         const appointmentData = data as AppointmentFormData
-
         await updateAppointmentData(selectedAppointment.id, appointmentData)
     }
-    
-    //don't render if appointment is still loading
+
+    const handleConfirmCancel = async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string' || !cancelAppointmentData?.id) {
+            console.error('Invalid data or missing appointment ID');
+            return;
+        }
+        const { cancellationReason } = data as { cancellationReason: string };
+        await updateAppointmentStatus(cancelAppointmentData.id, 'Cancelled', cancellationReason);
+        // refresh the appointment details after cancellation
+        if (appointmentId) {
+            fetchAppointmentById(appointmentId);
+        }
+    }
+
     if (!currentAppointment) {
         return null
     }
 
+    const isCancelled = currentAppointment.status === 'Cancelled';
+    const canEdit = !['Scheduled', 'Cancelled', 'Completed'].includes(currentAppointment.status);
+    const canCancel = currentAppointment.status !== 'Cancelled';
+
     const headerActions = [
-        {
+        ...(canEdit ? [{
             label: 'Edit',
             icon: <Edit />,
             onClick: handleUpdateClick,
             type: 'primary' as const
-        }
+        }] : []),
+        ...(canCancel ? [{
+            label: 'Cancel Appointment',
+            icon: <XCircle />,
+            onClick: handleCancelClick,
+            type: 'danger' as const
+        }] : [])
     ];
 
     const backButton = {
@@ -93,6 +117,23 @@ const AppointmentDetailsPage = () => {
             </div>
         </div>
 
+        {/* cancellation reason highlight banner */}
+        {
+            isCancelled && currentAppointment.cancellationReason && (
+                <div className={styles.cancellationBanner}>
+                    <div className={styles.cancellationBannerIcon}>
+                        <XCircle size={20} />
+                    </div>
+                    <div className={styles.cancellationBannerContent}>
+                        <span className={styles.cancellationBannerLabel}>Reason for Cancellation</span>
+                        <span className={styles.cancellationBannerReason}>
+                            {currentAppointment.cancellationReason}
+                        </span>
+                    </div>
+                </div>
+            )
+        }
+
         {/* single comprehensive appointment details table */}
         <div className={styles.detailsCard}>
             <div className={styles.cardHeader}>
@@ -101,7 +142,8 @@ const AppointmentDetailsPage = () => {
             </div>
             <div className={styles.cardContent}>
                 <div className={styles.detailsTable}>
-                    {/* appointment sex */}
+
+                    {/* appointment information section */}
                     <div className={styles.tableSection}>
                         <h3 className={styles.sectionTitle}>
                             <Calendar /> Appointment Information
@@ -140,9 +182,22 @@ const AppointmentDetailsPage = () => {
                                 </div>
                             )
                         }
+                        {/* inline cancellation reason inside the details table as well */}
+                        {
+                            isCancelled && currentAppointment.cancellationReason && (
+                                <div className={`${styles.tableRow} ${styles.cancellationRow}`}>
+                                    <span className={`${styles.tableLabel} ${styles.cancellationLabel}`}>
+                                        <XCircle size={14} /> Cancellation Reason:
+                                    </span>
+                                    <span className={`${styles.tableValue} ${styles.cancellationValue}`}>
+                                        {currentAppointment.cancellationReason}
+                                    </span>
+                                </div>
+                            )
+                        }
                     </div>
 
-                    {/* patient details information */}
+                    {/* patient details section */}
                     <div className={styles.tableSection}>
                         <h3 className={styles.sectionTitle}>
                             <User /> Child Information
@@ -152,8 +207,8 @@ const AppointmentDetailsPage = () => {
                                 <User /> Full Name:
                             </span>
                             <span className={styles.tableValue}>
-                                {currentAppointment.firstName}, {currentAppointment.lastName},
-                                {/* {currentAppointment.middleName ? `, ${getMiddleNameInitial(currentAppointment.middleName)}` : ''} */} {currentAppointment.middleName} {currentAppointment.suffix}
+                                {currentAppointment.firstName}, {currentAppointment.lastName},{' '}
+                                {currentAppointment.middleName} {currentAppointment.suffix}
                             </span>
                         </div>
                         <div className={styles.tableRow}>
@@ -161,7 +216,7 @@ const AppointmentDetailsPage = () => {
                                 <Cake /> Birthdate:
                             </span>
                             <span className={styles.tableValue}>
-                                {formatBirthdate(String(currentAppointment.birthdate))} 
+                                {formatBirthdate(String(currentAppointment.birthdate))}
                                 <span className={styles.ageLabel}>({calculateAge(String(currentAppointment.birthdate))} years)</span>
                             </span>
                         </div>
@@ -177,7 +232,6 @@ const AppointmentDetailsPage = () => {
                             </span>
                             <span className={styles.tableValue}>{currentAppointment.contactNumber}</span>
                         </div>
-                        
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <MapPin /> Address:
@@ -186,7 +240,7 @@ const AppointmentDetailsPage = () => {
                         </div>
                     </div>
 
-                    {/* medical informations sec*/}
+                    {/* medical information section */}
                     <div className={styles.tableSection}>
                         <h3 className={styles.sectionTitle}>
                             <Notebook /> Medical Information
@@ -203,60 +257,75 @@ const AppointmentDetailsPage = () => {
                             <span className={styles.tableLabel}>
                                 <Weight /> Weight:
                             </span>
-                            {currentAppointment?.weight || 'N/A'}
+                            <span className={styles.tableValue}>
+                                {currentAppointment?.weight || 'N/A'}
+                            </span>
                         </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <Hand /> Religion:
                             </span>
-                            {currentAppointment?.religion || 'N/A'}
+                            <span className={styles.tableValue}>
+                                {currentAppointment?.religion || 'N/A'}
+                            </span>
                         </div>
                     </div>
 
-                    {/* family info sex */}
+                    {/* family information section */}
                     <div className={styles.tableSection}>
                         <h3 className={styles.sectionTitle}>
                             <Users /> Family Information
                         </h3>
-                        
-                        {/* mother's info */}
+
                         <div className={styles.familySubSection}>
                             <h4 className={styles.familyTitle}>Mother's Information</h4>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>
                                     <User /> Name:
                                 </span>
-                                {currentAppointment?.motherInfo?.name || 'N/A'}
+                                <span className={styles.tableValue}>
+                                    {currentAppointment?.motherInfo?.name || 'N/A'}
+                                </span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                {currentAppointment?.motherInfo?.age || 'N/A'}
+                                <span className={styles.tableValue}>
+                                    {currentAppointment?.motherInfo?.age || 'N/A'}
+                                </span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                {currentAppointment?.motherInfo?.occupation || 'N/A'}
+                                <span className={styles.tableValue}>
+                                    {currentAppointment?.motherInfo?.occupation || 'N/A'}
+                                </span>
                             </div>
                         </div>
-                        
-                        {/* father info */}
+
                         <div className={styles.familySubSection}>
                             <h4 className={styles.familyTitle}>Father's Information</h4>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>
                                     <User /> Name:
                                 </span>
-                                {currentAppointment?.fatherInfo?.name || 'N/A'}
+                                <span className={styles.tableValue}>
+                                    {currentAppointment?.fatherInfo?.name || 'N/A'}
+                                </span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Age:</span>
-                                {currentAppointment?.fatherInfo?.age || 'N/A'}
+                                <span className={styles.tableValue}>
+                                    {currentAppointment?.fatherInfo?.age || 'N/A'}
+                                </span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Occupation:</span>
-                                {currentAppointment?.fatherInfo?.occupation || 'N/A'}
+                                <span className={styles.tableValue}>
+                                    {currentAppointment?.fatherInfo?.occupation || 'N/A'}
+                                </span>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -269,6 +338,18 @@ const AppointmentDetailsPage = () => {
                     modalType="appointment"
                     onSubmit={handleSubmitUpdate}
                     editData={selectedAppointment}
+                    isProcessing={submitLoading}
+                />
+            )
+        }
+
+        {
+            isModalCancelOpen && cancelAppointmentData && (
+                <Modal
+                    isOpen={isModalCancelOpen}
+                    onClose={closeModalCancel}
+                    modalType="cancel"
+                    onSubmit={handleConfirmCancel}
                     isProcessing={submitLoading}
                 />
             )

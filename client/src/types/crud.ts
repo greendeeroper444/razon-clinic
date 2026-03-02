@@ -6,7 +6,7 @@ import { MedicalRecordFormData } from "./medical";
 import { PatientFormData } from "./patient";
 // import { PatientFormData } from "./patient";
 
-export type FormDataType = AppointmentFormData | PatientFormData | InventoryItemFormData | MedicalRecordFormData | BillingFormData | BlockedTimeSlotFormData;
+export type FormDataType = AppointmentFormData | PatientFormData | InventoryItemFormData | MedicalRecordFormData | BillingFormData | BlockedTimeSlotFormData | any;
 
 export type OperationType = 
 'update' | 'delete' | 'status' | 

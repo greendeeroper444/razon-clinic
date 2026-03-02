@@ -2,7 +2,7 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import styles from './Modal.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import { AppointmentForm, BillingsForm, BillingDetailsForm, BlockedTimeSlotForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, PersonnelForm, StatusForm } from '../../features/Forms'
+import { AppointmentForm, BillingsForm, BillingDetailsForm, BlockedTimeSlotForm, CancelAppointmentForm, DeleteForm, InventoryItemForm, MedicalRecordForm, PatientForm, PersonnelForm, StatusForm } from '../../features/Forms'
 import { formatDateForDisplay, formatDateForInput } from '../../../utils'
 import { AppointmentFormData, AppointmentStatus, BillingFormData, BlockedTimeSlotFormData, FormDataType, InventoryItemFormData, MedicalRecordFormData, ModalProps, PatientFormData, PersonnelFormData } from '../../../types'
 import Button from '../Button/Button'
@@ -24,18 +24,21 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
     const [formData, setFormData] = useState<FormDataType>({} as FormDataType);
     const [isLoading, _setIsLoading] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
+    const [cancellationReason, setCancellationReason] = useState<string>('');
 
-
-    // initialize form with edit data if provided or reset when modal type changes
     useEffect(() => {
+        // exit early for cancel modal — reset once on open, then don't interfere while typing
+        if (modalType === 'cancel') {
+            setCancellationReason('');
+            return;
+        }
+
         if (editData) {
-            //format birthdate for input field if it exists
             const processedEditData = { ...editData };
             if ((modalType === 'appointment' || modalType === 'patient' || modalType === 'personnel') && 'birthdate' in processedEditData && processedEditData.birthdate) {
                 processedEditData.birthdate = formatDateForInput(processedEditData.birthdate as string);
             }
             
-            //for personnel modal, ensure contactNumber is populated from either email or contactNumber field
             if (modalType === 'personnel') {
                 const personnelData = processedEditData as any;
                 if (!personnelData.contactNumber && personnelData.email && 'contactNumber' in processedEditData) {
@@ -45,12 +48,10 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
             
             setFormData(processedEditData);
 
-            // set initial status for status modal
             if (modalType === 'status' && 'status' in editData && editData.status) {
                 setSelectedStatus(editData.status as string);
             }
         } else {
-            // set default values based on modal type
             if (modalType === 'appointment') {
                 setFormData({
                     firstName: '',
@@ -209,7 +210,6 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
         }
     }, [modalType, editData]);
 
-    //create a custom event when modal closes
     const handleClose = () => {
         onClose();
         window.dispatchEvent(new CustomEvent('modal-closed'));
@@ -220,7 +220,7 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
         
         if (name.includes('.')) {
             const [parentKey, childKey] = name.split('.');
-            setFormData(prevData => ({
+            setFormData((prevData: FormDataType) => ({
                 ...prevData,
                 [parentKey]: {
                     ...((prevData as any)[parentKey] || {}),
@@ -228,7 +228,7 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
                 }
             }));
         } else {
-            setFormData(prevData => ({
+            setFormData((prevData: FormDataType) => ({
                 ...prevData,
                 [name]: value
             }));
@@ -245,11 +245,13 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
             onSubmit(deleteData.id);
         } else if (modalType === 'status') {
             onSubmit({ ...editData, status: selectedStatus } as any);
+        } else if (modalType === 'cancel') {
+            if (!cancellationReason.trim()) return;
+            onSubmit({ cancellationReason: cancellationReason.trim() } as any);
         } else {
             onSubmit(formData);
-            
             if (modalType === 'appointment') {
-                setFormData(prev => ({
+                setFormData((prev: FormDataType) => ({
                     ...prev,
                     preferredTime: '',
                 }));
@@ -291,7 +293,6 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
             title = isEditing ? 'Edit Blocked Time Slot' : 'Block New Time Slot';
             break;
         case 'medical':
-            // when isNewRecord, show a distinct title to make it clear
             title = isEditing ? 'Edit Medical Record' : isNewRecord ? 'Create as New Record' : 'New Medical Record';
             break;
         case 'delete':
@@ -305,6 +306,9 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
             break;
         case 'billing-details':
             title = 'Billing Details';
+            break;
+        case 'cancel':
+            title = 'Cancel Appointment';
             break;
         default:
             title = 'Form';
@@ -373,6 +377,13 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
                     <StatusForm
                         currentStatus={selectedStatus}
                         onStatusChange={handleStatusChange}
+                    />
+                );
+            case 'cancel':
+                return (
+                    <CancelAppointmentForm
+                        reason={cancellationReason}
+                        onChange={(e) => setCancellationReason(e.target.value)}
                     />
                 );
             case 'delete':
@@ -457,7 +468,7 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
                         type='button'
                         onClick={handleClose}
                     >
-                        Cancel
+                        {modalType === 'cancel' ? 'Go Back' : 'Cancel'}
                     </Button>
 
                     {
@@ -475,27 +486,16 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
                         )
                     }
 
-                    {/* {
-                        !isNewRecord && (
-                            <Button
-                                variant='primary'
-                                type='submit'
-                                isLoading={isProcessing}
-                                loadingText={isEditing ? 'Updating...' : 'Saving...'}
-                            >
-                                {isEditing ? 'Update' : 'Save'}
-                            </Button>
-                        )
-                    } */}
                     {
                         !(isNewRecord && modalType === 'medical') && (
                             <Button
-                                variant='primary'
+                                variant={modalType === 'cancel' ? 'danger' : 'primary'}
                                 type='submit'
                                 isLoading={isProcessing}
-                                loadingText={isEditing ? 'Updating...' : 'Saving...'}
+                                loadingText={modalType === 'cancel' ? 'Cancelling...' : isEditing ? 'Updating...' : 'Saving...'}
+                                disabled={modalType === 'cancel' && !cancellationReason.trim()}
                             >
-                                {isEditing ? 'Update' : 'Save'}
+                                {modalType === 'cancel' ? 'Confirm Cancellation' : isEditing ? 'Update' : 'Save'}
                             </Button>
                         )
                     }
