@@ -25,6 +25,8 @@ const Button: React.FC<ButtonProps> = ({
                 return styles.btnAdd;
             case 'delete':
                 return styles.btnDelete;
+            case 'danger':
+                return styles.btnDanger;
             default:
                 return styles.btnPrimary;
         }

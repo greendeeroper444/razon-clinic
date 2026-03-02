@@ -132,3 +132,25 @@
     background-color: #ffccc7;
     cursor: not-allowed;
 }
+
+
+.btnDanger {
+    background-color: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btnDanger:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.btnDanger:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
