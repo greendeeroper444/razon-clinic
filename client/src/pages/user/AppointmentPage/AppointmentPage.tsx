@@ -14,6 +14,9 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
     const [statusFilter, setStatusFilter] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
 
+    const [rebookAppointment, setRebookAppointment] = useState<AppointmentResponse | null>(null);
+    const [isModalRebookOpen, setIsModalRebookOpen] = useState(false);
+
     const user = useAuthenticationStore((state) => state.user);
 
     const userFullName = [
@@ -43,16 +46,16 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         weight:       '',
 
         motherName:       user?.sex === 'Female' ? userFullName : '',
-        motherAge:        user?.sex === 'Female' ? userAge : '', 
+        motherAge:        user?.sex === 'Female' ? userAge : '',
         motherOccupation: '',
         motherInfo: {
             name:       user?.sex === 'Female' ? userFullName : '',
-            age:        user?.sex === 'Female' ? userAge : '',  
+            age:        user?.sex === 'Female' ? userAge : '',
             occupation: ''
         },
 
         fatherName:       user?.sex === 'Male' ? userFullName : '',
-        fatherAge:        user?.sex === 'Male' ? userAge : '', 
+        fatherAge:        user?.sex === 'Male' ? userAge : '',
         fatherOccupation: '',
         fatherInfo: {
             name:       user?.sex === 'Male' ? userFullName : '',
@@ -233,6 +236,37 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         }
     }, [deleteAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
+    const handleRebook = useCallback((appointment: AppointmentResponse) => {
+        setRebookAppointment(appointment);
+        setIsModalRebookOpen(true);
+    }, []);
+
+    const handleSubmitRebook = useCallback(async (data: FormDataType | string): Promise<void> => {
+        if (typeof data === 'string' || !rebookAppointment?.id) return;
+
+        const { id: _, ...appointmentData } = data as AppointmentFormData & { id?: string };
+
+        try {
+            //create the new appointment
+            await addAppointment(appointmentData as AppointmentFormData);
+
+            //mark the original as Rebooked
+            await updateAppointmentStatus(rebookAppointment.id, 'Rebooked');
+
+            setTimeout(() => {
+                fetchData(
+                    storePagination?.currentPage || 1,
+                    storePagination?.itemsPerPage || 10,
+                    searchTerm
+                );
+                setIsModalRebookOpen(false);
+                setRebookAppointment(null);
+            }, 600);
+        } catch (error) {
+            console.error('Error rebooking appointment:', error);
+        }
+    }, [rebookAppointment, addAppointment, updateAppointmentStatus, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+
     const appointmentColumns: TableColumn<AppointmentResponse>[] = [
         {
             key: 'patient',
@@ -297,9 +331,9 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     </button>
                     <button
                         type='button'
-                        disabled={['Scheduled', 'Cancelled', 'Completed'].includes(appointment.status)}
+                        disabled={['Scheduled', 'Rebooked', 'Cancelled', 'Completed'].includes(appointment.status)}
                         className={`${styles.actionBtn} ${styles.update} ${
-                            ['Scheduled', 'Cancelled', 'Completed'].includes(appointment.status)
+                            ['Scheduled', 'Rebooked', 'Cancelled', 'Completed'].includes(appointment.status)
                                 ? styles.disabled
                                 : ''
                         }`}
@@ -312,9 +346,24 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     </button>
                     <button
                         type='button'
-                        disabled={appointment.status === 'Cancelled'}
+                        disabled={['Rebooked', 'Cancelled', 'Completed'].includes(appointment.status)}
+                        className={`${styles.actionBtn} ${styles.rebook} ${
+                            ['Rebooked', 'Cancelled', 'Completed'].includes(appointment.status)
+                                ? styles.disabled
+                                : ''
+                        }`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleRebook(appointment);
+                        }}
+                    >
+                        Rebook
+                    </button>
+                    <button
+                        type='button'
+                        disabled={['Cancelled', 'Rebooked', 'Completed'].includes(appointment.status)}
                         className={`${styles.actionBtn} ${styles.delete} ${
-                            appointment.status === 'Cancelled' ? styles.disabled : ''
+                            ['Cancelled', 'Rebooked', 'Completed'].includes(appointment.status) ? styles.disabled : ''
                         }`}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -434,57 +483,69 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             }
         </div>
 
-        {
-            isModalCreateOpen && (
-                <Modal
-                    isOpen={isModalCreateOpen}
-                    onClose={closeModalCreate}
-                    modalType="appointment"
-                    onSubmit={handleSubmitAdd}
-                    isProcessing={submitLoading}
-                    editData={userDefaultFormData as AppointmentFormData}
-                    isNewRecord={true}
-                />
-            )
-        }
+        {isModalCreateOpen && (
+            <Modal
+                isOpen={isModalCreateOpen}
+                onClose={closeModalCreate}
+                modalType="appointment"
+                onSubmit={handleSubmitAdd}
+                isProcessing={submitLoading}
+                editData={userDefaultFormData as AppointmentFormData}
+                isNewRecord={true}
+            />
+        )}
 
-        {
-            isModalUpdateOpen && (
-                <Modal
-                    isOpen={isModalUpdateOpen}
-                    onClose={closeModalUpdate}
-                    modalType="appointment"
-                    onSubmit={handleSubmitUpdate}
-                    editData={selectedAppointment}
-                    isProcessing={submitLoading}
-                />
-            )
-        }
+        {isModalUpdateOpen && (
+            <Modal
+                isOpen={isModalUpdateOpen}
+                onClose={closeModalUpdate}
+                modalType="appointment"
+                onSubmit={handleSubmitUpdate}
+                editData={selectedAppointment}
+                isProcessing={submitLoading}
+            />
+        )}
 
-        {
-            isModalDeleteOpen && deleteAppointmentData && (
-                <Modal
-                    isOpen={isModalDeleteOpen}
-                    onClose={closeModalDelete}
-                    modalType="delete"
-                    onSubmit={handleConfirmDelete}
-                    deleteData={deleteAppointmentData}
-                    isProcessing={submitLoading}
-                />
-            )
-        }
+        {isModalDeleteOpen && deleteAppointmentData && (
+            <Modal
+                isOpen={isModalDeleteOpen}
+                onClose={closeModalDelete}
+                modalType="delete"
+                onSubmit={handleConfirmDelete}
+                deleteData={deleteAppointmentData}
+                isProcessing={submitLoading}
+            />
+        )}
 
-        {
-            isModalCancelOpen && cancelAppointmentData && (
-                <Modal
-                    isOpen={isModalCancelOpen}
-                    onClose={closeModalCancel}
-                    modalType="cancel"
-                    onSubmit={handleConfirmCancel}
-                    isProcessing={submitLoading}
-                />
-            )
-        }
+        {isModalCancelOpen && cancelAppointmentData && (
+            <Modal
+                isOpen={isModalCancelOpen}
+                onClose={closeModalCancel}
+                modalType="cancel"
+                onSubmit={handleConfirmCancel}
+                isProcessing={submitLoading}
+            />
+        )}
+
+        {isModalRebookOpen && rebookAppointment && (
+            <Modal
+                isOpen={isModalRebookOpen}
+                onClose={() => {
+                    setIsModalRebookOpen(false);
+                    setRebookAppointment(null);
+                }}
+                modalType="appointment"
+                onSubmit={handleSubmitRebook}
+                isProcessing={submitLoading}
+                editData={{
+                    ...rebookAppointment,
+                    preferredDate: '',
+                    preferredTime: '',
+                    status: 'Pending',
+                } as AppointmentFormData}
+                isNewRecord={true}
+            />
+        )}
 
         <SubmitLoading
             isLoading={submitLoading}

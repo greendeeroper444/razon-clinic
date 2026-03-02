@@ -144,6 +144,10 @@
     color: var(--primary);
 }
 
+.rebook {
+    background-color: #f59e0b;
+    color: white;
+}
 .statusBadge.statusReferred {
     background-color: #fff7ed;
     color: #f59e0b;
