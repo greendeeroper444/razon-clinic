@@ -38,6 +38,7 @@ export const NotificationTypeToUICategory = {
     'AppointmentCreated': 'appointment',
     'AppointmentUpdated': 'appointment',
     'AppointmentCancelled': 'appointment',
+    'AppointmentRebooked': 'appointment',
     'PatientCreated': 'patient',
     'MedicalRecordUpdated': 'medical',
     'LowStock': 'inventory',

@@ -22,6 +22,7 @@ const notificationSchema = new mongoose.Schema(
                 'AppointmentCreated',
                 'AppointmentUpdated',
                 'AppointmentCancelled',
+                'AppointmentRebooked',
                 'PatientCreated',
                 'MedicalRecordUpdated',
                 'LowStock', 

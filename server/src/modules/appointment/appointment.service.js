@@ -149,6 +149,35 @@ class AppointmentService {
         }
     }
 
+    async createRebookedNotification(appointment) {
+        try {
+            const existingNotification = await Notification.findOne({
+                entityId: appointment._id,
+                type: 'AppointmentRebooked',
+                entityType: 'Appointment',
+            });
+
+            if (!existingNotification) {
+                const patientName = `${appointment.firstName} ${appointment.lastName}`;
+                const message = `Appointment #${appointment.appointmentNumber} for ${patientName} has been rebooked to ${this.formatDate(appointment.preferredDate)} at ${this.formatTimeOnly(appointment.preferredTime)}.`;
+
+                const notification = new Notification({
+                    sourceId: appointment.userId || null,
+                    sourceType: appointment.userId ? 'User' : 'System',
+                    type: 'AppointmentRebooked',
+                    entityId: appointment._id,
+                    entityType: 'Appointment',
+                    message,
+                    isRead: false
+                });
+
+                await notification.save();
+            }
+        } catch (error) {
+            console.error('Failed to create rebooked notification:', error);
+        }
+    }
+
     async getAppointments(queryParams) {
         try {
             const {
@@ -465,6 +494,10 @@ class AppointmentService {
             //send cancellation notification with reason
             if (appointment.status === 'Cancelled') {
                 await this.createCancellationNotification(appointment);
+            }
+
+            if (appointment.status === 'Rebooked') {
+                await this.createRebookedNotification(appointment);
             }
 
             //auto-create patient when appointment is approved (Scheduled)

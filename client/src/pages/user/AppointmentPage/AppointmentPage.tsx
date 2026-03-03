@@ -329,7 +329,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     >
                         View
                     </button>
-                    <button
+                    {/* <button
                         type='button'
                         disabled={['Scheduled', 'Rebooked', 'Cancelled', 'Completed'].includes(appointment.status)}
                         className={`${styles.actionBtn} ${styles.update} ${
@@ -343,7 +343,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                         }}
                     >
                         Update
-                    </button>
+                    </button> */}
                     <button
                         type='button'
                         disabled={['Rebooked', 'Cancelled', 'Completed'].includes(appointment.status)}
@@ -357,7 +357,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                             handleRebook(appointment);
                         }}
                     >
-                        Rebook
+                        Resched
                     </button>
                     <button
                         type='button'
