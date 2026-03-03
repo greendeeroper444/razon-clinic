@@ -116,7 +116,6 @@ class AppointmentService {
         }
     }
 
-
     async createCancellationNotification(appointment) {
         try {
             const existingNotification = await Notification.findOne({
@@ -175,6 +174,61 @@ class AppointmentService {
             }
         } catch (error) {
             console.error('Failed to create rebooked notification:', error);
+        }
+    }
+
+    // NEW: notification when user requests cancellation
+    async createCancellationRequestedNotification(appointment) {
+        try {
+            const existingNotification = await Notification.findOne({
+                entityId: appointment._id,
+                type: 'AppointmentCancellationRequested',
+                entityType: 'Appointment',
+            });
+
+            if (!existingNotification) {
+                const patientName = `${appointment.firstName} ${appointment.lastName}`;
+                const reason = appointment.cancellationReason
+                    ? ` Reason: ${appointment.cancellationReason}`
+                    : '';
+                const message = `Cancellation requested for Appointment #${appointment.appointmentNumber} by ${patientName}.${reason} Please review and approve or reject.`;
+
+                const notification = new Notification({
+                    sourceId: appointment.userId || null,
+                    sourceType: appointment.userId ? 'User' : 'System',
+                    type: 'AppointmentCancellationRequested',
+                    entityId: appointment._id,
+                    entityType: 'Appointment',
+                    message,
+                    isRead: false
+                });
+
+                await notification.save();
+            }
+        } catch (error) {
+            console.error('Failed to create cancellation requested notification:', error);
+        }
+    }
+
+    // NEW: notification when admin rejects cancellation
+    async createCancellationRejectedNotification(appointment) {
+        try {
+            const patientName = `${appointment.firstName} ${appointment.lastName}`;
+            const message = `Cancellation request for Appointment #${appointment.appointmentNumber} by ${patientName} was rejected. Appointment remains ${appointment.status}.`;
+
+            const notification = new Notification({
+                sourceId: appointment.userId || null,
+                sourceType: appointment.userId ? 'User' : 'System',
+                type: 'AppointmentCancellationRejected',
+                entityId: appointment._id,
+                entityType: 'Appointment',
+                message,
+                isRead: false
+            });
+
+            await notification.save();
+        } catch (error) {
+            console.error('Failed to create cancellation rejected notification:', error);
         }
     }
 
@@ -426,9 +480,26 @@ class AppointmentService {
         const oldStatus = appointment.status;
         
         if (isStatusUpdate) {
-            appointment.status = updateData.status;
-            if (updateData.cancellationReason !== undefined) {
-                appointment.cancellationReason = updateData.cancellationReason?.trim();
+            const newStatus = updateData.status;
+
+            if (newStatus === 'CancellationRequested') {
+                // User is requesting cancellation — needs admin approval
+                appointment.status = 'CancellationRequested';
+                appointment.cancellationRequestedAt = new Date();
+                if (updateData.cancellationReason !== undefined) {
+                    appointment.cancellationReason = updateData.cancellationReason?.trim();
+                }
+            } else if (newStatus === 'Cancelled') {
+                // Direct cancel (admin-initiated, not via request flow)
+                appointment.status = 'Cancelled';
+                if (updateData.cancellationReason !== undefined) {
+                    appointment.cancellationReason = updateData.cancellationReason?.trim();
+                }
+            } else {
+                appointment.status = newStatus;
+                if (updateData.cancellationReason !== undefined) {
+                    appointment.cancellationReason = updateData.cancellationReason?.trim();
+                }
             }
         } else {
             if (updateData.userId) appointment.userId = updateData.userId;
@@ -487,11 +558,14 @@ class AppointmentService {
         let smsResult = null;
         let patientCreated = null;
 
-        //check if status changed from Pending to Scheduled (Approved)
         if (oldStatus !== appointment.status) {
+            // Send SMS for Scheduled, Completed, Cancelled, Rebooked
             smsResult = await this.sendStatusUpdateSMS(appointment);
 
-            //send cancellation notification with reason
+            if (appointment.status === 'CancellationRequested') {
+                await this.createCancellationRequestedNotification(appointment);
+            }
+
             if (appointment.status === 'Cancelled') {
                 await this.createCancellationNotification(appointment);
             }
@@ -500,7 +574,6 @@ class AppointmentService {
                 await this.createRebookedNotification(appointment);
             }
 
-            //auto-create patient when appointment is approved (Scheduled)
             if (oldStatus === 'Scheduled' && appointment.status === 'Referred') {
                 try {
                     patientCreated = await this.createPatientFromAppointment(appointment);
@@ -515,6 +588,57 @@ class AppointmentService {
             smsResult,
             patientCreated 
         };
+    }
+
+    // NEW: Admin approves the cancellation request
+    async approveCancellation(appointmentId) {
+        if (!appointmentId || !mongoose.Types.ObjectId.isValid(appointmentId)) {
+            throw new Error('Invalid appointment ID');
+        }
+
+        const appointment = await Appointment.findById(appointmentId).populate('userId');
+        if (!appointment) {
+            throw new Error('Appointment not found');
+        }
+
+        if (appointment.status !== 'CancellationRequested') {
+            throw new Error('Appointment does not have a pending cancellation request');
+        }
+
+        appointment.status = 'Cancelled';
+        await appointment.save();
+
+        await this.createCancellationNotification(appointment);
+        await this.sendStatusUpdateSMS(appointment);
+
+        return appointment;
+    }
+
+    // NEW: Admin rejects the cancellation request, reverts to a prior status
+    async rejectCancellation(appointmentId, revertStatus = 'Scheduled') {
+        if (!appointmentId || !mongoose.Types.ObjectId.isValid(appointmentId)) {
+            throw new Error('Invalid appointment ID');
+        }
+
+        const appointment = await Appointment.findById(appointmentId).populate('userId');
+        if (!appointment) {
+            throw new Error('Appointment not found');
+        }
+
+        if (appointment.status !== 'CancellationRequested') {
+            throw new Error('Appointment does not have a pending cancellation request');
+        }
+
+        appointment.status = revertStatus;
+        appointment.cancellationReason = undefined;
+        appointment.cancellationRequestedAt = undefined;
+        appointment.markModified('cancellationReason');
+        appointment.markModified('cancellationRequestedAt');
+        await appointment.save();
+
+        await this.createCancellationRejectedNotification(appointment);
+
+        return appointment;
     }
 
     async createPatientFromAppointment(appointment) {
@@ -541,7 +665,6 @@ class AppointmentService {
                 userEmail = user?.email;
             }
 
-            //prepare patient data from appointment
             const patientData = {
                 firstName: appointment.firstName,
                 lastName: appointment.lastName,
@@ -567,7 +690,6 @@ class AppointmentService {
                 }
             };
 
-            //create the patient
             const newPatient = await PatientService.createPatient(patientData);
 
             console.log(`Patient auto-created from appointment ${appointment.appointmentNumber}: Patient #${newPatient.patientNumber}`);
@@ -648,9 +770,9 @@ class AppointmentService {
             
             if (result.success) {
                 if (result.reason === 'development_skip') {
-                    console.log(`SMS notification skipped for ${contactNumberStr} (development mode) - appointment ${appointment.appointmentNumber} status update: ${appointment.status}`);
+                    console.log(`SMS notification skipped for ${contactNumberStr} (development mode)`);
                 } else {
-                    console.log(`SMS notification sent to ${contactNumberStr} for appointment ${appointment.appointmentNumber} status update: ${appointment.status}`);
+                    console.log(`SMS notification sent to ${contactNumberStr} for appointment ${appointment.appointmentNumber} status: ${appointment.status}`);
                 }
             } else {
                 console.log(`SMS notification failed for ${contactNumberStr}: ${result.message}`);

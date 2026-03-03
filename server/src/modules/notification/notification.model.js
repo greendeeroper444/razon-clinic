@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const notificationSchema = new mongoose.Schema(
     {
-        //who created/triggered the notification
+        // who created/triggered the notification
         sourceId: {
             type: Schema.Types.ObjectId,
             required: false,
@@ -14,7 +14,7 @@ const notificationSchema = new mongoose.Schema(
             enum: ['User', 'Doctor', 'Secretary', 'System'],
             default: 'System'
         },
-        //type of notification
+        // type of notification
         type: {
             type: String,
             enum: [
@@ -22,6 +22,8 @@ const notificationSchema = new mongoose.Schema(
                 'AppointmentCreated',
                 'AppointmentUpdated',
                 'AppointmentCancelled',
+                'AppointmentCancellationRequested', 
+                'AppointmentCancellationRejected',
                 'AppointmentRebooked',
                 'PatientCreated',
                 'MedicalRecordUpdated',
@@ -30,12 +32,12 @@ const notificationSchema = new mongoose.Schema(
             ],
             required: true
         },
-        //reference to the related entity
+        // reference to the related entity
         entityId: {
             type: Schema.Types.ObjectId,
             required: false
         },
-        //type of entity the notification refers to
+        // type of entity the notification refers to
         entityType: {
             type: String,
             enum: ['Appointment', 'Patient', 'MedicalRecord', 'Inventory'],

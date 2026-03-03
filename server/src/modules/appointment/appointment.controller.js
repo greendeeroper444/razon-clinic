@@ -46,7 +46,6 @@ class AppointmentController {
         }
     }
 
-    
     async getAppointments(req, res, next) {
         try {
             const isMyAppointmentsRoute = req.route.path === '/getMyAppointments';
@@ -157,6 +156,45 @@ class AppointmentController {
 
             return res.status(200).json(response);
         } catch (error) {
+            next(error);
+        }
+    }
+
+    // NEW: Admin approves the cancellation request
+    async approveCancellation(req, res, next) {
+        try {
+            const { appointmentId } = req.params;
+            const appointment = await AppointmentService.approveCancellation(appointmentId);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Cancellation approved. Appointment is now Cancelled.',
+                data: appointment
+            });
+        } catch (error) {
+            if (error.message.includes('does not have a pending cancellation')) {
+                return res.status(400).json({ success: false, message: error.message });
+            }
+            next(error);
+        }
+    }
+
+    // NEW: Admin rejects the cancellation request
+    async rejectCancellation(req, res, next) {
+        try {
+            const { appointmentId } = req.params;
+            const { revertStatus } = req.body;
+            const appointment = await AppointmentService.rejectCancellation(appointmentId, revertStatus);
+
+            return res.status(200).json({
+                success: true,
+                message: `Cancellation rejected. Appointment reverted to ${appointment.status}.`,
+                data: appointment
+            });
+        } catch (error) {
+            if (error.message.includes('does not have a pending cancellation')) {
+                return res.status(400).json({ success: false, message: error.message });
+            }
             next(error);
         }
     }

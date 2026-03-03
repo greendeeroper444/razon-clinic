@@ -83,7 +83,7 @@ const appointmentSchema = new mongoose.Schema(
             maxlength: 30,
             trim: true
         },
-        //mother's information
+        // mother's information
         motherInfo: {
             name: {
                 type: String,
@@ -104,7 +104,7 @@ const appointmentSchema = new mongoose.Schema(
                 trim: true
             }
         },
-        //father's information
+        // father's information
         fatherInfo: {
             name: {
                 type: String,
@@ -125,7 +125,7 @@ const appointmentSchema = new mongoose.Schema(
                 trim: true
             }
         },
-        //appointment details
+        // appointment details
         preferredDate: {
             type: Date,
             required: true
@@ -141,7 +141,15 @@ const appointmentSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ['Pending', 'Scheduled', 'Referred', 'Completed', 'Cancelled', 'Rebooked'],
+            enum: [
+                'Pending',
+                'Scheduled',
+                'Referred',
+                'Completed',
+                'Cancelled',
+                'Rebooked',
+                'CancellationRequested'
+            ],
             default: 'Pending'
         },
         cancellationReason: {
@@ -149,6 +157,10 @@ const appointmentSchema = new mongoose.Schema(
             trim: true,
             required: false,
             maxlength: 500
+        },
+        cancellationRequestedAt: {
+            type: Date,
+            required: false
         },
     },
     {

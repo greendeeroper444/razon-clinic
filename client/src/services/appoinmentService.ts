@@ -42,8 +42,6 @@ export const addAppointment = async (appointmentData: AppointmentFormData) => {
     }
 };
 
-
-
 export const getAppointments = async (params = {}) => {
     try {
         const defaultParams = {
@@ -98,7 +96,6 @@ export const getMyAppointments = async (params = {}) => {
     }
 };
 
-
 export const getCalendarAppointments = async (fromDate: string, toDate: string) => {
     try {
         const params = {
@@ -123,7 +120,6 @@ export const getCalendarAppointments = async (fromDate: string, toDate: string) 
         throw error;
     }
 };
-
 
 export const getAppointmentsByDate = async (date: string) => {
     try {
@@ -188,8 +184,6 @@ export const getAvailableTimeSlots = async (date: string) => {
     }
 };
 
-
-
 export const getAppointmentById = async (appointmentId: string) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/api/appointments/getAppointmentById/${appointmentId}`);
@@ -200,8 +194,6 @@ export const getAppointmentById = async (appointmentId: string) => {
         throw error;
     }
 };
-
-
 
 export const updateAppointment = async (appointmentId: string, appointmentData: AppointmentFormData) => {
     try {
@@ -259,7 +251,55 @@ export const updateAppointmentStatus = async (
     }
 };
 
+// NEW: User requests cancellation (goes to admin for approval)
+export const requestCancellation = async (
+    appointmentId: string,
+    cancellationReason?: string
+) => {
+    try {
+        const response = await axios.patch(
+            `${API_BASE_URL}/api/appointments/updateAppointment/${appointmentId}/status`,
+            {
+                status: 'CancellationRequested',
+                ...(cancellationReason && { cancellationReason })
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error requesting cancellation:', error);
+        if (axios.isAxiosError(error)) throw error.response?.data || error.message;
+        throw error;
+    }
+};
 
+// NEW: Admin approves the cancellation request
+export const approveCancellation = async (appointmentId: string) => {
+    try {
+        const response = await axios.patch(
+            `${API_BASE_URL}/api/appointments/updateAppointment/${appointmentId}/approveCancellation`
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error approving cancellation:', error);
+        if (axios.isAxiosError(error)) throw error.response?.data || error.message;
+        throw error;
+    }
+};
+
+// NEW: Admin rejects the cancellation request
+export const rejectCancellation = async (appointmentId: string, revertStatus = 'Scheduled') => {
+    try {
+        const response = await axios.patch(
+            `${API_BASE_URL}/api/appointments/updateAppointment/${appointmentId}/rejectCancellation`,
+            { revertStatus }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error rejecting cancellation:', error);
+        if (axios.isAxiosError(error)) throw error.response?.data || error.message;
+        throw error;
+    }
+};
 
 export const deleteAppointment = async (appointmentId: string) => {
     try {

@@ -53,6 +53,22 @@ router.patch(
     appointmentController.updateAppointment
 );
 
+// NEW: Admin approves a cancellation request
+router.patch(
+    '/updateAppointment/:appointmentId/approveCancellation',
+    authenticate,
+    validator.validateAppointmentId,
+    appointmentController.approveCancellation
+);
+
+// NEW: Admin rejects a cancellation request
+router.patch(
+    '/updateAppointment/:appointmentId/rejectCancellation',
+    authenticate,
+    validator.validateAppointmentId,
+    appointmentController.rejectCancellation
+);
+
 router.delete(
     '/deleteAppointment/:appointmentId', 
     authenticate, 

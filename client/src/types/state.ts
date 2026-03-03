@@ -61,6 +61,9 @@ export interface AppointmentState {
     updateAppointmentData: (id: string, data: AppointmentFormData) => Promise<void>;
     updateAppointmentStatus: (id: string, status: string, cancellationReason?: string) => Promise<void>;
     deleteAppointment: (id: string) => Promise<void>;
+    requestCancellation: (id: string, cancellationReason?: string) => Promise<void>;
+    approveCancellation: (id: string) => Promise<void>;
+    rejectCancellation: (id: string, revertStatus?: string) => Promise<void>;
     clearValidationErrors: () => void;
 
     // modal actions

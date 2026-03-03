@@ -16,6 +16,9 @@ export type NotificationType =
     'AppointmentCreated' |
     'AppointmentUpdated' |
     'AppointmentCancelled' |
+    'AppointmentRebooked' |
+    'AppointmentCancellationRequested' |
+    'AppointmentCancellationRejected' |
     'PatientCreated' |
     'MedicalRecordUpdated' |
     'LowStock' | 
@@ -39,6 +42,8 @@ export const NotificationTypeToUICategory = {
     'AppointmentUpdated': 'appointment',
     'AppointmentCancelled': 'appointment',
     'AppointmentRebooked': 'appointment',
+    'AppointmentCancellationRequested': 'appointment',
+    'AppointmentCancellationRejected': 'appointment',
     'PatientCreated': 'patient',
     'MedicalRecordUpdated': 'medical',
     'LowStock': 'inventory',

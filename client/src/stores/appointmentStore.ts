@@ -1,6 +1,17 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { getAppointments, getMyAppointments, updateAppointment, deleteAppointment, getAppointmentById, updateAppointmentStatus as updateAppointmentStatusService, addAppointment  } from '../services'
+import {
+    getAppointments,
+    getMyAppointments,
+    updateAppointment,
+    deleteAppointment,
+    getAppointmentById,
+    updateAppointmentStatus as updateAppointmentStatusService,
+    addAppointment,
+    requestCancellation as requestCancellationService,
+    approveCancellation as approveCancellationService,
+    rejectCancellation as rejectCancellationService,
+} from '../services'
 import { AppointmentFormData, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
 import { toast } from 'sonner'
 import { handleStoreError } from '../utils'
@@ -340,6 +351,120 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         cancelAppointmentData: null,
                         currentOperation: null
                     });
+                }
+            },
+
+            // NEW: User requests cancellation (needs admin approval)
+            requestCancellation: async (id: string, cancellationReason?: string) => {
+                try {
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'status' });
+
+                    const response = await requestCancellationService(id, cancellationReason);
+
+                    if (response.success) {
+                        const currentState = get();
+
+                        // Update currentAppointment in-place if we're on the details page
+                        if (currentState.currentAppointment && currentState.currentAppointment.id === id) {
+                            set({
+                                currentAppointment: {
+                                    ...currentState.currentAppointment,
+                                    status: 'CancellationRequested' as AppointmentStatus,
+                                    ...(cancellationReason && { cancellationReason }),
+                                    updatedAt: new Date().toISOString()
+                                }
+                            });
+                        }
+
+                        if (currentState.viewMode === 'admin') {
+                            await get().fetchAppointments({});
+                        } else {
+                            await get().fetchMyAppointments({});
+                        }
+
+                        toast.success('Cancellation request submitted. Awaiting admin approval.');
+
+                        set({
+                            isModalCancelOpen: false,
+                            cancelAppointmentData: null,
+                        });
+                    } else {
+                        throw new Error(response.message || 'Failed to request cancellation');
+                    }
+                } catch (error) {
+                    console.error('Error requesting cancellation:', error);
+                    toast.error('Failed to submit cancellation request');
+                } finally {
+                    set({ submitLoading: false, isProcessing: false, currentOperation: null });
+                }
+            },
+
+            // NEW: Admin approves the cancellation request
+            approveCancellation: async (id: string) => {
+                try {
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'status' });
+
+                    const response = await approveCancellationService(id);
+
+                    if (response.success) {
+                        const currentState = get();
+
+                        if (currentState.currentAppointment && currentState.currentAppointment.id === id) {
+                            set({
+                                currentAppointment: {
+                                    ...currentState.currentAppointment,
+                                    status: 'Cancelled' as AppointmentStatus,
+                                    updatedAt: new Date().toISOString()
+                                }
+                            });
+                        }
+
+                        await get().fetchAppointments({});
+
+                        toast.success('Cancellation approved. Appointment is now Cancelled.');
+                    } else {
+                        throw new Error(response.message || 'Failed to approve cancellation');
+                    }
+                } catch (error) {
+                    console.error('Error approving cancellation:', error);
+                    toast.error('Failed to approve cancellation');
+                } finally {
+                    set({ submitLoading: false, isProcessing: false, currentOperation: null });
+                }
+            },
+
+            // NEW: Admin rejects the cancellation request
+            rejectCancellation: async (id: string, revertStatus = 'Scheduled') => {
+                try {
+                    set({ submitLoading: true, isProcessing: true, currentOperation: 'status' });
+
+                    const response = await rejectCancellationService(id, revertStatus);
+
+                    if (response.success) {
+                        const currentState = get();
+
+                        if (currentState.currentAppointment && currentState.currentAppointment.id === id) {
+                            set({
+                                currentAppointment: {
+                                    ...currentState.currentAppointment,
+                                    status: revertStatus as AppointmentStatus,
+                                    cancellationReason: undefined,
+                                    updatedAt: new Date().toISOString()
+                                }
+                            });
+                        }
+
+                        await get().fetchAppointments({});
+
+                        toast.success(`Cancellation rejected. Appointment reverted to ${revertStatus}.`);
+                    } else {
+                        throw new Error(response.message || 'Failed to reject cancellation');
+                    }
+                } catch (error) {
+                    console.error('Error rejecting cancellation:', error);
+                    toast.error('Failed to reject cancellation');
+                } finally {
+                    set({ submitLoading: false, isProcessing: false, currentOperation: null });
                 }
             },
 

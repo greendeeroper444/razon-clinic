@@ -117,7 +117,15 @@ const Notification: React.FC<ExtendedNotificationProps> = ({
             }
             
             //check if it's an appointment-related notification and has an entityId
-            const appointmentTypes = ['AppointmentReminder', 'AppointmentCreated', 'AppointmentUpdated', 'AppointmentCancelled', 'AppointmentRebooked'];
+            const appointmentTypes = [
+                'AppointmentReminder', 
+                'AppointmentCreated', 
+                'AppointmentUpdated', 
+                'AppointmentCancelled', 
+                'AppointmentRebooked',
+                'AppointmentCancellationRequested',
+                'AppointmentCancellationRejected'
+            ];
             
             if (appointmentTypes.includes(notification.type) && notification.entityId && notification.entityType === 'Appointment') {
                 //navigate to the appointment details page
@@ -131,7 +139,15 @@ const Notification: React.FC<ExtendedNotificationProps> = ({
         } catch (err) {
             console.error('Error marking notification as read:', err);
             //still navigate even if marking as read fails
-            const appointmentTypes = ['AppointmentReminder', 'AppointmentCreated', 'AppointmentUpdated', 'AppointmentCancelled', 'AppointmentRebooked'];
+            const appointmentTypes = [
+                'AppointmentReminder', 
+                'AppointmentCreated', 
+                'AppointmentUpdated', 
+                'AppointmentCancelled', 
+                'AppointmentRebooked',
+                'AppointmentCancellationRequested',
+                'AppointmentCancellationRejected'
+            ];
             
             if (appointmentTypes.includes(notification.type) && notification.entityId && notification.entityType === 'Appointment') {
                 navigate(`/admin/appointments/details/${notification.entityId}`);
@@ -161,7 +177,15 @@ const Notification: React.FC<ExtendedNotificationProps> = ({
     
     //helper function to check if notification is clickable
     const isNotificationClickable = (notification: NotificationFormData) => {
-        const appointmentTypes = ['AppointmentReminder', 'AppointmentCreated', 'AppointmentUpdated', 'AppointmentCancelled', 'AppointmentRebooked'];
+        const appointmentTypes = [
+            'AppointmentReminder', 
+            'AppointmentCreated', 
+            'AppointmentUpdated', 
+            'AppointmentCancelled', 
+            'AppointmentRebooked', 
+            'AppointmentCancellationRequested',
+            'AppointmentCancellationRejected'
+        ];
         return appointmentTypes.includes(notification.type) && notification.entityId && notification.entityType === 'Appointment';
     };
     

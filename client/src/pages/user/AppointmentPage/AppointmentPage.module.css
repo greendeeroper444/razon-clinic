@@ -153,6 +153,7 @@
     color: #f59e0b;
 }
 
+
 .statusBadge.statusCompleted {
     background-color: #ecfdf5;
     color: var(--success);

@@ -89,11 +89,11 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         fetchMyAppointments,
         addAppointment,
         updateAppointmentData,
+        requestCancellation,
         updateAppointmentStatus,
         deleteAppointment,
         pagination: storePagination,
         openModalCreate,
-        openModalUpdate,
         openModalCancel,
         closeModalCreate,
         closeModalUpdate,
@@ -140,19 +140,19 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
     }, [openModalCreate]);
 
     const handleViewClick = (appointment: AppointmentResponse) => {
-        navigate(`/user/appointments/details/${appointment.id}`)
-    }
+        navigate(`/user/appointments/details/${appointment.id}`);
+    };
 
     const handleSubmitAdd = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string') {
-            console.error('Invalid data for adding appointment')
-            return
+            console.error('Invalid data for adding appointment');
+            return;
         }
 
         const { id: _, ...appointmentData } = data as AppointmentFormData & { id?: string };
 
         try {
-            await addAppointment(appointmentData as AppointmentFormData)
+            await addAppointment(appointmentData as AppointmentFormData);
 
             setTimeout(() => {
                 fetchData(
@@ -165,18 +165,18 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         } catch (error) {
             console.error('Error adding appointment:', error);
         }
-    }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate])
+    }, [addAppointment, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, closeModalCreate]);
 
     const handleSubmitUpdate = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !selectedAppointment?.id) {
-            console.error('Invalid data or missing appointment ID')
-            return
+            console.error('Invalid data or missing appointment ID');
+            return;
         }
 
         const appointmentData = data as AppointmentFormData;
 
         try {
-            await updateAppointmentData(selectedAppointment.id, appointmentData)
+            await updateAppointmentData(selectedAppointment.id, appointmentData);
 
             setTimeout(() => {
                 fetchData(
@@ -188,8 +188,9 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         } catch (error) {
             console.error('Error updating appointment:', error);
         }
-    }, [selectedAppointment, updateAppointmentData, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm])
+    }, [selectedAppointment, updateAppointmentData, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
 
+    // UPDATED: now calls requestCancellation instead of directly cancelling
     const handleConfirmCancel = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data === 'string' || !cancelAppointmentData?.id) {
             console.error('Invalid data or missing appointment ID');
@@ -199,7 +200,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         const { cancellationReason } = data as { cancellationReason: string };
 
         try {
-            await updateAppointmentStatus(cancelAppointmentData.id, 'Cancelled', cancellationReason);
+            await requestCancellation(cancelAppointmentData.id, cancellationReason);
 
             setTimeout(() => {
                 fetchData(
@@ -210,9 +211,9 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                 );
             }, 600);
         } catch (error) {
-            console.error('Error cancelling appointment:', error);
+            console.error('Error requesting cancellation:', error);
         }
-    }, [cancelAppointmentData, updateAppointmentStatus, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, statusFilter])
+    }, [cancelAppointmentData, requestCancellation, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, statusFilter]);
 
     const handleConfirmDelete = useCallback(async (data: FormDataType | string): Promise<void> => {
         if (typeof data !== 'string') {
@@ -230,7 +231,6 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     searchTerm
                 );
             }, 600);
-
         } catch (error) {
             console.error('Error deleting appointment:', error);
         }
@@ -247,10 +247,7 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
         const { id: _, ...appointmentData } = data as AppointmentFormData & { id?: string };
 
         try {
-            //create the new appointment
             await addAppointment(appointmentData as AppointmentFormData);
-
-            //mark the original as Rebooked
             await updateAppointmentStatus(rebookAppointment.id, 'Rebooked');
 
             setTimeout(() => {
@@ -266,6 +263,12 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             console.error('Error rebooking appointment:', error);
         }
     }, [rebookAppointment, addAppointment, updateAppointmentStatus, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm]);
+
+    // Statuses that block the Cancel button
+    const cancelDisabledStatuses = ['Cancelled', 'Rebooked', 'Completed', 'CancellationRequested'];
+
+    // Statuses that block the Resched button
+    const reschedDisabledStatuses = ['Rebooked', 'Cancelled', 'Completed', 'CancellationRequested'];
 
     const appointmentColumns: TableColumn<AppointmentResponse>[] = [
         {
@@ -310,7 +313,8 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             header: 'STATUS',
             render: (appointment) => (
                 <span className={`${styles.statusBadge} ${getStatusClass(appointment.status, styles)}`}>
-                    {appointment.status}
+                    {/* Show a friendlier label for CancellationRequested */}
+                    {appointment.status === 'CancellationRequested' ? 'Pending Cancellation' : appointment.status}
                 </span>
             )
         },
@@ -329,28 +333,12 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     >
                         View
                     </button>
-                    {/* <button
-                        type='button'
-                        disabled={['Scheduled', 'Rebooked', 'Cancelled', 'Completed'].includes(appointment.status)}
-                        className={`${styles.actionBtn} ${styles.update} ${
-                            ['Scheduled', 'Rebooked', 'Cancelled', 'Completed'].includes(appointment.status)
-                                ? styles.disabled
-                                : ''
-                        }`}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            openModalUpdate(appointment);
-                        }}
-                    >
-                        Update
-                    </button> */}
+
                     <button
                         type='button'
-                        disabled={['Rebooked', 'Cancelled', 'Completed'].includes(appointment.status)}
+                        disabled={reschedDisabledStatuses.includes(appointment.status)}
                         className={`${styles.actionBtn} ${styles.rebook} ${
-                            ['Rebooked', 'Cancelled', 'Completed'].includes(appointment.status)
-                                ? styles.disabled
-                                : ''
+                            reschedDisabledStatuses.includes(appointment.status) ? styles.disabled : ''
                         }`}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -359,11 +347,12 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                     >
                         Resched
                     </button>
+
                     <button
                         type='button'
-                        disabled={['Cancelled', 'Rebooked', 'Completed'].includes(appointment.status)}
+                        disabled={cancelDisabledStatuses.includes(appointment.status)}
                         className={`${styles.actionBtn} ${styles.delete} ${
-                            ['Cancelled', 'Rebooked', 'Completed'].includes(appointment.status) ? styles.disabled : ''
+                            cancelDisabledStatuses.includes(appointment.status) ? styles.disabled : ''
                         }`}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -385,68 +374,68 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             onClick: handleCreateClick,
             type: 'primary' as const
         }
-    ]
+    ];
 
-  return (
-    <Main error={error}>
-        <Header
-            title='Appointments'
-            actions={headerActions}
-        />
+    return (
+        <Main error={error}>
+            <Header
+                title='Appointments'
+                actions={headerActions}
+            />
 
-        <div className={styles.section}>
-            <div className={styles.sectionHeader}>
-                <div className={styles.sectionTitle}>
-                    Appointments ({loading ? '...' : appointments.length})
-                </div>
-
-                <div className={styles.controls}>
-                    <Searchbar
-                        onSearch={handleSearch}
-                        placeholder="Search appointments..."
-                        disabled={loading}
-                        className={styles.searchbar}
-                    />
-
-                    <div className={styles.selectControl}>
-                        <label htmlFor="statusFilter">Status:</label>
-                        <select
-                            id="statusFilter"
-                            value={statusFilter}
-                            onChange={(e) => handleStatusChange(e.target.value)}
-                            disabled={loading}
-                            className={styles.selectOption}
-                        >
-                            <option value="">All Status</option>
-                            <option value="Scheduled">Scheduled</option>
-                            <option value="Referred">Referred</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Rebooked">Rebooked</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
+            <div className={styles.section}>
+                <div className={styles.sectionHeader}>
+                    <div className={styles.sectionTitle}>
+                        Appointments ({loading ? '...' : appointments.length})
                     </div>
 
-                    <div className={styles.selectControl}>
-                        <label htmlFor="itemsPerPage">Items per page:</label>
-                        <select
-                            id="itemsPerPage"
-                            value={storePagination?.itemsPerPage || 10}
-                            onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                    <div className={styles.controls}>
+                        <Searchbar
+                            onSearch={handleSearch}
+                            placeholder="Search appointments..."
                             disabled={loading}
-                            className={styles.selectOption}
-                        >
-                            <option value={5}>5</option>
-                            <option value={10}>10</option>
-                            <option value={20}>20</option>
-                            <option value={50}>50</option>
-                        </select>
+                            className={styles.searchbar}
+                        />
+
+                        <div className={styles.selectControl}>
+                            <label htmlFor="statusFilter">Status:</label>
+                            <select
+                                id="statusFilter"
+                                value={statusFilter}
+                                onChange={(e) => handleStatusChange(e.target.value)}
+                                disabled={loading}
+                                className={styles.selectOption}
+                            >
+                                <option value="">All Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="Referred">Referred</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Rebooked">Rebooked</option>
+                                <option value="CancellationRequested">Pending Cancellation</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <div className={styles.selectControl}>
+                            <label htmlFor="itemsPerPage">Items per page:</label>
+                            <select
+                                id="itemsPerPage"
+                                value={storePagination?.itemsPerPage || 10}
+                                onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                                disabled={loading}
+                                className={styles.selectOption}
+                            >
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {
-                loading ? (
+                {loading ? (
                     <div className={styles.tableResponsive}>
                         <Loading
                             type='skeleton'
@@ -466,95 +455,92 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                             getRowKey={(appointment) => appointment.id}
                         />
 
-                        {
-                            storePagination && storePagination.totalPages > 1 && (
-                                <Pagination
-                                    currentPage={storePagination.currentPage}
-                                    totalPages={storePagination.totalPages}
-                                    totalItems={storePagination.totalItems}
-                                    itemsPerPage={storePagination.itemsPerPage}
-                                    onPageChange={handlePageChange}
-                                    disabled={loading || isProcessing}
-                                />
-                            )
-                        }
+                        {storePagination && storePagination.totalPages > 1 && (
+                            <Pagination
+                                currentPage={storePagination.currentPage}
+                                totalPages={storePagination.totalPages}
+                                totalItems={storePagination.totalItems}
+                                itemsPerPage={storePagination.itemsPerPage}
+                                onPageChange={handlePageChange}
+                                disabled={loading || isProcessing}
+                            />
+                        )}
                     </>
-                )
-            }
-        </div>
+                )}
+            </div>
 
-        {isModalCreateOpen && (
-            <Modal
-                isOpen={isModalCreateOpen}
-                onClose={closeModalCreate}
-                modalType="appointment"
-                onSubmit={handleSubmitAdd}
-                isProcessing={submitLoading}
-                editData={userDefaultFormData as AppointmentFormData}
-                isNewRecord={true}
+            {isModalCreateOpen && (
+                <Modal
+                    isOpen={isModalCreateOpen}
+                    onClose={closeModalCreate}
+                    modalType="appointment"
+                    onSubmit={handleSubmitAdd}
+                    isProcessing={submitLoading}
+                    editData={userDefaultFormData as AppointmentFormData}
+                    isNewRecord={true}
+                />
+            )}
+
+            {isModalUpdateOpen && (
+                <Modal
+                    isOpen={isModalUpdateOpen}
+                    onClose={closeModalUpdate}
+                    modalType="appointment"
+                    onSubmit={handleSubmitUpdate}
+                    editData={selectedAppointment}
+                    isProcessing={submitLoading}
+                />
+            )}
+
+            {isModalDeleteOpen && deleteAppointmentData && (
+                <Modal
+                    isOpen={isModalDeleteOpen}
+                    onClose={closeModalDelete}
+                    modalType="delete"
+                    onSubmit={handleConfirmDelete}
+                    deleteData={deleteAppointmentData}
+                    isProcessing={submitLoading}
+                />
+            )}
+
+            {isModalCancelOpen && cancelAppointmentData && (
+                <Modal
+                    isOpen={isModalCancelOpen}
+                    onClose={closeModalCancel}
+                    modalType="cancel"
+                    onSubmit={handleConfirmCancel}
+                    isProcessing={submitLoading}
+                />
+            )}
+
+            {isModalRebookOpen && rebookAppointment && (
+                <Modal
+                    isOpen={isModalRebookOpen}
+                    onClose={() => {
+                        setIsModalRebookOpen(false);
+                        setRebookAppointment(null);
+                    }}
+                    modalType="appointment"
+                    onSubmit={handleSubmitRebook}
+                    isProcessing={submitLoading}
+                    editData={{
+                        ...rebookAppointment,
+                        preferredDate: '',
+                        preferredTime: '',
+                        status: 'Pending',
+                    } as AppointmentFormData}
+                    isNewRecord={true}
+                />
+            )}
+
+            <SubmitLoading
+                isLoading={submitLoading}
+                loadingText={getLoadingText(currentOperation, 'appointment')}
+                size='medium'
+                variant='overlay'
             />
-        )}
+        </Main>
+    );
+};
 
-        {isModalUpdateOpen && (
-            <Modal
-                isOpen={isModalUpdateOpen}
-                onClose={closeModalUpdate}
-                modalType="appointment"
-                onSubmit={handleSubmitUpdate}
-                editData={selectedAppointment}
-                isProcessing={submitLoading}
-            />
-        )}
-
-        {isModalDeleteOpen && deleteAppointmentData && (
-            <Modal
-                isOpen={isModalDeleteOpen}
-                onClose={closeModalDelete}
-                modalType="delete"
-                onSubmit={handleConfirmDelete}
-                deleteData={deleteAppointmentData}
-                isProcessing={submitLoading}
-            />
-        )}
-
-        {isModalCancelOpen && cancelAppointmentData && (
-            <Modal
-                isOpen={isModalCancelOpen}
-                onClose={closeModalCancel}
-                modalType="cancel"
-                onSubmit={handleConfirmCancel}
-                isProcessing={submitLoading}
-            />
-        )}
-
-        {isModalRebookOpen && rebookAppointment && (
-            <Modal
-                isOpen={isModalRebookOpen}
-                onClose={() => {
-                    setIsModalRebookOpen(false);
-                    setRebookAppointment(null);
-                }}
-                modalType="appointment"
-                onSubmit={handleSubmitRebook}
-                isProcessing={submitLoading}
-                editData={{
-                    ...rebookAppointment,
-                    preferredDate: '',
-                    preferredTime: '',
-                    status: 'Pending',
-                } as AppointmentFormData}
-                isNewRecord={true}
-            />
-        )}
-
-        <SubmitLoading
-            isLoading={submitLoading}
-            loadingText={getLoadingText(currentOperation, 'appointment')}
-            size='medium'
-            variant='overlay'
-        />
-    </Main>
-  )
-}
-
-export default AppointmentPage
+export default AppointmentPage;
