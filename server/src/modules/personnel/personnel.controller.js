@@ -21,15 +21,15 @@ class PersonnelController {
             const personnelData = {
                 firstName,
                 lastName,
-                middleName,
-                suffix,
-                username,
                 contactNumber,
                 password,
                 birthdate,
                 sex,
                 address,
-                role
+                role,
+                ...(middleName?.trim() && { middleName: middleName.trim() }),
+                ...(suffix?.trim() && { suffix: suffix.trim() }),
+                ...(username?.trim() && { username: username.trim() }),
             };
 
             await PersonnelService.validatePersonnelData(personnelData);

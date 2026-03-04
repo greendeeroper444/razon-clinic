@@ -14,7 +14,7 @@ const validatePersonnel = [
         .isLength({ min: 3, max: 50 }).withMessage('Last name must be between 3 and 50 characters'),
     
     body('middleName')
-        .optional()
+        .optional({ nullable: true, checkFalsy: true })
         .trim()
         .isLength({ min: 1, max: 50 }).withMessage('Middle name must be between 1 and 50 characters'),
     
@@ -86,7 +86,7 @@ const validatePersonnelUpdate = [
         .isLength({ min: 3, max: 50 }).withMessage('Last name must be between 3 and 50 characters'),
     
     body('middleName')
-        .optional()
+        .optional({ nullable: true, checkFalsy: true })
         .trim()
         .isLength({ min: 1, max: 50 }).withMessage('Middle name must be between 1 and 50 characters'),
 

@@ -1,18 +1,20 @@
 const Admin = require("./admin.model");
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 class PersonnelService {
     
     async createPersonnel(personnelData) {
         try {
-            const { contactNumber, password, username, ...restData } = personnelData;
+            const { contactNumber, password, username, middleName, suffix, ...restData } = personnelData;
 
             const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactNumber);
             
             const dataToSave = {
                 ...restData,
-                username: username || undefined,
+                ...(middleName?.trim() && { middleName: middleName.trim() }),
+                ...(suffix?.trim() && { suffix: suffix.trim() }),
+                ...(username?.trim() && { username }),
                 email: isEmail ? contactNumber : undefined,
                 contactNumber: !isEmail ? contactNumber : undefined
             };

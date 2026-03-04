@@ -16,7 +16,6 @@ const AdminSchema = new mongoose.Schema(
         },
         middleName: {
             type: String,
-            trim: true,
             minlength: 1,
             maxlength: 50
         },

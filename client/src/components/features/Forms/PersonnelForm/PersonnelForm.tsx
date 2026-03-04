@@ -63,19 +63,6 @@ const PersonnelForm: React.FC<PersonnelFormProps> = ({
         <br />
 
         <Input
-            ref={(el) => { fieldRefs.current['firstName'] = el; }}
-            type='text'
-            label='First Name *'
-            name='firstName'
-            placeholder='Enter first name'
-            value={formData?.firstName || ''}
-            onChange={onChange}
-            error={getFieldError(validationErrors, 'firstName')}
-        />
-
-        <br />
-
-        <Input
             ref={(el) => { fieldRefs.current['lastName'] = el; }}
             type='text'
             label='Last Name *'
@@ -181,7 +168,7 @@ const PersonnelForm: React.FC<PersonnelFormProps> = ({
             options={[
                 { value: 'Male', label: 'Male' },
                 { value: 'Female', label: 'Female' },
-                { value: 'Other', label: 'Other' }
+                // { value: 'Other', label: 'Other' }
             ]}
             error={getFieldError(validationErrors, 'sex')}
         />

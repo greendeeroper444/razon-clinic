@@ -1,8 +1,8 @@
 import { FormEvent, useState, useEffect, useRef } from 'react'
 import styles from './ResetPasswordPage.module.css'
-import { CalendarCheck, UserRound, Shield, Lock } from 'lucide-react'
+import { CalendarCheck, UserRound, Shield } from 'lucide-react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { Footer } from '../../../components'
+import { Footer, Input } from '../../../components'
 import { useOTPStore } from '../../../stores'
 
 const ResetPasswordPage = () => {
@@ -14,6 +14,8 @@ const ResetPasswordPage = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const hasRedirected = useRef(false);
 
     const { 
@@ -105,62 +107,46 @@ const ResetPasswordPage = () => {
                         <strong>{contactNumber}</strong>
                     </p>
                     
-                    {
-                        error && (
-                            <div className={styles.errorMessage}>
-                                {error}
-                            </div>
-                        )
-                    }
-
-                    {
-                        success && (
-                            <div className={styles.successMessage}>
-                                Password reset successfully! Redirecting to login...
-                            </div>
-                        )
-                    }
-
-                    <div className={styles.inputGroup}>
-                        <div className={styles.inputWithIcon}>
-                            <Lock className={styles.inputIcon} size={18} />
-                            <input 
-                                type='password' 
-                                placeholder='New Password' 
-                                className={styles.formInput}
-                                value={newPassword}
-                                onChange={handleNewPasswordChange}
-                                minLength={6}
-                                required
-                                disabled={loading || success}
-                                autoComplete="new-password"
-                            />
+                    {error && (
+                        <div className={styles.errorMessage}>
+                            {error}
                         </div>
-                        {
-                            passwordError && (
-                                <small className={styles.inputError}>
-                                    {passwordError}
-                                </small>
-                            )
-                        }
-                    </div>
+                    )}
 
-                    <div className={styles.inputGroup}>
-                        <div className={styles.inputWithIcon}>
-                            <Lock className={styles.inputIcon} size={18} />
-                            <input 
-                                type='password' 
-                                placeholder='Confirm Password' 
-                                className={styles.formInput}
-                                value={confirmPassword}
-                                onChange={handleConfirmPasswordChange}
-                                minLength={6}
-                                required
-                                disabled={loading || success}
-                                autoComplete="new-password"
-                            />
+                    {success && (
+                        <div className={styles.successMessage}>
+                            Password reset successfully! Redirecting to login...
                         </div>
-                    </div>
+                    )}
+
+                    <Input
+                        type={showNewPassword ? 'text' : 'password'}
+                        placeholder='New Password'
+                        value={newPassword}
+                        onChange={handleNewPasswordChange}
+                        leftIcon='lock'
+                        rightIcon={showNewPassword ? 'eye-slash' : 'eye'}
+                        onRightIconClick={() => setShowNewPassword(prev => !prev)}
+                        error={passwordError}
+                        minLength={6}
+                        required
+                        disabled={loading || success}
+                        autoComplete="new-password"
+                    />
+
+                    <Input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        placeholder='Confirm Password'
+                        value={confirmPassword}
+                        onChange={handleConfirmPasswordChange}
+                        leftIcon='lock'
+                        rightIcon={showConfirmPassword ? 'eye-slash' : 'eye'}
+                        onRightIconClick={() => setShowConfirmPassword(prev => !prev)}
+                        minLength={6}
+                        required
+                        disabled={loading || success}
+                        autoComplete="new-password"
+                    />
 
                     <div className={styles.passwordRequirements}>
                         <p>Password must:</p>
@@ -182,13 +168,11 @@ const ResetPasswordPage = () => {
                         {loading ? 'Resetting Password...' : success ? 'Success!' : 'Reset Password'}
                     </button>
                     
-                    {
-                        !success && (
-                            <p className={styles.signupPrompt}>
-                                Remember your password? <Link to='/login' className={styles.signupLink}>Login</Link>
-                            </p>
-                        )
-                    }
+                    {!success && (
+                        <p className={styles.signupPrompt}>
+                            Remember your password? <Link to='/login' className={styles.signupLink}>Login</Link>
+                        </p>
+                    )}
                 </form>
             </div>
         </section>
@@ -199,9 +183,7 @@ const ResetPasswordPage = () => {
                 <div className={styles.featureCard}>
                     <CalendarCheck className={styles.featureIcon} size={32} />
                     <h3>Easy Booking</h3>
-                    <p>
-                        Set appointments online anytime, anywhere with just a few clicks.
-                    </p>
+                    <p>Set appointments online anytime, anywhere with just a few clicks.</p>
                 </div>
                 <div className={styles.featureCard}>
                     <UserRound className={styles.featureIcon} size={32} />

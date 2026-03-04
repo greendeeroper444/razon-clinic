@@ -1,8 +1,8 @@
 import { FormEvent, useState, useEffect } from 'react'
 import styles from './ForgotPasswordPage.module.css'
-import { CalendarCheck, UserRound, Shield, Phone } from 'lucide-react'
+import { CalendarCheck, UserRound, Shield } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Footer } from '../../../components'
+import { Footer, Input } from '../../../components'
 import { useOTPStore } from '../../../stores'
 
 const ForgotPasswordPage = () => {
@@ -53,32 +53,27 @@ const ForgotPasswordPage = () => {
                     <h2 className={styles.formTitle}>Forgot Password</h2>
                     <p className={styles.formSubtitle}>Enter your contact number to reset your password</p>
                     
-                    {
-                        error && (
-                            <div className={styles.errorMessage}>
-                                {error}
-                            </div>
-                        )
-                    }
-
-                    <div className={styles.inputGroup}>
-                        <div className={styles.inputWithIcon}>
-                            <Phone className={styles.inputIcon} size={18} />
-                            <input 
-                                type='tel' 
-                                placeholder='Contact Number (e.g., 09123456789)' 
-                                className={styles.formInput}
-                                value={contactNumber}
-                                onChange={handleContactNumberChange}
-                                pattern="^(09|\+639)\d{9}$"
-                                required
-                                disabled={loading}
-                            />
+                    {error && (
+                        <div className={styles.errorMessage}>
+                            {error}
                         </div>
-                        <small className={styles.inputHint}>
-                            Format: 09XXXXXXXXX or +639XXXXXXXXX
-                        </small>
-                    </div>
+                    )}
+
+                    <Input
+                        type='tel'
+                        placeholder='Contact Number (e.g., 09123456789)'
+                        value={contactNumber}
+                        onChange={handleContactNumberChange}
+                        leftIcon='phone'
+                        pattern="^(09|\+639)\d{9}$"
+                        required
+                        disabled={loading}
+                        label={
+                            <span className={styles.inputHint}>
+                                Format: 09XXXXXXXXX or +639XXXXXXXXX
+                            </span>
+                        }
+                    />
                     
                     <button 
                         type='submit' 
@@ -101,9 +96,7 @@ const ForgotPasswordPage = () => {
                 <div className={styles.featureCard}>
                     <CalendarCheck className={styles.featureIcon} size={32} />
                     <h3>Easy Booking</h3>
-                    <p>
-                        Set appointments online anytime, anywhere with just a few clicks.
-                    </p>
+                    <p>Set appointments online anytime, anywhere with just a few clicks.</p>
                 </div>
                 <div className={styles.featureCard}>
                     <UserRound className={styles.featureIcon} size={32} />

@@ -73,19 +73,23 @@ const AppointmentDetailsPage = () => {
         }
         await updateAppointmentStatus(appointmentId, data.status);
 
-        if (data.status === 'Referred' && currentAppointment) {
-            setTimeout(() => {
-                navigate('/admin/patients', {
-                    state: {
-                        highlightPatient: {
-                            firstName: currentAppointment.firstName,
-                            lastName: currentAppointment.lastName,
-                            birthdate: currentAppointment.birthdate
-                        }
-                    }
-                });
-            }, 1000);
-        }
+        // if (data.status === 'Referred' && currentAppointment) {
+        //     setTimeout(() => {
+        //         navigate('/admin/patients', {
+        //             state: {
+        //                 highlightPatient: {
+        //                     firstName: currentAppointment.firstName,
+        //                     lastName: currentAppointment.lastName,
+        //                     birthdate: currentAppointment.birthdate
+        //                 }
+        //             }
+        //         });
+        //     }, 1000);
+        // }
+
+        setTimeout(() => {
+            navigate('/admin/appointments');
+        }, 1000);
     };
 
     const handleApproveCancellation = async () => {

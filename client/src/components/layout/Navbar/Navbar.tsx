@@ -68,12 +68,17 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
         }, 100);
     };
 
-     const handleLogout = () => {
+    const handleLogout = async () => {
         try {
+            const userRole = user?.role; // capture before anything clears it
+            
+            await logout(); // await so state settles before navigating
 
-            logout();
-
-            navigate('/');
+            if (userRole === 'Staff' || userRole === 'Doctor') {
+                navigate('/admin/login');
+            } else {
+                navigate('/');
+            }
         } catch (error) {
             if (error instanceof Error) {
                 toast.error(error.message);
@@ -82,7 +87,7 @@ const Navbar: React.FC<NavbarProps> = ({sidebarCollapsed, toggleSidebar}) => {
             }
         }
     };
-
+    
     //close notifications and user dropdown when clicking outside
     const handleClickOutside = (e: MouseEvent) => {
         const target = e.target as Element;
