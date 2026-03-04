@@ -169,17 +169,12 @@ class AuthService extends BaseService {
 
     async authenticateAdmin(username, password) {
         try {
-            //explicitly select password and activeToken (both have select: false)
-            const admin = await Admin.findOne({ username: username.toLowerCase() })
-                .select('+password +activeToken');
+            const admin = await Admin.findOne({ 
+                username: username.toLowerCase() 
+            }).select('+password');
 
             if (!admin) {
                 throw new ApiError('Invalid credentials', 401);
-            }
-
-            //block login if an active session already exists
-            if (admin.activeToken) {
-                throw new ApiError('This account is already logged in on another device or session', 403);
             }
 
             const isPasswordValid = await bcrypt.compare(password, admin.password);
@@ -192,6 +187,31 @@ class AuthService extends BaseService {
             throw error;
         }
     }
+    // async authenticateAdmin(username, password) {
+    //     try {
+    //         //explicitly select password and activeToken (both have select: false)
+    //         const admin = await Admin.findOne({ username: username.toLowerCase() })
+    //             .select('+password +activeToken');
+
+    //         if (!admin) {
+    //             throw new ApiError('Invalid credentials', 401);
+    //         }
+
+    //         //block login if an active session already exists
+    //         if (admin.activeToken) {
+    //             throw new ApiError('This account is already logged in on another device or session', 403);
+    //         }
+
+    //         const isPasswordValid = await bcrypt.compare(password, admin.password);
+    //         if (!isPasswordValid) {
+    //             throw new ApiError('Invalid credentials', 401);
+    //         }
+
+    //         return this.formatUserResponse(admin, 'admin');
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
 }
 
 module.exports = new AuthService();
