@@ -85,6 +85,11 @@ const AdminSchema = new mongoose.Schema(
             required: true,
             enum: ['Doctor', 'Staff'],
             default: 'Doctor'
+        },
+        activeToken: {
+            type: String,
+            default: null,
+            select: false
         }
     },
     {

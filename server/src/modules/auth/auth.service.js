@@ -71,24 +71,51 @@ class AuthService extends BaseService {
         try {
             const { isEmail } = this.validateEmailOrContactNumber(emailOrContactNumber);
             
+            // pass true for both includePassword and includeActiveToken
             const result = await this.findUserByEmailOrContact(
-                emailOrContactNumber, 
-                isEmail, 
-                Admin, 
-                User, 
-                true
+                emailOrContactNumber,
+                isEmail,
+                Admin,
+                User,
+                true,  // includePassword
+                true   // includeActiveToken — THIS was the missing piece
             );
             
             if (!result.user) {
                 throw new ApiError('Invalid credentials', 401);
             }
-            
+
+            //block login if an active session already exists
+            if (result.user.activeToken) {
+                throw new ApiError('This account is already logged in on another device or session', 403);
+            }
+
             const isPasswordValid = await bcrypt.compare(password, result.user.password);
             if (!isPasswordValid) {
                 throw new ApiError('Invalid credentials', 401);
             }
             
             return this.formatUserResponse(result.user, result.userType);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    
+    async saveActiveToken(userId, userType, refreshToken) {
+        try {
+            const Model = userType === 'admin' ? Admin : User;
+            await Model.findByIdAndUpdate(userId, { activeToken: refreshToken });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    
+    async clearActiveToken(userId, userType) {
+        try {
+            const Model = userType === 'admin' ? Admin : User;
+            await Model.findByIdAndUpdate(userId, { activeToken: null });
         } catch (error) {
             throw error;
         }
@@ -140,13 +167,19 @@ class AuthService extends BaseService {
         }
     }
 
-
     async authenticateAdmin(username, password) {
         try {
-            const admin = await Admin.findOne({ username: username.toLowerCase() }).select('+password');
+            //explicitly select password and activeToken (both have select: false)
+            const admin = await Admin.findOne({ username: username.toLowerCase() })
+                .select('+password +activeToken');
 
             if (!admin) {
                 throw new ApiError('Invalid credentials', 401);
+            }
+
+            //block login if an active session already exists
+            if (admin.activeToken) {
+                throw new ApiError('This account is already logged in on another device or session', 403);
             }
 
             const isPasswordValid = await bcrypt.compare(password, admin.password);

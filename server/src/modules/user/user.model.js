@@ -109,6 +109,11 @@ const UserSchema = new mongoose.Schema(
         lastActiveAt: {
             type: Date,
             default: Date.now
+        },
+        activeToken: {
+            type: String,
+            default: null,
+            select: false
         }
     },
     {

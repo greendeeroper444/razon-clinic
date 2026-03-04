@@ -20,18 +20,15 @@ class AuthController {
                 religion
             } = req.body;
 
-            //validate required fields
             if (!firstName || !lastName || !emailOrContactNumber || !password || !birthdate || !sex || !address) {
                 throw new ApiError('All required fields must be provided', 400);
             }
 
-            //validate that emailOrContactNumber is a contact number (not email)
             const contactNumberRegex = /^(09|\+639)\d{9}$/;
             if (!contactNumberRegex.test(emailOrContactNumber)) {
                 throw new ApiError('Please provide a valid contact number for registration', 400);
             }
 
-            //prepare user data to store temporarily
             const userData = {
                 firstName,
                 lastName,
@@ -44,7 +41,6 @@ class AuthController {
                 religion: religion || null
             };
 
-            //send OTP
             const result = await OTPService.sendRegistrationOTP(emailOrContactNumber, userData);
 
             res.status(200).json({
@@ -61,7 +57,6 @@ class AuthController {
         }
     }
 
-
     async verifyRegistrationOTP(req, res, next) {
         try {
             const { contactNumber, otp } = req.body;
@@ -70,14 +65,12 @@ class AuthController {
                 throw new ApiError('Contact number and OTP are required', 400);
             }
 
-            //verify OTP and get pending user data
             const verificationResult = await OTPService.verifyRegistrationOTP(contactNumber, otp);
 
             if (!verificationResult.pendingUserData) {
                 throw new ApiError('Registration data not found. Please start registration again.', 400);
             }
 
-            //create the user with the pending data
             const userData = {
                 ...verificationResult.pendingUserData,
                 emailOrContactNumber: contactNumber
@@ -85,9 +78,11 @@ class AuthController {
 
             const result = await AuthService.createUser(userData);
 
-            //generate tokens for auto-login
             const tokens = TokenHelper.generateTokens(result.user);
             TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
+
+            //save the refresh token as the active session token
+            await AuthService.saveActiveToken(result.user.id, 'user', tokens.refreshToken);
 
             res.status(201).json({
                 success: true,
@@ -157,8 +152,10 @@ class AuthController {
             const result = await AuthService.createUser(userData);
             
             const tokens = TokenHelper.generateTokens(result.user);
-            
             TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
+
+            //save the refresh token as the active session token
+            await AuthService.saveActiveToken(result.user.id, 'user', tokens.refreshToken);
             
             res.status(201).json({
                 success: true,
@@ -177,18 +174,21 @@ class AuthController {
         try {
             const { emailOrContactNumber, password } = req.body;
             
+            // authenticateUser will throw 403 if activeToken already exists
             const result = await AuthService.authenticateUser(emailOrContactNumber, password);
             
             const tokens = TokenHelper.generateTokens(result.user);
             const decoded = TokenHelper.verifyAccessToken(tokens.accessToken);
             
             TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
+
+            //save the refresh token as the active session token
+            await AuthService.saveActiveToken(result.user.id, 'user', tokens.refreshToken);
             
             const isAdmin = TokenHelper.isAdmin(decoded);
             const isUser = TokenHelper.isUser(decoded);
             
             const responseData = {
-                // user: result.user,
                 tokens: tokens,
                 userType: isAdmin ? 'admin' : 'user',
                 role: decoded.role
@@ -290,8 +290,10 @@ class AuthController {
             const rawUserData = await AuthService.getRawUserData(userId, userType);
             
             const tokens = TokenHelper.generateTokens(rawUserData);
-            
             TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
+
+            //rotate the stored active token to the new refresh token
+            await AuthService.saveActiveToken(userId, userType, tokens.refreshToken);
             
             const formattedResult = AuthService.formatUserResponse(rawUserData, userType);
             
@@ -359,6 +361,14 @@ class AuthController {
 
     async logout(req, res, next) {
         try {
+            const userId = req.user?.id;
+            const userType = req.user?.userType;
+
+            //clear the active token so the account can be logged in again
+            if (userId && userType) {
+                await AuthService.clearActiveToken(userId, userType);
+            }
+
             TokenHelper.clearAuthCookies(res);
             
             res.status(200).json({
@@ -416,12 +426,16 @@ class AuthController {
         try {
             const { username, password } = req.body;
 
+            // authenticateAdmin will throw 403 if activeToken already exists
             const result = await AuthService.authenticateAdmin(username, password);
 
             const tokens = TokenHelper.generateTokens(result.user);
             const decoded = TokenHelper.verifyAccessToken(tokens.accessToken);
 
             TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
+
+            //save the refresh token as the active session token
+            await AuthService.saveActiveToken(result.user.id, 'admin', tokens.refreshToken);
 
             res.status(200).json({
                 success: true,

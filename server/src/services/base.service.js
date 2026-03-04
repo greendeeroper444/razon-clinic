@@ -31,16 +31,20 @@ class BaseService {
         }
     }
 
-    async findUserByEmailOrContact(emailOrContactNumber, isEmail, Admin, User, includePassword = false) {
+    async findUserByEmailOrContact(emailOrContactNumber, isEmail, Admin, User, includePassword = false, includeActiveToken = false) {
         try {
             const query = isEmail 
                 ? { email: emailOrContactNumber } 
                 : { contactNumber: emailOrContactNumber };
             
-            const selectQuery = includePassword ? '+password' : '';
-            
+            //build select string based on what's needed
+            let selectParts = [];
+            if (includePassword) selectParts.push('+password');
+            if (includeActiveToken) selectParts.push('+activeToken');
+            const selectQuery = selectParts.join(' ');
+
             //try admin first
-            let user = includePassword 
+            let user = selectQuery
                 ? await Admin.findOne(query).select(selectQuery)
                 : await Admin.findOne(query);
                 
@@ -49,7 +53,7 @@ class BaseService {
             }
             
             //try user model
-            user = includePassword 
+            user = selectQuery
                 ? await User.findOne(query).select(selectQuery)
                 : await User.findOne(query);
                 
@@ -65,8 +69,8 @@ class BaseService {
 
     async updateUserProfile(userId, userType, updateData, Admin, User) {
         try {
-            //remove sensitive/protected fields
-            const protectedFields = ['password', '_id', '__v', 'dateRegistered', 'role', 'userNumber'];
+            // Remove sensitive/protected fields
+            const protectedFields = ['password', '_id', '__v', 'dateRegistered', 'role', 'userNumber', 'activeToken'];
             protectedFields.forEach(field => delete updateData[field]);
             
             let user;
