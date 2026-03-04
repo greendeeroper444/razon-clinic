@@ -16,11 +16,12 @@ const AdminLoginPage = () => {
     const [error, setError] = useState<string | null>(null)
     const [fieldErrors, setFieldErrors] = useState<{ username?: string; password?: string }>({})
 
+    //only redirect if already authenticated before attempting login
     useEffect(() => {
         if (isAuthenticated && user?.userType === 'admin') {
-            navigate('/admin/dashboard')
+            navigate('/admin/dashboard', { replace: true })
         }
-    }, [isAuthenticated, user, navigate])
+    }, []) // intentionally empty — only run on mount to catch already-logged-in admins
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -51,7 +52,10 @@ const AdminLoginPage = () => {
         try {
             await adminLogin({ username: form.username.trim(), password: form.password })
             await fetchUserProfile()
-            navigate('/admin/dashboard')
+
+            //manually mark as authenticated then navigate
+            useAuthenticationStore.setState({ isAuthenticated: true })
+            navigate('/admin/dashboard', { replace: true })
         } catch (err: any) {
             const message = err?.message || err?.error || 'Invalid username or password'
             setError(message)
