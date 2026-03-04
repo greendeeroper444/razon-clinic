@@ -139,6 +139,26 @@ class AuthService extends BaseService {
             throw error;
         }
     }
+
+
+    async authenticateAdmin(username, password) {
+        try {
+            const admin = await Admin.findOne({ username: username.toLowerCase() }).select('+password');
+
+            if (!admin) {
+                throw new ApiError('Invalid credentials', 401);
+            }
+
+            const isPasswordValid = await bcrypt.compare(password, admin.password);
+            if (!isPasswordValid) {
+                throw new ApiError('Invalid credentials', 401);
+            }
+
+            return this.formatUserResponse(admin, 'admin');
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 module.exports = new AuthService();

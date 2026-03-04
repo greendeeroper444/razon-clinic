@@ -5,4 +5,5 @@ export interface RouteType {
     requireAuth: boolean;
     allowedUserTypes?: string[];
     redirectOnAuth?: boolean
+    hideNavigation?: boolean;
 }

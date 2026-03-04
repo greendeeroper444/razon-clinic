@@ -1,3 +1,147 @@
+// import { useEffect, useState } from 'react'
+// import './App.css'
+// import { BrowserRouter, Routes, Route } from 'react-router-dom'
+// import { Toaster } from 'sonner'
+// import { Layout, PageTitle, ProtectedRoute, RootRedirect, Tormentum} from './components'
+// import { routes } from './routes'
+// import './services/httpClient'
+// import { useAuthenticationStore } from './stores'
+// import { isTormentumArrived } from './components/ui/Tormentum/Tormentum'
+// import { PaginaNonPraesto } from './pages'
+// import { routeText } from './constants/messages'
+
+// function App() {
+//   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
+//   const initializeAuth = useAuthenticationStore(state => state.initializeAuth);
+
+//   useEffect(() => {
+//     // initializeAuth()
+//     if (!isTormentumArrived()) {
+//       initializeAuth();
+//     }
+//   }, [initializeAuth])
+  
+
+//   //check for mobile view on initial load and window resize
+//   useEffect(() => {
+//     const checkMobile = () => {
+//       if (window.innerWidth <= 768) {
+//         setSidebarCollapsed(true);
+//       }
+//     };
+    
+//     //initial check
+//     checkMobile();
+//     //listen for resize events
+//     window.addEventListener('resize', checkMobile);
+//     //cleanup
+//     return () => window.removeEventListener('resize', checkMobile);
+//   }, []);
+
+//   const toggleSidebar = (): void => {
+//     setSidebarCollapsed(!sidebarCollapsed);
+//   }
+
+//   return (
+//     <BrowserRouter>
+//       <div className={`app-container ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+//         <Toaster position="top-center" richColors />
+//         <PageTitle />
+//         <Routes>
+//           <Route 
+//             path={`/${routeText}` }
+//             element={
+//               <Layout
+//                 type="public"
+//                 sidebarCollapsed={sidebarCollapsed}
+//                 toggleSidebar={toggleSidebar}
+//                 hideNavigation={true}
+//               >
+//                 {
+//                   PaginaNonPraesto ? (
+//                     <PaginaNonPraesto />
+//                   ) : (
+//                     <div>Not Available</div>
+//                   )
+//                 }
+//               </Layout>
+//             } 
+//           />
+
+//           <Route path="*" element={
+//             <Tormentum>
+//               <Routes>
+//                 <Route path="/" element={<RootRedirect />} />
+                
+//                 {
+//                   routes.filter(route => route.layout === 'admin').map((route) => (
+//                     <Route 
+//                       key={route.path}
+//                       path={route.path} 
+//                       element={
+//                         <ProtectedRoute allowedUserTypes={['admin']}>
+//                           <Layout
+//                             type={route.layout}
+//                             sidebarCollapsed={sidebarCollapsed}
+//                             toggleSidebar={toggleSidebar}
+//                           >
+//                             <route.component />
+//                           </Layout>
+//                         </ProtectedRoute>
+//                       } 
+//                     />
+//                   ))
+//                 }
+
+//                 {
+//                   routes.filter(route => route.layout === 'user').map((route) => (
+//                     <Route 
+//                       key={route.path}
+//                       path={route.path} 
+//                       element={
+//                         <ProtectedRoute allowedUserTypes={['user']}>
+//                           <Layout
+//                             type={route.layout}
+//                             sidebarCollapsed={sidebarCollapsed}
+//                             toggleSidebar={toggleSidebar}
+//                           >
+//                             <route.component />
+//                           </Layout>
+//                         </ProtectedRoute>
+//                       } 
+//                     />
+//                   ))
+//                 }
+
+//                 {
+//                   routes.filter(route => route.layout === 'public' && route.path !== '/' && route.path !== `/${routeText}`).map((route) => (
+//                     <Route 
+//                       key={route.path}
+//                       path={route.path} 
+//                       element={
+//                         <Layout
+//                           type={route.layout}
+//                           sidebarCollapsed={sidebarCollapsed}
+//                           toggleSidebar={toggleSidebar}
+//                         >
+//                           <route.component />
+//                         </Layout>
+//                       } 
+//                     />
+//                   ))
+//                 }
+//               </Routes>
+//             </Tormentum>
+//           } />
+//         </Routes>
+//       </div>
+//     </BrowserRouter>
+//   )
+// }
+
+// export default App;
+
+
 import { useEffect, useState } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
@@ -15,26 +159,19 @@ function App() {
   const initializeAuth = useAuthenticationStore(state => state.initializeAuth);
 
   useEffect(() => {
-    // initializeAuth()
     if (!isTormentumArrived()) {
       initializeAuth();
     }
   }, [initializeAuth])
-  
 
-  //check for mobile view on initial load and window resize
   useEffect(() => {
     const checkMobile = () => {
       if (window.innerWidth <= 768) {
         setSidebarCollapsed(true);
       }
     };
-    
-    //initial check
     checkMobile();
-    //listen for resize events
     window.addEventListener('resize', checkMobile);
-    //cleanup
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -49,7 +186,7 @@ function App() {
         <PageTitle />
         <Routes>
           <Route 
-            path={`/${routeText}` }
+            path={`/${routeText}`}
             element={
               <Layout
                 type="public"
@@ -57,13 +194,7 @@ function App() {
                 toggleSidebar={toggleSidebar}
                 hideNavigation={true}
               >
-                {
-                  PaginaNonPraesto ? (
-                    <PaginaNonPraesto />
-                  ) : (
-                    <div>Not Available</div>
-                  )
-                }
+                {PaginaNonPraesto ? <PaginaNonPraesto /> : <div>Not Available</div>}
               </Layout>
             } 
           />
@@ -72,53 +203,13 @@ function App() {
             <Tormentum>
               <Routes>
                 <Route path="/" element={<RootRedirect />} />
-                
-                {
-                  routes.filter(route => route.layout === 'admin').map((route) => (
-                    <Route 
-                      key={route.path}
-                      path={route.path} 
-                      element={
-                        <ProtectedRoute allowedUserTypes={['admin']}>
-                          <Layout
-                            type={route.layout}
-                            sidebarCollapsed={sidebarCollapsed}
-                            toggleSidebar={toggleSidebar}
-                          >
-                            <route.component />
-                          </Layout>
-                        </ProtectedRoute>
-                      } 
-                    />
-                  ))
-                }
 
-                {
-                  routes.filter(route => route.layout === 'user').map((route) => (
-                    <Route 
-                      key={route.path}
-                      path={route.path} 
-                      element={
-                        <ProtectedRoute allowedUserTypes={['user']}>
-                          <Layout
-                            type={route.layout}
-                            sidebarCollapsed={sidebarCollapsed}
-                            toggleSidebar={toggleSidebar}
-                          >
-                            <route.component />
-                          </Layout>
-                        </ProtectedRoute>
-                      } 
-                    />
-                  ))
-                }
-
-                {
-                  routes.filter(route => route.layout === 'public' && route.path !== '/' && route.path !== `/${routeText}`).map((route) => (
-                    <Route 
-                      key={route.path}
-                      path={route.path} 
-                      element={
+                {routes.filter(route => route.layout === 'admin').map((route) => (
+                  <Route 
+                    key={route.path}
+                    path={route.path} 
+                    element={
+                      <ProtectedRoute allowedUserTypes={['admin']}>
                         <Layout
                           type={route.layout}
                           sidebarCollapsed={sidebarCollapsed}
@@ -126,10 +217,45 @@ function App() {
                         >
                           <route.component />
                         </Layout>
-                      } 
-                    />
-                  ))
-                }
+                      </ProtectedRoute>
+                    } 
+                  />
+                ))}
+
+                {routes.filter(route => route.layout === 'user').map((route) => (
+                  <Route 
+                    key={route.path}
+                    path={route.path} 
+                    element={
+                      <ProtectedRoute allowedUserTypes={['user']}>
+                        <Layout
+                          type={route.layout}
+                          sidebarCollapsed={sidebarCollapsed}
+                          toggleSidebar={toggleSidebar}
+                        >
+                          <route.component />
+                        </Layout>
+                      </ProtectedRoute>
+                    } 
+                  />
+                ))}
+
+                {routes.filter(route => route.layout === 'public' && route.path !== '/' && route.path !== `/${routeText}`).map((route) => (
+                  <Route 
+                    key={route.path}
+                    path={route.path} 
+                    element={
+                      <Layout
+                        type={route.layout}
+                        sidebarCollapsed={sidebarCollapsed}
+                        toggleSidebar={toggleSidebar}
+                        hideNavigation={route.hideNavigation}
+                      >
+                        <route.component />
+                      </Layout>
+                    } 
+                  />
+                ))}
               </Routes>
             </Tormentum>
           } />

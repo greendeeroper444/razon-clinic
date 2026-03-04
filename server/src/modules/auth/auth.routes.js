@@ -9,6 +9,7 @@ router.post('/register/send-otp', validator.validateRegistration, authController
 router.post('/register/verify-otp', authController.verifyRegistrationOTP);
 router.post('/register/resend-otp',  authController.resendRegistrationOTP);
 router.post('/login', validator.validateLogin, authController.login);
+router.post('/admin/login', validator.validateAdminLogin, authController.adminLogin);
 router.post('/verifyToken', authController.verifyToken);
 router.post('/requestPasswordReset', authController.requestPasswordReset);
 router.post('/resetPassword', authController.resetPassword);

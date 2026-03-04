@@ -265,11 +265,24 @@ const validateResetPassword = [
     handleValidationErrors
 ];
 
+const validateAdminLogin = [
+    body('username')
+        .notEmpty().withMessage('Username is required')
+        .trim(),
+    
+    body('password')
+        .notEmpty().withMessage('Password is required'),
+    
+    handleValidationErrors
+];
+
+
 module.exports = {
     validateRegistration,
     validateLogin,
     validateChangePassword,
     validateProfileUpdate,
     validatePasswordReset,
-    validateResetPassword
+    validateResetPassword,
+    validateAdminLogin
 };

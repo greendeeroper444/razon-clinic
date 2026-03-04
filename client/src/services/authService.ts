@@ -1,5 +1,5 @@
 import axios from './httpClient';
-import { LoginFormData, LoginResponse, SignupFormData, SignupResponse } from '../types';
+import { LoginFormData, SignupFormData, LoginResponse, SignupResponse } from '../types';
 import API_BASE_URL from '../ApiBaseUrl';
 
 export const register = async (userData: Omit<SignupFormData, 'confirmPassword' | 'agreeToTerms'>) => {
@@ -11,10 +11,7 @@ export const register = async (userData: Omit<SignupFormData, 'confirmPassword' 
         return response.data;
     } catch (error) {
         console.error('Error register:', error);
-        if (axios.isAxiosError(error)) {
-            throw error.response?.data || error.message;
-        }
-
+        if (axios.isAxiosError(error)) throw error.response?.data || error.message;
         throw error;
     }
 };
@@ -28,10 +25,21 @@ export const login = async (loginData: Omit<LoginFormData, 'rememberMe'>) => {
         return response.data;
     } catch (error) {
         console.error('Error login:', error);
-        if (axios.isAxiosError(error)) {
-            throw error.response?.data || error.message;
-        }
+        if (axios.isAxiosError(error)) throw error.response?.data || error.message;
+        throw error;
+    }
+};
 
+export const adminLogin = async (credentials: { username: string; password: string }) => {
+    try {
+        const response = await axios.post<LoginResponse>(
+            `${API_BASE_URL}/api/auth/admin/login`,
+            credentials
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error admin login:', error);
+        if (axios.isAxiosError(error)) throw error.response?.data || error.message;
         throw error;
     }
 };
@@ -42,10 +50,7 @@ export const getProfile = async () => {
         return response.data;
     } catch (error) {
         console.error('Error fetch profile:', error);
-        if (axios.isAxiosError(error)) {
-            throw error.response?.data || error.message;
-        }
-
+        if (axios.isAxiosError(error)) throw error.response?.data || error.message;
         throw error;
     }
 };
@@ -56,10 +61,7 @@ export const logout = async () => {
         return response.data;
     } catch (error) {
         console.error('Error logout:', error);
-        if (axios.isAxiosError(error)) {
-            throw error.response?.data || error.message;
-        }
-
+        if (axios.isAxiosError(error)) throw error.response?.data || error.message;
         throw error;
     }
 };

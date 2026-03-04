@@ -11,5 +11,5 @@ export const publicRoutes: RouteType[] = [
     { path: '/forgot-password', component: ForgotPasswordPage, layout: 'public', requireAuth: false },
     { path: '/verify-otp', component: OtpPage, layout: 'public', requireAuth: false },
     { path: '/reset-password', component: ResetPasswordPage, layout: 'public', requireAuth: false, redirectOnAuth: false },
-    { path: '/admin/login', component: AdminLoginPage, layout: 'public', requireAuth: false, redirectOnAuth: false },
+    { path: '/admin/login', component: AdminLoginPage, layout: 'public', requireAuth: false, redirectOnAuth: false, hideNavigation: true },
 ];
