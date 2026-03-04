@@ -29,6 +29,21 @@ export const notificationTypeMapping: Record<NotificationType, NotificationUIMap
         color: '#f56565',
         displayName: 'Appointment Cancelled'
     },
+    AppointmentRebooked: {
+        icon: faCalendar,
+        color: '#48bb78',
+        displayName: 'Appointment Rebooked'
+    },
+    AppointmentCancellationRequested: {
+        icon: faCalendar,
+        color: '#ed8936',
+        displayName: 'Cancellation Requested'
+    },
+    AppointmentCancellationRejected: {
+        icon: faCalendar,
+        color: '#f56565',
+        displayName: 'Cancellation Rejected'
+    },
     PatientCreated: {
         icon: faUser,
         color: '#48bb78',
