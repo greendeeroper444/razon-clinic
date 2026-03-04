@@ -15,6 +15,7 @@ const PersonnelForm: React.FC<PersonnelFormProps> = ({
     const { fieldRefs } = useScrollToError({
         validationErrors,
         fieldOrder: [
+            'username',
             'firstName',
             'lastName',
             'middleName',
@@ -35,6 +36,32 @@ const PersonnelForm: React.FC<PersonnelFormProps> = ({
 
   return (
     <>
+        <Input
+            ref={(el) => { fieldRefs.current['username'] = el; }}
+            type='text'
+            label='Username *'
+            name='username'
+            placeholder='Enter username'
+            value={formData?.username || ''}
+            onChange={onChange}
+            error={getFieldError(validationErrors, 'username')}
+        />
+
+        <br />
+
+        <Input
+            ref={(el) => { fieldRefs.current['firstName'] = el; }}
+            type='text'
+            label='First Name *'
+            name='firstName'
+            placeholder='Enter first name'
+            value={formData?.firstName || ''}
+            onChange={onChange}
+            error={getFieldError(validationErrors, 'firstName')}
+        />
+
+        <br />
+
         <Input
             ref={(el) => { fieldRefs.current['firstName'] = el; }}
             type='text'

@@ -9,6 +9,7 @@ class PersonnelController {
                 lastName,
                 middleName,
                 suffix,
+                username,
                 contactNumber,
                 password,
                 birthdate,
@@ -22,6 +23,7 @@ class PersonnelController {
                 lastName,
                 middleName,
                 suffix,
+                username,
                 contactNumber,
                 password,
                 birthdate,
@@ -30,10 +32,7 @@ class PersonnelController {
                 role
             };
 
-            //validate data
             await PersonnelService.validatePersonnelData(personnelData);
-
-            //create personnel
             const personnel = await PersonnelService.createPersonnel(personnelData);
 
             return res.status(201).json({

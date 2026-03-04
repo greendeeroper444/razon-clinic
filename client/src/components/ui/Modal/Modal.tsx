@@ -121,6 +121,7 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
                 } as PatientFormData);
             } else if (modalType === 'personnel') {
                 setFormData({
+                    username: '',
                     firstName: '',
                     lastName: '',
                     middleName: '',

@@ -17,7 +17,7 @@ const AdminSchema = new mongoose.Schema(
         middleName: {
             type: String,
             trim: true,
-            minlength: 3,
+            minlength: 1,
             maxlength: 50
         },
         suffix: {
@@ -26,12 +26,16 @@ const AdminSchema = new mongoose.Schema(
             trim: true,
             enum: ['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']
         },
-        //separate email and contactNumber fields for better validation
+        username: {
+            type: String,
+            trim: true,
+            sparse: true,
+            unique: true
+        },
         email: {
             type: String,
             trim: true,
             lowercase: true,
-            //allow email to be optional but enforce uniqueness when present
             sparse: true,
             unique: true,
             validate: {
@@ -44,12 +48,10 @@ const AdminSchema = new mongoose.Schema(
         contactNumber: {
             type: String,
             trim: true,
-            //allow contactNumber to be optional but enforce uniqueness when present
             sparse: true,
             unique: true,
             validate: {
                 validator: function(v) {
-                    //return true if empty or valid PH number format
                     return !v || /^(09|\+639)\d{9}$/.test(v);
                 },
                 message: 'Please provide a valid contact number'

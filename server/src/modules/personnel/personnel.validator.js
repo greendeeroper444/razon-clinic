@@ -16,7 +16,7 @@ const validatePersonnel = [
     body('middleName')
         .optional()
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
+        .isLength({ min: 1, max: 50 }).withMessage('Middle name must be between 1 and 50 characters'),
     
     body('suffix')
         .optional()
@@ -24,13 +24,16 @@ const validatePersonnel = [
         .isIn(['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']).withMessage('Suffix must be one of: Jr., Sr., II, III, IV, V')
         .isLength({ max: 10 }).withMessage('Suffix must not exceed 10 characters'),
 
+    body('username')
+        .optional()
+        .trim(),
+
     body('contactNumber')
         .notEmpty().withMessage('Email or contact number is required')
         .trim()
         .custom((value) => {
             const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
             const isPhoneNumber = /^(09|\+639)\d{9}$/.test(value);
-            
             if (!isEmail && !isPhoneNumber) {
                 throw new Error('Please provide a valid email address or Philippine contact number (09XXXXXXXXX or +639XXXXXXXXX)');
             }
@@ -50,13 +53,8 @@ const validatePersonnel = [
         .custom((value) => {
             const today = new Date();
             const age = Math.floor((today - value) / (365.25 * 24 * 60 * 60 * 1000));
-            
-            if (age < 18) {
-                throw new Error('Personnel must be at least 18 years old');
-            }
-            if (age > 100) {
-                throw new Error('Birthdate seems unrealistic');
-            }
+            if (age < 18) throw new Error('Personnel must be at least 18 years old');
+            if (age > 100) throw new Error('Birthdate seems unrealistic');
             return true;
         }),
     
@@ -90,13 +88,17 @@ const validatePersonnelUpdate = [
     body('middleName')
         .optional()
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
+        .isLength({ min: 1, max: 50 }).withMessage('Middle name must be between 1 and 50 characters'),
 
     body('suffix')
         .optional()
         .trim()
         .isIn(['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', '']).withMessage('Suffix must be one of: Jr., Sr., II, III, IV, V')
         .isLength({ max: 10 }).withMessage('Suffix must not exceed 10 characters'),
+
+    body('username')
+        .optional()
+        .trim(),
     
     body('contactNumber')
         .optional()
@@ -104,7 +106,6 @@ const validatePersonnelUpdate = [
         .custom((value) => {
             const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
             const isPhoneNumber = /^(09|\+639)\d{9}$/.test(value);
-            
             if (!isEmail && !isPhoneNumber) {
                 throw new Error('Please provide a valid email address or Philippine contact number (09XXXXXXXXX or +639XXXXXXXXX)');
             }
@@ -124,13 +125,8 @@ const validatePersonnelUpdate = [
         .custom((value) => {
             const today = new Date();
             const age = Math.floor((today - value) / (365.25 * 24 * 60 * 60 * 1000));
-            
-            if (age < 18) {
-                throw new Error('Personnel must be at least 18 years old');
-            }
-            if (age > 100) {
-                throw new Error('Birthdate seems unrealistic');
-            }
+            if (age < 18) throw new Error('Personnel must be at least 18 years old');
+            if (age > 100) throw new Error('Birthdate seems unrealistic');
             return true;
         }),
     
@@ -166,11 +162,6 @@ const validateQueryParams = [
     query('role')
         .optional()
         .isIn(['Doctor', 'Staff']).withMessage('Role must be either Doctor or Staff'),
-    
-    // query('search')
-    //     .optional()
-    //     .trim()
-    //     .isLength({ min: 1, max: 100 }).withMessage('Search term must be between 1 and 100 characters'),
     
     query('sortBy')
         .optional()

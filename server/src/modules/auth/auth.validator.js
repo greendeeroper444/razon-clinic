@@ -15,7 +15,7 @@ const validateRegistration = [
     body('middleName')
         .optional({ nullable: true, checkFalsy: true })
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
+        .isLength({ min: 1, max: 50 }).withMessage('Middle name must be between 1 and 50 characters'),
 
     body('suffix')
         .optional({ nullable: true, checkFalsy: true })
@@ -172,7 +172,7 @@ const validateProfileUpdate = [
     body('middleName')
         .optional({ nullable: true, checkFalsy: true })
         .trim()
-        .isLength({ min: 3, max: 50 }).withMessage('Middle name must be between 3 and 50 characters'),
+        .isLength({ min: 1, max: 50 }).withMessage('Middle name must be between 1 and 50 characters'),
     
     body('suffix')
         .optional({ nullable: true, checkFalsy: true })

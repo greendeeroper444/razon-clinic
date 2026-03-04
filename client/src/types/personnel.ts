@@ -15,6 +15,7 @@ export interface PersonnelFormData {
     sex: 'Male' | 'Female' | 'Other' | '';
     address: string;
     role: 'Doctor' | 'Staff' | '';
+    username?: string;
     dateRegistered?: string;
     createdAt?: string;
     updatedAt?: string;
@@ -87,6 +88,7 @@ export interface PersonnelFormProps {
         sex?: string;
         address?: string;
         role?: string;
+        username?: string;
     };
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }

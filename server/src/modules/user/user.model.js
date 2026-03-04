@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema(
         },
         middleName: {
             type: String,
-            minlength: 3,
+            minlength: 1,
             maxlength: 50
         },
         suffix: {

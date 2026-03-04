@@ -6,31 +6,32 @@ class PersonnelService {
     
     async createPersonnel(personnelData) {
         try {
-            const { contactNumber, password, ...restData } = personnelData;
+            const { contactNumber, password, username, ...restData } = personnelData;
 
-            //determine if contactNumber is email or contact number
             const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactNumber);
             
             const dataToSave = {
                 ...restData,
+                username: username || undefined,
                 email: isEmail ? contactNumber : undefined,
                 contactNumber: !isEmail ? contactNumber : undefined
             };
 
-            //check if email or contact number already exists
+            // Check if email or contact number already exists
             if (isEmail) {
                 const existingEmail = await Admin.findOne({ email: contactNumber });
-                if (existingEmail) {
-                    throw new Error('Email already exists');
-                }
+                if (existingEmail) throw new Error('Email already exists');
             } else {
-                const existingContact = await Admin.findOne({ contactNumber: contactNumber });
-                if (existingContact) {
-                    throw new Error('Contact number already exists');
-                }
+                const existingContact = await Admin.findOne({ contactNumber });
+                if (existingContact) throw new Error('Contact number already exists');
             }
 
-            //hash password
+            // Check if username already exists
+            if (username) {
+                const existingUsername = await Admin.findOne({ username: username.toLowerCase() });
+                if (existingUsername) throw new Error('Username already exists');
+            }
+
             const hashedPassword = await bcrypt.hash(password, 10);
             dataToSave.password = hashedPassword;
 
@@ -52,71 +53,60 @@ class PersonnelService {
                 sortOrder = 'desc' 
             } = queryParams;
 
-            //build filter object
             const filter = {};
             if (search) {
                 filter.$or = [
                     { firstName: { $regex: search, $options: 'i' } },
                     { lastName: { $regex: search, $options: 'i' } },
                     { email: { $regex: search, $options: 'i' } },
-                    { contactNumber: { $regex: search, $options: 'i' } }
+                    { contactNumber: { $regex: search, $options: 'i' } },
+                    { username: { $regex: search, $options: 'i' } }
                 ];
             }
-            if (role) {
-                filter.role = role;
-            }
+            if (role) filter.role = role;
 
-            //build sort object
             const sort = {};
             sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
-            //get total count first
             const totalItems = await Admin.countDocuments(filter);
-
             const searchTerm = search || null;
 
             let personnel;
             let pagination;
 
-            //check if limit is provided (pagination requested)
             if (limit && parseInt(limit) > 0) {
-                //paginated query
                 const currentPage = parseInt(page);
                 const itemsPerPage = parseInt(limit);
                 const skip = (currentPage - 1) * itemsPerPage;
                 const totalPages = Math.ceil(totalItems / itemsPerPage);
                 
-                personnel = await Admin.find(filter)
-                    .sort(sort)
-                    .skip(skip)
-                    .limit(itemsPerPage);
+                personnel = await Admin.find(filter).sort(sort).skip(skip).limit(itemsPerPage);
 
                 const startIndex = totalItems > 0 ? skip + 1 : 0;
                 const endIndex = Math.min(skip + itemsPerPage, totalItems);
 
                 pagination = {
-                    currentPage: currentPage,
-                    totalPages: totalPages,
-                    totalItems: totalItems,
-                    itemsPerPage: itemsPerPage,
+                    currentPage,
+                    totalPages,
+                    totalItems,
+                    itemsPerPage,
                     hasNextPage: currentPage < totalPages,
                     hasPreviousPage: currentPage > 1,
-                    startIndex: startIndex,
-                    endIndex: endIndex,
+                    startIndex,
+                    endIndex,
                     isUnlimited: false,
                     nextPage: currentPage < totalPages ? currentPage + 1 : null,
                     previousPage: currentPage > 1 ? currentPage - 1 : null,
                     remainingItems: Math.max(0, totalItems - endIndex),
-                    searchTerm: searchTerm
+                    searchTerm
                 };
             } else {
-                //unlimited query (no pagination)
                 personnel = await Admin.find(filter).sort(sort);
 
                 pagination = {
                     currentPage: 1,
                     totalPages: 1,
-                    totalItems: totalItems,
+                    totalItems,
                     itemsPerPage: totalItems,
                     hasNextPage: false,
                     hasPreviousPage: false,
@@ -126,14 +116,11 @@ class PersonnelService {
                     nextPage: null,
                     previousPage: null,
                     remainingItems: 0,
-                    searchTerm: searchTerm
+                    searchTerm
                 };
             }
 
-            return {
-                personnel,
-                pagination
-            };
+            return { personnel, pagination };
         } catch (error) {
             throw error;
         }
@@ -146,10 +133,7 @@ class PersonnelService {
             }
 
             const personnel = await Admin.findById(personnelId);
-            
-            if (!personnel) {
-                throw new Error('Personnel not found');
-            }
+            if (!personnel) throw new Error('Personnel not found');
 
             return personnel;
         } catch (error) {
@@ -163,67 +147,74 @@ class PersonnelService {
                 throw new Error('Invalid personnel ID format');
             }
 
-            //get current personnel data to check for existing contact info
             const currentPersonnel = await Admin.findById(personnelId);
-            if (!currentPersonnel) {
-                throw new Error('Personnel not found');
+            if (!currentPersonnel) throw new Error('Personnel not found');
+
+            // Check username uniqueness
+            if (updateData.username) {
+                const existingUsername = await Admin.findOne({
+                    username: updateData.username.toLowerCase(),
+                    _id: { $ne: personnelId }
+                });
+                if (existingUsername) throw new Error('Username already exists');
             }
 
-            //handle contactNumber if provided
+            // Build separate $set and $unset objects
+            const setFields = {};
+            const unsetFields = {};
+
             if (updateData.contactNumber) {
                 const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(updateData.contactNumber);
-                
-                //check for duplicates (excluding current personnel)
+
                 if (isEmail) {
-                    const existingEmail = await Admin.findOne({ 
+                    const existingEmail = await Admin.findOne({
                         email: updateData.contactNumber,
                         _id: { $ne: personnelId }
                     });
-                    if (existingEmail) {
-                        throw new Error('Email already exists');
-                    }
-                    
-                    //set email and clear contactNumber
-                    updateData.email = updateData.contactNumber;
-                    updateData.contactNumber = null;
+                    if (existingEmail) throw new Error('Email already exists');
+
+                    setFields.email = updateData.contactNumber;
+                    unsetFields.contactNumber = '';
                 } else {
-                    const existingContact = await Admin.findOne({ 
+                    const existingContact = await Admin.findOne({
                         contactNumber: updateData.contactNumber,
                         _id: { $ne: personnelId }
                     });
-                    if (existingContact) {
-                        throw new Error('Contact number already exists');
-                    }
-                    
-                    //keep contactNumber and clear email
-                    updateData.email = null;
+                    if (existingContact) throw new Error('Contact number already exists');
+
+                    setFields.contactNumber = updateData.contactNumber;
+                    unsetFields.email = '';
                 }
+
+                delete updateData.contactNumber;
             }
 
-            //hash password if provided
             if (updateData.password) {
                 updateData.password = await bcrypt.hash(updateData.password, 10);
             }
 
-            //remove protected fields
+            // Remove protected fields
             delete updateData._id;
             delete updateData.__v;
             delete updateData.createdAt;
             delete updateData.updatedAt;
             delete updateData.dateRegistered;
 
+            // Merge remaining updateData into $set
+            Object.assign(setFields, updateData);
+
+            // Build the final update query
+            const updateQuery = {};
+            if (Object.keys(setFields).length > 0) updateQuery.$set = setFields;
+            if (Object.keys(unsetFields).length > 0) updateQuery.$unset = unsetFields;
+
             const personnel = await Admin.findByIdAndUpdate(
                 personnelId,
-                updateData,
-                { 
-                    new: true, 
-                    runValidators: true 
-                }
+                updateQuery,
+                { new: true, runValidators: true }
             );
 
-            if (!personnel) {
-                throw new Error('Personnel not found');
-            }
+            if (!personnel) throw new Error('Personnel not found');
 
             return personnel;
         } catch (error) {
@@ -242,10 +233,7 @@ class PersonnelService {
             }
             
             const personnel = await Admin.findByIdAndDelete(personnelId);
-            
-            if (!personnel) {
-                throw new Error('Personnel not found');
-            }
+            if (!personnel) throw new Error('Personnel not found');
 
             return personnel;
         } catch (error) {
@@ -259,9 +247,7 @@ class PersonnelService {
                 throw new Error('Invalid role. Must be either Doctor or Staff');
             }
 
-            const personnel = await Admin.find({ role }).sort({ createdAt: -1 });
-            
-            return personnel;
+            return await Admin.find({ role }).sort({ createdAt: -1 });
         } catch (error) {
             throw error;
         }
@@ -274,23 +260,19 @@ class PersonnelService {
             throw new Error('Missing required fields: firstName, lastName, contactNumber, password, birthdate, sex, address, role');
         }
 
-        //validate role
         if (!['Doctor', 'Staff'].includes(role)) {
             throw new Error('Role must be either Doctor or Staff');
         }
 
-        //validate sex
         if (!['Male', 'Female', 'Other'].includes(sex)) {
             throw new Error('Sex must be either Male, Female, or Other');
         }
 
-        //validate password strength
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordRegex.test(password)) {
             throw new Error('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character');
         }
 
-        //validate contactNumber format
         const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactNumber);
         const isPhoneNumber = /^(09|\+639)\d{9}$/.test(contactNumber);
         
@@ -305,19 +287,13 @@ class PersonnelService {
             const totalDoctors = await Admin.countDocuments({ role: 'Doctor' });
             const totalStaff = await Admin.countDocuments({ role: 'Staff' });
 
-            //get recently added (last 30 days)
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
             const recentlyAdded = await Admin.countDocuments({
                 dateRegistered: { $gte: thirtyDaysAgo }
             });
 
-            return {
-                totalPersonnel,
-                totalDoctors,
-                totalStaff,
-                recentlyAdded
-            };
+            return { totalPersonnel, totalDoctors, totalStaff, recentlyAdded };
         } catch (error) {
             throw error;
         }

@@ -12,6 +12,7 @@ export { default as ResetPasswordPage } from './public/ResetPasswordPage/ResetPa
 
 
 //admin pages
+export { default as AdminLoginPage } from './admin/AdminLoginPage/AdminLoginPage';
 export { default as DashboardPage } from './admin/DashboardPage/DashboardPage';
 export { default as AppointmentPage } from './admin/AppointmentPage/AppointmentPage';
 export { default as PatientPage } from './admin/PatientPage/PatientPage';

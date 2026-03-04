@@ -159,6 +159,11 @@ const PersonnelPage: React.FC<OpenModalProps> = () => {
 
     const personnelColumns: TableColumn<PersonnelFormData>[] = [
         {
+            key: 'username',
+            header: 'USERNAME',
+            render: (item) => item.username || 'N/A'
+        },
+        {
             key: 'name',
             header: 'NAME',
             render: (item) => (

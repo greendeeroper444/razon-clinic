@@ -230,6 +230,7 @@ export const usePersonnelStore = create<ExtendedPersonnelState>()(
             openModalUpdate: (item: PersonnelFormData) => {
                 const formData: PersonnelFormData & { id?: string } = {
                     id: item.id,
+                    username: item.username,
                     firstName: item.firstName,
                     lastName: item.lastName,
                     middleName: item.middleName,
