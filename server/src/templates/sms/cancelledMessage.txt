@@ -1,16 +1,9 @@
-Hello {{userName}},
+CANCELLATION MESSAGE
+
+Good Day from Dr. Nice for Kids!
 
 We regret to inform you that your appointment has been CANCELLED.
+If you have any concerns or questions, please contact us through:
 
-Appointment Details:
-- Appointment #: {{appointmentNumber}}
-- Date: {{preferredDate}}
-- Time: {{preferredTime}}
-- Reason: {{reasonForVisit}}
-
-
-If you have any concerns or questions, please contact us at:
-
-Phone Number: (0939) 726 6918
-Fb: Dr. Nice for Kids
-Email: drnice4kids@gmail.com
+Phone Number: 09397266918
+FB Page: Dr. Nice for Kids Thank you!

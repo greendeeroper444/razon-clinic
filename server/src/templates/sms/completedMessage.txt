@@ -3,7 +3,7 @@ Hello {{userName}},
 Your appointment #{{appointmentNumber}} has been marked as COMPLETED.
 
 Date: {{preferredDate}}
-Time: {{preferredTime}}
+Time: 9:00 AM – 12:00 NN
 
 Thank you for visiting us. We hope you had a great experience. If you have any questions or need follow-up care, please don't hesitate to contact us.
 

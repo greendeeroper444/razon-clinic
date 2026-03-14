@@ -11,6 +11,7 @@ import {
     requestCancellation as requestCancellationService,
     approveCancellation as approveCancellationService,
     rejectCancellation as rejectCancellationService,
+    sendReminder as sendReminderService
 } from '../services'
 import { AppointmentFormData, AppointmentStatus, ExtendedAppointmentState, OperationType, FetchParams } from '../types'
 import { toast } from 'sonner'
@@ -502,6 +503,25 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                         selectedAppointment: null,
                         currentOperation: null
                     })
+                }
+            },
+
+            sendReminder: async (id: string) => {
+                try {
+                    set({ isProcessing: true });
+
+                    const response = await sendReminderService(id);
+
+                    if (response.success) {
+                        toast.success('Reminder SMS sent successfully!');
+                    } else {
+                        throw new Error(response.message || 'Failed to send reminder');
+                    }
+                } catch (error) {
+                    console.error('Error sending reminder:', error);
+                    toast.error('Failed to send reminder SMS');
+                } finally {
+                    set({ isProcessing: false });
                 }
             },
 

@@ -76,4 +76,12 @@ router.delete(
     appointmentController.deleteAppointment
 );
 
+
+router.post(
+    '/sendReminder/:appointmentId',
+    authenticate,
+    validator.validateAppointmentId,
+    appointmentController.sendReminder
+);
+
 module.exports = router;

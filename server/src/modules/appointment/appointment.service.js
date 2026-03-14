@@ -802,6 +802,45 @@ class AppointmentService {
     async countAppointments(filter = {}) {
         return await Appointment.countDocuments(filter);
     }
+
+    async sendReminder(appointmentId) {
+        if (!appointmentId || !mongoose.Types.ObjectId.isValid(appointmentId)) {
+            throw new Error('Invalid appointment ID');
+        }
+
+        const appointment = await Appointment.findById(appointmentId).populate('userId');
+        if (!appointment) {
+            throw new Error('Appointment not found');
+        }
+
+        const contactNumber = appointment.contactNumber || appointment.userId?.contactNumber;
+        if (!contactNumber) {
+            throw new Error('No contact number available for this appointment');
+        }
+
+        const contactNumberStr = String(contactNumber);
+        let moceanNumber = contactNumberStr;
+        if (contactNumberStr.startsWith('09')) {
+            moceanNumber = '+63' + contactNumberStr.substring(1);
+        } else if (!contactNumberStr.startsWith('+63')) {
+            moceanNumber = '+63' + contactNumberStr;
+        }
+
+        const userName = appointment.userId?.firstName
+            ? `${appointment.userId.firstName} ${appointment.userId.lastName}`
+            : `${appointment.firstName} ${appointment.lastName}`;
+
+        const replacements = {
+            userName,
+            appointmentNumber: appointment.appointmentNumber,
+            preferredDate: this.formatDate(appointment.preferredDate),
+            preferredTime: this.formatTimeOnly(appointment.preferredTime),
+            reasonForVisit: appointment.reasonForVisit || 'General Consultation'
+        };
+
+        const result = await sendSMS(moceanNumber, 'reminderMessage.txt', replacements);
+        return { appointment, smsResult: result };
+    }
 }
 
 module.exports = new AppointmentService();

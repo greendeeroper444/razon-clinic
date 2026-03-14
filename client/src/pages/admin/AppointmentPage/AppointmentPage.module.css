@@ -203,6 +203,15 @@
     background-color: #fecaca;
 }
 
+.actionBtn.remind {
+    background-color: #e8f5e9;
+    color: #4caf50;
+}
+
+.actionBtn.remind:hover {
+    background-color: #bff3c3;
+}
+
 @media (max-width: 768px) {
     .actionBtn {
         padding: 4px 8px;

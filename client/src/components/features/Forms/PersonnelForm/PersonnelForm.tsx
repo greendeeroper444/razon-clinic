@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { PersonnelFormProps } from '../../../../types';
 import Input from '../../../ui/Input/Input';
 import Select from '../../../ui/Select/Select';
@@ -11,6 +11,7 @@ const PersonnelForm: React.FC<PersonnelFormProps> = ({
     onChange
 }) => {
     const validationErrors = usePersonnelStore((state) => state.validationErrors);
+    const [showPassword, setShowPassword] = useState(false);
 
     const { fieldRefs } = useScrollToError({
         validationErrors,
@@ -128,13 +129,15 @@ const PersonnelForm: React.FC<PersonnelFormProps> = ({
                 <>
                     <Input
                         ref={(el) => { fieldRefs.current['password'] = el; }}
-                        type='password'
+                        type={showPassword ? 'text' : 'password'}
                         label='Password *'
                         name='password'
                         placeholder='Enter password'
                         value={formData?.password || ''}
                         onChange={onChange}
                         leftIcon='lock'
+                        rightIcon={showPassword ? 'eye-slash' : 'eye'}
+                        onRightIconClick={() => setShowPassword((prev) => !prev)}
                         error={getFieldError(validationErrors, 'password')}
                     />
 

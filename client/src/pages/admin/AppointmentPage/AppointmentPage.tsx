@@ -7,12 +7,14 @@ import { AppointmentFormData, AppointmentResponse, FormDataType, TableColumn } f
 import { Main, Header, Modal, SubmitLoading, Loading, Searchbar, Pagination, Table } from '../../../components'
 import { useNavigate } from 'react-router-dom'
 import { useAppointmentStore } from '../../../stores'
+import { sendReminder } from '../../../services'
 
 const AppointmentPage: React.FC<OpenModalProps> = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
     const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const [remindingId, setRemindingId] = useState<string | null>(null);
     //zustand store selectors
     const {
         appointments,
@@ -206,6 +208,23 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
             header: 'ACTIONS',
             render: (appointment) => (
                 <>
+                {
+                    appointment.status === 'Scheduled' && (
+                        <button
+                            type='button'
+                            className={`${styles.actionBtn} ${styles.remind}`}
+                            disabled={remindingId === appointment.id}
+                            onClick={async (e) => {
+                                e.stopPropagation();
+                                setRemindingId(appointment.id);
+                                await sendReminder(appointment.id);
+                                setRemindingId(null);
+                            }}
+                        >
+                            {remindingId === appointment.id ? 'Sending...' : 'Remind'}
+                        </button>
+                    )
+                }
                     <button 
                         type='button' 
                         className={`${styles.actionBtn} ${styles.view}`}

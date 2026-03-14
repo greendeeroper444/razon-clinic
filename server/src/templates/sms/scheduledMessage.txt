@@ -1,18 +1,19 @@
-Hello {{userName}},
+SCHEDULE MESSAGE
 
-Your appointment has been SCHEDULED!
+Good Day from Dr. Nice for Kids!
+
+Your appointment has been SCHEDULED.
 
 Appointment Details:
-- Appointment #: {{appointmentNumber}}
-- Date: {{preferredDate}}
-- Time: {{preferredTime}}
-- Reason: {{reasonForVisit}}
+Date: {{preferredDate}}
+Time: 9:00 AM – 12:00 NN
+Reason: {{reasonForVisit}}
 
-Please arrive 15 minutes early. If you need to reschedule, please contact us as soon as possible.
-
+Please note that consultations are on a first-come, first-served basis.
+For patients with rashes, walk-in consultations are not allowed.
+Please schedule an online consultation instead.
+If you need to reschedule your appointment, kindly contact us as soon as possible.
 Thank you!
 
-
-Phone Number: (0939) 726 6918
-Fb: Dr. Nice for Kids
-Email: drnice4kids@gmail.com
+Phone Number: 09397266918
+FB Page: Dr. Nice for Kids 

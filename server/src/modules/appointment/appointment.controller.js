@@ -198,6 +198,24 @@ class AppointmentController {
             next(error);
         }
     }
+
+    async sendReminder(req, res, next) {
+        try {
+            const { appointmentId } = req.params;
+            const { appointment, smsResult } = await AppointmentService.sendReminder(appointmentId);
+
+            return res.status(200).json({
+                success: true,
+                message: `Reminder sent for appointment #${appointment.appointmentNumber}`,
+                data: { appointment, smsResult }
+            });
+        } catch (error) {
+            if (error.message.includes('No contact number') || error.message.includes('Invalid appointment')) {
+                return res.status(400).json({ success: false, message: error.message });
+            }
+            next(error);
+        }
+    }
 }
 
 module.exports = new AppointmentController();

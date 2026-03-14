@@ -317,3 +317,16 @@ export const deleteAppointment = async (appointmentId: string) => {
         throw error;
     }
 };
+
+export const sendReminder = async (appointmentId: string) => {
+    try {
+        const response = await axios.post(
+            `${API_BASE_URL}/api/appointments/sendReminder/${appointmentId}`
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error sending reminder:', error);
+        if (axios.isAxiosError(error)) throw error.response?.data || error.message;
+        throw error;
+    }
+};
