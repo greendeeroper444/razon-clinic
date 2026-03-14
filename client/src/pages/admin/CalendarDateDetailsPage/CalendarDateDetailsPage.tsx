@@ -100,7 +100,8 @@ const CalendarDateDetailsPage: React.FC = () => {
                             <div className={styles.timeSlotHeader}>
                                 <div className={styles.timeSlotTitle}>
                                     <Clock size={18} />
-                                    <h3>{formatTime(timeSlot)}</h3>
+                                    {/* <h3>{formatTime(timeSlot)}</h3> */}
+                                    <h3>9:00 AM – 12:00 NN</h3>
                                 </div>
                                 <span className={styles.appointmentCount}>
                                     {appointmentData.timeSlots[timeSlot]?.length || 0} appointment(s)

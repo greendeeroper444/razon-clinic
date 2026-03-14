@@ -132,7 +132,7 @@ const appointmentSchema = new mongoose.Schema(
         },
         preferredTime: {
             type: String,
-            required: true
+            required: false //false from true
         },
         reasonForVisit: {
             type: String,

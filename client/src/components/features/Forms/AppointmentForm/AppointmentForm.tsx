@@ -750,7 +750,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 error={getDateError()}
             />
 
-            <Select
+            {/* <Select
                 ref={(el) => { fieldRefs.current['preferredTime'] = el; }}
                 id="preferredTime"
                 name="preferredTime"
@@ -762,7 +762,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 options={generateTimeOptions()}
                 disabled={isLoading || !formData?.preferredDate || isDateBlocked(formData?.preferredDate || '')}
                 error={getTimeSelectError()}
-            />
+            /> */}
         </div>
 
         <TextArea

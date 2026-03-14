@@ -299,15 +299,15 @@ const AppointmentPage: React.FC<OpenModalProps> = () => {
                 </div>
             )
         },
-        {
-            key: 'time',
-            header: 'PREFERRED TIME',
-            render: (appointment) => (
-                <div className={styles.appointmentTime}>
-                    {formatTime(appointment.preferredTime)}
-                </div>
-            )
-        },
+        // {
+        //     key: 'time',
+        //     header: 'PREFERRED TIME',
+        //     render: (appointment) => (
+        //         <div className={styles.appointmentTime}>
+        //             {formatTime(appointment.preferredTime)}
+        //         </div>
+        //     )
+        // },
         {
             key: 'status',
             header: 'STATUS',

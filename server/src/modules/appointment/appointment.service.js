@@ -19,17 +19,30 @@ class AppointmentService {
         const endOfDay = new Date(selectedDate);
         endOfDay.setHours(23, 59, 59, 999);
 
-        const conflictingAppointment = await Appointment.findOne({
-            preferredDate: {
-                $gte: startOfDay,
-                $lte: endOfDay
-            },
-            preferredTime: appointmentData.preferredTime,
-            status: { $ne: 'Cancelled' }
-        });
+        // const conflictingAppointment = await Appointment.findOne({
+        //     preferredDate: {
+        //         $gte: startOfDay,
+        //         $lte: endOfDay
+        //     },
+        //     preferredTime: appointmentData.preferredTime,
+        //     status: { $ne: 'Cancelled' }
+        // });
 
-        if (conflictingAppointment) {
-            throw new Error(`This time slot (${appointmentData.preferredTime} on ${appointmentData.preferredDate}) is already booked. Please choose a different time.`);
+        // if (conflictingAppointment) {
+        //     throw new Error(`This time slot (${appointmentData.preferredTime} on ${appointmentData.preferredDate}) is already booked. Please choose a different time.`);
+        // }
+
+        //new
+        if (appointmentData.preferredTime) {
+            const conflictingAppointment = await Appointment.findOne({
+                preferredDate: { $gte: startOfDay, $lte: endOfDay },
+                preferredTime: appointmentData.preferredTime,
+                status: { $ne: 'Cancelled' }
+            });
+
+            if (conflictingAppointment) {
+                throw new Error(`This time slot (${appointmentData.preferredTime} on ${appointmentData.preferredDate}) is already booked. Please choose a different time.`);
+            }
         }
 
         const appointmentPayload = {

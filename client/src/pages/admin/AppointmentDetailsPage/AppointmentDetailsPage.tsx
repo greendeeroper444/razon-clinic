@@ -218,12 +218,12 @@ const AppointmentDetailsPage = () => {
                                 </span>
                                 <span className={styles.tableValue}>{formatDate(currentAppointment.preferredDate)}</span>
                             </div>
-                            <div className={styles.tableRow}>
+                            {/* <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>
                                     <Clock /> Preferred Time:
                                 </span>
                                 <span className={styles.tableValue}>{formatTime(currentAppointment.preferredTime)}</span>
-                            </div>
+                            </div> */}
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>
                                     <Notebook /> Reason for Visit:

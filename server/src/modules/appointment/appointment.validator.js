@@ -134,8 +134,22 @@ const validateAppointment = [
             return true;
         }),
     
+    // body('preferredTime')
+    //     .notEmpty().withMessage('Preferred time is required')
+    //     .matches(/^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/)
+    //     .withMessage('Time must be in HH:MM format using 15-minute intervals (e.g., 08:00, 08:15, 08:30, 08:45)')
+    //     .custom((value) => {
+    //         const [hourStr, minuteStr] = value.split(':');
+    //         const hour = parseInt(hourStr);
+    //         const minute = parseInt(minuteStr);
+            
+    //         if (hour < 8 || (hour === 17 && minute > 0) || hour > 17) {
+    //             throw new Error('Appointments are only available between 08:00 and 17:00');
+    //         }
+    //         return true;
+    //     }),
     body('preferredTime')
-        .notEmpty().withMessage('Preferred time is required')
+        .optional({ nullable: true, checkFalsy: true })
         .matches(/^([0-1]?[0-9]|2[0-3]):(00|15|30|45)$/)
         .withMessage('Time must be in HH:MM format using 15-minute intervals (e.g., 08:00, 08:15, 08:30, 08:45)')
         .custom((value) => {
