@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import styles from './DashboardPage.module.css';
 import { ChevronRight, Plus, RefreshCw } from 'lucide-react';
 import { AppointmentResponse, InventoryItemFormData, TableColumn } from '../../../types';
-import { formatDate, formatTime, getStatusClass, getItemIcon, getStockStatus, getExpiryStatus, generateInitials, generate20Only} from '../../../utils';
+import { formatDate, getStatusClass, getItemIcon, getStockStatus, getExpiryStatus, generateInitials, generate20Only} from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Header, Loading, Main, Table } from '../../../components';
 import { useAppointmentStore, useInventoryStore, useDashboardStore } from '../../../stores';
