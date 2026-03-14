@@ -4,7 +4,7 @@ import { Clock, User, Phone, MapPin, Calendar, Eye, ArrowLeft } from 'lucide-rea
 import styles from './CalendarDateDetailsPage.module.css'
 import { getAppointmentsByDate } from '../../../services'
 import { Appointment, AppointmentDataCalendar, AppointmentFormData } from '../../../types'
-import { formatDateWithDay, formatTime, getStatusColor } from '../../../utils'
+import { formatDateWithDay, getStatusColor } from '../../../utils'
 import { Header, Main } from '../../../components'
 
 const CalendarDateDetailsPage: React.FC = () => {

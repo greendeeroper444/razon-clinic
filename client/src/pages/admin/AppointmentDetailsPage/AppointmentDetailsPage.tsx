@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Calendar, Clock, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand, Thermometer, HeartPulse, XCircle, AlertTriangle } from 'lucide-react';
-import { calculateAge, formatBirthdate, formatDate, formatTime, getStatusClass, getLoadingText, formatDateTime } from '../../../utils';
+import { Calendar, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand, Thermometer, HeartPulse, XCircle, AlertTriangle } from 'lucide-react';
+import { calculateAge, formatBirthdate, formatDate, getStatusClass, getLoadingText, formatDateTime } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { AppointmentFormData, FormDataType } from '../../../types';
 import { useAppointmentStore } from '../../../stores';
