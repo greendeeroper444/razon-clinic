@@ -4,7 +4,7 @@ import { getAppointments } from '../../../../services'
 import { convertTo12HourFormat, generateTimeSlots, getFieldError } from '../../../../utils'
 import { AppointmentFormData, AppointmentFormProps } from '../../../../types'
 import Input from '../../../ui/Input/Input'
-import Select, { SelectOption } from '../../../ui/Select/Select'
+import Select from '../../../ui/Select/Select'
 import TextArea from '../../../ui/TextArea/TextArea'
 import { useAppointmentStore, useAuthenticationStore, useBlockedTimeSlotStore } from '../../../../stores'
 import { useScrollToError } from '../../../../hooks/useScrollToError'
@@ -28,7 +28,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     isLoading,
 }) => {
     const [bookedSlots, setBookedSlots] = useState<{date: string, time: string, time12Hour?: string}[]>([]);
-    const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+    const [_availableTimes, setAvailableTimes] = useState<string[]>([]);
 
     //ref to ensure auto-fill only runs once per form mount, not on every re-render
     const hasAutoFilled = useRef(false);
@@ -266,43 +266,43 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     };
 
     //generate time options with proper labels for passed times
-    const generateTimeOptions = (): SelectOption[] => {
-        const allTimes = generateTimeSlots();
+    // const generateTimeOptions = (): SelectOption[] => {
+    //     const allTimes = generateTimeSlots();
         
-        return allTimes.map(time => {
-            const isBooked = !formData?.preferredDate || 
-                bookedSlots
-                    .filter(slot => slot.date === formData.preferredDate)
-                    .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time))
-                    .includes(time);
+    //     return allTimes.map(time => {
+    //         const isBooked = !formData?.preferredDate || 
+    //             bookedSlots
+    //                 .filter(slot => slot.date === formData.preferredDate)
+    //                 .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time))
+    //                 .includes(time);
             
-            const isPassed = formData?.preferredDate && isTimePassed(time, formData.preferredDate);
-            const isAvailable = isTimeAvailable(time);
+    //         const isPassed = formData?.preferredDate && isTimePassed(time, formData.preferredDate);
+    //         const isAvailable = isTimeAvailable(time);
             
-            let label = time;
-            if (isPassed) {
-                label = `${time} (Passed)`;
-            } else if (isBooked && !isPassed) {
-                label = `${time} (Booked)`;
-            }
+    //         let label = time;
+    //         if (isPassed) {
+    //             label = `${time} (Passed)`;
+    //         } else if (isBooked && !isPassed) {
+    //             label = `${time} (Booked)`;
+    //         }
             
-            return {
-                value: time,
-                label: label,
-                disabled: !isAvailable
-            };
-        });
-    };
+    //         return {
+    //             value: time,
+    //             label: label,
+    //             disabled: !isAvailable
+    //         };
+    //     });
+    // };
 
-    const getTimeSelectError = () => {
-        const apiError = getFieldError(validationErrors,'preferredTime');
-        if (apiError) return apiError;
+    // const getTimeSelectError = () => {
+    //     const apiError = getFieldError(validationErrors,'preferredTime');
+    //     if (apiError) return apiError;
         
-        if (formData?.preferredDate && availableTimes.length === 0) {
-            return 'No available times for this date. Please select another date.';
-        }
-        return undefined;
-    };
+    //     if (formData?.preferredDate && availableTimes.length === 0) {
+    //         return 'No available times for this date. Please select another date.';
+    //     }
+    //     return undefined;
+    // };
 
     const isDateAvailable = (dateString: string) => {
         // Reject dates that don't satisfy the booking rule (bypassed for staff/doctor)
@@ -397,16 +397,16 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         }
     };
 
-    const handleTimeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedTime = e.target.value;
+    // const handleTimeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    //     const selectedTime = e.target.value;
         
-        if (selectedTime && !isTimeAvailable(selectedTime)) {
-            e.preventDefault();
-            return;
-        }
+    //     if (selectedTime && !isTimeAvailable(selectedTime)) {
+    //         e.preventDefault();
+    //         return;
+    //     }
         
-        onChange(e);
-    };
+    //     onChange(e);
+    // };
 
   return (
     <div className={styles.sectionDivider}>
