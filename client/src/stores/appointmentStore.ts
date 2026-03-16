@@ -558,7 +558,8 @@ export const useAppointmentStore = create<ExtendedAppointmentState>()(
                     motherInfo: appointment.motherInfo,
                     fatherInfo: appointment.fatherInfo,
                     contactNumber: appointment.contactNumber,
-                    address: appointment.address
+                    address: appointment.address,
+                    assignedDoctor: appointment.assignedDoctor,
                 }
                 
                 set({ 
