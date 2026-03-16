@@ -8,6 +8,7 @@ Appointment Details:
 Date: {{preferredDate}}
 Time: 9:00 AM – 12:00 NN
 Reason: {{reasonForVisit}}
+Assigned Doctor: {{assignedDoctorName}}
 
 Please note that consultations are on a first-come, first-served basis.
 For patients with rashes, walk-in consultations are not allowed.

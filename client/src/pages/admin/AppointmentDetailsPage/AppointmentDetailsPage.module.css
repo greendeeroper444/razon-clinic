@@ -380,6 +380,12 @@
 .rejectCancelBtn:hover:not(:disabled) { background: #f3f4f6; }
 .rejectCancelBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+
+.naValue {
+    color: var(--text-muted, #9ca3af);
+    font-style: italic;
+}
+
 @media (max-width: 768px) {
     .appStatusBanner {
         flex-direction: column;

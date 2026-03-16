@@ -88,6 +88,7 @@ const Modal: React.FC<ModalProps & { isNewRecord?: boolean }> = ({
                     preferredDate: '',
                     preferredTime: '',
                     reasonForVisit: '',
+                    assignedDoctor: '',
                     status: 'Pending',
                 } as AppointmentFormData);
             } else if (modalType === 'patient') {

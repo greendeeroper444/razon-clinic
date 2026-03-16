@@ -78,7 +78,8 @@ class AppointmentService {
                 occupation: appointmentData.fatherOccupation?.trim()
             },
             contactNumber: appointmentData.contactNumber,
-            address: appointmentData.address
+            address: appointmentData.address,
+            assignedDoctor: appointmentData.assignedDoctor || undefined,
         };
 
         if (!appointmentPayload.motherInfo.name && !appointmentPayload.motherInfo.age && !appointmentPayload.motherInfo.occupation) {
@@ -391,7 +392,8 @@ class AppointmentService {
         }
 
         const appointment = await Appointment.findById(appointmentId)
-            .populate('userId', 'firstName lastName middleName suffix email contactNumber birthdate sex address dateRegistered userNumber');
+            .populate('userId', 'firstName lastName middleName suffix email contactNumber birthdate sex address dateRegistered userNumber')
+            .populate('assignedDoctor', 'firstName lastName middleName suffix role');
         
         if (!appointment) {
             throw new Error('Appointment not found');
@@ -485,7 +487,9 @@ class AppointmentService {
             throw new Error('Invalid appointment ID');
         }
 
-        const appointment = await Appointment.findById(appointmentId).populate('userId');
+        const appointment = await Appointment.findById(appointmentId)
+            .populate('userId')
+            .populate('assignedDoctor', 'firstName lastName middleName suffix');
         if (!appointment) {
             throw new Error('Appointment not found');
         }
@@ -564,6 +568,7 @@ class AppointmentService {
 
             if (updateData.contactNumber) appointment.contactNumber = updateData.contactNumber;
             if (updateData.address) appointment.address = updateData.address;
+            if (updateData.assignedDoctor !== undefined) appointment.assignedDoctor = updateData.assignedDoctor || undefined;
         }
         
         await appointment.save();
@@ -603,13 +608,14 @@ class AppointmentService {
         };
     }
 
-    // NEW: Admin approves the cancellation request
     async approveCancellation(appointmentId) {
         if (!appointmentId || !mongoose.Types.ObjectId.isValid(appointmentId)) {
             throw new Error('Invalid appointment ID');
         }
 
-        const appointment = await Appointment.findById(appointmentId).populate('userId');
+        const appointment = await Appointment.findById(appointmentId)
+            .populate('userId')
+            .populate('assignedDoctor', 'firstName lastName middleName suffix');
         if (!appointment) {
             throw new Error('Appointment not found');
         }
@@ -627,13 +633,14 @@ class AppointmentService {
         return appointment;
     }
 
-    // NEW: Admin rejects the cancellation request, reverts to a prior status
     async rejectCancellation(appointmentId, revertStatus = 'Scheduled') {
         if (!appointmentId || !mongoose.Types.ObjectId.isValid(appointmentId)) {
             throw new Error('Invalid appointment ID');
         }
 
-        const appointment = await Appointment.findById(appointmentId).populate('userId');
+        const appointment = await Appointment.findById(appointmentId)
+            .populate('userId')
+            .populate('assignedDoctor', 'firstName lastName middleName suffix');
         if (!appointment) {
             throw new Error('Appointment not found');
         }
@@ -718,6 +725,90 @@ class AppointmentService {
         }
     }
 
+    // async sendStatusUpdateSMS(appointment) {
+    //     try {
+    //         const contactNumber = appointment.contactNumber || appointment.userId?.contactNumber;
+            
+    //         if (!contactNumber) {
+    //             console.log('No contact number available for SMS notification');
+    //             return null;
+    //         }
+
+    //         const shouldSendSMS = process.env.NODE_ENV === 'production' || process.env.SMS_ENABLED === 'true';
+            
+    //         if (!shouldSendSMS) {
+    //             console.log('SMS sending disabled in development environment');
+    //             return null;
+    //         }
+
+    //         const contactNumberStr = String(contactNumber);
+            
+    //         let moceanNumber = contactNumberStr;
+    //         if (contactNumberStr.startsWith('09')) {
+    //             moceanNumber = '+63' + contactNumberStr.substring(1);
+    //         } else if (!contactNumberStr.startsWith('+63')) {
+    //             moceanNumber = '+63' + contactNumberStr;
+    //         }
+
+    //         let templatePath;
+    //         switch (appointment.status.toLowerCase()) {
+    //             case 'scheduled':
+    //                 templatePath = 'scheduledMessage.txt';
+    //                 break;
+    //             case 'completed':
+    //                 templatePath = 'completedMessage.txt';
+    //                 break;
+    //             case 'cancelled':
+    //                 templatePath = 'cancelledMessage.txt';
+    //                 break;
+    //             case 'rebooked':
+    //                 templatePath = 'rebookedMessage.txt';
+    //                 break;
+    //             default:
+    //                 console.log(`No SMS template found for status: ${appointment.status}`);
+    //                 return {
+    //                     success: false,
+    //                     reason: 'no_template',
+    //                     message: `No SMS template found for status: ${appointment.status}`
+    //                 };
+    //         }
+
+    //         const userName = appointment.userId?.firstName 
+    //             ? `${appointment.userId.firstName} ${appointment.userId.lastName}`
+    //             : `${appointment.firstName} ${appointment.lastName}`;
+
+    //         const replacements = {
+    //             userName: userName,
+    //             appointmentNumber: appointment.appointmentNumber,
+    //             preferredDate: this.formatDate(appointment.preferredDate),
+    //             preferredTime: this.formatTimeOnly(appointment.preferredTime),
+    //             reasonForVisit: appointment.reasonForVisit,
+    //             status: appointment.status
+    //         };
+
+    //         const result = await sendSMS(moceanNumber, templatePath, replacements);
+            
+    //         if (result.success) {
+    //             if (result.reason === 'development_skip') {
+    //                 console.log(`SMS notification skipped for ${contactNumberStr} (development mode)`);
+    //             } else {
+    //                 console.log(`SMS notification sent to ${contactNumberStr} for appointment ${appointment.appointmentNumber} status: ${appointment.status}`);
+    //             }
+    //         } else {
+    //             console.log(`SMS notification failed for ${contactNumberStr}: ${result.message}`);
+    //         }
+
+    //         return result;
+
+    //     } catch (error) {
+    //         console.error('Error in sendStatusUpdateSMS:', error);
+    //         return {
+    //             success: false,
+    //             reason: 'unexpected_error',
+    //             message: error.message
+    //         };
+    //     }
+    // }
     async sendStatusUpdateSMS(appointment) {
         try {
             const contactNumber = appointment.contactNumber || appointment.userId?.contactNumber;
@@ -770,13 +861,51 @@ class AppointmentService {
                 ? `${appointment.userId.firstName} ${appointment.userId.lastName}`
                 : `${appointment.firstName} ${appointment.lastName}`;
 
+            //resolve assigned doctor name, falling back to first doctor in the system
+            let assignedDoctorName = 'Not assigned';
+            try {
+                let doctorDoc = null;
+
+                if (appointment.assignedDoctor) {
+                    //if already populated as an object, use it directly
+                    if (typeof appointment.assignedDoctor === 'object' && appointment.assignedDoctor.firstName) {
+                        doctorDoc = appointment.assignedDoctor;
+                    } else {
+                        //it's an ObjectId — fetch it
+                        const Admin = require('@modules/admin/admin.model');
+                        doctorDoc = await Admin.findById(appointment.assignedDoctor).select('firstName lastName middleName suffix');
+                    }
+                }
+
+                //no doctor assigned — fall back to first doctor in the system
+                if (!doctorDoc) {
+                    const Admin = require('@modules/admin/admin.model');
+                    doctorDoc = await Admin.findOne({ role: 'Doctor' })
+                        .sort({ createdAt: 1 })
+                        .select('firstName lastName middleName suffix');
+                }
+
+                if (doctorDoc) {
+                    assignedDoctorName = [
+                        'Dr.',
+                        doctorDoc.firstName,
+                        doctorDoc.middleName ? doctorDoc.middleName.charAt(0) + '.' : '',
+                        doctorDoc.lastName,
+                        doctorDoc.suffix || ''
+                    ].filter(Boolean).join(' ');
+                }
+            } catch (doctorErr) {
+                console.error('Failed to resolve assigned doctor for SMS:', doctorErr);
+            }
+
             const replacements = {
                 userName: userName,
                 appointmentNumber: appointment.appointmentNumber,
                 preferredDate: this.formatDate(appointment.preferredDate),
                 preferredTime: this.formatTimeOnly(appointment.preferredTime),
                 reasonForVisit: appointment.reasonForVisit,
-                status: appointment.status
+                status: appointment.status,
+                assignedDoctorName: assignedDoctorName
             };
 
             const result = await sendSMS(moceanNumber, templatePath, replacements);

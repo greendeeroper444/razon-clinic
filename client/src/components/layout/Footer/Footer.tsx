@@ -13,7 +13,7 @@ const Footer = () => {
                 </div>
                 <div className={styles.footerCol}>
                     <h3>Hours</h3>
-                    <p>Monday - Friday: 9am - 3pm<br/>Saturday: 9am - 12pm<br/>Sunday: Closed</p>
+                    <p>Monday - Friday: 9:30 AM - 12:00 PM<br/>Saturday: 9:00 AM - 12:00 PM<br/>Sunday: Closed</p>
                 </div>
                 <div className={styles.footerCol}>
                     <h3>Contact</h3>

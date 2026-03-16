@@ -168,6 +168,15 @@ const validateAppointment = [
         .notEmpty().withMessage('Reason for visit is required')
         .isLength({ min: 5, max: 200 }).withMessage('Reason for visit must be between 5 and 200 characters'),
     
+    body('assignedDoctor')
+        .optional({ nullable: true, checkFalsy: true })
+        .custom((value) => {
+            if (value && !mongoose.Types.ObjectId.isValid(value)) {
+                throw new Error('Invalid doctor ID format');
+            }
+            return true;
+        }),
+
     handleValidationErrors
 ];
 

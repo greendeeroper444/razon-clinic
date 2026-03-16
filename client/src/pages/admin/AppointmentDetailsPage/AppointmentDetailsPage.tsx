@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Calendar, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand, Thermometer, HeartPulse, XCircle, AlertTriangle } from 'lucide-react';
+import { Calendar, User, User2, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand, Thermometer, HeartPulse, XCircle, AlertTriangle } from 'lucide-react';
 import { calculateAge, formatBirthdate, formatDate, getStatusClass, getLoadingText, formatDateTime } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { AppointmentFormData, FormDataType } from '../../../types';
@@ -40,6 +40,30 @@ const AppointmentDetailsPage = () => {
             clearCurrentAppointment();
         };
     }, [appointmentId]);
+
+    const assignedDoctorName = (() => {
+        const doc = currentAppointment?.assignedDoctor as {
+            firstName?: string;
+            lastName?: string;
+            middleName?: string;
+            suffix?: string;
+        } | string | null | undefined;
+
+        if (!doc) return 'Not Assigned';
+
+        if (typeof doc === 'object' && doc.firstName) {
+            return [
+                'Dr.',
+                doc.firstName,
+                doc.middleName ? doc.middleName.charAt(0) + '.' : '',
+                doc.lastName,
+                doc.suffix || ''
+            ].filter(Boolean).join(' ');
+        }
+
+        //raw ObjectId string — doctor was deleted
+        return 'Assigned Doctor (Deleted)';
+    })();
 
     const handleUpdateStatusClick = () => {
         if (currentAppointment) {
@@ -229,6 +253,18 @@ const AppointmentDetailsPage = () => {
                                     <Notebook /> Reason for Visit:
                                 </span>
                                 <span className={styles.tableValue}>{currentAppointment.reasonForVisit}</span>
+                            </div>
+                            <div className={styles.tableRow}>
+                                <span className={styles.tableLabel}>
+                                    <User2 /> Assigned Doctor:
+                                </span>
+                                <span className={
+                                    assignedDoctorName === 'Not Assigned' || assignedDoctorName === 'Assigned Doctor (Deleted)'
+                                        ? `${styles.tableValue} ${styles.naValue}`
+                                        : styles.tableValue
+                                }>
+                                    {assignedDoctorName}
+                                </span>
                             </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>Created On:</span>

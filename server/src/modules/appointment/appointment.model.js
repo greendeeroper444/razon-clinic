@@ -139,6 +139,11 @@ const appointmentSchema = new mongoose.Schema(
             trim: true,
             required: true
         },
+        assignedDoctor: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Admin',
+            required: false
+        },
         status: {
             type: String,
             enum: [

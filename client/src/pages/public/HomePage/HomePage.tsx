@@ -374,9 +374,9 @@ const HomePage = () => {
                     <div className={styles.teamGrid}>
                         <div className={`${styles.teamMember} ${styles.slideInUp} ${styles.delay1}`}>
                             <div className={styles.memberImage}>
-                                <img src={razon} alt="Dr. Shenice Roianne D. Razon Magnon" />
+                                <img src={razon} alt="Dr. Shenice Roianne D. Razon Magno" />
                             </div>
-                            <h4>Dr. Shenice Roianne D. Razon Magnon</h4>
+                            <h4>Dr. Shenice Roianne D. Razon Magno</h4>
                             <p className={styles.memberTitle}>DPPS Pediatrician</p>
                             {/* <p>Board Certified with over 20 years of experience in pediatric care.</p> */}
                             <p>A licensed Filipino pediatrician and Diplomate of the Philippine Pediatric
@@ -584,11 +584,11 @@ const HomePage = () => {
                         <div className={styles.businessHours}>
                             <div className={styles.dayHours}>
                                 <span className={styles.day}>Monday - Friday</span>
-                                <span className={styles.hours}>8:00 AM - 5:00 PM</span>
+                                <span className={styles.hours}>8:30 AM - 12:00 PM</span>
                             </div>
                             <div className={styles.dayHours}>
                                 <span className={styles.day}>Saturday</span>
-                                <span className={styles.hours}>9:00 AM - 1:00 PM</span>
+                                <span className={styles.hours}>9:00 AM - 12:00 PM</span>
                             </div>
                             <div className={styles.dayHours}>
                                 <span className={styles.day}>Sunday</span>
