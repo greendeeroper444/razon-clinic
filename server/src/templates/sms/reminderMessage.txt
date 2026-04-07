@@ -6,7 +6,7 @@ This is a reminder regarding your scheduled appointment.
 
 Appointment Details:
 Date: {{preferredDate}}
-Time: 9:00 AM – 12:00 NN
+Time: {{preferredTime}}
 Reason: {{reasonForVisit}}
 
 Please note that consultations are on a first-come, first-served basis.

@@ -501,6 +501,25 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             />
         </div>
 
+        <div className={styles.formRow}>
+            <Select
+                ref={(el) => { fieldRefs.current['preferredTime'] = el; }}
+                label='Preferred Time (Optional)'
+                name='preferredTime'
+                leftIcon='clock'
+                placeholder={!formData?.preferredDate ? 'Select a date first' : 'Select a time'}
+                value={formData?.preferredTime || ''}
+                onChange={onChange}
+                disabled={isLoading || !formData?.preferredDate}
+                options={generateTimeSlots().map(time => ({
+                    value: time,
+                    label: time,
+                    disabled: !isTimeAvailable(time)
+                }))}
+                error={getFieldError(validationErrors, 'preferredTime')}
+            />
+        </div>
+
         {isPrivilegedUser && (
             <Select
                 ref={(el) => { fieldRefs.current['assignedDoctor'] = el; }}

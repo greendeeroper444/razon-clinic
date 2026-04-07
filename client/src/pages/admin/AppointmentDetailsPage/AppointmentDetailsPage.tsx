@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Calendar, User, User2, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand, Thermometer, HeartPulse, XCircle, AlertTriangle } from 'lucide-react';
-import { calculateAge, formatBirthdate, formatDate, getStatusClass, getLoadingText, formatDateTime } from '../../../utils';
+import { Calendar, User, User2, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, CheckCircle, Ruler, Weight, Users, Hand, Thermometer, HeartPulse, XCircle, AlertTriangle, Clock } from 'lucide-react';
+import { calculateAge, formatBirthdate, formatDate, getStatusClass, getLoadingText, formatDateTime, formatTime } from '../../../utils';
 import { Main, Header, Modal, SubmitLoading } from '../../../components';
 import { AppointmentFormData, FormDataType } from '../../../types';
 import { useAppointmentStore } from '../../../stores';
@@ -242,12 +242,12 @@ const AppointmentDetailsPage = () => {
                                 </span>
                                 <span className={styles.tableValue}>{formatDate(currentAppointment.preferredDate)}</span>
                             </div>
-                            {/* <div className={styles.tableRow}>
+                            <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>
                                     <Clock /> Preferred Time:
                                 </span>
                                 <span className={styles.tableValue}>{formatTime(currentAppointment.preferredTime)}</span>
-                            </div> */}
+                            </div>
                             <div className={styles.tableRow}>
                                 <span className={styles.tableLabel}>
                                     <Notebook /> Reason for Visit:

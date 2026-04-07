@@ -3,9 +3,9 @@ Hello {{userName}},
 Your appointment #{{appointmentNumber}} has been REBOOKED.
 
 Previous Details:
-- Date: {{preferredDate}}
-- Time: 9:00 AM – 12:00 NN
-- Reason: {{reasonForVisit}}
+Date: {{preferredDate}}
+Time: {{preferredTime}}
+Reason: {{reasonForVisit}}
 
 Please contact us to confirm your new appointment details. We apologize for any inconvenience.
 

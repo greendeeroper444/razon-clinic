@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import styles from './AppointmentDetailsPage.module.css'
 import { useParams } from 'react-router-dom'
-import { Calendar, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, Ruler, Weight, Users, Hand, XCircle, User2 } from 'lucide-react';
-import { calculateAge, formatBirthdate, formatDate, getStatusClass, getLoadingText, formatDateTime } from '../../../utils'
+import { Calendar, User, Phone, Notebook, MapPin, Cake, Venus, ArrowLeft, Edit, Ruler, Weight, Users, Hand, XCircle, User2, Clock } from 'lucide-react';
+import { calculateAge, formatBirthdate, formatDate, getStatusClass, getLoadingText, formatDateTime, formatTime } from '../../../utils'
 import { AppointmentFormData, FormDataType } from '../../../types'
 import { Header, Main, Modal, SubmitLoading } from '../../../components'
 import { useAppointmentStore } from '../../../stores'
@@ -178,12 +178,12 @@ const AppointmentDetailsPage = () => {
                             </span>
                             <span className={styles.tableValue}>{formatDate(currentAppointment.preferredDate)}</span>
                         </div>
-                        {/* <div className={styles.tableRow}>
+                        <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <Clock /> Preferred Time:
                             </span>
                             <span className={styles.tableValue}>{formatTime(currentAppointment.preferredTime)}</span>
-                        </div> */}
+                        </div>
                         <div className={styles.tableRow}>
                             <span className={styles.tableLabel}>
                                 <Notebook /> Reason for Visit:

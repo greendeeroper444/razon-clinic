@@ -6,7 +6,7 @@ Your appointment has been SCHEDULED.
 
 Appointment Details:
 Date: {{preferredDate}}
-Time: 9:00 AM – 12:00 NN
+Time: {{preferredTime}}
 Reason: {{reasonForVisit}}
 Assigned Doctor: {{assignedDoctorName}}
 
