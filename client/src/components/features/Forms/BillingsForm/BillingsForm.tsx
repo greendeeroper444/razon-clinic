@@ -44,7 +44,8 @@ const BillingForm: React.FC<BillingFormProps> = ({
             try {
                 const [medicalRecordsResponse, inventoryItemsResponse] = await Promise.all([
                     getMedicalRecordsForBilling(),
-                    getInventoryItems()
+                    // getInventoryItems()
+                    getInventoryItems({ limit: 0 })
                 ]);
 
                 if (medicalRecordsResponse.success) {
