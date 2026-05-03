@@ -148,6 +148,7 @@ class ReportService extends BaseService {
 
         const vaccines = items.filter(item => item.category === 'Vaccine').length;
         const medicalSupplies = items.filter(item => item.category === 'Consumable Supply').length;
+        const medicines = items.filter(item => item.category === 'Medicine').length;
 
         const lowStockItems = items.filter(item => item.quantityInStock < 50).length;
 
@@ -163,6 +164,7 @@ class ReportService extends BaseService {
             totalValue: parseFloat(totalValue.toFixed(2)),
             vaccines,
             medicalSupplies,
+            medicines,
             lowStockItems,
             expiringSoon
         };

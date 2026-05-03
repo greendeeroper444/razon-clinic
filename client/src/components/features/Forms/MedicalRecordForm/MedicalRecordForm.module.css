@@ -178,3 +178,12 @@ textarea.formControl {
     color: #999 !important;
     background-color: #f5f5f5 !important;
 }
+
+.sourceBadge {
+    margin-left: 8px;
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: #e8f5e9;
+    color: #2e7d32;
+}

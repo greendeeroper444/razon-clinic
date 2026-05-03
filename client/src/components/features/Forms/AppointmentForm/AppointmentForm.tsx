@@ -504,7 +504,7 @@
 //         <div className={styles.formRow}>
 //             <Select
 //                 ref={(el) => { fieldRefs.current['preferredTime'] = el; }}
-//                 label='Preferred Time (Optional)'
+//                 label='Preferred Time *'
 //                 name='preferredTime'
 //                 leftIcon='clock'
 //                 placeholder={!formData?.preferredDate ? 'Select a date first' : 'Select a time'}
@@ -520,24 +520,24 @@
 //             />
 //         </div>
 
-//         {isPrivilegedUser && (
-//             <Select
-//                 ref={(el) => { fieldRefs.current['assignedDoctor'] = el; }}
-//                 label='Assigned Doctor (Optional)'
-//                 name='assignedDoctor'
-//                 leftIcon='user'
-//                 placeholder={doctorsLoading ? 'Loading doctors...' : 'Select a Doctor'}
-//                 value={
-//                     typeof formData?.assignedDoctor === 'object' && formData?.assignedDoctor !== null
-//                         ? (formData.assignedDoctor as { id?: string }).id ?? ''
-//                         : (formData?.assignedDoctor as string) || ''
-//                 }
-//                 onChange={onChange}
-//                 options={doctorOptions}
-//                 disabled={isLoading || doctorsLoading}
-//                 error={getFieldError(validationErrors, 'assignedDoctor')}
-//             />
-//         )}
+//    // {isPrivilegedUser && (
+//    //     <Select
+//    //         ref={(el) => { fieldRefs.current['assignedDoctor'] = el; }}
+//    //         label='Assigned Doctor (Optional)'
+//    //         name='assignedDoctor'
+//    //         leftIcon='user'
+//    //         placeholder={doctorsLoading ? 'Loading doctors...' : 'Select a Doctor'}
+//    //         value={
+//    //             typeof formData?.assignedDoctor === 'object' && formData?.assignedDoctor !== null
+//    //                 ? (formData.assignedDoctor as { id?: string }).id ?? ''
+//    //                 : (formData?.assignedDoctor as string) || ''
+//    //         }
+//    //         onChange={onChange}
+//    //         options={doctorOptions}
+//    //         disabled={isLoading || doctorsLoading}
+//    //         error={getFieldError(validationErrors, 'assignedDoctor')}
+//    //     />
+//    // )}
         
 //         <br />
 
@@ -1070,7 +1070,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <div className={styles.formRow}>
             <Select
                 ref={(el) => { fieldRefs.current['preferredTime'] = el; }}
-                label='Preferred Time (Optional)'
+                label='Preferred Time'
                 name='preferredTime'
                 leftIcon='clock'
                 placeholder={!formData?.preferredDate ? 'Select a date first' : 'Select a time'}
@@ -1086,7 +1086,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             />
         </div>
 
-        {isPrivilegedUser && (
+        {/* {isPrivilegedUser && (
             <Select
                 ref={(el) => { fieldRefs.current['assignedDoctor'] = el; }}
                 label='Assigned Doctor (Optional)'
@@ -1105,7 +1105,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             />
         )}
         
-        <br />
+        <br /> */}
 
         <TextArea
             ref={(el) => { fieldRefs.current['reasonForVisit'] = el; }}

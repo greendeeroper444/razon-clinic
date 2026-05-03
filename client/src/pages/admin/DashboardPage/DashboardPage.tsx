@@ -127,7 +127,7 @@ const DashboardPage = () => {
             return lowStockItems.map(item => ({
                 id: item.id,
                 itemName: item.itemName,
-                category: item.category as 'Vaccine' | 'Consumable Supply',
+                category: item.category as 'Vaccine' | 'Consumable Supply' | 'Medicine',
                 price: item.price,
                 quantityInStock: item.quantityInStock,
                 quantityUsed: item.quantityUsed,

@@ -85,30 +85,61 @@ export const useBillingStore = create<BillingState>()(
                 }
             },
 
-            fetchSummaryStats: async () => {
-                try {
-                    const { billings } = get();
+            // fetchSummaryStats: async () => {
+            //     try {
+            //         const { billings } = get();
                     
-                    const totalRevenue = billings.reduce((sum, bill) => sum + (bill.amount || 0), 0);
-                    const paidAmount = billings.filter(bill => bill.paymentStatus === 'Paid')
-                        .reduce((sum, bill) => sum + (bill.amount || 0), 0);
-                    const unpaidAmount = billings.filter(bill => bill.paymentStatus === 'Unpaid')
-                        .reduce((sum, bill) => sum + (bill.amount || 0), 0);
-                    const totalBillings = billings.length;
+            //         const totalRevenue = billings.reduce((sum, bill) => sum + (bill.amount || 0), 0);
+            //         const paidAmount = billings.filter(bill => bill.paymentStatus === 'Paid')
+            //             .reduce((sum, bill) => sum + (bill.amount || 0), 0);
+            //         const unpaidAmount = billings.filter(bill => bill.paymentStatus === 'Unpaid')
+            //             .reduce((sum, bill) => sum + (bill.amount || 0), 0);
+            //         const totalBillings = billings.length;
+
+            //         set({
+            //             summaryStats: {
+            //                 totalRevenue,
+            //                 paidAmount,
+            //                 unpaidAmount,
+            //                 totalBillings
+            //             }
+            //         });
+            //     } catch (error) {
+            //         console.error('Error fetching billing summary stats:', error);
+            //         set({ error: 'An error occurred while fetching summary stats' });
+            //     }
+            // },
+
+            fetchSummaryStats: async () => {
+            try {
+                //fetch all billings without pagination to compute accurate stats
+                const response = await getBillings({ page: 1, limit: 0 }); // limit: 0 = unlimited
+                
+                if (response.success) {
+                    const allBillings = response.data.billings || [];
+                    
+                    const paidAmount = allBillings
+                        .filter((bill: any) => bill.paymentStatus === 'Paid')
+                        .reduce((sum: number, bill: any) => sum + (bill.amount || 0), 0);
+
+                    const unpaidAmount = allBillings
+                        .filter((bill: any) => bill.paymentStatus === 'Unpaid' || bill.paymentStatus === 'Pending')
+                        .reduce((sum: number, bill: any) => sum + (bill.amount || 0), 0);
 
                     set({
                         summaryStats: {
-                            totalRevenue,
+                            totalRevenue: paidAmount,  // totalRevenue = Paid only, consistent with Dashboard
                             paidAmount,
                             unpaidAmount,
-                            totalBillings
+                            totalBillings: allBillings.length
                         }
                     });
-                } catch (error) {
-                    console.error('Error fetching billing summary stats:', error);
-                    set({ error: 'An error occurred while fetching summary stats' });
                 }
-            },
+            } catch (error) {
+                console.error('Error fetching billing summary stats:', error);
+                set({ error: 'An error occurred while fetching summary stats' });
+            }
+        },
 
             fetchBillings: async (params: FetchParams) => {
                 try {
