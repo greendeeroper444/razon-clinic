@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@config/*": ["src/config/*"],
+      "@modules/*": ["src/modules/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@validators/*": ["src/validators/*"],
+      "@routes/*": ["src/routes/*"],
+      "@services/*": ["src/services/*"],
+      "@helpers/*": ["src/helpers/*"],
+      "@migrations/*": ["src/migrations/*"],
+      "@templates/*": ["src/templates/*"],
+      "@utils/*": ["src/utils/*"],
+      "@jobs/*": ["src/jobs/*"]
+    }
+  },
+  "include": ["src/**/*", "index.js"]
+}

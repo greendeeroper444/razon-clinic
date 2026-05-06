@@ -51,19 +51,19 @@ const archiveInactiveUsers = cron.schedule('0 2 * * *', async () => {
 });
 
 //start the cron job
-const startArchiveJob = () => {
+const startArchiveUsersJob = () => {
     archiveInactiveUsers.start();
     logger.info('Archive inactive users job started - runs daily at 2:00 AM Singapore time');
 };
 
 //stop the cron job
-const stopArchiveJob = () => {
+const stopArchiveUsersJob = () => {
     archiveInactiveUsers.stop();
     logger.info('Archive inactive users job stopped');
 };
 
 module.exports = {
     archiveInactiveUsers,
-    startArchiveJob,
-    stopArchiveJob
+    startArchiveUsersJob,
+    stopArchiveUsersJob
 };

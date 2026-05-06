@@ -6,12 +6,9 @@ const express = require('express');
 const config = require('@config');
 const logger = require('@utils/logger');
 const { connectDB } = require('@config/database');
-const setupMiddleware = require('@middlewares/middleware');
+const { setupMiddleware, errorHandler } = require('@middlewares');
 const setupRoutes = require('@routes');
-const errorHandler = require('@middlewares/errorHandler.middleware');
-const { startArchiveJob } = require('@jobs/archiveInActivePatients.job');
-const { startAppointmentRemindersJob } = require('@jobs/appointmentReminders.job');
-
+const { startAllJobs, stopAllJobs } = require('@jobs');
 
 //initialize express app
 const app = express();
@@ -30,14 +27,13 @@ const startServer = async () => {
     try {
         //connect to database
         await connectDB();
-        
-        //start cron jobs
-        startArchiveJob();
-        startAppointmentRemindersJob();
+
+        //start all cron jobs
+        startAllJobs();
 
         //start server
         const PORT = config.port || 3000;
-            app.listen(PORT, () => {
+        app.listen(PORT, () => {
             logger.info(`Server running on port ${PORT}`);
         });
     } catch (err) {
@@ -57,9 +53,16 @@ process.on('unhandledRejection', (err) => {
 
 //handle uncaught exceptions
 process.on('uncaughtException', (err) => {
-  logger.error('Uncaught Exception', err);
-  //gracefully shutdown in case of uncaught exception
-  process.exit(1);
+    logger.error('Uncaught Exception', err);
+    //gracefully shutdown in case of uncaught exception
+    process.exit(1);
+});
+
+//graceful shutdown
+process.on('SIGTERM', () => {
+    logger.info('SIGTERM received. Stopping cron jobs...');
+    stopAllJobs();
+    process.exit(0);
 });
 
 //start the server

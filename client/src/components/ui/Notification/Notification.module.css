@@ -102,6 +102,24 @@
     color: white;
 }
 
+
+
+.patient {
+    background-color: #8b5cf6;
+    color: white;
+}
+ 
+.inventory {
+    background-color: #f97316;
+    color: white;
+}
+ 
+.system {
+    background-color: var(--gray, #94a3b8);
+    color: white;
+}
+ 
+
 .notificationContent {
     flex-grow: 1;
 }
