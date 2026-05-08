@@ -3,9 +3,8 @@ require('module-alias/register');
 
 const { connectDB } = require('@config/database');
 const { runMedicineExpirationsJob } = require('./medicineExpirations.job');
-// add others as you refactor them, e.g.:
+const { runMedicineLowStocksJob } = require('./medicineLowStocks.job');
 // const { runAppointmentRemindersJob } = require('./appointmentReminders.job');
-// const { runMedicineLowStocksJob } = require('./medicineLowStocks.job');
 
 (async () => {
     try {
@@ -13,8 +12,8 @@ const { runMedicineExpirationsJob } = require('./medicineExpirations.job');
         console.log('DB connected. Running jobs...\n');
 
         await runMedicineExpirationsJob();
+        await runMedicineLowStocksJob();
         // await runAppointmentRemindersJob();
-        // await runMedicineLowStocksJob();
 
         console.log('\nAll jobs finished.');
         process.exit(0);
