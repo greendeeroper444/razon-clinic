@@ -423,7 +423,7 @@ const ReportPage = () => {
                                     </div>
                                 </div>
 
-                                <div className={styles.alertsSection}>
+                                {/* <div className={styles.alertsSection}>
                                     <h2 className={styles.sectionTitle}>Inventory Alerts</h2>
                                     <div className={styles.alertCards}>
                                         <div className={styles.alertCard}>
@@ -463,7 +463,7 @@ const ReportPage = () => {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div className={styles.statsSection}>
                                     <div className={styles.statsCard}>
