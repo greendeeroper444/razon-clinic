@@ -595,7 +595,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 }) => {
     const [bookedSlots, setBookedSlots] = useState<{date: string, time: string, time12Hour?: string}[]>([]);
     const [_availableTimes, setAvailableTimes] = useState<string[]>([]);
-    const [doctors, setDoctors] = useState<DoctorOption[]>([]);
+    const [_doctors, setDoctors] = useState<DoctorOption[]>([]);
     const [_doctorsLoading, setDoctorsLoading] = useState(false);
 
     const hasAutoFilled = useRef(false);
