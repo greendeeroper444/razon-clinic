@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styles from './MedicalRecordsPage.module.css';
 import { Download } from 'lucide-react';
 import { OpenModalProps } from '../../../hooks/hook';
-import { MedicalRecordFormData, MedicalRecordResponse, TableColumn } from '../../../types';
+import { MedicalRecordResponse, TableColumn } from '../../../types';
 import { Header, Loading, Main, Pagination, Searchbar, Table } from '../../../components';
 import { toast } from 'sonner';
 import { calculateAge2, formatDate, generate20Only, generateInitials } from '../../../utils';

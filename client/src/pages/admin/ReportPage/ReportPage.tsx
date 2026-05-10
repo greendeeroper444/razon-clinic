@@ -5,7 +5,7 @@ import { useReportStore } from '../../../stores'
 import { Header, LineChart, Loading, Main, Pagination, Searchbar, Tab, Table } from '../../../components'
 import { formatDate, formatCurrency, getStatusClass } from '../../../utils'
 import { InventoryItem, SalesReportItem, TableColumn } from '../../../types'
-import { Package, DollarSign, ShoppingCart, AlertTriangle, Calendar, FileText, UserCheck } from 'lucide-react'
+import { Package, DollarSign, ShoppingCart, Calendar, FileText } from 'lucide-react'
 
 const ReportPage = () => {
     const [searchParams] = useSearchParams()
