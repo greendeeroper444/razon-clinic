@@ -722,7 +722,35 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [softDeleteMedicalRecord, fetchData, storePagination?.currentPage, storePagination?.itemsPerPage, searchTerm, location.search]);
 
-    const handleDownloadReceipt = useCallback((record: MedicalRecordFormData) => {
+    // const handleDownloadReceipt = useCallback((record: MedicalRecordFormData) => {
+    //     if (!record) {
+    //         toast.error('No record data available');
+    //         return;
+    //     }
+    //     if (isGeneratingPDF) {
+    //         toast.warning('Please wait, generating receipt...');
+    //         return;
+    //     }
+    //     setIsGeneratingPDF(true);
+    //     const loadingToast = toast.loading('Generating receipt PDF...');
+    //     try {
+    //         generateMedicalRecordPDF(record);
+    //         toast.dismiss(loadingToast);
+    //         toast.success('Receipt downloaded successfully!', {
+    //             description: `Receipt for ${record.personalDetails.fullName}`
+    //         });
+    //     } catch (error) {
+    //         console.error('Error generating receipt:', error);
+    //         toast.dismiss(loadingToast);
+    //         toast.error('Failed to generate receipt', {
+    //             description: error instanceof Error ? error.message : 'An unexpected error occurred'
+    //         });
+    //     } finally {
+    //         setIsGeneratingPDF(false);
+    //     }
+    // }, [isGeneratingPDF]);
+
+    const handleDownloadReceipt = useCallback((record: MedicalRecordResponse) => {
         if (!record) {
             toast.error('No record data available');
             return;
@@ -731,13 +759,44 @@ const MedicalRecordsPage: React.FC<OpenModalProps> = () => {
             toast.warning('Please wait, generating receipt...');
             return;
         }
+    
+        // Safely normalize MedicalRecordResponse → MedicalRecord shape
+        // so the PDF generator never hits undefined nested objects.
+        const normalized = {
+            ...record,
+            personalDetails: record.personalDetails ?? {},
+            currentSymptoms: record.currentSymptoms ?? {
+                chiefComplaint: '',
+                symptomsDescription: '',
+            },
+            medicalHistory: record.medicalHistory ?? {
+                allergies: '',
+                chronicConditions: '',
+                previousSurgeries: '',
+                familyHistory: '',
+            },
+            growthMilestones: record.growthMilestones ?? {
+                height: 0,
+                weight: 0,
+                bmi: '',
+                growthNotes: '',
+            },
+            consultationNotes: record.consultationNotes ?? '',
+            treatmentPlan: record.treatmentPlan ?? '',
+            diagnosis: record.diagnosis ?? '',
+            prescribedMedications: record.prescribedMedications ?? '',
+            vaccinationHistory: record.vaccinationHistory ?? '',
+            followUpDate: record.followUpDate ?? undefined,
+            dateRecorded: record.dateRecorded ?? new Date().toISOString(),
+        };
+    
         setIsGeneratingPDF(true);
         const loadingToast = toast.loading('Generating receipt PDF...');
         try {
-            generateMedicalRecordPDF(record);
+            generateMedicalRecordPDF(normalized as any);
             toast.dismiss(loadingToast);
             toast.success('Receipt downloaded successfully!', {
-                description: `Receipt for ${record.personalDetails.fullName}`
+                description: `Receipt for ${normalized.personalDetails.fullName}`
             });
         } catch (error) {
             console.error('Error generating receipt:', error);

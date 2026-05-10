@@ -655,7 +655,7 @@
 // };
 
 
-import { BasePDFTemplate, Colors, Config } from './basePdfTemplate';
+import { BasePDFTemplate } from './basePdfTemplate';
 import { BillingFormData } from '../types';
 
 export class BillingReceiptPDF extends BasePDFTemplate {
