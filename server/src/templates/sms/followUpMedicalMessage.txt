@@ -1,0 +1,1 @@
+Dear {{userName}}, this is a reminder that your follow-up appointment is scheduled on {{followUpDate}}. Please visit us at your earliest convenience. For inquiries, kindly contact our clinic. Thank you!

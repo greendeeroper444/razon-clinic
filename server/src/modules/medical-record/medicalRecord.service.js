@@ -179,6 +179,113 @@ class MedicalRecordService extends BaseService {
     //     return savedRecord;
     // }
 
+    // async createMedicalRecord(medicalRecordData) {
+    //     const {
+    //         appointmentId,
+    //         patientId,
+    //         fullName, dateOfBirth, gender, bloodType, address, phone, email, emergencyContact,
+    //         allergies, chronicConditions, previousSurgeries, familyHistory,
+    //         height, weight, bmi, growthNotes,
+    //         chiefComplaint, symptomsDescription, symptomsDuration, painScale,
+    //         diagnosis, treatmentPlan, prescribedMedications, consultationNotes, followUpDate, vaccinationHistory
+    //     } = medicalRecordData;
+
+    //     //normalize appointmentId
+    //     const resolvedAppointmentId = (appointmentId && appointmentId.toString().trim() !== '')
+    //         ? appointmentId
+    //         : null;
+
+    //     //fallback: if no appointmentId but patientId given, find latest active appointment
+    //     let finalAppointmentId = resolvedAppointmentId;
+
+    //     if (!finalAppointmentId && patientId && patientId.toString().trim() !== '') {
+    //         try {
+    //             const patient = await Patient.findById(patientId);
+    //             if (patient) {
+    //                 const linkedAppointment = await Appointment.findOne({
+    //                     $or: [
+    //                         { contactNumber: patient.contactNumber },
+    //                         {
+    //                             firstName: { $regex: new RegExp(`^${patient.firstName}$`, 'i') },
+    //                             lastName: { $regex: new RegExp(`^${patient.lastName}$`, 'i') }
+    //                         }
+    //                     ],
+    //                     status: { $in: ['Referred', 'Scheduled', 'Pending'] }
+    //                 }).sort({ createdAt: -1 });
+
+    //                 if (linkedAppointment) {
+    //                     finalAppointmentId = linkedAppointment._id;
+    //                 }
+    //             }
+    //         } catch (err) {
+    //             console.error('Failed to resolve appointment from patientId:', err);
+    //         }
+    //     }
+
+    //     //validate appointmentId if resolved
+    //     if (finalAppointmentId) {
+    //         const appointmentExists = await Appointment.findById(finalAppointmentId);
+    //         if (!appointmentExists) {
+    //             throw new Error('Appointment not found');
+    //         }
+    //     }
+
+    //     const medicalRecord = new MedicalRecord({
+    //         appointmentId: finalAppointmentId || undefined,
+    //         personalDetails: {
+    //             fullName,
+    //             dateOfBirth: new Date(dateOfBirth),
+    //             gender,
+    //             bloodType: bloodType || undefined,
+    //             address: address || undefined,
+    //             phone,
+    //             email: email || undefined,
+    //             emergencyContact: emergencyContact || undefined
+    //         },
+    //         medicalHistory: {
+    //             allergies: allergies || undefined,
+    //             chronicConditions: chronicConditions || undefined,
+    //             previousSurgeries: previousSurgeries || undefined,
+    //             familyHistory: familyHistory || undefined
+    //         },
+    //         growthMilestones: {
+    //             height: height ? Number(height) : undefined,
+    //             weight: weight ? Number(weight) : undefined,
+    //             bmi: bmi ? Number(bmi) : undefined,
+    //             growthNotes: growthNotes || undefined
+    //         },
+    //         currentSymptoms: {
+    //             chiefComplaint,
+    //             symptomsDescription,
+    //             symptomsDuration: symptomsDuration || undefined,
+    //             painScale: painScale ? Number(painScale) : undefined
+    //         },
+    //         diagnosis: diagnosis || undefined,
+    //         treatmentPlan: treatmentPlan || undefined,
+    //         prescribedMedications: prescribedMedications || undefined,
+    //         consultationNotes: consultationNotes || undefined,
+    //         followUpDate: followUpDate ? new Date(followUpDate) : undefined,
+    //         vaccinationHistory: vaccinationHistory || undefined
+    //     });
+
+    //     const savedRecord = await medicalRecord.save();
+
+    //     if (finalAppointmentId) {
+    //         try {
+    //             await Appointment.findByIdAndUpdate(
+    //                 finalAppointmentId,
+    //                 { status: 'Completed' },
+    //                 { new: true }
+    //             );
+    //         } catch (error) {
+    //             console.error('Failed to mark appointment as Completed:', error);
+    //         }
+    //     }
+
+    //     return savedRecord;
+    // }
+
+    //------update follow up date------
     async createMedicalRecord(medicalRecordData) {
         const {
             appointmentId,
@@ -190,12 +297,12 @@ class MedicalRecordService extends BaseService {
             diagnosis, treatmentPlan, prescribedMedications, consultationNotes, followUpDate, vaccinationHistory
         } = medicalRecordData;
 
-        //normalize appointmentId
+        // normalize appointmentId
         const resolvedAppointmentId = (appointmentId && appointmentId.toString().trim() !== '')
             ? appointmentId
             : null;
 
-        //fallback: if no appointmentId but patientId given, find latest active appointment
+        // fallback: if no appointmentId but patientId given, find latest active appointment
         let finalAppointmentId = resolvedAppointmentId;
 
         if (!finalAppointmentId && patientId && patientId.toString().trim() !== '') {
@@ -222,7 +329,7 @@ class MedicalRecordService extends BaseService {
             }
         }
 
-        //validate appointmentId if resolved
+        // validate appointmentId if resolved
         if (finalAppointmentId) {
             const appointmentExists = await Appointment.findById(finalAppointmentId);
             if (!appointmentExists) {
@@ -270,6 +377,7 @@ class MedicalRecordService extends BaseService {
 
         const savedRecord = await medicalRecord.save();
 
+        //mark appointment as Completed
         if (finalAppointmentId) {
             try {
                 await Appointment.findByIdAndUpdate(
@@ -279,6 +387,15 @@ class MedicalRecordService extends BaseService {
                 );
             } catch (error) {
                 console.error('Failed to mark appointment as Completed:', error);
+            }
+        }
+
+        //send follow-up SMS if followUpDate is set
+        if (savedRecord.followUpDate) {
+            try {
+                await this.sendFollowUpSMS(savedRecord._id);
+            } catch (err) {
+                console.error('Failed to send follow-up SMS:', err);
             }
         }
 
@@ -720,6 +837,42 @@ class MedicalRecordService extends BaseService {
             .populate('appointmentId', 'appointmentNumber firstName lastName middleName suffix preferredDate preferredTime status')
             .sort({ createdAt: -1 });
     } 
+
+
+
+    async sendFollowUpSMS(medicalRecordId) {
+        const sendSMS = require('@utils/smsSender');
+        const { formatDate } = require('@utils/display');
+
+        const record = await MedicalRecord.findById(medicalRecordId)
+            .populate('appointmentId');
+
+        if (!record) throw new Error('Medical record not found');
+        if (!record.followUpDate) {
+            return { success: false, reason: 'no_followup_date', message: 'No follow-up date set' };
+        }
+
+        const phone = record.personalDetails?.phone;
+        if (!phone) {
+            return { success: false, reason: 'no_phone', message: 'No contact number on record' };
+        }
+
+        let moceanNumber = phone;
+        if (phone.startsWith('09')) {
+            moceanNumber = '+63' + phone.substring(1);
+        } else if (!phone.startsWith('+63')) {
+            moceanNumber = '+63' + phone;
+        }
+
+        const replacements = {
+            userName: record.personalDetails.fullName,
+            followUpDate: formatDate(record.followUpDate),
+            medicalRecordNumber: record.medicalRecordNumber,
+            chiefComplaint: record.currentSymptoms?.chiefComplaint || 'your recent consultation',
+        };
+
+        return await sendSMS(moceanNumber, 'followUpMedicalMessage.txt', replacements);
+    }
 }
 
 module.exports = new MedicalRecordService();

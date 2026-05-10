@@ -1427,6 +1427,530 @@
 
 
 
+// import React, { useState, useEffect, useRef } from 'react'
+// import styles from './MedicalRecordForm.module.css'
+// import { searchAppointmentsByName, getAppointmentForAutofill } from '../../../../services';
+// import { MedicalRecordFormProps } from '../../../../types';
+// import { getFieldError } from '../../../../utils';
+// import Input from '../../../ui/Input/Input';
+// import Select from '../../../ui/Select/Select';
+// import TextArea from '../../../ui/TextArea/TextArea';
+// import { useMedicalRecordStore } from '../../../../stores';
+// import useScrollToError from '../../../../hooks/useScrollToError';
+
+
+// const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({ formData, onChange, isLoading, onAutofill }) => {
+//     const [searchResults, setSearchResults] = useState<any>([]);
+//     const [showSearchDropdown, setShowSearchDropdown] = useState<boolean>(false);
+//     const [searchLoading, setSearchLoading] = useState<boolean>(false);
+//     const [selectedAppointmentId, setSelectedAppointmentId] = useState<string>('');
+//     const [selectedPatientId, setSelectedPatientId] = useState<string>('');
+//     const searchTimeoutRef = useRef<number | null>(null);
+//     const dropdownRef = useRef<HTMLDivElement>(null);
+//     const validationErrors = useMedicalRecordStore((state) => state.validationErrors);
+
+//     const { fieldRefs } = useScrollToError({
+//         validationErrors,
+//         fieldOrder: [
+//             'fullName', 'dateOfBirth', 'gender', 'bloodType', 'phone', 'address',
+//             'email', 'emergencyContact', 'allergies', 'chronicConditions',
+//             'previousSurgeries', 'familyHistory', 'height', 'weight', 'growthNotes',
+//             'chiefComplaint', 'symptomsDescription', 'symptomsDuration', 'painScale',
+//             'vaccinationHistory', 'diagnosis', 'treatmentPlan',
+//             'prescribedMedications', 'consultationNotes', 'followUpDate'
+//         ],
+//         scrollBehavior: 'smooth',
+//         scrollBlock: 'center',
+//         focusDelay: 300
+//     });
+
+//     const updateFormField = (fieldName: string, value: string | number) => {
+//         onChange({
+//             target: { name: fieldName, value }
+//         } as unknown as React.ChangeEvent<HTMLInputElement>);
+//     };
+
+//     const handleSearchChange = async (e: any) => {
+//         const value = e.target.value;
+
+//         onChange({
+//             target: { name: 'fullName', value }
+//         } as unknown as React.ChangeEvent<HTMLInputElement>);
+
+//         //clear IDs when user types manually
+//         if (selectedAppointmentId || selectedPatientId) {
+//             setSelectedAppointmentId('');
+//             setSelectedPatientId('');
+//             updateFormField('appointmentId', '');
+//             updateFormField('patientId', '');
+//         }
+
+//         if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+
+//         if (value.length < 2) {
+//             setSearchResults([]);
+//             setShowSearchDropdown(false);
+//             return;
+//         }
+
+//         searchTimeoutRef.current = window.setTimeout(async () => {
+//             try {
+//                 setSearchLoading(true);
+
+//                 const response = await searchAppointmentsByName(value);
+//                 const results = response.data?.appointments || [];
+                
+//                 setSearchResults(results);
+//                 setShowSearchDropdown(true);
+
+//             } catch (error) {
+//                 console.error('Search error:', error);
+//                 setSearchResults([]);
+//                 setShowSearchDropdown(false);
+//             } finally {
+//                 setSearchLoading(false);
+//             }
+//         }, 300);
+
+//     };
+
+//     const handleSelectPatient = async (record: any) => {
+//         try {
+//             setSearchLoading(true);
+//             setShowSearchDropdown(false);
+//             setSearchResults([]);
+
+//             const appointmentId = String(record.appointmentId || record.id || '');
+            
+//             setSelectedAppointmentId(appointmentId);
+//             setSelectedPatientId('');
+
+//             updateFormField('appointmentId', appointmentId);
+//             updateFormField('patientId', '');
+
+//             if (onAutofill && appointmentId) {
+//                 try {
+//                     const response = await getAppointmentForAutofill(appointmentId);
+//                     onAutofill({
+//                         ...response.data,
+//                         appointmentId,
+//                         patientId: ''
+//                     });
+//                     return;
+//                 } catch (autofillError) {
+//                     console.log('Autofill failed, using fallback', autofillError);
+//                 }
+//             }
+
+//             //fallback: update fields directly
+//             const formattedDate = record.dateOfBirth
+//                 ? (() => {
+//                     const d = new Date(record.dateOfBirth);
+//                     return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0];
+//                 })()
+//                 : '';
+
+//             const fieldsToUpdate: Record<string, string | number> = {
+//                 appointmentId,
+//                 patientId: '',
+//                 fullName: record.fullName || `${record.firstName || ''} ${record.middleName ? record.middleName + ' ' : ''}${record.lastName || ''}${record.suffix ? ' ' + record.suffix : ''}`.trim(),
+//                 dateOfBirth: formattedDate,
+//                 gender: record.gender || '',
+//                 phone: record.phone || '',
+//                 address: record.address || '',
+//                 email: record.email || '',
+//                 height: record.height ? String(record.height) : '',
+//                 weight: record.weight ? String(record.weight) : '',
+//                 bloodType: record.bloodType || '',
+//             };
+
+//             Object.entries(fieldsToUpdate).forEach(([fieldName, fieldValue], index) => {
+//                 if (fieldValue !== '' && fieldValue !== null && fieldValue !== undefined) {
+//                     setTimeout(() => updateFormField(fieldName, fieldValue), index * 10);
+//                 }
+//             });
+
+//         } catch (error) {
+//             console.error('Error selecting appointment:', error);
+//             updateFormField('fullName', record.fullName || '');
+//         } finally {
+//             setSearchLoading(false);
+//         }
+//     };
+
+//     const handleInputFocus = () => {
+//         if (searchResults.length > 0 && formData?.fullName && formData.fullName.length >= 2) {
+//             setShowSearchDropdown(true);
+//         }
+//     };
+
+//     useEffect(() => {
+//         const handleClickOutside = (event: any) => {
+//             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//                 setShowSearchDropdown(false);
+//             }
+//         };
+//         document.addEventListener('mousedown', handleClickOutside);
+//         return () => document.removeEventListener('mousedown', handleClickOutside);
+//     }, []);
+
+//     useEffect(() => {
+//         return () => {
+//             if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+//         };
+//     }, []);
+
+//     // auto-calculate BMI
+//     useEffect(() => {
+//         const height = parseFloat(formData?.height !== undefined && formData?.height !== null ? String(formData.height) : '');
+//         const weight = parseFloat(formData?.weight !== undefined && formData?.weight !== null ? String(formData.weight) : '');
+
+//         if (height && weight && height > 0) {
+//             const heightInMeters = height / 100;
+//             const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(1);
+//             updateFormField('bmi', bmi);
+//         }
+//     }, [formData?.height, formData?.weight]);
+
+//   return (
+//     <div className={styles.sectionDivider}>
+//         <input type="hidden" name="appointmentId" value={selectedAppointmentId} />
+//         <input type="hidden" name="patientId" value={selectedPatientId} />
+
+//         <h4>Personal Details</h4>
+//         <div className={styles.formRow}>
+//             <div className={styles.searchContainer} ref={dropdownRef}>
+//                 <Input
+//                     ref={(el) => { fieldRefs.current['fullName'] = el; }}
+//                     type='text'
+//                     label='Full Name *'
+//                     name='fullName'
+//                     value={formData?.fullName || ''}
+//                     onChange={handleSearchChange}
+//                     onFocus={handleInputFocus}
+//                     disabled={isLoading}
+//                     placeholder="Start typing patient's name to search..."
+//                     autoComplete="off"
+//                     leftIcon="user"
+//                     error={getFieldError(validationErrors, 'fullName')}
+//                 />
+
+//                 {
+//                     showSearchDropdown && (
+//                         <div className={styles.searchDropdown}>
+//                             {
+//                                 searchLoading ? (
+//                                     <div className={styles.searchLoading}>Searching...</div>
+//                                 ) : searchResults.length > 0 ? (
+//                                     searchResults.map((record: any, index: number) => (
+//                                         <div
+//                                             key={`${record._sourceType}-${record.id || index}`}
+//                                             className={styles.searchItem}
+//                                             onClick={() => handleSelectPatient(record)}
+//                                             onMouseEnter={(e) => { (e.target as HTMLDivElement).style.backgroundColor = '#f8f9fa'; }}
+//                                             onMouseLeave={(e) => { (e.target as HTMLDivElement).style.backgroundColor = 'white'; }}
+//                                         >
+//                                             <div>
+//                                                 <strong>
+//                                                     {record.fullName ||
+//                                                         `${record.firstName || ''} ${record.middleName ? record.middleName + ' ' : ''}${record.lastName || ''}${record.suffix ? ' ' + record.suffix : ''}`.trim() ||
+//                                                         'Unknown Name'}
+//                                                 </strong>
+
+//                                                 {/* <span style={{
+//                                                     marginLeft: '8px',
+//                                                     fontSize: '11px',
+//                                                     padding: '1px 6px',
+//                                                     borderRadius: '10px',
+//                                                     background: record._sourceType === 'appointment' ? '#e3f2fd' : '#e8f5e9',
+//                                                     color: record._sourceType === 'appointment' ? '#1565c0' : '#2e7d32'
+//                                                 }}>
+//                                                     {record._sourceType === 'appointment' ? 'Appointment' : 'Patient'}
+//                                                 </span> */}
+//                                                 <span className={styles.sourceBadge}>Patient</span>
+//                                             </div>
+//                                             <div className={styles.patientBirthGender}>{record.gender}</div>
+//                                             {record.phone && <div className={styles.patientContact}>{record.phone}</div>}
+//                                             {record.address && <div className={styles.patientContact}>{record.address}</div>}
+//                                         </div>
+//                                     ))
+//                                 ) : formData?.fullName && formData.fullName.length >= 2 && !searchLoading ? (
+//                                     <div className={styles.noResults}>No patients found</div>
+//                                 ) : null
+//                             }
+//                         </div>
+//                     )
+//                 }
+//             </div>
+//         </div>
+
+//         <div className={styles.formRow}>
+//             <Input
+//                 ref={(el) => { fieldRefs.current['dateOfBirth'] = el; }}
+//                 type='date'
+//                 label='Date of Birth *'
+//                 name='dateOfBirth'
+//                 placeholder={formData.dateOfBirth ? undefined : 'Select date of birth'}
+//                 leftIcon='calendar'
+//                 value={formData.dateOfBirth || ''}
+//                 onChange={onChange}
+//                 onFocus={(e) => { (e.target as HTMLInputElement).type = 'date'; }}
+//                 disabled={isLoading}
+//                 error={getFieldError(validationErrors, 'dateOfBirth')}
+//             />
+
+//             <Select
+//                 ref={(el) => { fieldRefs.current['gender'] = el; }}
+//                 name='gender'
+//                 label='Sex *'
+//                 leftIcon='users'
+//                 placeholder='Select Sex'
+//                 value={formData.gender || ''}
+//                 onChange={onChange}
+//                 options={[
+//                     { value: 'Male', label: 'Male' },
+//                     { value: 'Female', label: 'Female' },
+//                 ]}
+//                 error={getFieldError(validationErrors, 'gender')}
+//             />
+//         </div>
+
+//         <div className={styles.formRow}>
+//             <Select
+//                 ref={(el) => { fieldRefs.current['bloodType'] = el; }}
+//                 name='bloodType'
+//                 label='Blood Type'
+//                 leftIcon='users'
+//                 placeholder='Select Blood Type'
+//                 value={formData.bloodType || ''}
+//                 onChange={onChange}
+//                 options={[
+//                     { value: 'A+', label: 'A+' }, { value: 'A-', label: 'A-' },
+//                     { value: 'B+', label: 'B+' }, { value: 'B-', label: 'B-' },
+//                     { value: 'AB+', label: 'AB+' }, { value: 'AB-', label: 'AB-' },
+//                     { value: 'O+', label: 'O+' }, { value: 'O-', label: 'O-' }
+//                 ]}
+//                 error={getFieldError(validationErrors, 'bloodType')}
+//             />
+
+//             <Input
+//                 ref={(el) => { fieldRefs.current['phone'] = el; }}
+//                 type='tel'
+//                 label='Phone Number *'
+//                 name='phone'
+//                 placeholder="Enter a phone number"
+//                 value={formData?.phone || ''}
+//                 onChange={onChange}
+//                 disabled={isLoading}
+//                 error={getFieldError(validationErrors, 'phone')}
+//             />
+//         </div>
+
+//         <TextArea
+//             ref={(el) => { fieldRefs.current['address'] = el; }}
+//             name='address'
+//             label='Address'
+//             placeholder='Address'
+//             leftIcon='map-pin'
+//             value={formData?.address || ''}
+//             onChange={onChange}
+//             rows={3}
+//             resize='vertical'
+//             disabled={isLoading}
+//             error={getFieldError(validationErrors, 'address')}
+//         />
+
+//         <div className={styles.formRow}>
+//             <Input
+//                 ref={(el) => { fieldRefs.current['email'] = el; }}
+//                 type='email'
+//                 label='Email Address (Optional)'
+//                 name='email'
+//                 placeholder="Enter an email address"
+//                 value={formData?.email || ''}
+//                 onChange={onChange}
+//                 disabled={isLoading}
+//                 error={getFieldError(validationErrors, 'email')}
+//             />
+
+//             <Input
+//                 ref={(el) => { fieldRefs.current['emergencyContact'] = el; }}
+//                 type='text'
+//                 label='Emergency Contact (Optional)'
+//                 name='emergencyContact'
+//                 placeholder="Emergency contact person"
+//                 value={formData?.emergencyContact || ''}
+//                 onChange={onChange}
+//                 disabled={isLoading}
+//                 error={getFieldError(validationErrors, 'emergencyContact')}
+//             />
+//         </div>
+
+//         <div className={styles.sectionDivider}>
+//             <h4>Medical History</h4>
+
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['allergies'] = el; }}
+//                 name='allergies' label='Known Allergies' placeholder='List any known allergies'
+//                 value={formData?.allergies || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'allergies')}
+//             />
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['chronicConditions'] = el; }}
+//                 name='chronicConditions' label='Chronic Conditions' placeholder='List any known chronic conditions'
+//                 value={formData?.chronicConditions || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'chronicConditions')}
+//             />
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['previousSurgeries'] = el; }}
+//                 name='previousSurgeries' label='Previous Surgeries' placeholder='List any known previous surgeries'
+//                 value={formData?.previousSurgeries || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'previousSurgeries')}
+//             />
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['familyHistory'] = el; }}
+//                 name='familyHistory' label='Family History' placeholder='List any known family history'
+//                 value={formData?.familyHistory || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'familyHistory')}
+//             />
+//         </div>
+
+//         <div className={styles.sectionDivider}>
+//             <h4>Pediatric Growth Monitor</h4>
+
+//             <div className={styles.formRow}>
+//                 <Input
+//                     ref={(el) => { fieldRefs.current['height'] = el; }}
+//                     type='number' label='Height (cm)' name='height' placeholder="Height in cm"
+//                     value={formData?.height || ''} onChange={onChange} min={30} max={300}
+//                     disabled={isLoading} error={getFieldError(validationErrors, 'height')}
+//                 />
+//                 <Input
+//                     ref={(el) => { fieldRefs.current['weight'] = el; }}
+//                     type='number' label='Weight (kg)' name='weight' placeholder="Weight in kg"
+//                     value={formData?.weight || ''} onChange={onChange} min={1} max={300}
+//                     disabled={isLoading} error={getFieldError(validationErrors, 'weight')}
+//                 />
+//             </div>
+
+//             <div className={styles.formRow}>
+//                 <Input
+//                     type='number' label='BMI (Auto-calculated)' name='bmi'
+//                     placeholder="BMI (calculated automatically)"
+//                     value={formData?.bmi || ''} onChange={onChange} step='0.1'
+//                     disabled={true} readOnly
+//                 />
+//             </div>
+
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['growthNotes'] = el; }}
+//                 name='growthNotes' label='Growth Notes' placeholder='Additional growth-related notes'
+//                 value={formData?.growthNotes || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'growthNotes')}
+//             />
+//         </div>
+
+//         <div className={styles.sectionDivider}>
+//             <h4>Current Symptoms</h4>
+
+//             <Input
+//                 ref={(el) => { fieldRefs.current['chiefComplaint'] = el; }}
+//                 type='text' label='Chief Complaint *' name='chiefComplaint'
+//                 placeholder="Main reason for visit"
+//                 value={formData?.chiefComplaint || ''} onChange={onChange}
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'chiefComplaint')}
+//             />
+//             <br />
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['symptomsDescription'] = el; }}
+//                 name='symptomsDescription' label='Symptoms Description *'
+//                 placeholder='Detailed description of symptoms'
+//                 value={formData?.symptomsDescription || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'symptomsDescription')}
+//             />
+
+//             <div className={styles.formRow}>
+//                 <Input
+//                     ref={(el) => { fieldRefs.current['symptomsDuration'] = el; }}
+//                     type='text' label='Duration of Symptoms' name='symptomsDuration'
+//                     placeholder="e.g., 3 days, 2 weeks"
+//                     value={formData?.symptomsDuration || ''} onChange={onChange}
+//                     disabled={isLoading} error={getFieldError(validationErrors, 'symptomsDuration')}
+//                 />
+//                 <Select
+//                     ref={(el) => { fieldRefs.current['painScale'] = el; }}
+//                     name='painScale' label='Pain Scale (1-10)' leftIcon='activity'
+//                     placeholder='Select pain level' value={formData?.painScale || ''}
+//                     onChange={onChange} disabled={isLoading}
+//                     options={[
+//                         { value: '1', label: '1 - Minimal (barely noticeable)' },
+//                         { value: '2', label: '2 - Mild (minor annoyance)' },
+//                         { value: '3', label: '3 - Uncomfortable (tolerable)' },
+//                         { value: '4', label: '4 - Moderate (interferes with tasks)' },
+//                         { value: '5', label: '5 - Distracting (hard to ignore)' },
+//                         { value: '6', label: '6 - Distressing (difficult to focus)' },
+//                         { value: '7', label: '7 - Severe (significantly limits activity)' },
+//                         { value: '8', label: '8 - Intense (limits most activities)' },
+//                         { value: '9', label: '9 - Excruciating (unable to function)' },
+//                         { value: '10', label: '10 - Unbearable (worst pain imaginable)' }
+//                     ]}
+//                     error={getFieldError(validationErrors, 'painScale')}
+//                 />
+//             </div>
+//         </div>
+
+//         <div className={styles.sectionDivider}>
+//             <h4>Additional Information</h4>
+
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['vaccinationHistory'] = el; }}
+//                 name='vaccinationHistory' label='Vaccination History'
+//                 placeholder='Recent vaccinations or immunization history'
+//                 value={formData?.vaccinationHistory || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'vaccinationHistory')}
+//             />
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['diagnosis'] = el; }}
+//                 name='diagnosis' label='Diagnosis'
+//                 placeholder='Medical diagnosis (to be filled by healthcare provider)'
+//                 value={formData?.diagnosis || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'diagnosis')}
+//             />
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['treatmentPlan'] = el; }}
+//                 name='treatmentPlan' label='Treatment Plan' placeholder='Recommended treatment plan'
+//                 value={formData?.treatmentPlan || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'treatmentPlan')}
+//             />
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['prescribedMedications'] = el; }}
+//                 name='prescribedMedications' label='Prescribed Medications'
+//                 placeholder='List of prescribed medications'
+//                 value={formData?.prescribedMedications || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'prescribedMedications')}
+//             />
+//             <TextArea
+//                 ref={(el) => { fieldRefs.current['consultationNotes'] = el; }}
+//                 name='consultationNotes' label='Consultation Notes'
+//                 placeholder='Additional notes from consultation'
+//                 value={formData?.consultationNotes || ''} onChange={onChange} rows={3} resize='vertical'
+//                 disabled={isLoading} error={getFieldError(validationErrors, 'consultationNotes')}
+//             />
+//             <Input
+//                 ref={(el) => { fieldRefs.current['followUpDate'] = el; }}
+//                 type='date' label='Follow-up Date' name='followUpDate'
+//                 value={formData?.followUpDate || ''} onChange={onChange}
+//                 disabled={isLoading} leftIcon='calendar'
+//                 error={getFieldError(validationErrors, 'followUpDate')}
+//             />
+//         </div>
+//     </div>
+//   )
+// }
+
+// export default MedicalRecordForm
+
+
 import React, { useState, useEffect, useRef } from 'react'
 import styles from './MedicalRecordForm.module.css'
 import { searchAppointmentsByName, getAppointmentForAutofill } from '../../../../services';
@@ -1463,6 +1987,8 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({ formData, onChang
         scrollBlock: 'center',
         focusDelay: 300
     });
+
+    const today = new Date().toISOString().split('T')[0];
 
     const updateFormField = (fieldName: string, value: string | number) => {
         onChange({
@@ -1940,6 +2466,7 @@ const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({ formData, onChang
                 ref={(el) => { fieldRefs.current['followUpDate'] = el; }}
                 type='date' label='Follow-up Date' name='followUpDate'
                 value={formData?.followUpDate || ''} onChange={onChange}
+                min={today}
                 disabled={isLoading} leftIcon='calendar'
                 error={getFieldError(validationErrors, 'followUpDate')}
             />

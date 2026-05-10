@@ -596,7 +596,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     const [bookedSlots, setBookedSlots] = useState<{date: string, time: string, time12Hour?: string}[]>([]);
     const [_availableTimes, setAvailableTimes] = useState<string[]>([]);
     const [doctors, setDoctors] = useState<DoctorOption[]>([]);
-    const [doctorsLoading, setDoctorsLoading] = useState(false);
+    const [_doctorsLoading, setDoctorsLoading] = useState(false);
 
     const hasAutoFilled = useRef(false);
 
@@ -688,32 +688,26 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         fetchBookedSlots();
     }, []);
 
-    // [TEMP DISABLED] — Prevents selecting a time that has already passed on today's date.
-    // Re-enable this when past-time restriction should be enforced again.
-    const isTimePassed = (_timeString: string, _dateString: string): boolean => {
-        // const today = new Date();
-        // const selectedDate = new Date(_dateString);
-        // if (selectedDate.toDateString() !== today.toDateString()) return false;
-        // const [time, period] = _timeString.split(' ');
-        // const [hours, minutes] = time.split(':').map(Number);
-        // let hour24 = hours;
-        // if (period === 'PM' && hours !== 12) hour24 = hours + 12;
-        // else if (period === 'AM' && hours === 12) hour24 = 0;
-        // const timeDate = new Date();
-        // timeDate.setHours(hour24, minutes, 0, 0);
-        // return timeDate <= today;
-        return false; // Always returns false so no time is considered "passed"
+    const isTimePassed = (timeString: string, dateString: string): boolean => {
+        const today = new Date();
+        const selectedDate = new Date(dateString);
+        if (selectedDate.toDateString() !== today.toDateString()) return false;
+        const [time, period] = timeString.split(' ');
+        const [hours, minutes] = time.split(':').map(Number);
+        let hour24 = hours;
+        if (period === 'PM' && hours !== 12) hour24 = hours + 12;
+        else if (period === 'AM' && hours === 12) hour24 = 0;
+        const timeDate = new Date();
+        timeDate.setHours(hour24, minutes, 0, 0);
+        return timeDate <= today;
     };
 
-    // [TEMP DISABLED] — Prevents selecting a date that is less than 2 days from today (for non-privileged users).
-    // Re-enable this when the minimum advance booking restriction should be enforced again.
-    const isTooSoon = (_dateString: string): boolean => {
-        // if (!_dateString) return false;
-        // if (isPrivilegedUser) return false;
-        // const minAllowed = toDateOnly(getDateOffset(2));
-        // const selected   = toDateOnly(_dateString);
-        // return selected < minAllowed;
-        return false; // Always returns false so any date in the past can be selected
+    const isTooSoon = (dateString: string): boolean => {
+        if (!dateString) return false;
+        if (isPrivilegedUser) return false;
+        const minAllowed = toDateOnly(getDateOffset(2));
+        const selected   = toDateOnly(dateString);
+        return selected < minAllowed;
     };
 
     const isDateBlocked = (dateString: string): boolean => {
@@ -748,7 +742,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time));
             const available = allTimes.filter(time =>
                 !bookedTimesForDate.includes(time) &&
-                !isTimePassed(time, selectedDate) // [TEMP DISABLED] isTimePassed always returns false
+                !isTimePassed(time, selectedDate)
             );
             setAvailableTimes(available);
         } else {
@@ -770,11 +764,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         const bookedTimesForDate = bookedSlots
             .filter(slot => slot.date === formData.preferredDate)
             .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time));
-        return !bookedTimesForDate.includes(time) && !isTimePassed(time, formData.preferredDate); // [TEMP DISABLED] isTimePassed always returns false
+        return !bookedTimesForDate.includes(time) && !isTimePassed(time, formData.preferredDate);
     };
 
     const isDateAvailable = (dateString: string) => {
-        if (isTooSoon(dateString)) return false; // [TEMP DISABLED] isTooSoon always returns false
+        if (isTooSoon(dateString)) return false;
         if (isDateBlocked(dateString)) return false;
         const allTimes = generateTimeSlots();
         const bookedTimesForDate = bookedSlots
@@ -782,7 +776,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             .map(slot => slot.time12Hour || convertTo12HourFormat(slot.time));
         return allTimes.some(time =>
             !bookedTimesForDate.includes(time) &&
-            !isTimePassed(time, dateString) // [TEMP DISABLED] isTimePassed always returns false
+            !isTimePassed(time, dateString)
         );
     };
 
@@ -790,9 +784,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         const apiError = getFieldError(validationErrors, 'preferredDate');
         if (apiError) return apiError;
         if (formData?.preferredDate) {
-            // [TEMP DISABLED] — "Too soon" check (min 2 days in advance). Re-enable when restriction is needed.
-            // if (isTooSoon(formData.preferredDate))
-            //     return 'Appointments must be booked at least 1 day before your preferred schedule. Please select a date at least 2 days from today.';
+            if (isTooSoon(formData.preferredDate))
+                return 'Appointments must be booked at least 1 day before your preferred schedule. Please select a date at least 2 days from today.';
             if (isDateBlocked(formData.preferredDate)) {
                 const reason = getBlockedDateReason(formData.preferredDate);
                 return `This date is blocked: ${reason}`;
@@ -831,16 +824,16 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         }
     };
 
-    const doctorOptions = doctors.map(doc => {
-        const fullName = [
-            'Dr.',
-            doc.firstName,
-            doc.middleName ? doc.middleName.charAt(0) + '.' : '',
-            doc.lastName,
-            doc.suffix || ''
-        ].filter(Boolean).join(' ');
-        return { value: doc.id, label: fullName };
-    });
+    // const doctorOptions = doctors.map(doc => {
+    //     const fullName = [
+    //         'Dr.',
+    //         doc.firstName,
+    //         doc.middleName ? doc.middleName.charAt(0) + '.' : '',
+    //         doc.lastName,
+    //         doc.suffix || ''
+    //     ].filter(Boolean).join(' ');
+    //     return { value: doc.id, label: fullName };
+    // });
 
   return (
     <div className={styles.sectionDivider}>
@@ -1060,9 +1053,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 type="date" id="preferredDate" name="preferredDate"
                 label="Preferred Date *" leftIcon="calendar"
                 value={formData?.preferredDate || ''} onChange={handleDateChange}
-                // [TEMP DISABLED] — min date restriction removed to allow past date selection.
-                // Original: min={isPrivilegedUser ? getDateOffset(0) : getDateOffset(2)}
-                // min={isPrivilegedUser ? getDateOffset(0) : getDateOffset(2)}
+                min={isPrivilegedUser ? getDateOffset(0) : getDateOffset(2)}
                 disabled={isLoading} error={getDateError()}
             />
         </div>
@@ -1080,7 +1071,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 options={generateTimeSlots().map(time => ({
                     value: time,
                     label: time,
-                    disabled: !isTimeAvailable(time) // [TEMP DISABLED] isTimeAvailable uses isTimePassed which always returns false
+                    disabled: !isTimeAvailable(time)
                 }))}
                 error={getFieldError(validationErrors, 'preferredTime')}
             />
