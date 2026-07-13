@@ -6,31 +6,57 @@ class PersonnelService {
     
     async createPersonnel(personnelData) {
         try {
-            const { contactNumber, password, username, middleName, suffix, ...restData } = personnelData;
+            const {
+                firstName,
+                lastName,
+                middleName,
+                suffix,
+                username,
+                contactNumber,
+                password,
+                birthdate,
+                sex,
+                address,
+                role
+            } = personnelData;
 
-            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactNumber);
-            
-            const dataToSave = {
-                ...restData,
+            const processedData = {
+                firstName,
+                lastName,
+                contactNumber,
+                password,
+                birthdate,
+                sex,
+                address,
+                role,
                 ...(middleName?.trim() && { middleName: middleName.trim() }),
                 ...(suffix?.trim() && { suffix: suffix.trim() }),
-                ...(username?.trim() && { username }),
-                email: isEmail ? contactNumber : undefined,
-                contactNumber: !isEmail ? contactNumber : undefined
+                ...(username?.trim() && { username: username.trim() })
             };
 
-            // Check if email or contact number already exists
+            await this.validatePersonnelData(processedData);
+
+            const { contactNumber: contact, username: uname, ...restData } = processedData;
+
+            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+
+            const dataToSave = {
+                ...restData,
+                ...(uname && { username: uname }),
+                email: isEmail ? contact : undefined,
+                contactNumber: !isEmail ? contact : undefined
+            };
+
             if (isEmail) {
-                const existingEmail = await Admin.findOne({ email: contactNumber });
+                const existingEmail = await Admin.findOne({ email: contact });
                 if (existingEmail) throw new Error('Email already exists');
             } else {
-                const existingContact = await Admin.findOne({ contactNumber });
+                const existingContact = await Admin.findOne({ contactNumber: contact });
                 if (existingContact) throw new Error('Contact number already exists');
             }
 
-            // Check if username already exists
-            if (username) {
-                const existingUsername = await Admin.findOne({ username: username.toLowerCase() });
+            if (uname) {
+                const existingUsername = await Admin.findOne({ username: uname.toLowerCase() });
                 if (existingUsername) throw new Error('Username already exists');
             }
 

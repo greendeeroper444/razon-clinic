@@ -4,29 +4,7 @@ class InventoryItemController {
 
     async addInventoryItem(req, res, next) {
         try {
-            const { 
-                itemName, 
-                category, 
-                price,
-                quantityInStock, 
-                quantityUsed = 0, 
-                expiryDate 
-            } = req.body;
-
-            const inventoryItemData = {
-                itemName,
-                category,
-                price,
-                quantityInStock,
-                quantityUsed,
-                expiryDate
-            };
-
-            //validate data
-            await InventoryItemService.validateInventoryItemData(inventoryItemData);
-
-            //create inventory item
-            const inventoryItem = await InventoryItemService.createInventoryItem(inventoryItemData);
+            const inventoryItem = await InventoryItemService.createInventoryItem(req.body);
 
             return res.status(201).json({
                 success: true,
@@ -70,9 +48,7 @@ class InventoryItemController {
     async updateInventoryItem(req, res, next) {
         try {
             const { inventoryItemId } = req.params;
-            const updateData = req.body;
-
-            const inventoryItem = await InventoryItemService.updateInventoryItem(inventoryItemId, updateData);
+            const inventoryItem = await InventoryItemService.updateInventoryItem(inventoryItemId, req.body);
 
             return res.status(200).json({
                 success: true,
@@ -146,9 +122,9 @@ class InventoryItemController {
     async updateStock(req, res, next) {
         try {
             const { inventoryItemId } = req.params;
-            const { quantityUsed, operation = 'use' } = req.body;
+            const { quantityUsed, operation = 'use', notes } = req.body;
 
-            const inventoryItem = await InventoryItemService.updateStock(inventoryItemId, quantityUsed, operation);
+            const inventoryItem = await InventoryItemService.updateStock(inventoryItemId, quantityUsed, operation, notes);
 
             return res.status(200).json({
                 success: true,

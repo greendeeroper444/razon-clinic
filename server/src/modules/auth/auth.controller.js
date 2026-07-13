@@ -7,39 +7,7 @@ class AuthController {
 
     async sendRegistrationOTP(req, res, next) {
         try {
-            const { 
-                firstName, 
-                lastName,
-                middleName,
-                suffix,
-                emailOrContactNumber, 
-                password,
-                birthdate,
-                sex,
-                address,
-                religion
-            } = req.body;
-
-            if (!firstName || !lastName || !emailOrContactNumber || !password || !birthdate || !sex || !address) {
-                throw new ApiError('All required fields must be provided', 400);
-            }
-
-            const contactNumberRegex = /^(09|\+639)\d{9}$/;
-            if (!contactNumberRegex.test(emailOrContactNumber)) {
-                throw new ApiError('Please provide a valid contact number for registration', 400);
-            }
-
-            const userData = {
-                firstName,
-                lastName,
-                middleName: middleName || null,
-                suffix: suffix || '',
-                password,
-                birthdate,
-                sex,
-                address,
-                religion: religion || null
-            };
+            const { emailOrContactNumber, userData } = await AuthService.prepareRegistrationData(req.body);
 
             const result = await OTPService.sendRegistrationOTP(emailOrContactNumber, userData);
 
@@ -123,40 +91,14 @@ class AuthController {
 
     async register(req, res, next) {
         try {
-            const { 
-                firstName, 
-                lastName,
-                middleName,
-                suffix,
-                emailOrContactNumber, 
-                password,
-                birthdate,
-                sex,
-                address,
-                religion
-            } = req.body;
-            
-            const userData = {
-                firstName,
-                lastName,
-                middleName,
-                suffix,
-                emailOrContactNumber,
-                password,
-                birthdate,
-                sex,
-                address,
-                religion
-            };
-            
-            const result = await AuthService.createUser(userData);
-            
+            const result = await AuthService.createUser(req.body);
+
             const tokens = TokenHelper.generateTokens(result.user);
             TokenHelper.setTokens(res, tokens.accessToken, tokens.refreshToken);
 
             //save the refresh token as the active session token
             await AuthService.saveActiveToken(result.user.id, 'user', tokens.refreshToken);
-            
+
             res.status(201).json({
                 success: true,
                 message: 'User registered successfully',
@@ -254,25 +196,9 @@ class AuthController {
             const userId = req.user.id;
             const userType = req.user.userType;
             const { currentPassword, newPassword, confirmPassword } = req.body;
-            
-            if (!currentPassword || !newPassword || !confirmPassword) {
-                throw new ApiError('Current password, new password, and confirm password are required', 400);
-            }
-            
-            if (newPassword !== confirmPassword) {
-                throw new ApiError('New password and confirm password do not match', 400);
-            }
-            
-            if (newPassword.length < 6) {
-                throw new ApiError('New password must be at least 6 characters long', 400);
-            }
-            
-            if (currentPassword === newPassword) {
-                throw new ApiError('New password must be different from current password', 400);
-            }
-            
-            const result = await AuthService.changePassword(userId, userType, currentPassword, newPassword);
-            
+
+            const result = await AuthService.changePassword(userId, userType, currentPassword, newPassword, confirmPassword);
+
             res.status(200).json({
                 success: true,
                 message: result.message

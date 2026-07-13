@@ -3,9 +3,28 @@ const mongoose = require('mongoose');
 
 class BlockedTimeSlotService {
     
-    async createBlockedTimeSlot(blockedTimeSlotData) {
+    async createBlockedTimeSlot(blockedTimeSlotData, createdBy) {
         try {
-            const blockedTimeSlot = new BlockedTimeSlot(blockedTimeSlotData);
+            const {
+                startDate,
+                endDate,
+                startTime,
+                endTime,
+                reason,
+                customReason
+            } = blockedTimeSlotData;
+
+            const processedData = {
+                startDate,
+                endDate,
+                startTime,
+                endTime,
+                reason,
+                customReason,
+                createdBy
+            };
+
+            const blockedTimeSlot = new BlockedTimeSlot(processedData);
             return await blockedTimeSlot.save();
         } catch (error) {
             throw error;

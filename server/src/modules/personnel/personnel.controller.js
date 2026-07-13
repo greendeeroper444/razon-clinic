@@ -4,36 +4,7 @@ class PersonnelController {
 
     async addPersonnel(req, res, next) {
         try {
-            const { 
-                firstName,
-                lastName,
-                middleName,
-                suffix,
-                username,
-                contactNumber,
-                password,
-                birthdate,
-                sex,
-                address,
-                role
-            } = req.body;
-
-            const personnelData = {
-                firstName,
-                lastName,
-                contactNumber,
-                password,
-                birthdate,
-                sex,
-                address,
-                role,
-                ...(middleName?.trim() && { middleName: middleName.trim() }),
-                ...(suffix?.trim() && { suffix: suffix.trim() }),
-                ...(username?.trim() && { username: username.trim() }),
-            };
-
-            await PersonnelService.validatePersonnelData(personnelData);
-            const personnel = await PersonnelService.createPersonnel(personnelData);
+            const personnel = await PersonnelService.createPersonnel(req.body);
 
             return res.status(201).json({
                 success: true,
@@ -77,9 +48,7 @@ class PersonnelController {
     async updatePersonnel(req, res, next) {
         try {
             const { personnelId } = req.params;
-            const updateData = req.body;
-
-            const personnel = await PersonnelService.updatePersonnel(personnelId, updateData);
+            const personnel = await PersonnelService.updatePersonnel(personnelId, req.body);
 
             return res.status(200).json({
                 success: true,

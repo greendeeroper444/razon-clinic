@@ -101,6 +101,44 @@ class AuthService extends BaseService {
         }
     }
 
+    async prepareRegistrationData(body) {
+        const {
+            firstName,
+            lastName,
+            middleName,
+            suffix,
+            emailOrContactNumber,
+            password,
+            birthdate,
+            sex,
+            address,
+            religion
+        } = body;
+
+        if (!firstName || !lastName || !emailOrContactNumber || !password || !birthdate || !sex || !address) {
+            throw new ApiError('All required fields must be provided', 400);
+        }
+
+        const contactNumberRegex = /^(09|\+639)\d{9}$/;
+        if (!contactNumberRegex.test(emailOrContactNumber)) {
+            throw new ApiError('Please provide a valid contact number for registration', 400);
+        }
+
+        const userData = {
+            firstName,
+            lastName,
+            middleName: middleName || null,
+            suffix: suffix || '',
+            password,
+            birthdate,
+            sex,
+            address,
+            religion: religion || null
+        };
+
+        return { emailOrContactNumber, userData };
+    }
+
     
     async saveActiveToken(userId, userType, refreshToken) {
         try {
@@ -148,24 +186,40 @@ class AuthService extends BaseService {
         }
     }
 
-    async changePassword(userId, userType, currentPassword, newPassword) {
+    async changePassword(userId, userType, currentPassword, newPassword, confirmPassword) {
         try {
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                throw new ApiError('Current password, new password, and confirm password are required', 400);
+            }
+
+            if (newPassword !== confirmPassword) {
+                throw new ApiError('New password and confirm password do not match', 400);
+            }
+
+            if (newPassword.length < 6) {
+                throw new ApiError('New password must be at least 6 characters long', 400);
+            }
+
+            if (currentPassword === newPassword) {
+                throw new ApiError('New password must be different from current password', 400);
+            }
+
             const user = await this.findUserById(userId, userType, Admin, User, true);
-            
+
             const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
             if (!isCurrentPasswordValid) {
                 throw new ApiError('Current password is incorrect', 400);
             }
-            
+
             const hashedNewPassword = await this.hashPassword(newPassword);
             user.password = hashedNewPassword;
             await user.save();
-            
+
             return { message: 'Password changed successfully' };
         } catch (error) {
             throw error;
         }
-    }
+}
 
     // async authenticateAdmin(username, password) {
     //     try {

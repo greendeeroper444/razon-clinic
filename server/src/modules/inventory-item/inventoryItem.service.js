@@ -6,7 +6,18 @@ class InventoryItemService {
     
     async createInventoryItem(inventoryItemData) {
         try {
-            const inventoryItem = new InventoryItem(inventoryItemData);
+            await this.validateInventoryItemData(inventoryItemData);
+
+            const processedData = {
+                itemName: inventoryItemData.itemName,
+                category: inventoryItemData.category,
+                price: inventoryItemData.price,
+                quantityInStock: inventoryItemData.quantityInStock,
+                quantityUsed: inventoryItemData.quantityUsed || 0,
+                expiryDate: inventoryItemData.expiryDate
+            };
+
+            const inventoryItem = new InventoryItem(processedData);
             const saved = await inventoryItem.save();
 
             //log initial stock as an IN transaction

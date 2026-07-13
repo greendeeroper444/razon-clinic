@@ -4,26 +4,8 @@ class BlockedTimeSlotController {
 
     async addBlockedTimeSlot(req, res, next) {
         try {
-            const { 
-                startDate, 
-                endDate, 
-                startTime,
-                endTime, 
-                reason,
-                customReason
-            } = req.body;
-
-            const blockedTimeSlotData = {
-                startDate,
-                endDate,
-                startTime,
-                endTime,
-                reason,
-                customReason,
-                createdBy: req.user.id
-            };
-
-            const blockedTimeSlot = await BlockedTimeSlotService.createBlockedTimeSlot(blockedTimeSlotData);
+            const createdBy = req.user.id;
+            const blockedTimeSlot = await BlockedTimeSlotService.createBlockedTimeSlot(req.body, createdBy);
 
             return res.status(201).json({
                 success: true,
@@ -67,9 +49,7 @@ class BlockedTimeSlotController {
     async updateBlockedTimeSlot(req, res, next) {
         try {
             const { blockedTimeSlotId } = req.params;
-            const updateData = req.body;
-
-            const blockedTimeSlot = await BlockedTimeSlotService.updateBlockedTimeSlot(blockedTimeSlotId, updateData);
+            const blockedTimeSlot = await BlockedTimeSlotService.updateBlockedTimeSlot(blockedTimeSlotId, req.body);
 
             return res.status(200).json({
                 success: true,
